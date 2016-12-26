@@ -36,9 +36,10 @@
     <url>http://zeppelin.apache.org</url>
 
     <properties>
-        <pig.version>0.16.0</pig.version>
+        <pig.version>0.16.0-SNAPSHOT</pig.version>
         <hadoop.version>2.6.0</hadoop.version>
         <tez.version>0.7.0</tez.version>
+        <spark.version>1.6.2</spark.version>
     </properties>
 
     <dependencies>
@@ -76,6 +77,24 @@
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_${scala.binary.version}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
 
         <dependency>

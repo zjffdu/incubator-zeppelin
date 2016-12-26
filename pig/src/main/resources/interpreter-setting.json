@@ -8,7 +8,7 @@
         "envName": null,
         "propertyName": "zeppelin.pig.execType",
         "defaultValue": "mapreduce",
-        "description": "local | mapreduce | tez"
+        "description": "local | mapreduce | tez | spark"
       },
       "zeppelin.pig.includeJobStats": {
         "envName": null,
@@ -31,17 +31,40 @@
         "envName": null,
         "propertyName": "zeppelin.pig.execType",
         "defaultValue": "mapreduce",
-        "description": "local | mapreduce | tez"
+        "description": "local | mapreduce | tez | spark"
       },
       "zeppelin.pig.maxResult": {
         "envName": null,
         "propertyName": "zeppelin.pig.maxResult",
         "defaultValue": "1000",
-        "description": "max row number for %pig.query"
+        "description": "max row number for output"
       }
     },
     "editor": {
       "language": "pig",
+      "editOnDblClick": false
+    }
+  },
+  {
+    "group": "pig",
+    "name": "sql",
+    "className": "org.apache.zeppelin.pig.PigSQLInterpreter",
+    "properties": {
+      "zeppelin.pig.execType": {
+        "envName": null,
+        "propertyName": "zeppelin.pig.execType",
+        "defaultValue": "mapreduce",
+        "description": "local | mapreduce | tez | spark"
+      },
+      "zeppelin.pig.maxResult": {
+        "envName": null,
+        "propertyName": "zeppelin.pig.maxResult",
+        "defaultValue": "1000",
+        "description": "max row number for output"
+      }
+    },
+    "editor": {
+      "language": "sql",
       "editOnDblClick": false
     }
   }

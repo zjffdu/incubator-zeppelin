@@ -29,6 +29,7 @@ import org.apache.pig.tools.pigstats.OutputStats;
 import org.apache.pig.tools.pigstats.PigStats;
 import org.apache.pig.tools.pigstats.mapreduce.MRJobStats;
 import org.apache.pig.tools.pigstats.mapreduce.SimplePigStats;
+import org.apache.pig.tools.pigstats.spark.SparkPigStats;
 import org.apache.pig.tools.pigstats.tez.TezDAGStats;
 import org.apache.pig.tools.pigstats.tez.TezPigScriptStats;
 import org.slf4j.Logger;
@@ -71,6 +72,8 @@ public class PigUtils {
       return extractFromSimplePigStats((SimplePigStats) stats);
     } else if (stats instanceof TezPigScriptStats) {
       return extractFromTezPigStats((TezPigScriptStats) stats);
+    } else if (stats instanceof SparkPigStats) {
+      return "";
     } else {
       throw new RuntimeException("Unrecognized stats type:" + stats.getClass().getSimpleName());
     }
@@ -259,6 +262,8 @@ public class PigUtils {
       return extractJobIdsFromSimplePigStats((SimplePigStats) stat);
     } else if (stat instanceof TezPigScriptStats) {
       return extractJobIdsFromTezPigStats((TezPigScriptStats) stat);
+    } else if (stat instanceof SparkPigStats) {
+      return new ArrayList<String>();
     } else {
       throw new RuntimeException("Unrecognized stats type:" + stat.getClass().getSimpleName());
     }

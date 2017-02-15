@@ -335,6 +335,14 @@
                     </data>
                     <data>
                       <type>directory</type>
+                      <src>${deb.assembly.base.dir}/local-repo</src>
+                      <mapper>
+                        <type>perm</type>
+                        <prefix>${deb.install.path}/local-repo</prefix>
+                      </mapper>
+                    </data>
+                    <data>
+                      <type>directory</type>
                       <src>${deb.assembly.base.dir}/notebook</src>
                       <includes>2A94M5J1Z/note.json</includes>
                       <mapper>

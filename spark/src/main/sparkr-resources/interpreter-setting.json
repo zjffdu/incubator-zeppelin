@@ -125,6 +125,30 @@
         "propertyName": null,
         "defaultValue": "python",
         "description": "Python command to run pyspark with"
+      },
+      "spark.pyspark.virtualenv.enabled": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "false",
+        "description": "whether to enable virtualenv"
+      },
+      "spark.pyspark.virtualenv.type": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "native",
+        "description": "type of virtualenv, supported types: native & conda"
+      },
+      "spark.pyspark.virtualenv.bin.path": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "native",
+        "description": "path to binary executable of virtualenv or conda"
+      },
+      "spark.pyspark.virtualenv.python_version": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "3.4",
+        "description": "python version if you use conda for virtualenv"
       }
     },
     "editor": {

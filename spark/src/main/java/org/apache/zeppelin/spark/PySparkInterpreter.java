@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.URL;
@@ -57,6 +58,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import py4j.GatewayServer;
+import scala.Tuple2;
 
 /**
  *
@@ -209,6 +211,9 @@ public class PySparkInterpreter extends Interpreter implements ExecuteResultHand
     if (System.getenv("PYSPARK_DRIVER_PYTHON") != null) {
       pythonExec = System.getenv("PYSPARK_DRIVER_PYTHON");
     }
+    if (getSparkConf().getBoolean("spark.pyspark.virtualenv.enabled", false)) {
+      pythonExec = setUpVirtualEnv(pythonExec);
+    }
     CommandLine cmd = CommandLine.parse(pythonExec);
     cmd.addArgument(scriptPath, false);
     cmd.addArgument(Integer.toString(port), false);
@@ -244,6 +249,25 @@ public class PySparkInterpreter extends Interpreter implements ExecuteResultHand
       ins.flush();
     } catch (IOException e) {
       throw new InterpreterException(e);
+    }
+  }
+
+  private String setUpVirtualEnv(String pythonExec) {
+    try {
+      // setup virtualenv for driver
+      Class virtualEnvClazz = getClass().forName("org.apache.spark.api.python.VirtualEnvFactory");
+      Properties properties = new Properties();
+      SparkConf conf = getSparkConf();
+      for (Tuple2 tuple : conf.getAll()) {
+        properties.put(tuple._1(), tuple._2());
+      }
+      Object virtualEnv = virtualEnvClazz
+              .getConstructor(String.class, Map.class, Boolean.class)
+              .newInstance(pythonExec, properties, true);
+      Method virtualEnvMethod = virtualEnv.getClass().getMethod("setupVirtualEnv");
+      return (String) virtualEnvMethod.invoke(virtualEnv);
+    } catch (Exception e) {
+      throw new RuntimeException("virtualenv is eanbled, but fail to create virtualenv" , e);
     }
   }
 

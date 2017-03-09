@@ -1,1 +1,2392 @@
-﻿{"paragraphs":[{"text":"%md\n\n## Exploring Spark SQL Module\n#### with an Airline Dataset\n\n**Level**: Beginner\n**Language**: Scala\n**Requirements**: \n- [HDP 2.6](http://hortonworks.com/products/sandbox/) (or later) or [HDCloud](https://hortonworks.github.io/hdp-aws/)\n- Spark 2.x\n\n**Author**: Robert Hryniewicz\n**Follow** [@RobertH8z](https://twitter.com/RobertH8z)","user":"admin","dateUpdated":"2017-02-22T10:15:16+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":true,"language":"markdown"},"tableHide":false},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<h2>Exploring Spark SQL Module</h2>\n<h4>with an Airline Dataset</h4>\n<p><strong>Level</strong>: Beginner<br/><strong>Language</strong>: Scala<br/><strong>Requirements</strong>:<br/>- <a href=\"http://hortonworks.com/products/sandbox/\">HDP 2.6</a> (or later) or <a href=\"https://hortonworks.github.io/hdp-aws/\">HDCloud</a><br/>- Spark 2.x</p>\n<p><strong>Author</strong>: Robert Hryniewicz<br/><strong>Follow</strong> <a href=\"https://twitter.com/RobertH8z\">@RobertH8z</a></p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249077_-447753787","id":"20160410-003138_1880368561","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:15:16+0000","dateFinished":"2017-02-22T10:15:16+0000","status":"FINISHED","progressUpdateIntervalMs":500,"focus":true,"$$hashKey":"object:905"},{"title":"Introduction","text":"%md\n\nIn this lab you will use Spark SQL via DataFrames API in Part 1 of the lab and SQL API in Part 2 of the lab to explore an Airline Dataset. This is a very interesting dataset that is further explored in other demo notebooks.","user":"admin","dateUpdated":"2017-02-22T10:10:44+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":217,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>In this lab you will use Spark SQL via DataFrames API in Part 1 of the lab and SQL API in Part 2 of the lab to explore an Airline Dataset. This is a very interesting dataset that is further explored in other demo notebooks.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249077_-447753787","id":"20160410-003138_985055475","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:44+0000","dateFinished":"2017-02-22T10:10:44+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:906"},{"title":"Datasets? DataFrames?","text":"%md\n\nA **Dataset** is a distributed collection of data. Dataset provides the benefits of strong typing, ability to use powerful lambda functions with the benefits of (Spark SQL’s) optimized execution engine. A Dataset can be constructed from JVM objects and then manipulated using functional transformations (map, flatMap, filter, etc.). The Dataset API is available in Scala and Java.\n\nA **DataFrame** is a Dataset organized into named columns. It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood. DataFrames can be constructed from a wide array of sources such as: structured data files, tables in Hive, external databases, or existing RDDs. The DataFrame API is available in Scala, Java, Python, and R. In Scala and Java, a DataFrame is represented by a Dataset of Rows. In the Scala API, DataFrame is simply a type alias of Dataset[Row]. (Note that in Scala type parameters (generics) are enclosed in square brackets.)\n\nThroughout this document, we will often refer to Scala/Java Datasets of Rows as DataFrames. [[source](http://spark.apache.org/docs/2.0.0/sql-programming-guide.html#datasets-and-dataframes)]","user":"admin","dateUpdated":"2017-02-22T10:10:44+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>A <strong>Dataset</strong> is a distributed collection of data. Dataset provides the benefits of strong typing, ability to use powerful lambda functions with the benefits of (Spark SQL’s) optimized execution engine. A Dataset can be constructed from JVM objects and then manipulated using functional transformations (map, flatMap, filter, etc.). The Dataset API is available in Scala and Java.</p>\n<p>A <strong>DataFrame</strong> is a Dataset organized into named columns. It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood. DataFrames can be constructed from a wide array of sources such as: structured data files, tables in Hive, external databases, or existing RDDs. The DataFrame API is available in Scala, Java, Python, and R. In Scala and Java, a DataFrame is represented by a Dataset of Rows. In the Scala API, DataFrame is simply a type alias of Dataset[Row]. (Note that in Scala type parameters (generics) are enclosed in square brackets.)</p>\n<p>Throughout this document, we will often refer to Scala/Java Datasets of Rows as DataFrames. [<a href=\"http://spark.apache.org/docs/2.0.0/sql-programming-guide.html#datasets-and-dataframes\">source</a>]</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249077_-447753787","id":"20160410-003138_875933602","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:44+0000","dateFinished":"2017-02-22T10:10:44+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:907"},{"title":"New to Scala?","text":"%md\n\nThroughout this lab we will use basic Scala syntax. If you would like to learn more about Scala, here's an excellent introductory [Tutorial](http://www.dhgarrette.com/nlpclass/scala/basics.html).","user":"admin","dateUpdated":"2017-02-22T10:10:44+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>Throughout this lab we will use basic Scala syntax. If you would like to learn more about Scala, here&rsquo;s an excellent introductory <a href=\"http://www.dhgarrette.com/nlpclass/scala/basics.html\">Tutorial</a>.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249077_-447753787","id":"20160410-140356_736870357","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:44+0000","dateFinished":"2017-02-22T10:10:44+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:908"},{"title":"How to run a paragraph","text":"%md\nTo run a paragraph in a Zeppelin notebook you can either click the `play` button (blue triangle) on the right-hand side or simply press `Shift + Enter`.","user":"admin","dateUpdated":"2017-02-22T10:10:44+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>To run a paragraph in a Zeppelin notebook you can either click the <code>play</code> button (blue triangle) on the right-hand side or simply press <code>Shift + Enter</code>.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249078_-446599541","id":"20160410-003138_1218388802","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:44+0000","dateFinished":"2017-02-22T10:10:44+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:909"},{"title":"What are Interpreters?","text":"%md\n\nIn the following paragraphs we are going to execute Spark code, run shell commands to download and move files, run sql queries etc. Each paragraph will start with `%` followed by an interpreter name, e.g. `%spark2` for a Spark 2.x interpreter. Different interpreter names indicate what will be executed: code, markdown, html etc.  This allows you to perform data ingestion, munging, wrangling, visualization, analysis, processing and more, all in one place!\n\nThroughtout this notebook we will use the following interpreters:\n\n- `%spark2` - Spark interpreter to run Spark code written in Scala\n- `%spark2.sql` - Spark SQL interprter (to execute SQL queries against temporary tables in Spark)\n- `%sh` - Shell interpreter to run shell commands\n- `%angular` - Angular interpreter to run Angular and HTML code\n- `%md` - Markdown for displaying formatted text, links, and images\n\nTo learn more about Zeppelin interpreters check out this [link](https://zeppelin.apache.org/docs/0.5.6-incubating/manual/interpreters.html).","user":"admin","dateUpdated":"2017-02-22T10:10:44+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":true,"language":"markdown"},"tableHide":false},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>In the following paragraphs we are going to execute Spark code, run shell commands to download and move files, run sql queries etc. Each paragraph will start with <code>%</code> followed by an interpreter name, e.g. <code>%spark2</code> for a Spark 2.x interpreter. Different interpreter names indicate what will be executed: code, markdown, html etc. This allows you to perform data ingestion, munging, wrangling, visualization, analysis, processing and more, all in one place!</p>\n<p>Throughtout this notebook we will use the following interpreters:</p>\n<ul>\n  <li><code>%spark2</code> - Spark interpreter to run Spark code written in Scala</li>\n  <li><code>%spark2.sql</code> - Spark SQL interprter (to execute SQL queries against temporary tables in Spark)</li>\n  <li><code>%sh</code> - Shell interpreter to run shell commands</li>\n  <li><code>%angular</code> - Angular interpreter to run Angular and HTML code</li>\n  <li><code>%md</code> - Markdown for displaying formatted text, links, and images</li>\n</ul>\n<p>To learn more about Zeppelin interpreters check out this <a href=\"https://zeppelin.apache.org/docs/0.5.6-incubating/manual/interpreters.html\">link</a>.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249078_-446599541","id":"20160410-003138_290903368","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:44+0000","dateFinished":"2017-02-22T10:10:44+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:910"},{"title":"Verify Spark Version (should be 2.x)","text":"%spark2\n\nspark.version","user":"admin","dateUpdated":"2017-02-22T10:10:44+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249078_-446599541","id":"20160410-003138_631425785","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:44+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:911","errorMessage":""},{"title":"Download CSV flight data file ","text":"%sh\n\n# You will now download a subset of 2008 flights (only 100k lines)\n# The full dataset may be found here: http://stat-computing.org/dataexpo/2009/the-data.html\n\nwget https://raw.githubusercontent.com/roberthryniewicz/datasets/master/airline-dataset/flights/flights.csv -O /tmp/flights.csv\necho \"Downloaded!\"","user":"admin","dateUpdated":"2017-02-22T10:10:44+0000","config":{"tableHide":false,"editorMode":"ace/mode/sh","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sh"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249078_-446599541","id":"20160410-003138_1540125404","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:46+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:912","errorMessage":""},{"title":"Preview Downloaded File","text":"%sh\n\ncat /tmp/flights.csv | head","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"tableHide":false,"editorMode":"ace/mode/sh","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sh"}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[]},"apps":[],"jobName":"paragraph_1487398249078_-446599541","id":"20160410-003138_226044813","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:913"},{"title":"Move dataset to HDFS (if supported/available)","text":"%sh\n\n# remove existing copies of dataset from HDFS\nhdfs dfs -rm -r -f /tmp/flights.csv\n\n# put data into HDFS\nhdfs dfs -put /tmp/flights.csv /tmp/","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/sh","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sh"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249078_-446599541","id":"20160410-003138_1267267737","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:49+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:914","errorMessage":""},{"title":"Create a DataFrame from CSV file","text":"%spark2\n\n// Create a flights DataFrame from CSV file\nval flights = spark.read\n              .option(\"header\", \"true\")                              // Use first line as header\n              .option(\"inferSchema\", \"true\")                         // Infer schema\n              .csv(\"/tmp/airflightsdelays/flights.csv\")              // Read data","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249079_-446984290","id":"20160410-003138_236600548","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:915","errorMessage":""},{"title":"Print Schema","text":"%spark2\n\n// Print the schema in a tree format\nflights.printSchema()","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249079_-446984290","id":"20160410-003138_1553179639","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:916","errorMessage":""},{"title":"Dataset Description","text":"%angular\n\n<!DOCTYPE html>\n<html>\n<head>\n<style>\ntable {\n    font-family: arial, sans-serif;\n    border-collapse: collapse;\n    width: 70%;\n}\n\ntd, th {\n    border: 1px solid #dddddd;\n    text-align: left;\n    padding: 8px;\n}\n\ntr:nth-child(even) {\n    background-color: #dddddd;\n}\n</style>\n</head>\n\n<table width=\"100%\">\n<tbody><tr>\n  <th></th>\n  <th>Name</th>\n  <th>Description</th>\n</tr>\n<tr>\n <td>1  </td><td> Year              </td><td>1987-2008</td>\n</tr><tr>\n <td>2  </td><td> Month             </td><td>1-12</td>\n</tr><tr>\n <td>3  </td><td> DayofMonth        </td><td>1-31</td>\n</tr><tr>\n <td>4  </td><td> DayOfWeek         </td><td>1 (Monday) - 7 (Sunday)</td>\n</tr><tr>\n <td>5  </td><td> DepTime           </td><td>actual departure time (local, hhmm)</td>\n</tr><tr>\n <td>6  </td><td> CRSDepTime        </td><td>scheduled departure time (local, hhmm)</td>\n</tr><tr>\n <td>7  </td><td> ArrTime           </td><td>actual arrival time (local, hhmm)</td>\n</tr><tr>\n <td>8  </td><td> CRSArrTime        </td><td>scheduled arrival time (local, hhmm)</td>\n</tr><tr>\n <td>9  </td><td> UniqueCarrier     </td><td><a href=\"supplemental-data.html\">unique carrier code</a></td>\n</tr><tr>\n <td>10 </td><td> FlightNum         </td><td>flight number</td>\n</tr><tr>\n <td>11 </td><td> TailNum           </td><td>plane tail number</td>\n</tr><tr>\n <td>12 </td><td> ActualElapsedTime </td><td>in minutes</td>\n</tr><tr>\n <td>13 </td><td> CRSElapsedTime    </td><td>in minutes</td>\n</tr><tr>\n <td>14 </td><td> AirTime           </td><td>in minutes</td>\n</tr><tr>\n <td>15 </td><td> ArrDelay          </td><td>arrival delay, in minutes</td>\n</tr><tr>\n <td>16 </td><td> DepDelay          </td><td>departure delay, in minutes</td>\n</tr><tr>\n <td>17 </td><td> Origin            </td><td>origin <a href=\"supplemental-data.html\">IATA airport code</a></td>\n</tr><tr>\n <td>18 </td><td> Dest              </td><td>destination <a href=\"supplemental-data.html\">IATA airport code</a></td>\n</tr><tr>\n <td>19 </td><td> Distance          </td><td>in miles</td>\n</tr><tr>\n <td>20 </td><td> TaxiIn            </td><td>taxi in time, in minutes</td>\n</tr><tr>\n <td>21 </td><td> TaxiOut           </td><td>taxi out time in minutes</td>\n</tr><tr>\n <td>22 </td><td> Cancelled           </td><td>was the flight cancelled?</td>\n</tr><tr>\n <td>23 </td><td> CancellationCode  </td><td>reason for cancellation (A = carrier, B = weather, C = NAS, D = security)</td>\n</tr><tr>\n <td>24 </td><td> Diverted          </td><td>1 = yes, 0 = no</td>\n</tr><tr>\n <td>25 </td><td> CarrierDelay      </td><td>in minutes</td>\n</tr><tr>\n <td>26 </td><td> WeatherDelay      </td><td>in minutes</td>\n</tr><tr>\n <td>27 </td><td> NASDelay          </td><td>in minutes</td>\n</tr><tr>\n <td>28 </td><td> SecurityDelay     </td><td>in minutes</td>\n</tr><tr>\n <td>29 </td><td> LateAircraftDelay </td><td>in minutes</td>\n</tr>\n</tbody></table>\n\n</body>\n</html>","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"ANGULAR","data":"<!DOCTYPE html>\n<html>\n<head>\n<style>\ntable {\n    font-family: arial, sans-serif;\n    border-collapse: collapse;\n    width: 70%;\n}\n\ntd, th {\n    border: 1px solid #dddddd;\n    text-align: left;\n    padding: 8px;\n}\n\ntr:nth-child(even) {\n    background-color: #dddddd;\n}\n</style>\n</head>\n\n<table width=\"100%\">\n<tbody><tr>\n  <th></th>\n  <th>Name</th>\n  <th>Description</th>\n</tr>\n<tr>\n <td>1  </td><td> Year              </td><td>1987-2008</td>\n</tr><tr>\n <td>2  </td><td> Month             </td><td>1-12</td>\n</tr><tr>\n <td>3  </td><td> DayofMonth        </td><td>1-31</td>\n</tr><tr>\n <td>4  </td><td> DayOfWeek         </td><td>1 (Monday) - 7 (Sunday)</td>\n</tr><tr>\n <td>5  </td><td> DepTime           </td><td>actual departure time (local, hhmm)</td>\n</tr><tr>\n <td>6  </td><td> CRSDepTime        </td><td>scheduled departure time (local, hhmm)</td>\n</tr><tr>\n <td>7  </td><td> ArrTime           </td><td>actual arrival time (local, hhmm)</td>\n</tr><tr>\n <td>8  </td><td> CRSArrTime        </td><td>scheduled arrival time (local, hhmm)</td>\n</tr><tr>\n <td>9  </td><td> UniqueCarrier     </td><td><a href=\"supplemental-data.html\">unique carrier code</a></td>\n</tr><tr>\n <td>10 </td><td> FlightNum         </td><td>flight number</td>\n</tr><tr>\n <td>11 </td><td> TailNum           </td><td>plane tail number</td>\n</tr><tr>\n <td>12 </td><td> ActualElapsedTime </td><td>in minutes</td>\n</tr><tr>\n <td>13 </td><td> CRSElapsedTime    </td><td>in minutes</td>\n</tr><tr>\n <td>14 </td><td> AirTime           </td><td>in minutes</td>\n</tr><tr>\n <td>15 </td><td> ArrDelay          </td><td>arrival delay, in minutes</td>\n</tr><tr>\n <td>16 </td><td> DepDelay          </td><td>departure delay, in minutes</td>\n</tr><tr>\n <td>17 </td><td> Origin            </td><td>origin <a href=\"supplemental-data.html\">IATA airport code</a></td>\n</tr><tr>\n <td>18 </td><td> Dest              </td><td>destination <a href=\"supplemental-data.html\">IATA airport code</a></td>\n</tr><tr>\n <td>19 </td><td> Distance          </td><td>in miles</td>\n</tr><tr>\n <td>20 </td><td> TaxiIn            </td><td>taxi in time, in minutes</td>\n</tr><tr>\n <td>21 </td><td> TaxiOut           </td><td>taxi out time in minutes</td>\n</tr><tr>\n <td>22 </td><td> Cancelled           </td><td>was the flight cancelled?</td>\n</tr><tr>\n <td>23 </td><td> CancellationCode  </td><td>reason for cancellation (A = carrier, B = weather, C = NAS, D = security)</td>\n</tr><tr>\n <td>24 </td><td> Diverted          </td><td>1 = yes, 0 = no</td>\n</tr><tr>\n <td>25 </td><td> CarrierDelay      </td><td>in minutes</td>\n</tr><tr>\n <td>26 </td><td> WeatherDelay      </td><td>in minutes</td>\n</tr><tr>\n <td>27 </td><td> NASDelay          </td><td>in minutes</td>\n</tr><tr>\n <td>28 </td><td> SecurityDelay     </td><td>in minutes</td>\n</tr><tr>\n <td>29 </td><td> LateAircraftDelay </td><td>in minutes</td>\n</tr>\n</tbody></table>\n\n</body>\n</html>"}]},"apps":[],"jobName":"paragraph_1487398249079_-446984290","id":"20160410-003138_1626463388","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:917"},{"text":"%md\n### Part 1: Using DataFrame/Dataset API to Analyze the Airline Data\n\nNote: in this lab DataFrame and Dataset API calls will be indistinguishable. Internally, however, *flights* are represented as DataFrames and *delayedFlights* as Datasets in the examples below.","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<h3>Part 1: Using DataFrame/Dataset API to Analyze the Airline Data</h3>\n<p>Note: in this lab DataFrame and Dataset API calls will be indistinguishable. Internally, however, <em>flights</em> are represented as DataFrames and <em>delayedFlights</em> as Datasets in the examples below.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249079_-446984290","id":"20160410-003138_650819453","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:918"},{"title":"Show a subset of columns","text":"%spark2\n\n// Show a subset of columns with \"select\"\nflights.select(\"UniqueCarrier\", \"FlightNum\", \"DepDelay\", \"ArrDelay\", \"Distance\").show()","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249079_-446984290","id":"20160410-003138_1188332400","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:919","errorMessage":""},{"title":"Apply a filter to find flights delayed more than 15 min","text":"%spark2\n\n// Create a Dataset containing flights with delayed departure by more than 15 min using \"filter\"\nval delayedFlights = flights\n                        .select(\"UniqueCarrier\", \"DepDelay\")\n                        .filter($\"DepDelay\" > 15)\n                        \ndelayedFlights.show()","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249079_-446984290","id":"20160410-003138_704729700","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:46+0000","dateFinished":"2017-02-22T10:10:46+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:920","errorMessage":""},{"title":"Display percentage of delayed flights","text":"%spark2\n\nval numTotalFlights = flights.count()\nval numDelayedFlights = delayedFlights.count()\n\n// Print total number of delayed flights\nprintln(\"Percentage of Delayed Flights: \" + (numDelayedFlights.toFloat/numTotalFlights*100) + \"%\")","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249079_-446984290","id":"20160410-003138_1019754695","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:46+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:921","errorMessage":""},{"text":"%md\n\nWe can also create a user defined function (UDF) to determine delays.","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>We can also create a user defined function (UDF) to determine delays.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20161017-203635_1855560775","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:922"},{"title":" Create a UDF to determine delays","text":"%spark2\n\nimport org.apache.spark.sql.functions.udf\n\n// Define a UDF to find delayed flights\n\n// Assume:\n//  if ArrDelay is not available then Delayed = False\n//  if ArrDelay > 15 min then Delayed = True else False\n\nval isDelayedUDF = udf((time: String) => if (time == \"NA\") 0 else if (time.toInt > 15) 1 else 0)","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"colWidth":12,"editorMode":"ace/mode/scala","title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20161017-203017_1781904338","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:46+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:923","errorMessage":""},{"title":"Create a new DataFrame with IsDelayed column","text":"%spark2\n\nval flightsWithDelays = flights.select($\"Year\", $\"Month\", $\"DayofMonth\", $\"UniqueCarrier\", $\"FlightNum\", $\"DepDelay\", \n                    isDelayedUDF($\"DepDelay\").alias(\"IsDelayed\"))\n                    \nflightsWithDelays.show(5)","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"colWidth":12,"editorMode":"ace/mode/scala","title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20161017-203358_1309594443","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:924","errorMessage":""},{"text":"%md\n\n\nNote that now we have a new table with a column that indicates whether a flight is delayed or not. This will allow us to calculate percentage of delayed flights in one pass.","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":true,"language":"markdown"},"tableHide":false},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>Note that now we have a new table with a column that indicates whether a flight is delayed or not. This will allow us to calculate percentage of delayed flights in one pass.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20161017-205652_1397194952","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:45+0000","dateFinished":"2017-02-22T10:10:45+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:925"},{"title":"Calculate percentage of delayed flights using flightsWithDelays DataFrame","text":"%spark2\n\nflightsWithDelays.agg((sum(\"IsDelayed\") * 100 / count(\"DepDelay\")).alias(\"Percentage of Delayed Flights\")).show()","user":"admin","dateUpdated":"2017-02-22T10:10:45+0000","config":{"colWidth":12,"editorMode":"ace/mode/scala","title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"},"editorHide":false},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20161017-205750_819957102","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:48+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:926","errorMessage":""},{"text":"%md\n\nAs you can see above, this is a very clean way of displaying a percentage of delayed flights. UDFs are useful in creating additional functions that are commonly used.\n\nNow let's explore our flights a bit more and find some averages.","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>As you can see above, this is a very clean way of displaying a percentage of delayed flights. UDFs are useful in creating additional functions that are commonly used.</p>\n<p>Now let&rsquo;s explore our flights a bit more and find some averages.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20161017-205919_1405069576","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:46+0000","dateFinished":"2017-02-22T10:10:46+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:927"},{"title":"Find Avg Taxi-in","text":"%spark2\n\nflights.select(\"Origin\", \"Dest\", \"TaxiIn\")\n        .groupBy(\"Origin\", \"Dest\")\n        .agg(avg(\"TaxiIn\")\n        .alias(\"AvgTaxiIn\"))\n        .orderBy(desc(\"AvgTaxiIn\"))\n        .show(10)","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/scala","colWidth":6,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20160410-003138_1488719873","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:49+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:928","errorMessage":""},{"title":"Find Avg Taxi-out","text":"%spark2\n\nflights.select(\"Origin\", \"Dest\", \"TaxiOut\")\n        .groupBy(\"Origin\", \"Dest\")\n        .agg(avg(\"TaxiOut\")\n        .alias(\"AvgTaxiOut\"))\n        .orderBy(desc(\"AvgTaxiOut\"))\n        .show(10)","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/scala","colWidth":6,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249080_-448908034","id":"20160410-003138_840324935","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:48+0000","dateFinished":"2017-02-22T10:10:50+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:929","errorMessage":""},{"text":"%md\n### Part 2: Using SQL API to Analyze the Airline Data","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<h3>Part 2: Using SQL API to Analyze the Airline Data</h3>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_582934314","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:46+0000","dateFinished":"2017-02-22T10:10:46+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:930"},{"title":"Is there a more interactive way to display query results?","text":"%md\n\nAs you can see, the data displayed in Part 1 of this notebook isn't too interactive. To have a more dynamic experience, let's create a temporary (in-memory) view that we can query against and interact with the resulting data in a table or graph format. The temporary view will allow us to execute SQL queries against it.\n\nNote that the temporary view will reside in memory as long as the Spark session is alive.","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/markdown","colWidth":12,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>As you can see, the data displayed in Part 1 of this notebook isn&rsquo;t too interactive. To have a more dynamic experience, let&rsquo;s create a temporary (in-memory) view that we can query against and interact with the resulting data in a table or graph format. The temporary view will allow us to execute SQL queries against it.</p>\n<p>Note that the temporary view will reside in memory as long as the Spark session is alive.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_556617784","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:46+0000","dateFinished":"2017-02-22T10:10:46+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:931"},{"title":"Register a Temporary View","text":"%spark2\n\n// Convert flights DataFrame to a temporary view\nflights.createOrReplaceTempView(\"flightsView\")","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_636329356","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:50+0000","dateFinished":"2017-02-22T10:10:50+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:932","errorMessage":""},{"title":"Preview Data in an interactive table format","text":"%spark2.sql\n\nSELECT * FROM flightsView LIMIT 20","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/sql","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[{"name":"Year","index":0,"aggr":"sum"}],"values":[{"name":"Month","index":1,"aggr":"sum"}],"groups":[],"scatter":{"xAxis":{"name":"Year","index":0,"aggr":"sum"},"yAxis":{"name":"Month","index":1,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_318924232","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:50+0000","dateFinished":"2017-02-22T10:10:50+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:933","errorMessage":""},{"title":"Register a User Defined Function (UDF)","text":"%spark2\n\n// Register a helper UDF to find delayed flights\n// Note that this is a UDF specific for use with the sparkSession\n\n// Assume:\n//  if ArrDelay is not available then Delayed = False\n//  if ArrDelay > 15 min then Delayed = True else False\n\nspark.udf.register(\"isDelayedUDF\", (time: String) => if (time == \"NA\") 0 else if (time.toInt > 15) 1 else 0)","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_40384312","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:50+0000","dateFinished":"2017-02-22T10:10:51+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:934","errorMessage":""},{"title":"Compare Total Number of Delayed Flights by Carrier","text":"%spark2.sql\n--- Compare Total Number of Delayed Flights by Carrier\nSELECT UniqueCarrier, SUM(isDelayedUDF(DepDelay)) AS NumDelays FROM flightsView GROUP BY UniqueCarrier","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/sql","colWidth":6,"editorHide":false,"title":true,"results":[{"graph":{"mode":"pieChart","height":296,"optionOpen":false,"keys":[{"name":"UniqueCarrier","index":0,"aggr":"sum"}],"values":[{"name":"NumDelays","index":1,"aggr":"sum"}],"groups":[],"scatter":{"yAxis":{"name":"NumDelays","index":1,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_134299332","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:51+0000","dateFinished":"2017-02-22T10:10:52+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:935","errorMessage":""},{"title":"Compare Total Delayed Time (min) by Carrier","text":"%spark2.sql\n--- Compare Total Delayed Time (min) by Carrier\nSELECT UniqueCarrier, SUM(DepDelay) AS TotalTimeDelay FROM flightsView GROUP BY UniqueCarrier","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/sql","colWidth":6,"editorHide":false,"title":true,"results":[{"graph":{"mode":"multiBarChart","height":300,"optionOpen":false,"keys":[{"name":"UniqueCarrier","index":0,"aggr":"sum"}],"values":[{"name":"TotalTimeDelay","index":1,"aggr":"sum"}],"groups":[],"scatter":{"xAxis":{"name":"UniqueCarrier","index":0,"aggr":"sum"},"yAxis":{"name":"TotalTimeDelay","index":1,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_163559927","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:51+0000","dateFinished":"2017-02-22T10:10:52+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:936","errorMessage":""},{"title":"Find Average Distance Travelled by Carrier","text":"%spark2.sql\n--- Find Average Distance Travelled by Carrier\nSELECT UniqueCarrier, avg(Distance) AS AvgDistanceTraveled FROM flightsView GROUP BY UniqueCarrier ORDER BY AvgDistanceTraveled DESC","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/sql","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"pieChart","height":300,"optionOpen":false,"keys":[{"name":"UniqueCarrier","index":0,"aggr":"sum"}],"values":[{"name":"AvgDistanceTraveled","index":1,"aggr":"sum"}],"groups":[],"scatter":{"xAxis":{"name":"UniqueCarrier","index":0,"aggr":"sum"},"yAxis":{"name":"AvgDistanceTraveled","index":1,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249081_-449292783","id":"20160410-003138_172624929","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:52+0000","dateFinished":"2017-02-22T10:10:53+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:937","errorMessage":""},{"title":"Find Out When Most Flights Get Delayed by Day of Week","text":"%spark2.sql\n\nSELECT DayOfWeek, CASE WHEN isDelayedUDF(DepDelay) = 1 THEN 'delayed' ELSE 'ok' END AS Delay, COUNT(1) AS Count\nFROM flightsView\nGROUP BY DayOfWeek, CASE WHEN isDelayedUDF(DepDelay) = 1 THEN 'delayed' ELSE 'ok' END\nORDER BY DayOfWeek","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/sql","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"multiBarChart","height":300,"optionOpen":false,"keys":[{"name":"DayOfWeek","index":0,"aggr":"sum"}],"values":[{"name":"Count","index":2,"aggr":"sum"}],"groups":[{"name":"Delay","index":1,"aggr":"sum"}],"scatter":{"xAxis":{"name":"DayOfWeek","index":0,"aggr":"sum"},"yAxis":{"name":"Delay","index":1,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20160410-003138_56774606","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:53+0000","dateFinished":"2017-02-22T10:10:54+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:938","errorMessage":""},{"title":"Find Out When Most Flights Get Delayed by Hour","text":"%spark2.sql\n\nSELECT CAST(CRSDepTime / 100 AS INT) AS Hour, CASE WHEN isDelayedUDF(DepDelay) = 1 THEN 'delayed' ELSE 'ok' END AS Delay, COUNT(1) AS Count\nFROM flightsView\nGROUP BY CAST(CRSDepTime / 100 AS INT), CASE WHEN isDelayedUDF(DepDelay) = 1 THEN 'delayed' ELSE 'ok' END\nORDER BY Hour","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"editorMode":"ace/mode/sql","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"stackedAreaChart","height":300,"optionOpen":false,"keys":[{"name":"Hour","index":0,"aggr":"sum"}],"values":[{"name":"Count","index":2,"aggr":"sum"}],"groups":[{"name":"Delay","index":1,"aggr":"sum"}],"scatter":{"xAxis":{"name":"Hour","index":0,"aggr":"sum"},"yAxis":{"name":"Delay","index":1,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20160410-003138_728063774","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:54+0000","dateFinished":"2017-02-22T10:10:55+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:939","errorMessage":""},{"title":"Putting it all together","text":"%md\n\nNow, with all these basic analytics in Part 1 and 2 of this lab, you should have a fairly good idea which flights have the most delays, on which routes, from which airports, at which hour, on which days of the week and months of the year, and be able to start making meaningful predictions yourself. That's the power of using Spark with Zeppelin -- having one powerful environment to perform data munging, wrangling, visualization and more on large datasets.","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>Now, with all these basic analytics in Part 1 and 2 of this lab, you should have a fairly good idea which flights have the most delays, on which routes, from which airports, at which hour, on which days of the week and months of the year, and be able to start making meaningful predictions yourself. That&rsquo;s the power of using Spark with Zeppelin &ndash; having one powerful environment to perform data munging, wrangling, visualization and more on large datasets.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20161017-210202_1567750763","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:46+0000","dateFinished":"2017-02-22T10:10:46+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:940"},{"text":"%md\n\n## Persisting Results / Data\n\nFinally, let's persist some of our results by saving our DataFrames in an optimized file format called ORC.\n","user":"admin","dateUpdated":"2017-02-22T10:10:46+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<h2>Persisting Results / Data</h2>\n<p>Finally, let&rsquo;s persist some of our results by saving our DataFrames in an optimized file format called ORC.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20161017-212723_1255606607","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:941"},{"text":"%angular\n\n<h3>Save Modes</h3>\n\n<style>\ntable, th, td {\n    border: 1px solid black;\n    border-collapse: collapse;\n}\nth, td {\n    padding: 5px;\n}\n</style>\n\n<table style=\"width:100%\">\n  <tr>\n    <th>Mode (Scala/Java)</th>\n    <th>Meaning</th>\t\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.ErrorIfExists (default)</code></td>\n    <td>When saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown.</td>\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.Append</code></td>\n    <td>When saving a DataFrame to a data source, if data/table already exists, contents of the DataFrame are expected to be appended to existing data.</td>\t\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.Overwrite</code></td>\n    <td>Overwrite mode means that when saving a DataFrame to a data source, if data/table already exists, existing data is expected to be overwritten by the contents of the DataFrame.</td>\t\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.Ignore</code></td>\n    <td>Ignore mode means that when saving a DataFrame to a data source, if data already exists, the save operation is expected to not save the contents of the DataFrame and to not change the existing data. This is similar to a CREATE TABLE IF NOT EXISTS in SQL.</td>\n  </tr>\n</table>\n\n</br>\nNote: Save operations can optionally take a <code>SaveMode</code>, that specifies how to handle existing data if present. It is important to realize that these save modes do not utilize any locking and are not atomic. Additionally, when performing an <code>Overwrite</code>, the data will be deleted before writing out the new data.","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"ANGULAR","data":"<h3>Save Modes</h3>\n\n<style>\ntable, th, td {\n    border: 1px solid black;\n    border-collapse: collapse;\n}\nth, td {\n    padding: 5px;\n}\n</style>\n\n<table style=\"width:100%\">\n  <tr>\n    <th>Mode (Scala/Java)</th>\n    <th>Meaning</th>\t\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.ErrorIfExists (default)</code></td>\n    <td>When saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown.</td>\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.Append</code></td>\n    <td>When saving a DataFrame to a data source, if data/table already exists, contents of the DataFrame are expected to be appended to existing data.</td>\t\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.Overwrite</code></td>\n    <td>Overwrite mode means that when saving a DataFrame to a data source, if data/table already exists, existing data is expected to be overwritten by the contents of the DataFrame.</td>\t\t\n  </tr>\n  <tr>\n    <td><code>SaveMode.Ignore</code></td>\n    <td>Ignore mode means that when saving a DataFrame to a data source, if data already exists, the save operation is expected to not save the contents of the DataFrame and to not change the existing data. This is similar to a CREATE TABLE IF NOT EXISTS in SQL.</td>\n  </tr>\n</table>\n\n</br>\nNote: Save operations can optionally take a <code>SaveMode</code>, that specifies how to handle existing data if present. It is important to realize that these save modes do not utilize any locking and are not atomic. Additionally, when performing an <code>Overwrite</code>, the data will be deleted before writing out the new data."}]},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20160410-003138_206029012","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:942"},{"title":"Save to ORC file","text":"%spark2\n\nimport org.apache.spark.sql.SaveMode\n\n// Save and Overwrite our new DataFrame to an ORC file\nflightsWithDelays.write.format(\"orc\").mode(SaveMode.Overwrite).save(\"flightsWithDelays.orc\")","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20160410-003138_985965720","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:54+0000","dateFinished":"2017-02-22T10:10:55+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:943","errorMessage":""},{"title":"What is an ORC file format?","text":"%md\n\nORC (Optimized Row-Column) is a self-describing, type-aware columnar file format designed for Hadoop workloads. It is optimized for large streaming reads, but with integrated support for finding required rows quickly. Storing data in a columnar format lets the reader read, decompress, and process only the values that are required for the current query. Because ORC files are type-aware, the writer chooses the most appropriate encoding for the type and builds an internal index as the file is written. More information [here](https://orc.apache.org/).","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>ORC (Optimized Row-Column) is a self-describing, type-aware columnar file format designed for Hadoop workloads. It is optimized for large streaming reads, but with integrated support for finding required rows quickly. Storing data in a columnar format lets the reader read, decompress, and process only the values that are required for the current query. Because ORC files are type-aware, the writer chooses the most appropriate encoding for the type and builds an internal index as the file is written. More information <a href=\"https://orc.apache.org/\">here</a>.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20161017-103614_1279292421","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:944"},{"title":"Load back from an ORC file","text":"%spark2\n\n// Load results back from ORC file\nval test = spark.read.format(\"orc\").load(\"flightsWithDelays.orc\")\n\n// Assert both DataFrames of the same size.\n//   Note that if assertion succeeds no warning messages will be printed\nassert (test.count == flightsWithDelays.count, println(\"Assertion Fail: Files are of different sizes.\"))\n\ntest.show(10)","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"editorMode":"ace/mode/scala","colWidth":12,"editorHide":false,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249082_-448138536","id":"20160410-003138_1142035788","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:55+0000","dateFinished":"2017-02-22T10:10:56+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:945","errorMessage":""},{"text":"%md\n\nWe can also create permanent tables, instead of temporary views, using `saveAsTable`. The resulting table will still exist even after your Spark program has restarted.","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>We can also create permanent tables, instead of temporary views, using <code>saveAsTable</code>. The resulting table will still exist even after your Spark program has restarted.</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20161017-212315_1033823107","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:946"},{"title":"Save DataFrame as Permanent Table","text":"%spark2\n\nflightsWithDelays.write.format(\"orc\").mode(SaveMode.Overwrite).saveAsTable(\"flightswithdelaystbl\")","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"colWidth":12,"editorMode":"ace/mode/scala","title":true,"results":[],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"scala"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20161017-212148_1432557096","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:56+0000","dateFinished":"2017-02-22T10:10:58+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:947","errorMessage":""},{"title":"Show Tables/Views","text":"%spark2.sql\n\nSHOW TABLES\n\n-- Note that flightsWithDelaysTbl is a permanent table instead of a temporary view!","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"colWidth":12,"editorMode":"ace/mode/sql","title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[{"name":"tableName","index":0,"aggr":"sum"}],"values":[{"name":"isTemporary","index":1,"aggr":"sum"}],"groups":[],"scatter":{"xAxis":{"name":"tableName","index":0,"aggr":"sum"},"yAxis":{"name":"isTemporary","index":1,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20161017-212228_2044087527","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:57+0000","dateFinished":"2017-02-22T10:10:59+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:948","errorMessage":""},{"title":"Querying a Permanent Table","text":"%spark2.sql\n\nSELECT COUNT(1) AS Total from flightswithdelaystbl  -- As you can see, there's no difference in querying a temporary view vs a permanent table","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"colWidth":12,"editorMode":"ace/mode/sql","title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[{"name":"Total","index":0,"aggr":"sum"}],"values":[],"groups":[],"scatter":{"xAxis":{"name":"Total","index":0,"aggr":"sum"}}}}],"enabled":true,"editorSetting":{"editOnDblClick":false,"language":"sql"}},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20161017-212847_790820933","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:59+0000","dateFinished":"2017-02-22T10:10:59+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:949","errorMessage":""},{"title":"Final Words","text":"%md\n\nThis should get you started working in Scala with DataFrame, Dataset and SQL Spark APIs that are part of the Spark SQL Module. You should now have the basic tools and code samples to start working on your own data sets: from brining in/downloading datasets, to moving them from local storage to HDFS, to transforming datasets into Spark DataFrames/Datasets/temporary views, querying the data, performing basic calcuations, visualizing, and finally persisiting your results. That's a great start!","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"colWidth":12,"editorMode":"ace/mode/markdown","editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>This should get you started working in Scala with DataFrame, Dataset and SQL Spark APIs that are part of the Spark SQL Module. You should now have the basic tools and code samples to start working on your own data sets: from brining in/downloading datasets, to moving them from local storage to HDFS, to transforming datasets into Spark DataFrames/Datasets/temporary views, querying the data, performing basic calcuations, visualizing, and finally persisiting your results. That&rsquo;s a great start!</p>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20161017-214817_1787337666","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:950"},{"title":"Additional Resources","text":"%md\n\nWe hope you've enjoyed this introductory lab. Below are additional resources that you should find useful:\n\n1. [Hortonworks Apache Spark Tutorials](http://hortonworks.com/tutorials/#tuts-developers) are your natural next step where you can explore Spark in more depth.\n2. [Hortonworks Community Connection (HCC)](https://community.hortonworks.com/spaces/85/data-science.html?type=question) is a great resource for questions and answers on Spark, Data Analytics/Science, and many more Big Data topics.\n3. [Hortonworks Apache Spark Docs](http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_spark-component-guide/content/ch_developing-spark-apps.html) - official Spark documentation.\n4. [Hortonworks Apache Zeppelin Docs](http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_zeppelin-component-guide/content/ch_using_zeppelin.html) - official Zeppelin documentation.","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"tableHide":false,"editorMode":"ace/mode/markdown","colWidth":10,"editorHide":true,"title":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{"editOnDblClick":true,"language":"markdown"}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"HTML","data":"<div class=\"markdown-body\">\n<p>We hope you&rsquo;ve enjoyed this introductory lab. Below are additional resources that you should find useful:</p>\n<ol>\n  <li><a href=\"http://hortonworks.com/tutorials/#tuts-developers\">Hortonworks Apache Spark Tutorials</a> are your natural next step where you can explore Spark in more depth.</li>\n  <li><a href=\"https://community.hortonworks.com/spaces/85/data-science.html?type=question\">Hortonworks Community Connection (HCC)</a> is a great resource for questions and answers on Spark, Data Analytics/Science, and many more Big Data topics.</li>\n  <li><a href=\"http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_spark-component-guide/content/ch_developing-spark-apps.html\">Hortonworks Apache Spark Docs</a> - official Spark documentation.</li>\n  <li><a href=\"http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_zeppelin-component-guide/content/ch_using_zeppelin.html\">Hortonworks Apache Zeppelin Docs</a> - official Zeppelin documentation.</li>\n</ol>\n</div>"}]},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20160410-003138_2048237853","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:951"},{"text":"%angular\n</br>\n<center>\n<a href=\"https://community.hortonworks.com/spaces/85/data-science.html?type=question\" target='_blank'>\n  <img src=\"http://hortonworks.com/wp-content/uploads/2016/03/logo-hcc.png\" alt=\"HCC\" style=\"width:125px;height:125px;border:0;\" align=\"middle\">\n</a>\n</center>","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"editorMode":"ace/mode/scala","colWidth":2,"editorHide":true,"results":[{"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}}}],"enabled":true,"editorSetting":{}},"settings":{"params":{},"forms":{}},"results":{"code":"SUCCESS","msg":[{"type":"ANGULAR","data":"</br>\n<center>\n<a href=\"https://community.hortonworks.com/spaces/85/data-science.html?type=question\" target='_blank'>\n  <img src=\"http://hortonworks.com/wp-content/uploads/2016/03/logo-hcc.png\" alt=\"HCC\" style=\"width:125px;height:125px;border:0;\" align=\"middle\">\n</a>\n</center>"}]},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20160410-003138_1663715025","dateCreated":"2017-02-18T06:10:49+0000","dateStarted":"2017-02-22T10:10:47+0000","dateFinished":"2017-02-22T10:10:47+0000","status":"FINISHED","progressUpdateIntervalMs":500,"$$hashKey":"object:952"},{"text":"","user":"admin","dateUpdated":"2017-02-22T10:10:47+0000","config":{"colWidth":12,"graph":{"mode":"table","height":300,"optionOpen":false,"keys":[],"values":[],"groups":[],"scatter":{}},"enabled":true,"results":{},"editorSetting":{"editOnDblClick":false,"language":"scala"},"editorMode":"ace/mode/scala"},"settings":{"params":{},"forms":{}},"apps":[],"jobName":"paragraph_1487398249083_-448523285","id":"20161018-143604_1206436852","dateCreated":"2017-02-18T06:10:49+0000","status":"READY","errorMessage":"","progressUpdateIntervalMs":500,"$$hashKey":"object:953"}],"name":"Labs / Spark 2.x / Data Worker / Scala / 101 - Intro to SparkSQL","id":"2CA587K77","angularObjects":{"2C8KBC98A:shared_process":[],"2C8GUTGCE:shared_process":[],"2CBQPWEAP:shared_process":[],"2CATVSY4P:shared_process":[],"2CC55453H:shared_process":[],"2CA97ZN5K:shared_process":[],"2C4U48MY3_spark2:shared_process":[]},"config":{"looknfeel":"default","personalizedMode":"false"},"info":{}}
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\n## Exploring Spark SQL Module\n#### with an Airline Dataset\n\n**Level**: Beginner\n**Language**: Scala\n**Requirements**: \n- [HDP 2.6](http://hortonworks.com/products/sandbox/) (or later) or [HDCloud](https://hortonworks.github.io/hdp-aws/)\n- Spark 2.x\n\n**Author**: Robert Hryniewicz\n**Follow** [@RobertH8z](https://twitter.com/RobertH8z)",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:45:16 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eExploring Spark SQL Module\u003c/h2\u003e\n\u003ch4\u003ewith an Airline Dataset\u003c/h4\u003e\n\u003cp\u003e\u003cstrong\u003eLevel\u003c/strong\u003e: Beginner\u003cbr/\u003e\u003cstrong\u003eLanguage\u003c/strong\u003e: Scala\u003cbr/\u003e\u003cstrong\u003eRequirements\u003c/strong\u003e:\u003cbr/\u003e- \u003ca href\u003d\"http://hortonworks.com/products/sandbox/\"\u003eHDP 2.6\u003c/a\u003e (or later) or \u003ca href\u003d\"https://hortonworks.github.io/hdp-aws/\"\u003eHDCloud\u003c/a\u003e\u003cbr/\u003e- Spark 2.x\u003c/p\u003e\n\u003cp\u003e\u003cstrong\u003eAuthor\u003c/strong\u003e: Robert Hryniewicz\u003cbr/\u003e\u003cstrong\u003eFollow\u003c/strong\u003e \u003ca href\u003d\"https://twitter.com/RobertH8z\"\u003e@RobertH8z\u003c/a\u003e\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249077_-447753787",
+      "id": "20160410-003138_1880368561",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:45:16 PM",
+      "dateFinished": "Feb 22, 2017 3:45:16 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Introduction",
+      "text": "%md\n\nIn this lab you will use Spark SQL via DataFrames API in Part 1 of the lab and SQL API in Part 2 of the lab to explore an Airline Dataset. This is a very interesting dataset that is further explored in other demo notebooks.",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:09:34 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 217.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eIn this lab you will use Spark SQL via DataFrames API in Part 1 of the lab and SQL API in Part 2 of the lab to explore an Airline Dataset. This is a very interesting dataset that is further explored in other demo notebooks.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249077_-447753787",
+      "id": "20160410-003138_985055475",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:44 PM",
+      "dateFinished": "Feb 22, 2017 3:40:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Datasets? DataFrames?",
+      "text": "%md\n\nA **Dataset** is a distributed collection of data. Dataset provides the benefits of strong typing, ability to use powerful lambda functions with the benefits of (Spark SQL’s) optimized execution engine. A Dataset can be constructed from JVM objects and then manipulated using functional transformations (map, flatMap, filter, etc.). The Dataset API is available in Scala and Java.\n\nA **DataFrame** is a Dataset organized into named columns. It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood. DataFrames can be constructed from a wide array of sources such as: structured data files, tables in Hive, external databases, or existing RDDs. The DataFrame API is available in Scala, Java, Python, and R. In Scala and Java, a DataFrame is represented by a Dataset of Rows. In the Scala API, DataFrame is simply a type alias of Dataset[Row]. (Note that in Scala type parameters (generics) are enclosed in square brackets.)\n\nThroughout this document, we will often refer to Scala/Java Datasets of Rows as DataFrames. [[source](http://spark.apache.org/docs/2.0.0/sql-programming-guide.html#datasets-and-dataframes)]",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:44 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eA \u003cstrong\u003eDataset\u003c/strong\u003e is a distributed collection of data. Dataset provides the benefits of strong typing, ability to use powerful lambda functions with the benefits of (Spark SQL’s) optimized execution engine. A Dataset can be constructed from JVM objects and then manipulated using functional transformations (map, flatMap, filter, etc.). The Dataset API is available in Scala and Java.\u003c/p\u003e\n\u003cp\u003eA \u003cstrong\u003eDataFrame\u003c/strong\u003e is a Dataset organized into named columns. It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood. DataFrames can be constructed from a wide array of sources such as: structured data files, tables in Hive, external databases, or existing RDDs. The DataFrame API is available in Scala, Java, Python, and R. In Scala and Java, a DataFrame is represented by a Dataset of Rows. In the Scala API, DataFrame is simply a type alias of Dataset[Row]. (Note that in Scala type parameters (generics) are enclosed in square brackets.)\u003c/p\u003e\n\u003cp\u003eThroughout this document, we will often refer to Scala/Java Datasets of Rows as DataFrames. [\u003ca href\u003d\"http://spark.apache.org/docs/2.0.0/sql-programming-guide.html#datasets-and-dataframes\"\u003esource\u003c/a\u003e]\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249077_-447753787",
+      "id": "20160410-003138_875933602",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:44 PM",
+      "dateFinished": "Feb 22, 2017 3:40:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "New to Scala?",
+      "text": "%md\n\nThroughout this lab we will use basic Scala syntax. If you would like to learn more about Scala, here\u0027s an excellent introductory [Tutorial](http://www.dhgarrette.com/nlpclass/scala/basics.html).",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:44 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eThroughout this lab we will use basic Scala syntax. If you would like to learn more about Scala, here\u0026rsquo;s an excellent introductory \u003ca href\u003d\"http://www.dhgarrette.com/nlpclass/scala/basics.html\"\u003eTutorial\u003c/a\u003e.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249077_-447753787",
+      "id": "20160410-140356_736870357",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:44 PM",
+      "dateFinished": "Feb 22, 2017 3:40:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "How to run a paragraph",
+      "text": "%md\nTo run a paragraph in a Zeppelin notebook you can either click the `play` button (blue triangle) on the right-hand side or simply press `Shift + Enter`.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:44 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eTo run a paragraph in a Zeppelin notebook you can either click the \u003ccode\u003eplay\u003c/code\u003e button (blue triangle) on the right-hand side or simply press \u003ccode\u003eShift + Enter\u003c/code\u003e.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249078_-446599541",
+      "id": "20160410-003138_1218388802",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:44 PM",
+      "dateFinished": "Feb 22, 2017 3:40:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "What are Interpreters?",
+      "text": "%md\n\nIn the following paragraphs we are going to execute Spark code, run shell commands to download and move files, run sql queries etc. Each paragraph will start with `%` followed by an interpreter name, e.g. `%spark2` for a Spark 2.x interpreter. Different interpreter names indicate what will be executed: code, markdown, html etc.  This allows you to perform data ingestion, munging, wrangling, visualization, analysis, processing and more, all in one place!\n\nThroughtout this notebook we will use the following interpreters:\n\n- `%spark2` - Spark interpreter to run Spark code written in Scala\n- `%spark2.sql` - Spark SQL interprter (to execute SQL queries against temporary tables in Spark)\n- `%sh` - Shell interpreter to run shell commands\n- `%angular` - Angular interpreter to run Angular and HTML code\n- `%md` - Markdown for displaying formatted text, links, and images\n\nTo learn more about Zeppelin interpreters check out this [link](https://zeppelin.apache.org/docs/0.5.6-incubating/manual/interpreters.html).",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:44 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eIn the following paragraphs we are going to execute Spark code, run shell commands to download and move files, run sql queries etc. Each paragraph will start with \u003ccode\u003e%\u003c/code\u003e followed by an interpreter name, e.g. \u003ccode\u003e%spark2\u003c/code\u003e for a Spark 2.x interpreter. Different interpreter names indicate what will be executed: code, markdown, html etc. This allows you to perform data ingestion, munging, wrangling, visualization, analysis, processing and more, all in one place!\u003c/p\u003e\n\u003cp\u003eThroughtout this notebook we will use the following interpreters:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003e\u003ccode\u003e%spark2\u003c/code\u003e - Spark interpreter to run Spark code written in Scala\u003c/li\u003e\n  \u003cli\u003e\u003ccode\u003e%spark2.sql\u003c/code\u003e - Spark SQL interprter (to execute SQL queries against temporary tables in Spark)\u003c/li\u003e\n  \u003cli\u003e\u003ccode\u003e%sh\u003c/code\u003e - Shell interpreter to run shell commands\u003c/li\u003e\n  \u003cli\u003e\u003ccode\u003e%angular\u003c/code\u003e - Angular interpreter to run Angular and HTML code\u003c/li\u003e\n  \u003cli\u003e\u003ccode\u003e%md\u003c/code\u003e - Markdown for displaying formatted text, links, and images\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003eTo learn more about Zeppelin interpreters check out this \u003ca href\u003d\"https://zeppelin.apache.org/docs/0.5.6-incubating/manual/interpreters.html\"\u003elink\u003c/a\u003e.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249078_-446599541",
+      "id": "20160410-003138_290903368",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:44 PM",
+      "dateFinished": "Feb 22, 2017 3:40:44 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Verify Spark Version (should be 2.x)",
+      "text": "%spark2.spark\n\nspark.version",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249078_-446599541",
+      "id": "20160410-003138_631425785",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:44 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Download CSV flight data file ",
+      "text": "%sh\n\n# You will now download a subset of 2008 flights (only 100k lines)\n# The full dataset may be found here: http://stat-computing.org/dataexpo/2009/the-data.html\n\nwget https://raw.githubusercontent.com/roberthryniewicz/datasets/master/airline-dataset/flights/flights.csv -O /tmp/flights.csv\necho \"Downloaded!\"",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:44 PM",
+      "config": {
+        "tableHide": false,
+        "editorMode": "ace/mode/sh",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249078_-446599541",
+      "id": "20160410-003138_1540125404",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:46 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Preview Downloaded File",
+      "text": "%sh\n\ncat /tmp/flights.csv | head",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:45 PM",
+      "config": {
+        "tableHide": false,
+        "editorMode": "ace/mode/sh",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249078_-446599541",
+      "id": "20160410-003138_226044813",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Move dataset to HDFS (if supported/available)",
+      "text": "%sh\n\n# remove existing copies of dataset from HDFS\nhdfs dfs -rm -r -f /tmp/flights.csv\n\n# put data into HDFS\nhdfs dfs -put /tmp/flights.csv /tmp/",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:45 PM",
+      "config": {
+        "editorMode": "ace/mode/sh",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sh"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249078_-446599541",
+      "id": "20160410-003138_1267267737",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:49 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create a DataFrame from CSV file",
+      "text": "%spark2.spark\n\n// Create a flights DataFrame from CSV file\nval flights \u003d spark.read\n              .option(\"header\", \"true\")                              // Use first line as header\n              .option(\"inferSchema\", \"true\")                         // Infer schema\n              .csv(\"/tmp/airflightsdelays/flights.csv\")              // Read data",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249079_-446984290",
+      "id": "20160410-003138_236600548",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Print Schema",
+      "text": "%spark2.spark\n\n// Print the schema in a tree format\nflights.printSchema()",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249079_-446984290",
+      "id": "20160410-003138_1553179639",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Dataset Description",
+      "text": "%angular\n\n\u003c!DOCTYPE html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n\u003cstyle\u003e\ntable {\n    font-family: arial, sans-serif;\n    border-collapse: collapse;\n    width: 70%;\n}\n\ntd, th {\n    border: 1px solid #dddddd;\n    text-align: left;\n    padding: 8px;\n}\n\ntr:nth-child(even) {\n    background-color: #dddddd;\n}\n\u003c/style\u003e\n\u003c/head\u003e\n\n\u003ctable width\u003d\"100%\"\u003e\n\u003ctbody\u003e\u003ctr\u003e\n  \u003cth\u003e\u003c/th\u003e\n  \u003cth\u003eName\u003c/th\u003e\n  \u003cth\u003eDescription\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n \u003ctd\u003e1  \u003c/td\u003e\u003ctd\u003e Year              \u003c/td\u003e\u003ctd\u003e1987-2008\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e2  \u003c/td\u003e\u003ctd\u003e Month             \u003c/td\u003e\u003ctd\u003e1-12\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e3  \u003c/td\u003e\u003ctd\u003e DayofMonth        \u003c/td\u003e\u003ctd\u003e1-31\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e4  \u003c/td\u003e\u003ctd\u003e DayOfWeek         \u003c/td\u003e\u003ctd\u003e1 (Monday) - 7 (Sunday)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e5  \u003c/td\u003e\u003ctd\u003e DepTime           \u003c/td\u003e\u003ctd\u003eactual departure time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e6  \u003c/td\u003e\u003ctd\u003e CRSDepTime        \u003c/td\u003e\u003ctd\u003escheduled departure time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e7  \u003c/td\u003e\u003ctd\u003e ArrTime           \u003c/td\u003e\u003ctd\u003eactual arrival time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e8  \u003c/td\u003e\u003ctd\u003e CRSArrTime        \u003c/td\u003e\u003ctd\u003escheduled arrival time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e9  \u003c/td\u003e\u003ctd\u003e UniqueCarrier     \u003c/td\u003e\u003ctd\u003e\u003ca href\u003d\"supplemental-data.html\"\u003eunique carrier code\u003c/a\u003e\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e10 \u003c/td\u003e\u003ctd\u003e FlightNum         \u003c/td\u003e\u003ctd\u003eflight number\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e11 \u003c/td\u003e\u003ctd\u003e TailNum           \u003c/td\u003e\u003ctd\u003eplane tail number\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e12 \u003c/td\u003e\u003ctd\u003e ActualElapsedTime \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e13 \u003c/td\u003e\u003ctd\u003e CRSElapsedTime    \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e14 \u003c/td\u003e\u003ctd\u003e AirTime           \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e15 \u003c/td\u003e\u003ctd\u003e ArrDelay          \u003c/td\u003e\u003ctd\u003earrival delay, in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e16 \u003c/td\u003e\u003ctd\u003e DepDelay          \u003c/td\u003e\u003ctd\u003edeparture delay, in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e17 \u003c/td\u003e\u003ctd\u003e Origin            \u003c/td\u003e\u003ctd\u003eorigin \u003ca href\u003d\"supplemental-data.html\"\u003eIATA airport code\u003c/a\u003e\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e18 \u003c/td\u003e\u003ctd\u003e Dest              \u003c/td\u003e\u003ctd\u003edestination \u003ca href\u003d\"supplemental-data.html\"\u003eIATA airport code\u003c/a\u003e\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e19 \u003c/td\u003e\u003ctd\u003e Distance          \u003c/td\u003e\u003ctd\u003ein miles\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e20 \u003c/td\u003e\u003ctd\u003e TaxiIn            \u003c/td\u003e\u003ctd\u003etaxi in time, in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e21 \u003c/td\u003e\u003ctd\u003e TaxiOut           \u003c/td\u003e\u003ctd\u003etaxi out time in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e22 \u003c/td\u003e\u003ctd\u003e Cancelled           \u003c/td\u003e\u003ctd\u003ewas the flight cancelled?\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e23 \u003c/td\u003e\u003ctd\u003e CancellationCode  \u003c/td\u003e\u003ctd\u003ereason for cancellation (A \u003d carrier, B \u003d weather, C \u003d NAS, D \u003d security)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e24 \u003c/td\u003e\u003ctd\u003e Diverted          \u003c/td\u003e\u003ctd\u003e1 \u003d yes, 0 \u003d no\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e25 \u003c/td\u003e\u003ctd\u003e CarrierDelay      \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e26 \u003c/td\u003e\u003ctd\u003e WeatherDelay      \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e27 \u003c/td\u003e\u003ctd\u003e NASDelay          \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e28 \u003c/td\u003e\u003ctd\u003e SecurityDelay     \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e29 \u003c/td\u003e\u003ctd\u003e LateAircraftDelay \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/tbody\u003e\u003c/table\u003e\n\n\u003c/body\u003e\n\u003c/html\u003e",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:45 PM",
+      "config": {
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "ANGULAR",
+            "data": "\u003c!DOCTYPE html\u003e\n\u003chtml\u003e\n\u003chead\u003e\n\u003cstyle\u003e\ntable {\n    font-family: arial, sans-serif;\n    border-collapse: collapse;\n    width: 70%;\n}\n\ntd, th {\n    border: 1px solid #dddddd;\n    text-align: left;\n    padding: 8px;\n}\n\ntr:nth-child(even) {\n    background-color: #dddddd;\n}\n\u003c/style\u003e\n\u003c/head\u003e\n\n\u003ctable width\u003d\"100%\"\u003e\n\u003ctbody\u003e\u003ctr\u003e\n  \u003cth\u003e\u003c/th\u003e\n  \u003cth\u003eName\u003c/th\u003e\n  \u003cth\u003eDescription\u003c/th\u003e\n\u003c/tr\u003e\n\u003ctr\u003e\n \u003ctd\u003e1  \u003c/td\u003e\u003ctd\u003e Year              \u003c/td\u003e\u003ctd\u003e1987-2008\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e2  \u003c/td\u003e\u003ctd\u003e Month             \u003c/td\u003e\u003ctd\u003e1-12\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e3  \u003c/td\u003e\u003ctd\u003e DayofMonth        \u003c/td\u003e\u003ctd\u003e1-31\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e4  \u003c/td\u003e\u003ctd\u003e DayOfWeek         \u003c/td\u003e\u003ctd\u003e1 (Monday) - 7 (Sunday)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e5  \u003c/td\u003e\u003ctd\u003e DepTime           \u003c/td\u003e\u003ctd\u003eactual departure time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e6  \u003c/td\u003e\u003ctd\u003e CRSDepTime        \u003c/td\u003e\u003ctd\u003escheduled departure time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e7  \u003c/td\u003e\u003ctd\u003e ArrTime           \u003c/td\u003e\u003ctd\u003eactual arrival time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e8  \u003c/td\u003e\u003ctd\u003e CRSArrTime        \u003c/td\u003e\u003ctd\u003escheduled arrival time (local, hhmm)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e9  \u003c/td\u003e\u003ctd\u003e UniqueCarrier     \u003c/td\u003e\u003ctd\u003e\u003ca href\u003d\"supplemental-data.html\"\u003eunique carrier code\u003c/a\u003e\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e10 \u003c/td\u003e\u003ctd\u003e FlightNum         \u003c/td\u003e\u003ctd\u003eflight number\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e11 \u003c/td\u003e\u003ctd\u003e TailNum           \u003c/td\u003e\u003ctd\u003eplane tail number\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e12 \u003c/td\u003e\u003ctd\u003e ActualElapsedTime \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e13 \u003c/td\u003e\u003ctd\u003e CRSElapsedTime    \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e14 \u003c/td\u003e\u003ctd\u003e AirTime           \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e15 \u003c/td\u003e\u003ctd\u003e ArrDelay          \u003c/td\u003e\u003ctd\u003earrival delay, in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e16 \u003c/td\u003e\u003ctd\u003e DepDelay          \u003c/td\u003e\u003ctd\u003edeparture delay, in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e17 \u003c/td\u003e\u003ctd\u003e Origin            \u003c/td\u003e\u003ctd\u003eorigin \u003ca href\u003d\"supplemental-data.html\"\u003eIATA airport code\u003c/a\u003e\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e18 \u003c/td\u003e\u003ctd\u003e Dest              \u003c/td\u003e\u003ctd\u003edestination \u003ca href\u003d\"supplemental-data.html\"\u003eIATA airport code\u003c/a\u003e\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e19 \u003c/td\u003e\u003ctd\u003e Distance          \u003c/td\u003e\u003ctd\u003ein miles\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e20 \u003c/td\u003e\u003ctd\u003e TaxiIn            \u003c/td\u003e\u003ctd\u003etaxi in time, in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e21 \u003c/td\u003e\u003ctd\u003e TaxiOut           \u003c/td\u003e\u003ctd\u003etaxi out time in minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e22 \u003c/td\u003e\u003ctd\u003e Cancelled           \u003c/td\u003e\u003ctd\u003ewas the flight cancelled?\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e23 \u003c/td\u003e\u003ctd\u003e CancellationCode  \u003c/td\u003e\u003ctd\u003ereason for cancellation (A \u003d carrier, B \u003d weather, C \u003d NAS, D \u003d security)\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e24 \u003c/td\u003e\u003ctd\u003e Diverted          \u003c/td\u003e\u003ctd\u003e1 \u003d yes, 0 \u003d no\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e25 \u003c/td\u003e\u003ctd\u003e CarrierDelay      \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e26 \u003c/td\u003e\u003ctd\u003e WeatherDelay      \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e27 \u003c/td\u003e\u003ctd\u003e NASDelay          \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e28 \u003c/td\u003e\u003ctd\u003e SecurityDelay     \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\u003ctr\u003e\n \u003ctd\u003e29 \u003c/td\u003e\u003ctd\u003e LateAircraftDelay \u003c/td\u003e\u003ctd\u003ein minutes\u003c/td\u003e\n\u003c/tr\u003e\n\u003c/tbody\u003e\u003c/table\u003e\n\n\u003c/body\u003e\n\u003c/html\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249079_-446984290",
+      "id": "20160410-003138_1626463388",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n### Part 1: Using DataFrame/Dataset API to Analyze the Airline Data\n\nNote: in this lab DataFrame and Dataset API calls will be indistinguishable. Internally, however, *flights* are represented as DataFrames and *delayedFlights* as Datasets in the examples below.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:45 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch3\u003ePart 1: Using DataFrame/Dataset API to Analyze the Airline Data\u003c/h3\u003e\n\u003cp\u003eNote: in this lab DataFrame and Dataset API calls will be indistinguishable. Internally, however, \u003cem\u003eflights\u003c/em\u003e are represented as DataFrames and \u003cem\u003edelayedFlights\u003c/em\u003e as Datasets in the examples below.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249079_-446984290",
+      "id": "20160410-003138_650819453",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Show a subset of columns",
+      "text": "%spark2.spark\n\n// Show a subset of columns with \"select\"\nflights.select(\"UniqueCarrier\", \"FlightNum\", \"DepDelay\", \"ArrDelay\", \"Distance\").show()",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249079_-446984290",
+      "id": "20160410-003138_1188332400",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Apply a filter to find flights delayed more than 15 min",
+      "text": "%spark2.spark\n\n// Create a Dataset containing flights with delayed departure by more than 15 min using \"filter\"\nval delayedFlights \u003d flights\n                        .select(\"UniqueCarrier\", \"DepDelay\")\n                        .filter($\"DepDelay\" \u003e 15)\n                        \ndelayedFlights.show()",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:09:21 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249079_-446984290",
+      "id": "20160410-003138_704729700",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:46 PM",
+      "dateFinished": "Feb 22, 2017 3:40:46 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Display percentage of delayed flights",
+      "text": "%spark2.spark\n\nval numTotalFlights \u003d flights.count()\nval numDelayedFlights \u003d delayedFlights.count()\n\n// Print total number of delayed flights\nprintln(\"Percentage of Delayed Flights: \" + (numDelayedFlights.toFloat/numTotalFlights*100) + \"%\")",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249079_-446984290",
+      "id": "20160410-003138_1019754695",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:46 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\nWe can also create a user defined function (UDF) to determine delays.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:45 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eWe can also create a user defined function (UDF) to determine delays.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20161017-203635_1855560775",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": " Create a UDF to determine delays",
+      "text": "%spark2.spark\n\nimport org.apache.spark.sql.functions.udf\n\n// Define a UDF to find delayed flights\n\n// Assume:\n//  if ArrDelay is not available then Delayed \u003d False\n//  if ArrDelay \u003e 15 min then Delayed \u003d True else False\n\nval isDelayedUDF \u003d udf((time: String) \u003d\u003e if (time \u003d\u003d \"NA\") 0 else if (time.toInt \u003e 15) 1 else 0)",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20161017-203017_1781904338",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:46 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create a new DataFrame with IsDelayed column",
+      "text": "%spark2.spark\n\nval flightsWithDelays \u003d flights.select($\"Year\", $\"Month\", $\"DayofMonth\", $\"UniqueCarrier\", $\"FlightNum\", $\"DepDelay\", \n                    isDelayedUDF($\"DepDelay\").alias(\"IsDelayed\"))\n                    \nflightsWithDelays.show(5)",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20161017-203358_1309594443",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n\nNote that now we have a new table with a column that indicates whether a flight is delayed or not. This will allow us to calculate percentage of delayed flights in one pass.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:45 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": true,
+          "language": "markdown"
+        },
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eNote that now we have a new table with a column that indicates whether a flight is delayed or not. This will allow us to calculate percentage of delayed flights in one pass.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20161017-205652_1397194952",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:45 PM",
+      "dateFinished": "Feb 22, 2017 3:40:45 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Calculate percentage of delayed flights using flightsWithDelays DataFrame",
+      "text": "%spark2.spark\n\nflightsWithDelays.agg((sum(\"IsDelayed\") * 100 / count(\"DepDelay\")).alias(\"Percentage of Delayed Flights\")).show()",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        },
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20161017-205750_819957102",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:48 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\nAs you can see above, this is a very clean way of displaying a percentage of delayed flights. UDFs are useful in creating additional functions that are commonly used.\n\nNow let\u0027s explore our flights a bit more and find some averages.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eAs you can see above, this is a very clean way of displaying a percentage of delayed flights. UDFs are useful in creating additional functions that are commonly used.\u003c/p\u003e\n\u003cp\u003eNow let\u0026rsquo;s explore our flights a bit more and find some averages.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20161017-205919_1405069576",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:46 PM",
+      "dateFinished": "Feb 22, 2017 3:40:46 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Find Avg Taxi-in",
+      "text": "%spark2.spark\n\nflights.select(\"Origin\", \"Dest\", \"TaxiIn\")\n        .groupBy(\"Origin\", \"Dest\")\n        .agg(avg(\"TaxiIn\")\n        .alias(\"AvgTaxiIn\"))\n        .orderBy(desc(\"AvgTaxiIn\"))\n        .show(10)",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 6.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20160410-003138_1488719873",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:49 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Find Avg Taxi-out",
+      "text": "%spark2.spark\n\nflights.select(\"Origin\", \"Dest\", \"TaxiOut\")\n        .groupBy(\"Origin\", \"Dest\")\n        .agg(avg(\"TaxiOut\")\n        .alias(\"AvgTaxiOut\"))\n        .orderBy(desc(\"AvgTaxiOut\"))\n        .show(10)",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 6.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249080_-448908034",
+      "id": "20160410-003138_840324935",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:48 PM",
+      "dateFinished": "Feb 22, 2017 3:40:50 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n### Part 2: Using SQL API to Analyze the Airline Data",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch3\u003ePart 2: Using SQL API to Analyze the Airline Data\u003c/h3\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_582934314",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:46 PM",
+      "dateFinished": "Feb 22, 2017 3:40:46 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Is there a more interactive way to display query results?",
+      "text": "%md\n\nAs you can see, the data displayed in Part 1 of this notebook isn\u0027t too interactive. To have a more dynamic experience, let\u0027s create a temporary (in-memory) view that we can query against and interact with the resulting data in a table or graph format. The temporary view will allow us to execute SQL queries against it.\n\nNote that the temporary view will reside in memory as long as the Spark session is alive.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eAs you can see, the data displayed in Part 1 of this notebook isn\u0026rsquo;t too interactive. To have a more dynamic experience, let\u0026rsquo;s create a temporary (in-memory) view that we can query against and interact with the resulting data in a table or graph format. The temporary view will allow us to execute SQL queries against it.\u003c/p\u003e\n\u003cp\u003eNote that the temporary view will reside in memory as long as the Spark session is alive.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_556617784",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:46 PM",
+      "dateFinished": "Feb 22, 2017 3:40:46 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Register a Temporary View",
+      "text": "%spark2.spark\n\n// Convert flights DataFrame to a temporary view\nflights.createOrReplaceTempView(\"flightsView\")",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_636329356",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:50 PM",
+      "dateFinished": "Feb 22, 2017 3:40:50 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Preview Data in an interactive table format",
+      "text": "%spark2.sql\n\nSELECT * FROM flightsView LIMIT 20",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/sql",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "Year",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "Month",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "Year",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "Month",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_318924232",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:50 PM",
+      "dateFinished": "Feb 22, 2017 3:40:50 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Register a User Defined Function (UDF)",
+      "text": "%spark2.spark\n\n// Register a helper UDF to find delayed flights\n// Note that this is a UDF specific for use with the sparkSession\n\n// Assume:\n//  if ArrDelay is not available then Delayed \u003d False\n//  if ArrDelay \u003e 15 min then Delayed \u003d True else False\n\nspark.udf.register(\"isDelayedUDF\", (time: String) \u003d\u003e if (time \u003d\u003d \"NA\") 0 else if (time.toInt \u003e 15) 1 else 0)",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_40384312",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:50 PM",
+      "dateFinished": "Feb 22, 2017 3:40:51 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Compare Total Number of Delayed Flights by Carrier",
+      "text": "%spark2.sql\n--- Compare Total Number of Delayed Flights by Carrier\nSELECT UniqueCarrier, SUM(isDelayedUDF(DepDelay)) AS NumDelays FROM flightsView GROUP BY UniqueCarrier",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/sql",
+        "colWidth": 6.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "pieChart",
+              "height": 296.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "UniqueCarrier",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "NumDelays",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "yAxis": {
+                  "name": "NumDelays",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_134299332",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:51 PM",
+      "dateFinished": "Feb 22, 2017 3:40:52 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Compare Total Delayed Time (min) by Carrier",
+      "text": "%spark2.sql\n--- Compare Total Delayed Time (min) by Carrier\nSELECT UniqueCarrier, SUM(DepDelay) AS TotalTimeDelay FROM flightsView GROUP BY UniqueCarrier",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/sql",
+        "colWidth": 6.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "UniqueCarrier",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "TotalTimeDelay",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "UniqueCarrier",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "TotalTimeDelay",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_163559927",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:51 PM",
+      "dateFinished": "Feb 22, 2017 3:40:52 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Find Average Distance Travelled by Carrier",
+      "text": "%spark2.sql\n--- Find Average Distance Travelled by Carrier\nSELECT UniqueCarrier, avg(Distance) AS AvgDistanceTraveled FROM flightsView GROUP BY UniqueCarrier ORDER BY AvgDistanceTraveled DESC",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/sql",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "pieChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "UniqueCarrier",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "AvgDistanceTraveled",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "UniqueCarrier",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "AvgDistanceTraveled",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249081_-449292783",
+      "id": "20160410-003138_172624929",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:52 PM",
+      "dateFinished": "Feb 22, 2017 3:40:53 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Find Out When Most Flights Get Delayed by Day of Week",
+      "text": "%spark2.sql\n\nSELECT DayOfWeek, CASE WHEN isDelayedUDF(DepDelay) \u003d 1 THEN \u0027delayed\u0027 ELSE \u0027ok\u0027 END AS Delay, COUNT(1) AS Count\nFROM flightsView\nGROUP BY DayOfWeek, CASE WHEN isDelayedUDF(DepDelay) \u003d 1 THEN \u0027delayed\u0027 ELSE \u0027ok\u0027 END\nORDER BY DayOfWeek",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/sql",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "DayOfWeek",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "Count",
+                  "index": 2.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [
+                {
+                  "name": "Delay",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "scatter": {
+                "xAxis": {
+                  "name": "DayOfWeek",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "Delay",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20160410-003138_56774606",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:53 PM",
+      "dateFinished": "Feb 22, 2017 3:40:54 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Find Out When Most Flights Get Delayed by Hour",
+      "text": "%spark2.sql\n\nSELECT CAST(CRSDepTime / 100 AS INT) AS Hour, CASE WHEN isDelayedUDF(DepDelay) \u003d 1 THEN \u0027delayed\u0027 ELSE \u0027ok\u0027 END AS Delay, COUNT(1) AS Count\nFROM flightsView\nGROUP BY CAST(CRSDepTime / 100 AS INT), CASE WHEN isDelayedUDF(DepDelay) \u003d 1 THEN \u0027delayed\u0027 ELSE \u0027ok\u0027 END\nORDER BY Hour",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "editorMode": "ace/mode/sql",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "stackedAreaChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "Hour",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "Count",
+                  "index": 2.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [
+                {
+                  "name": "Delay",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "scatter": {
+                "xAxis": {
+                  "name": "Hour",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "Delay",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20160410-003138_728063774",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:54 PM",
+      "dateFinished": "Feb 22, 2017 3:40:55 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Putting it all together",
+      "text": "%md\n\nNow, with all these basic analytics in Part 1 and 2 of this lab, you should have a fairly good idea which flights have the most delays, on which routes, from which airports, at which hour, on which days of the week and months of the year, and be able to start making meaningful predictions yourself. That\u0027s the power of using Spark with Zeppelin -- having one powerful environment to perform data munging, wrangling, visualization and more on large datasets.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eNow, with all these basic analytics in Part 1 and 2 of this lab, you should have a fairly good idea which flights have the most delays, on which routes, from which airports, at which hour, on which days of the week and months of the year, and be able to start making meaningful predictions yourself. That\u0026rsquo;s the power of using Spark with Zeppelin \u0026ndash; having one powerful environment to perform data munging, wrangling, visualization and more on large datasets.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20161017-210202_1567750763",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:46 PM",
+      "dateFinished": "Feb 22, 2017 3:40:46 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\n## Persisting Results / Data\n\nFinally, let\u0027s persist some of our results by saving our DataFrames in an optimized file format called ORC.\n",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:46 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003ePersisting Results / Data\u003c/h2\u003e\n\u003cp\u003eFinally, let\u0026rsquo;s persist some of our results by saving our DataFrames in an optimized file format called ORC.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20161017-212723_1255606607",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%angular\n\n\u003ch3\u003eSave Modes\u003c/h3\u003e\n\n\u003cstyle\u003e\ntable, th, td {\n    border: 1px solid black;\n    border-collapse: collapse;\n}\nth, td {\n    padding: 5px;\n}\n\u003c/style\u003e\n\n\u003ctable style\u003d\"width:100%\"\u003e\n  \u003ctr\u003e\n    \u003cth\u003eMode (Scala/Java)\u003c/th\u003e\n    \u003cth\u003eMeaning\u003c/th\u003e\t\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.ErrorIfExists (default)\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eWhen saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown.\u003c/td\u003e\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.Append\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eWhen saving a DataFrame to a data source, if data/table already exists, contents of the DataFrame are expected to be appended to existing data.\u003c/td\u003e\t\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.Overwrite\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eOverwrite mode means that when saving a DataFrame to a data source, if data/table already exists, existing data is expected to be overwritten by the contents of the DataFrame.\u003c/td\u003e\t\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.Ignore\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eIgnore mode means that when saving a DataFrame to a data source, if data already exists, the save operation is expected to not save the contents of the DataFrame and to not change the existing data. This is similar to a CREATE TABLE IF NOT EXISTS in SQL.\u003c/td\u003e\n  \u003c/tr\u003e\n\u003c/table\u003e\n\n\u003c/br\u003e\nNote: Save operations can optionally take a \u003ccode\u003eSaveMode\u003c/code\u003e, that specifies how to handle existing data if present. It is important to realize that these save modes do not utilize any locking and are not atomic. Additionally, when performing an \u003ccode\u003eOverwrite\u003c/code\u003e, the data will be deleted before writing out the new data.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "editorMode": "ace/mode/scala",
+        "colWidth": 12.0,
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "ANGULAR",
+            "data": "\u003ch3\u003eSave Modes\u003c/h3\u003e\n\n\u003cstyle\u003e\ntable, th, td {\n    border: 1px solid black;\n    border-collapse: collapse;\n}\nth, td {\n    padding: 5px;\n}\n\u003c/style\u003e\n\n\u003ctable style\u003d\"width:100%\"\u003e\n  \u003ctr\u003e\n    \u003cth\u003eMode (Scala/Java)\u003c/th\u003e\n    \u003cth\u003eMeaning\u003c/th\u003e\t\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.ErrorIfExists (default)\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eWhen saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown.\u003c/td\u003e\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.Append\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eWhen saving a DataFrame to a data source, if data/table already exists, contents of the DataFrame are expected to be appended to existing data.\u003c/td\u003e\t\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.Overwrite\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eOverwrite mode means that when saving a DataFrame to a data source, if data/table already exists, existing data is expected to be overwritten by the contents of the DataFrame.\u003c/td\u003e\t\t\n  \u003c/tr\u003e\n  \u003ctr\u003e\n    \u003ctd\u003e\u003ccode\u003eSaveMode.Ignore\u003c/code\u003e\u003c/td\u003e\n    \u003ctd\u003eIgnore mode means that when saving a DataFrame to a data source, if data already exists, the save operation is expected to not save the contents of the DataFrame and to not change the existing data. This is similar to a CREATE TABLE IF NOT EXISTS in SQL.\u003c/td\u003e\n  \u003c/tr\u003e\n\u003c/table\u003e\n\n\u003c/br\u003e\nNote: Save operations can optionally take a \u003ccode\u003eSaveMode\u003c/code\u003e, that specifies how to handle existing data if present. It is important to realize that these save modes do not utilize any locking and are not atomic. Additionally, when performing an \u003ccode\u003eOverwrite\u003c/code\u003e, the data will be deleted before writing out the new data."
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20160410-003138_206029012",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Save to ORC file",
+      "text": "%spark2.spark\n\nimport org.apache.spark.sql.SaveMode\n\n// Save and Overwrite our new DataFrame to an ORC file\nflightsWithDelays.write.format(\"orc\").mode(SaveMode.Overwrite).save(\"flightsWithDelays.orc\")",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20160410-003138_985965720",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:54 PM",
+      "dateFinished": "Feb 22, 2017 3:40:55 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "What is an ORC file format?",
+      "text": "%md\n\nORC (Optimized Row-Column) is a self-describing, type-aware columnar file format designed for Hadoop workloads. It is optimized for large streaming reads, but with integrated support for finding required rows quickly. Storing data in a columnar format lets the reader read, decompress, and process only the values that are required for the current query. Because ORC files are type-aware, the writer chooses the most appropriate encoding for the type and builds an internal index as the file is written. More information [here](https://orc.apache.org/).",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eORC (Optimized Row-Column) is a self-describing, type-aware columnar file format designed for Hadoop workloads. It is optimized for large streaming reads, but with integrated support for finding required rows quickly. Storing data in a columnar format lets the reader read, decompress, and process only the values that are required for the current query. Because ORC files are type-aware, the writer chooses the most appropriate encoding for the type and builds an internal index as the file is written. More information \u003ca href\u003d\"https://orc.apache.org/\"\u003ehere\u003c/a\u003e.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20161017-103614_1279292421",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Load back from an ORC file",
+      "text": "%spark2.spark\n\n// Load results back from ORC file\nval test \u003d spark.read.format(\"orc\").load(\"flightsWithDelays.orc\")\n\n// Assert both DataFrames of the same size.\n//   Note that if assertion succeeds no warning messages will be printed\nassert (test.count \u003d\u003d flightsWithDelays.count, println(\"Assertion Fail: Files are of different sizes.\"))\n\ntest.show(10)",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "editorMode": "ace/mode/text",
+        "colWidth": 12.0,
+        "editorHide": false,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249082_-448138536",
+      "id": "20160410-003138_1142035788",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:55 PM",
+      "dateFinished": "Feb 22, 2017 3:40:56 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n\nWe can also create permanent tables, instead of temporary views, using `saveAsTable`. The resulting table will still exist even after your Spark program has restarted.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eWe can also create permanent tables, instead of temporary views, using \u003ccode\u003esaveAsTable\u003c/code\u003e. The resulting table will still exist even after your Spark program has restarted.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20161017-212315_1033823107",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Save DataFrame as Permanent Table",
+      "text": "%spark2.spark\n\nflightsWithDelays.write.format(\"orc\").mode(SaveMode.Overwrite).saveAsTable(\"flightswithdelaystbl\")",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:03:10 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "title": true,
+        "results": [],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "text"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20161017-212148_1432557096",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:56 PM",
+      "dateFinished": "Feb 22, 2017 3:40:58 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Show Tables/Views",
+      "text": "%spark2.sql\n\nSHOW TABLES\n\n-- Note that flightsWithDelaysTbl is a permanent table instead of a temporary view!",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "tableName",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "isTemporary",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "tableName",
+                  "index": 0.0,
+                  "aggr": "sum"
+                },
+                "yAxis": {
+                  "name": "isTemporary",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20161017-212228_2044087527",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:57 PM",
+      "dateFinished": "Feb 22, 2017 3:40:59 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Querying a Permanent Table",
+      "text": "%spark2.sql\n\nSELECT COUNT(1) AS Total from flightswithdelaystbl  -- As you can see, there\u0027s no difference in querying a temporary view vs a permanent table",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [
+                {
+                  "name": "Total",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [],
+              "groups": [],
+              "scatter": {
+                "xAxis": {
+                  "name": "Total",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              }
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "sql"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20161017-212847_790820933",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:59 PM",
+      "dateFinished": "Feb 22, 2017 3:40:59 PM",
+      "status": "FINISHED",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Final Words",
+      "text": "%md\n\nThis should get you started working in Scala with DataFrame, Dataset and SQL Spark APIs that are part of the Spark SQL Module. You should now have the basic tools and code samples to start working on your own data sets: from brining in/downloading datasets, to moving them from local storage to HDFS, to transforming datasets into Spark DataFrames/Datasets/temporary views, querying the data, performing basic calcuations, visualizing, and finally persisiting your results. That\u0027s a great start!",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {}
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eThis should get you started working in Scala with DataFrame, Dataset and SQL Spark APIs that are part of the Spark SQL Module. You should now have the basic tools and code samples to start working on your own data sets: from brining in/downloading datasets, to moving them from local storage to HDFS, to transforming datasets into Spark DataFrames/Datasets/temporary views, querying the data, performing basic calcuations, visualizing, and finally persisiting your results. That\u0026rsquo;s a great start!\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20161017-214817_1787337666",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Additional Resources",
+      "text": "%md\n\nWe hope you\u0027ve enjoyed this introductory lab. Below are additional resources that you should find useful:\n\n1. [Hortonworks Apache Spark Tutorials](http://hortonworks.com/tutorials/#tuts-developers) are your natural next step where you can explore Spark in more depth.\n2. [Hortonworks Community Connection (HCC)](https://community.hortonworks.com/spaces/85/data-science.html?type\u003dquestion) is a great resource for questions and answers on Spark, Data Analytics/Science, and many more Big Data topics.\n3. [Hortonworks Apache Spark Docs](http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_spark-component-guide/content/ch_developing-spark-apps.html) - official Spark documentation.\n4. [Hortonworks Apache Zeppelin Docs](http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_zeppelin-component-guide/content/ch_using_zeppelin.html) - official Zeppelin documentation.",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "tableHide": false,
+        "editorMode": "ace/mode/markdown",
+        "colWidth": 10.0,
+        "editorHide": true,
+        "title": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": true,
+          "language": "markdown"
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eWe hope you\u0026rsquo;ve enjoyed this introductory lab. Below are additional resources that you should find useful:\u003c/p\u003e\n\u003col\u003e\n  \u003cli\u003e\u003ca href\u003d\"http://hortonworks.com/tutorials/#tuts-developers\"\u003eHortonworks Apache Spark Tutorials\u003c/a\u003e are your natural next step where you can explore Spark in more depth.\u003c/li\u003e\n  \u003cli\u003e\u003ca href\u003d\"https://community.hortonworks.com/spaces/85/data-science.html?type\u003dquestion\"\u003eHortonworks Community Connection (HCC)\u003c/a\u003e is a great resource for questions and answers on Spark, Data Analytics/Science, and many more Big Data topics.\u003c/li\u003e\n  \u003cli\u003e\u003ca href\u003d\"http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_spark-component-guide/content/ch_developing-spark-apps.html\"\u003eHortonworks Apache Spark Docs\u003c/a\u003e - official Spark documentation.\u003c/li\u003e\n  \u003cli\u003e\u003ca href\u003d\"http://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.5.0/bk_zeppelin-component-guide/content/ch_using_zeppelin.html\"\u003eHortonworks Apache Zeppelin Docs\u003c/a\u003e - official Zeppelin documentation.\u003c/li\u003e\n\u003c/ol\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20160410-003138_2048237853",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%angular\n\u003c/br\u003e\n\u003ccenter\u003e\n\u003ca href\u003d\"https://community.hortonworks.com/spaces/85/data-science.html?type\u003dquestion\" target\u003d\u0027_blank\u0027\u003e\n  \u003cimg src\u003d\"http://hortonworks.com/wp-content/uploads/2016/03/logo-hcc.png\" alt\u003d\"HCC\" style\u003d\"width:125px;height:125px;border:0;\" align\u003d\"middle\"\u003e\n\u003c/a\u003e\n\u003c/center\u003e",
+      "user": "admin",
+      "dateUpdated": "Mar 9, 2017 2:09:15 PM",
+      "config": {
+        "editorMode": "ace/mode/undefined",
+        "colWidth": 2.0,
+        "editorHide": true,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "keys": [],
+              "values": [],
+              "groups": [],
+              "scatter": {}
+            }
+          }
+        ],
+        "enabled": true,
+        "editorSetting": {
+          "editOnDblClick": true
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "ANGULAR",
+            "data": "\u003c/br\u003e\n\u003ccenter\u003e\n\u003ca href\u003d\"https://community.hortonworks.com/spaces/85/data-science.html?type\u003dquestion\" target\u003d\u0027_blank\u0027\u003e\n  \u003cimg src\u003d\"http://hortonworks.com/wp-content/uploads/2016/03/logo-hcc.png\" alt\u003d\"HCC\" style\u003d\"width:125px;height:125px;border:0;\" align\u003d\"middle\"\u003e\n\u003c/a\u003e\n\u003c/center\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20160410-003138_1663715025",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "dateStarted": "Feb 22, 2017 3:40:47 PM",
+      "dateFinished": "Feb 22, 2017 3:40:47 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "user": "admin",
+      "dateUpdated": "Feb 22, 2017 3:40:47 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "editOnDblClick": false,
+          "language": "scala"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "jobName": "paragraph_1487398249083_-448523285",
+      "id": "20161018-143604_1206436852",
+      "dateCreated": "Feb 18, 2017 11:40:49 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Labs / Spark 2.x / Data Worker / Scala / 101 - Intro to SparkSQL",
+  "id": "2CA587K77",
+  "angularObjects": {
+    "2C9J4X9BB:shared_process": [],
+    "2C97XTJFE:shared_process": [],
+    "2C9BD8WCX:shared_process": [],
+    "2CBT85YD7:shared_process": [],
+    "2C8RGTKC3:shared_process": [],
+    "2CBQNWPMD:shared_process": [],
+    "2C8JDGPHH:shared_process": [],
+    "2C9CSKWHY:shared_process": [],
+    "2CBN9WPNN:shared_process": [],
+    "2CB11VTD7:shared_process": [],
+    "2C9Z4TVBW:shared_process": [],
+    "2CB3RUCX8:shared_process": [],
+    "2C9PSG7XP:shared_process": [],
+    "2C8PPBWFC:shared_process": [],
+    "2C95B7UJY:shared_process": [],
+    "2CB91QEZG:shared_process": [],
+    "2CAPDMDA1:shared_process": [],
+    "2CACTG458:shared_process": [],
+    "2CAD4U2BW:shared_process": [],
+    "2CBTJTHZE:shared_process": [],
+    "2C9VPGHR9:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {}
+}

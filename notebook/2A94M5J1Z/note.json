@@ -52,9 +52,9 @@
     },
     {
       "title": "Load data into table",
-      "text": "import org.apache.commons.io.IOUtils\nimport java.net.URL\nimport java.nio.charset.Charset\n\n// Zeppelin creates and injects sc (SparkContext) and sqlContext (HiveContext or SqlContext)\n// So you don\u0027t need create them manually\n\n// load bank data\nval bankText \u003d sc.parallelize(\n    IOUtils.toString(\n        new URL(\"https://s3.amazonaws.com/apache-zeppelin/tutorial/bank/bank.csv\"),\n        Charset.forName(\"utf8\")).split(\"\\n\"))\n\ncase class Bank(age: Integer, job: String, marital: String, education: String, balance: Integer)\n\nval bank \u003d bankText.map(s \u003d\u003e s.split(\";\")).filter(s \u003d\u003e s(0) !\u003d \"\\\"age\\\"\").map(\n    s \u003d\u003e Bank(s(0).toInt, \n            s(1).replaceAll(\"\\\"\", \"\"),\n            s(2).replaceAll(\"\\\"\", \"\"),\n            s(3).replaceAll(\"\\\"\", \"\"),\n            s(5).replaceAll(\"\\\"\", \"\").toInt\n        )\n).toDF()\nbank.registerTempTable(\"bank\")",
+      "text": "%spark.spark\nimport org.apache.commons.io.IOUtils\nimport java.net.URL\nimport java.nio.charset.Charset\n\n// Zeppelin creates and injects sc (SparkContext) and sqlContext (HiveContext or SqlContext)\n// So you don\u0027t need create them manually\n\n// load bank data\nval bankText \u003d sc.parallelize(\n    IOUtils.toString(\n        new URL(\"https://s3.amazonaws.com/apache-zeppelin/tutorial/bank/bank.csv\"),\n        Charset.forName(\"utf8\")).split(\"\\n\"))\n\ncase class Bank(age: Integer, job: String, marital: String, education: String, balance: Integer)\n\nval bank \u003d bankText.map(s \u003d\u003e s.split(\";\")).filter(s \u003d\u003e s(0) !\u003d \"\\\"age\\\"\").map(\n    s \u003d\u003e Bank(s(0).toInt, \n            s(1).replaceAll(\"\\\"\", \"\"),\n            s(2).replaceAll(\"\\\"\", \"\"),\n            s(3).replaceAll(\"\\\"\", \"\"),\n            s(5).replaceAll(\"\\\"\", \"\").toInt\n        )\n).toDF()\nbank.registerTempTable(\"bank\")",
       "user": "anonymous",
-      "dateUpdated": "Dec 17, 2016 3:30:09 PM",
+      "dateUpdated": "Mar 9, 2017 2:52:41 PM",
       "config": {
         "colWidth": 12.0,
         "title": true,
@@ -97,9 +97,9 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%sql \nselect age, count(1) value\nfrom bank \nwhere age \u003c 30 \ngroup by age \norder by age",
+      "text": "%spark.sql \nselect age, count(1) value\nfrom bank \nwhere age \u003c 30 \ngroup by age \norder by age",
       "user": "anonymous",
-      "dateUpdated": "Dec 17, 2016 3:30:13 PM",
+      "dateUpdated": "Mar 9, 2017 2:52:41 PM",
       "config": {
         "colWidth": 4.0,
         "results": [
@@ -141,9 +141,9 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%sql \nselect age, count(1) value \nfrom bank \nwhere age \u003c ${maxAge\u003d30} \ngroup by age \norder by age",
+      "text": "%spark.sql \nselect age, count(1) value \nfrom bank \nwhere age \u003c ${maxAge\u003d30} \ngroup by age \norder by age",
       "user": "anonymous",
-      "dateUpdated": "Dec 17, 2016 3:30:16 PM",
+      "dateUpdated": "Mar 9, 2017 2:52:41 PM",
       "config": {
         "colWidth": 4.0,
         "results": [
@@ -193,9 +193,9 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%sql \nselect age, count(1) value \nfrom bank \nwhere marital\u003d\"${marital\u003dsingle,single|divorced|married}\" \ngroup by age \norder by age",
+      "text": "%spark.sql \nselect age, count(1) value \nfrom bank \nwhere marital\u003d\"${marital\u003dsingle,single|divorced|married}\" \ngroup by age \norder by age",
       "user": "anonymous",
-      "dateUpdated": "Dec 17, 2016 3:30:18 PM",
+      "dateUpdated": "Mar 9, 2017 2:52:41 PM",
       "config": {
         "colWidth": 4.0,
         "results": [
@@ -363,7 +363,29 @@
   ],
   "name": "Zeppelin Tutorial (Basic Features)",
   "id": "2A94M5J1Z",
-  "angularObjects": {},
+  "angularObjects": {
+    "2C9J4X9BB:shared_process": [],
+    "2C97XTJFE:shared_process": [],
+    "2C9BD8WCX:shared_process": [],
+    "2CBT85YD7:shared_process": [],
+    "2C8RGTKC3:shared_process": [],
+    "2CBQNWPMD:shared_process": [],
+    "2C8JDGPHH:shared_process": [],
+    "2C9CSKWHY:shared_process": [],
+    "2CBN9WPNN:shared_process": [],
+    "2CB11VTD7:shared_process": [],
+    "2C9Z4TVBW:shared_process": [],
+    "2CB3RUCX8:shared_process": [],
+    "2C9PSG7XP:shared_process": [],
+    "2C8PPBWFC:shared_process": [],
+    "2C95B7UJY:shared_process": [],
+    "2CB91QEZG:shared_process": [],
+    "2CAPDMDA1:shared_process": [],
+    "2CACTG458:shared_process": [],
+    "2CAD4U2BW:shared_process": [],
+    "2CBTJTHZE:shared_process": [],
+    "2C9VPGHR9:shared_process": []
+  },
   "config": {
     "looknfeel": "default"
   },

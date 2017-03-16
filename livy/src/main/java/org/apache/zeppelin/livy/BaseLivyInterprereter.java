@@ -188,7 +188,7 @@ public abstract class BaseLivyInterprereter extends Interpreter {
 
       CreateSessionRequest request = new CreateSessionRequest(kind,
           user == null || user.equals("anonymous") ? null : user, conf);
-      SessionInfo sessionInfo = SessionInfo.fromJson(
+      sessionInfo = SessionInfo.fromJson(
           callRestAPI("/sessions", "POST", request.toJson()));
       long start = System.currentTimeMillis();
       // pull the session status until it is idle or timeout
@@ -212,6 +212,10 @@ public abstract class BaseLivyInterprereter extends Interpreter {
       return sessionInfo;
     } catch (Exception e) {
       LOGGER.error("Error when creating livy session for user " + user, e);
+      if (sessionInfo != null) {
+        LOGGER.info("Kill the failed session {} of user {}", sessionInfo.id, user);
+        closeSession(sessionInfo.id);
+      }
       throw new LivyException(e);
     }
   }

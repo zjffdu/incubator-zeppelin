@@ -869,7 +869,7 @@ public class SparkInterpreter extends Interpreter {
       
       hooks = getInterpreterGroup().getInterpreterHookRegistry();
 
-      z = new SparkZeppelinContext(sc, sqlc, hooks,
+      z = SparkZeppelinContext.getOrCreate(sc, sqlc, hooks,
               Integer.parseInt(getProperty("zeppelin.spark.maxResult")));
 
       interpret("@transient val _binder = new java.util.HashMap[String, Object]()");

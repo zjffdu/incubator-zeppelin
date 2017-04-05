@@ -122,7 +122,7 @@ public class RemoteInterpreterEventPoller extends Thread {
       }
 
       AngularObjectRegistry angularObjectRegistry = interpreterGroup.getAngularObjectRegistry();
-
+      logger.debug("Event from remote process {}", event.getType());
       try {
         if (event.getType() != RemoteInterpreterEventType.NO_OP) {
           logger.debug("Receive message from RemoteInterpreter Process: " + event.toString());
@@ -261,7 +261,6 @@ public class RemoteInterpreterEventPoller extends Thread {
             listener.onParaInfosReceived(noteId, paraId, settingId, paraInfos);
           }
         }
-        logger.debug("Event from remote process {}", event.getType());
       } catch (Exception e) {
         logger.error("Can't handle event " + event, e);
       }

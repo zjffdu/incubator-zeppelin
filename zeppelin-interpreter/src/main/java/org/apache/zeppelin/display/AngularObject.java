@@ -187,6 +187,7 @@ public class AngularObject<T> {
         @Override
         public void run() {
           try {
+            logger.debug("Angular Object {} is set", name);
             w.watch(before, after);
           } catch (Exception e) {
             logger.error("Exception on watch", e);

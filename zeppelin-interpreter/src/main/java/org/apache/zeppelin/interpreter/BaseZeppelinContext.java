@@ -69,7 +69,7 @@ public abstract class BaseZeppelinContext {
    * @return
    */
   protected abstract String showData(Object obj);
-
+  
   /**
    * @deprecated use z.textbox instead
    *

@@ -585,6 +585,7 @@ public class RemoteInterpreterServer
         }.getType());
 
     for (InterpreterContextRunner r : runners) {
+      logger.debug("Convert InterpreterContextRunner for paragraph:" + r.getParagraphId());
       contextRunners.add(new ParagraphRunner(this, r.getNoteId(), r.getParagraphId()));
     }
 

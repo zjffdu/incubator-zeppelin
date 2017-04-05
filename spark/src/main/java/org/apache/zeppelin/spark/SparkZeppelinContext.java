@@ -42,13 +42,14 @@ import static scala.collection.JavaConversions.collectionAsScalaIterable;
  */
 public class SparkZeppelinContext extends BaseZeppelinContext {
 
+  private static SparkZeppelinContext instance;
 
   private SparkContext sc;
   public SQLContext sqlContext;
   private List<Class> supportedClasses;
   private Map<String, String> interpreterClassMap;
 
-  public SparkZeppelinContext(
+  private SparkZeppelinContext(
       SparkContext sc, SQLContext sql,
       InterpreterHookRegistry hooks,
       int maxResult) {
@@ -81,6 +82,19 @@ public class SparkZeppelinContext extends BaseZeppelinContext {
     if (supportedClasses.isEmpty()) {
       throw new InterpreterException("Can not load Dataset/DataFrame/SchemaRDD class");
     }
+  }
+
+  public static SparkZeppelinContext getOrCreate(SparkContext sc, SQLContext sql,
+                            InterpreterHookRegistry hooks,
+                            int maxResult) {
+    if (instance == null) {
+      instance = new SparkZeppelinContext(sc, sql, hooks, maxResult);
+    }
+    return instance;
+  }
+
+  public static SparkZeppelinContext get() {
+    return instance;
   }
 
   @Override

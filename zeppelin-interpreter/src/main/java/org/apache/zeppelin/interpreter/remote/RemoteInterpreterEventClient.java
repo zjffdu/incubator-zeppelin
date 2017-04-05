@@ -417,6 +417,7 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector {
   private void sendEvent(RemoteInterpreterEvent event) {
     logger.debug("Send Event: " + event);
     synchronized (eventQueue) {
+      logger.debug("Sending event: " + event.getType());
       eventQueue.add(event);
       eventQueue.notifyAll();
     }

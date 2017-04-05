@@ -17,6 +17,9 @@
 
 package org.apache.zeppelin.display;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,6 +35,8 @@ import java.util.Map;
  *  - Global scope : Shared to all notebook that uses the same interpreter group
  */
 public class AngularObjectRegistry {
+  private static final Logger LOGGER = LoggerFactory.getLogger(AngularObjectRegistry.class);
+
   Map<String, Map<String, AngularObject>> registry = new HashMap<>();
   private final String GLOBAL_KEY = "_GLOBAL_";
   private AngularObjectRegistryListener listener;
@@ -114,6 +119,7 @@ public class AngularObjectRegistry {
    */
   public AngularObject add(String name, Object o, String noteId, String paragraphId,
                            boolean emit) {
+    LOGGER.debug("Add AngularObject " + name + ", value=" + o);
     AngularObject ao = createNewAngularObject(name, o, noteId, paragraphId);
 
     synchronized (registry) {
@@ -160,6 +166,7 @@ public class AngularObjectRegistry {
   public AngularObject remove(String name, String noteId, String paragraphId, boolean emit) {
     synchronized (registry) {
       Map<String, AngularObject> r = getRegistryForKey(noteId, paragraphId);
+      LOGGER.debug("Remove AngularObject " + name);
       AngularObject o = r.remove(name);
       if (listener != null && emit) {
         listener.onRemove(interpreterId, name, noteId, paragraphId);

@@ -191,9 +191,9 @@ public class ZeppelinClient {
     }
     Message msg;
     try {
-      msg = gson.fromJson(zeppelinMessage, Message.class);
+      msg = Message.fromJson(zeppelinMessage);
     } catch (JsonSyntaxException ex) {
-      LOG.error("Cannot deserialize zeppelin message", ex);
+      LOG.error("Cannot fromJson zeppelin message", ex);
       msg = null;
     }
     return msg;
@@ -316,7 +316,7 @@ public class ZeppelinClient {
     if (StringUtils.isEmpty(token)) {
       relayToAllZeppelinHub(hubMsg, noteId);
     } else {
-      client.relayToZeppelinHub(hubMsg.serialize(), token);
+      client.relayToZeppelinHub(hubMsg.toJson(), token);
     }
 
   }
@@ -336,7 +336,7 @@ public class ZeppelinClient {
       if (noteAuth.isReader(noteId, userAndRoles)) {
         token = userTokens.get(user);
         hubMsg.meta.put("token", token);
-        client.relayToZeppelinHub(hubMsg.serialize(), token);
+        client.relayToZeppelinHub(hubMsg.toJson(), token);
       }
     }
   }

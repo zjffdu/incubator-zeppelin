@@ -17,6 +17,8 @@
 
 package org.apache.zeppelin.notebook.socket;
 
+import com.google.gson.Gson;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -179,6 +181,7 @@ public class Message {
     PARAS_INFO                    // [s-c] paragraph runtime infos
   }
 
+  private static final Gson gson = new Gson();
   public static final Message EMPTY = new Message(null);
   
   public OP op;
@@ -211,5 +214,13 @@ public class Message {
     sb.append(", op=").append(op);
     sb.append('}');
     return sb.toString();
+  }
+
+  public String toJson() {
+    return gson.toJson(this);
+  }
+
+  public static Message fromJson(String json) {
+    return gson.fromJson(json, Message.class);
   }
 }

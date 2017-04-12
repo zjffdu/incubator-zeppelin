@@ -922,11 +922,8 @@ public class RemoteInterpreterServer
     }
 
     ResourceSet resourceSet = resourcePool.getAll(false);
-
-    Gson gson = new Gson();
-
     for (Resource r : resourceSet) {
-      result.add(gson.toJson(r));
+      result.add(r.toJson());
     }
 
     return result;

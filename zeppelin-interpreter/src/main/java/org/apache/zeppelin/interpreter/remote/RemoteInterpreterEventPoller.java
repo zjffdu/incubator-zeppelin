@@ -127,12 +127,11 @@ public class RemoteInterpreterEventPoller extends Thread {
         if (event.getType() == RemoteInterpreterEventType.NO_OP) {
           continue;
         } else if (event.getType() == RemoteInterpreterEventType.ANGULAR_OBJECT_ADD) {
-          AngularObject angularObject = gson.fromJson(event.getData(), AngularObject.class);
+          AngularObject angularObject = AngularObject.fromJson(event.getData());
           angularObjectRegistry.add(angularObject.getName(),
               angularObject.get(), angularObject.getNoteId(), angularObject.getParagraphId());
         } else if (event.getType() == RemoteInterpreterEventType.ANGULAR_OBJECT_UPDATE) {
-          AngularObject angularObject = gson.fromJson(event.getData(),
-              AngularObject.class);
+          AngularObject angularObject = AngularObject.fromJson(event.getData());
           AngularObject localAngularObject = angularObjectRegistry.get(
               angularObject.getName(), angularObject.getNoteId(), angularObject.getParagraphId());
           if (localAngularObject instanceof RemoteAngularObject) {
@@ -143,7 +142,7 @@ public class RemoteInterpreterEventPoller extends Thread {
             localAngularObject.set(angularObject.get());
           }
         } else if (event.getType() == RemoteInterpreterEventType.ANGULAR_OBJECT_REMOVE) {
-          AngularObject angularObject = gson.fromJson(event.getData(), AngularObject.class);
+          AngularObject angularObject = AngularObject.fromJson(event.getData());
           angularObjectRegistry.remove(angularObject.getName(), angularObject.getNoteId(),
                   angularObject.getParagraphId());
         } else if (event.getType() == RemoteInterpreterEventType.RUN_INTERPRETER_CONTEXT_RUNNER) {
@@ -158,14 +157,14 @@ public class RemoteInterpreterEventPoller extends Thread {
           sendResourcePoolResponseGetAll(resourceSet);
         } else if (event.getType() == RemoteInterpreterEventType.RESOURCE_GET) {
           String resourceIdString = event.getData();
-          ResourceId resourceId = gson.fromJson(resourceIdString, ResourceId.class);
+          ResourceId resourceId = ResourceId.fromJson(resourceIdString);
           logger.debug("RESOURCE_GET {} {}", resourceId.getResourcePoolId(), resourceId.getName());
           Object o = getResource(resourceId);
           sendResourceResponseGet(resourceId, o);
         } else if (event.getType() == RemoteInterpreterEventType.RESOURCE_INVOKE_METHOD) {
           String message = event.getData();
           InvokeResourceMethodEventMessage invokeMethodMessage =
-              gson.fromJson(message, InvokeResourceMethodEventMessage.class);
+              InvokeResourceMethodEventMessage.fromJson(message);
           Object ret = invokeResourceMethod(invokeMethodMessage);
           sendInvokeMethodResult(invokeMethodMessage, ret);
         } else if (event.getType() == RemoteInterpreterEventType.OUTPUT_APPEND) {
@@ -234,8 +233,8 @@ public class RemoteInterpreterEventPoller extends Thread {
 
           appListener.onStatusChange(noteId, paragraphId, appId, status);
         } else if (event.getType() == RemoteInterpreterEventType.REMOTE_ZEPPELIN_SERVER_RESOURCE) {
-          RemoteZeppelinServerResource reqResourceBody = gson.fromJson(
-              event.getData(), RemoteZeppelinServerResource.class);
+          RemoteZeppelinServerResource reqResourceBody = RemoteZeppelinServerResource.fromJson(
+              event.getData());
           progressRemoteZeppelinControlEvent(
               reqResourceBody.getResourceType(), listener, reqResourceBody);
 

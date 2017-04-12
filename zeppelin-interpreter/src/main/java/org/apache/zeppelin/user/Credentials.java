@@ -118,7 +118,7 @@ public class Credentials {
       fis.close();
 
       String json = sb.toString();
-      CredentialsInfoSaving info = gson.fromJson(json, CredentialsInfoSaving.class);
+      CredentialsInfoSaving info = CredentialsInfoSaving.fromJson(json);
       this.credentialsMap = info.credentialsMap;
     } catch (IOException e) {
       LOG.error("Error loading credentials file", e);

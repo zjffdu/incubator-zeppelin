@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
+import com.google.gson.Gson;
 import org.apache.zeppelin.scheduler.ExecutorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AngularObject<T> {
   private static final Logger LOGGER = LoggerFactory.getLogger(AngularObject.class);
+  private static final Gson gson = new Gson();
 
   private String name;
   private T object;
@@ -252,5 +254,13 @@ public class AngularObject<T> {
     sb.append(", name='").append(name).append('\'');
     sb.append('}');
     return sb.toString();
+  }
+
+  public String toJson() {
+    return gson.toJson(this);
+  }
+
+  public static AngularObject fromJson(String json) {
+    return gson.fromJson(json, AngularObject.class);
   }
 }

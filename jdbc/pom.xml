@@ -36,9 +36,12 @@
     <!--library versions-->
     <postgresql.version>9.4-1201-jdbc41</postgresql.version>
     <jline.version>2.12.1</jline.version>
-    <hadoop.common.version>2.7.2</hadoop.common.version>
     <h2.version>1.4.190</h2.version>
     <commons.dbcp2.version>2.0.1</commons.dbcp2.version>
+    <hadoop-common.version>2.7.3.2.6.0.2-SNAPSHOT</hadoop-common.version>
+    <hive.version>1.2.1000.2.6.0.2-SNAPSHOT</hive.version>
+    <hive2.version>2.1.0.2.6.0.2-SNAPSHOT</hive2.version>
+    <phoenix.version>4.7.0.2.6.0.2-SNAPSHOT</phoenix.version>
 
     <!--test library versions-->
     <mockrunner.jdbc.version>1.0.8</mockrunner.jdbc.version>
@@ -112,10 +115,43 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-jdbc</artifactId>
+      <version>${hive.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-auth</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hive.shims</groupId>
+      <artifactId>hive-shims-0.23</artifactId>
+      <version>${hive2.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.phoenix</groupId>
+      <artifactId>phoenix-core</artifactId>
+      <version>${phoenix.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-common</artifactId>
-      <version>${hadoop.common.version}</version>
-      <scope>provided</scope>
+      <version>${hadoop-common.version}</version>
       <exclusions>
         <exclusion>
           <groupId>com.sun.jersey</groupId>

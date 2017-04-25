@@ -1,5 +1,8 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
 
+BUG-78257       jdbc interpretor should use only HDP jars
+BUG-77846       upgrade frontend-maven-plugin to latest >= 1.3 to make use of ignore proxy feature
+ZEPPELIN-2175   Jdbc interpreter sometime doesn't show detailed error message.
 ZEPPELIN-2149   Each interpreter should have a seperate log file.
                 Fix CI build failure on branch-0.7
 ZEPPELIN-2075   Can't stop infinite `while` statement in pyspark Interpreter.

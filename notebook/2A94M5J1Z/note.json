@@ -99,17 +99,16 @@
     {
       "text": "%sql \nselect age, count(1) value\nfrom bank \nwhere age \u003c 30 \ngroup by age \norder by age",
       "user": "anonymous",
-      "dateUpdated": "Mar 17, 2017 12:18:02 PM",
+      "dateUpdated": "Dec 17, 2016 3:30:13 PM",
       "config": {
         "colWidth": 4.0,
         "results": [
           {
             "graph": {
-              "mode": "multiBarChart",
-              "height": 366.0,
+              "mode": "table",
+              "height": 300.0,
               "optionOpen": false
-            },
-            "helium": {}
+            }
           }
         ],
         "enabled": true,
@@ -144,17 +143,16 @@
     {
       "text": "%sql \nselect age, count(1) value \nfrom bank \nwhere age \u003c ${maxAge\u003d30} \ngroup by age \norder by age",
       "user": "anonymous",
-      "dateUpdated": "Mar 17, 2017 12:17:39 PM",
+      "dateUpdated": "Dec 17, 2016 3:30:16 PM",
       "config": {
         "colWidth": 4.0,
         "results": [
           {
             "graph": {
-              "mode": "multiBarChart",
-              "height": 294.0,
+              "mode": "table",
+              "height": 300.0,
               "optionOpen": false
-            },
-            "helium": {}
+            }
           }
         ],
         "enabled": true,
@@ -197,17 +195,16 @@
     {
       "text": "%sql \nselect age, count(1) value \nfrom bank \nwhere marital\u003d\"${marital\u003dsingle,single|divorced|married}\" \ngroup by age \norder by age",
       "user": "anonymous",
-      "dateUpdated": "Mar 17, 2017 12:18:18 PM",
+      "dateUpdated": "Dec 17, 2016 3:30:18 PM",
       "config": {
         "colWidth": 4.0,
         "results": [
           {
             "graph": {
-              "mode": "stackedAreaChart",
-              "height": 280.0,
+              "mode": "table",
+              "height": 300.0,
               "optionOpen": false
-            },
-            "helium": {}
+            }
           }
         ],
         "enabled": true,
@@ -364,11 +361,9 @@
       "progressUpdateIntervalMs": 500
     }
   ],
-  "name": "Zeppelin Tutorial/Basic Features (Spark)",
+  "name": "Zeppelin Tutorial (Basic Features)",
   "id": "2A94M5J1Z",
-  "angularObjects": {
-    "2C73DY9P9:shared_process": []
-  },
+  "angularObjects": {},
   "config": {
     "looknfeel": "default"
   },

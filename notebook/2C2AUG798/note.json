@@ -32,9 +32,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627954_-1473548609",
-      "id": "20160614-174657_1772993700",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -44,6 +41,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627954_-1473548609",
+      "id": "20160614-174657_1772993700",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "dateStarted": "Dec 17, 2016 3:33:25 PM",
       "dateFinished": "Dec 17, 2016 3:33:25 PM",
@@ -75,9 +75,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627958_-1475087605",
-      "id": "20161101-192232_289486976",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -87,6 +84,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627958_-1475087605",
+      "id": "20161101-192232_289486976",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -118,9 +118,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627958_-1475087605",
-      "id": "20160617-002131_1552178409",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -130,6 +127,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627958_-1475087605",
+      "id": "20160617-002131_1552178409",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -160,9 +160,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627959_-1475472354",
-      "id": "20161101-193533_2096366908",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -172,6 +169,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627959_-1475472354",
+      "id": "20161101-193533_2096366908",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -204,9 +204,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627959_-1475472354",
-      "id": "20160614-174421_274483707",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -216,6 +213,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627959_-1475472354",
+      "id": "20160614-174421_274483707",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -248,9 +248,6 @@
         },
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627959_-1475472354",
-      "id": "20160616-234947_579056637",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -260,6 +257,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627959_-1475472354",
+      "id": "20160616-234947_579056637",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -291,9 +291,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627960_-1477396098",
-      "id": "20160617-140439_1111727405",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -303,6 +300,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627960_-1477396098",
+      "id": "20160617-140439_1111727405",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -334,9 +334,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627960_-1477396098",
-      "id": "20161101-195657_1336292109",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -346,6 +343,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627960_-1477396098",
+      "id": "20161101-195657_1336292109",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -378,9 +378,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627961_-1477780847",
-      "id": "20161101-195937_907325325",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -390,6 +387,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627961_-1477780847",
+      "id": "20161101-195937_907325325",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -422,9 +422,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627962_-1476626600",
-      "id": "20161101-200014_2113468597",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -434,6 +431,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627962_-1476626600",
+      "id": "20161101-200014_2113468597",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -466,9 +466,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627962_-1476626600",
-      "id": "20161101-200141_1493024813",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -478,6 +475,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627962_-1476626600",
+      "id": "20161101-200141_1493024813",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -510,9 +510,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627963_-1477011349",
-      "id": "20161101-200445_78775142",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -522,6 +519,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627963_-1477011349",
+      "id": "20161101-200445_78775142",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -553,9 +553,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627963_-1477011349",
-      "id": "20161101-200541_1283841564",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -565,6 +562,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627963_-1477011349",
+      "id": "20161101-200541_1283841564",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -598,9 +598,6 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627963_-1477011349",
-      "id": "20161101-200754_739212093",
       "results": {
         "code": "SUCCESS",
         "msg": [
@@ -610,6 +607,9 @@
           }
         ]
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627963_-1477011349",
+      "id": "20161101-200754_739212093",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "dateStarted": "Nov 2, 2016 2:54:53 PM",
       "dateFinished": "Nov 2, 2016 2:55:04 PM",
@@ -630,13 +630,13 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627964_-1478935094",
-      "id": "20161101-200854_1676504884",
       "results": {
         "code": "SUCCESS",
         "msg": []
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627964_-1478935094",
+      "id": "20161101-200854_1676504884",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -656,13 +656,13 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627964_-1478935094",
-      "id": "20161101-200851_314384892",
       "results": {
         "code": "SUCCESS",
         "msg": []
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627964_-1478935094",
+      "id": "20161101-200851_314384892",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -683,13 +683,13 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627964_-1478935094",
-      "id": "20161101-201552_651686132",
       "results": {
         "code": "SUCCESS",
         "msg": []
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627964_-1478935094",
+      "id": "20161101-201552_651686132",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -710,13 +710,13 @@
         "params": {},
         "forms": {}
       },
-      "apps": [],
-      "jobName": "paragraph_1478123627965_-1479319843",
-      "id": "20161101-202024_1645454710",
       "results": {
         "code": "SUCCESS",
         "msg": []
       },
+      "apps": [],
+      "jobName": "paragraph_1478123627965_-1479319843",
+      "id": "20161101-202024_1645454710",
       "dateCreated": "Nov 2, 2016 2:53:47 PM",
       "status": "READY",
       "errorMessage": "",
@@ -751,29 +751,9 @@
       "progressUpdateIntervalMs": 500
     }
   ],
-  "name": "Zeppelin Tutorial/Matplotlib (Python • PySpark)",
+  "name": "Matplotlib (Python \u0026 PySpark)",
   "id": "2C2AUG798",
-  "angularObjects": {
-    "2C6WUGPNH:shared_process": [],
-    "2C4A8RJNB:shared_process": [],
-    "2C4DTK2ZT:shared_process": [],
-    "2C6XKJWBR:shared_process": [],
-    "2C6AHZPMK:shared_process": [],
-    "2C5SU66WQ:shared_process": [],
-    "2C6AMJ98Q:shared_process": [],
-    "2C4AJZK72:shared_process": [],
-    "2C3STPSD7:shared_process": [],
-    "2C4FJN9CK:shared_process": [],
-    "2C3CW6JBY:shared_process": [],
-    "2C5UPQX6Q:shared_process": [],
-    "2C5873KN4:shared_process": [],
-    "2C5719XN4:shared_process": [],
-    "2C52DE5G3:shared_process": [],
-    "2C4G28E63:shared_process": [],
-    "2C6CU96BC:shared_process": [],
-    "2C49A6WY3:shared_process": [],
-    "2C3NE73HG:shared_process": []
-  },
+  "angularObjects": {},
   "config": {},
   "info": {}
 }

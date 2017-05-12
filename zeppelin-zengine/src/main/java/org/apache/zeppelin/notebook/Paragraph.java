@@ -43,6 +43,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -54,16 +56,18 @@ public class Paragraph extends Job implements Serializable, Cloneable {
   private static final long serialVersionUID = -6328572073497992016L;
 
   private static Logger logger = LoggerFactory.getLogger(Paragraph.class);
+  private static Pattern ReplScriptText_Pattern = Pattern.compile("%([^\\s]+)\\s*");
+
   private transient InterpreterFactory factory;
   private transient InterpreterSettingManager interpreterSettingManager;
   private transient Note note;
   private transient AuthenticationInfo authenticationInfo;
   private transient Map<String, Paragraph> userParagraphMap = Maps.newHashMap(); // personalized
 
-  String title;
-  String text;
-  String user;
-  Date dateUpdated;
+  private String title;
+  private String text;
+  private String user;
+  private Date dateUpdated;
   private Map<String, Object> config; // paragraph configs like isOpen, colWidth, etc
   public GUI settings;          // form and parameter settings
 
@@ -79,6 +83,13 @@ public class Paragraph extends Job implements Serializable, Cloneable {
    * Application states in this paragraph
    */
   private final List<ApplicationState> apps = new LinkedList<>();
+
+  ///////////////////////////////////////////////////////////////////
+  private transient String scriptText;
+  private transient String replText;
+  private transient Interpreter repl;
+  ///////////////////////////////////////////////////////////////////
+
 
   @VisibleForTesting
   Paragraph() {
@@ -170,6 +181,23 @@ public class Paragraph extends Job implements Serializable, Cloneable {
   public void setText(String newText) {
     this.text = newText;
     this.dateUpdated = new Date();
+
+    // update replText and scriptText when text is updated
+    if (newText == null) {
+      replText = null;
+      scriptText = null;
+    } else {
+      Matcher replScriptMatcher = ReplScriptText_Pattern.matcher(newText);
+      if (replScriptMatcher.find()) {
+        this.replText = replScriptMatcher.group(1);
+        this.scriptText = newText.substring(1 + this.replText.length()).trim();
+      } else {
+        this.replText = null;
+        this.scriptText = newText;
+      }
+    }
+
+    this.repl = factory.getInterpreter(user, note.getId(), this.replText);
   }
 
   public AuthenticationInfo getAuthenticationInfo() {
@@ -202,55 +230,14 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     return enabled == null || enabled.booleanValue();
   }
 
-  public String getRequiredReplName() {
-    return getRequiredReplName(text);
+  @VisibleForTesting
+  public String getReplText() {
+    return this.replText;
   }
 
-  public static String getRequiredReplName(String text) {
-    if (text == null) {
-      return null;
-    }
-
-    String trimmed = text.trim();
-    if (!trimmed.startsWith("%")) {
-      return null;
-    }
-
-    // get script head
-    int scriptHeadIndex = 0;
-    for (int i = 0; i < trimmed.length(); i++) {
-      char ch = trimmed.charAt(i);
-      if (Character.isWhitespace(ch) || ch == '(' || ch == '\n') {
-        break;
-      }
-      scriptHeadIndex = i;
-    }
-    if (scriptHeadIndex < 1) {
-      return null;
-    }
-    String head = text.substring(1, scriptHeadIndex + 1);
-    return head;
-  }
-
-  public String getScriptBody() {
-    return getScriptBody(text);
-  }
-
-  public static String getScriptBody(String text) {
-    if (text == null) {
-      return null;
-    }
-
-    String magic = getRequiredReplName(text);
-    if (magic == null) {
-      return text;
-    }
-
-    String trimmed = text.trim();
-    if (magic.length() + 1 >= trimmed.length()) {
-      return "";
-    }
-    return trimmed.substring(magic.length() + 1).trim();
+  @VisibleForTesting
+  public String getScriptText() {
+    return this.scriptText;
   }
 
   public Interpreter getRepl(String name) {
@@ -258,7 +245,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
   }
 
   public Interpreter getCurrentRepl() {
-    return getRepl(getRequiredReplName());
+    return this.repl;
   }
 
   public List<InterpreterCompletion> getInterpreterCompletion() {
@@ -288,12 +275,28 @@ public class Paragraph extends Job implements Serializable, Cloneable {
       }
     }
 
-    String replName = getRequiredReplName(buffer);
+    // copy this parsing logic from setText.
+    // TODO(zjffdu) rewrite the interpreter completion
+    String replName = null;
+    String scriptBody = null;
+    if (buffer == null) {
+      replName = null;
+      scriptBody = null;
+    } else {
+      Matcher replScriptMatcher = ReplScriptText_Pattern.matcher(buffer);
+      if (replScriptMatcher.find()) {
+        replName = replScriptMatcher.group(1);
+        scriptBody = buffer.substring(1 + replName.length()).trim();
+      } else {
+        replName = null;
+        scriptBody = buffer;
+      }
+    }
+
     if (replName != null && cursor > replName.length()) {
       cursor -= replName.length() + 1;
     }
 
-    String body = getScriptBody(buffer);
     Interpreter repl = getRepl(replName);
     if (repl == null) {
       return null;
@@ -301,7 +304,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
 
     InterpreterContext interpreterContext = getInterpreterContextWithoutRunner(null);
 
-    List completion = repl.completion(body, cursor, interpreterContext);
+    List completion = repl.completion(scriptBody, cursor, interpreterContext);
     return completion;
   }
 
@@ -328,8 +331,6 @@ public class Paragraph extends Job implements Serializable, Cloneable {
 
   @Override
   public int progress() {
-    String replName = getRequiredReplName();
-    Interpreter repl = getRepl(replName);
     if (repl != null) {
       return repl.getProgress(getInterpreterContext(null));
     } else {
@@ -362,12 +363,11 @@ public class Paragraph extends Job implements Serializable, Cloneable {
 
   @Override
   protected Object jobRun() throws Throwable {
-    String replName = getRequiredReplName();
-    Interpreter repl = getRepl(replName);
+    String replName = this.replText;
     logger.info("run paragraph {} using {} " + repl, getId(), replName);
     if (repl == null) {
       logger.error("Can not find interpreter name " + repl);
-      throw new RuntimeException("Can not find interpreter for " + getRequiredReplName());
+      throw new RuntimeException("Can not find interpreter for " + this.replText);
     }
     InterpreterSetting intp = getInterpreterSettingById(repl.getInterpreterGroup().getId());
     while (intp.getStatus().equals(
@@ -379,7 +379,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
           && isUserAuthorizedToAccessInterpreter(intp.getOption()) == false) {
         logger.error("{} has no permission for {} ", authenticationInfo.getUser(), repl);
         return new InterpreterResult(Code.ERROR,
-            authenticationInfo.getUser() + " has no permission for " + getRequiredReplName());
+            authenticationInfo.getUser() + " has no permission for " + this.replText);
       }
     }
 
@@ -387,12 +387,12 @@ public class Paragraph extends Job implements Serializable, Cloneable {
       p.setText(getText());
     }
 
-    String script = getScriptBody();
+    String script = this.getScriptText();
     // inject form
     if (repl.getFormType() == FormType.NATIVE) {
       settings.clear();
     } else if (repl.getFormType() == FormType.SIMPLE) {
-      String scriptBody = getScriptBody();
+      String scriptBody = this.scriptText;
       // inputs will be built from script body
       LinkedHashMap<String, Input> inputs = Input.extractSimpleQueryForm(scriptBody);
 
@@ -462,7 +462,6 @@ public class Paragraph extends Job implements Serializable, Cloneable {
 
   @Override
   protected boolean jobAbort() {
-    Interpreter repl = getRepl(getRequiredReplName());
     if (repl == null) {
       // when interpreters are already destroyed
       return true;
@@ -546,7 +545,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     }
 
     InterpreterContext interpreterContext =
-        new InterpreterContext(note.getId(), getId(), getRequiredReplName(), this.getTitle(),
+        new InterpreterContext(note.getId(), getId(), replText, this.getTitle(),
             this.getText(), this.getAuthenticationInfo(), this.getConfig(), this.settings, registry,
             resourcePool, runners, output);
     return interpreterContext;
@@ -578,7 +577,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     }
 
     InterpreterContext interpreterContext =
-        new InterpreterContext(note.getId(), getId(), getRequiredReplName(), this.getTitle(),
+        new InterpreterContext(note.getId(), getId(), replText, this.getTitle(),
             this.getText(), this.getAuthenticationInfo(), this.getConfig(), this.settings, registry,
             resourcePool, runners, output);
     return interpreterContext;

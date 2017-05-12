@@ -59,58 +59,54 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 public class ParagraphTest {
-  @Test
-  public void scriptBodyWithReplName() {
-    String text = "%spark(1234567";
-    assertEquals("(1234567", Paragraph.getScriptBody(text));
-
-    text = "%table 1234567";
-    assertEquals("1234567", Paragraph.getScriptBody(text));
-  }
 
   @Test
-  public void scriptBodyWithoutReplName() {
-    String text = "12345678";
-    assertEquals(text, Paragraph.getScriptBody(text));
-  }
+  public void testParseText() {
+    Note note = mock(Note.class);
+    Paragraph paragraph = new Paragraph(note, null, null, null);
 
-  @Test
-  public void replNameAndNoBody() {
-    String text = "%md";
-    assertEquals("md", Paragraph.getRequiredReplName(text));
-    assertEquals("", Paragraph.getScriptBody(text));
-  }
-  
-  @Test
-  public void replSingleCharName() {
-    String text = "%r a";
-    assertEquals("r", Paragraph.getRequiredReplName(text));
-    assertEquals("a", Paragraph.getScriptBody(text));
-  }
+    paragraph.setText("%spark sc.version");
+    assertEquals("spark", paragraph.getReplText());
+    assertEquals("sc.version", paragraph.getScriptText());
 
-  @Test
-  public void replNameEndsWithWhitespace() {
-    String text = "%md\r\n###Hello";
-    assertEquals("md", Paragraph.getRequiredReplName(text));
+    paragraph.setText("sc.version");
+    assertEquals(null, paragraph.getReplText());
+    assertEquals("sc.version", paragraph.getScriptText());
 
-    text = "%md\t###Hello";
-    assertEquals("md", Paragraph.getRequiredReplName(text));
+    paragraph.setText("%spark_210\nsc.version");
+    assertEquals("spark_210", paragraph.getReplText());
+    assertEquals("sc.version", paragraph.getScriptText());
 
-    text = "%md\u000b###Hello";
-    assertEquals("md", Paragraph.getRequiredReplName(text));
+    paragraph.setText("%spark_210");
+    assertEquals("spark_210", paragraph.getReplText());
+    assertEquals("", paragraph.getScriptText());
 
-    text = "%md\f###Hello";
-    assertEquals("md", Paragraph.getRequiredReplName(text));
+    paragraph.setText("%spark_210\nsc.version\nsc");
+    assertEquals("spark_210", paragraph.getReplText());
+    assertEquals("sc.version\nsc", paragraph.getScriptText());
 
-    text = "%md\n###Hello";
-    assertEquals("md", Paragraph.getRequiredReplName(text));
+    paragraph.setText("%r a");
+    assertEquals("r", paragraph.getReplText());
+    assertEquals("a", paragraph.getScriptText());
 
-    text = "%md ###Hello";
-    assertEquals("md", Paragraph.getRequiredReplName(text));
+    paragraph.setText("%");
+    assertEquals("", paragraph.getReplText());
+    assertEquals("", paragraph.getScriptText());
+
+    paragraph.setText("");
+    assertEquals("", paragraph.getReplText());
+    assertEquals("", paragraph.getScriptText());
+
+    paragraph.setText(" ");
+    assertEquals("", paragraph.getReplText());
+    assertEquals("", paragraph.getScriptText());
   }
 
   @Test
@@ -169,7 +165,7 @@ public class ParagraphTest {
     when(mockNote.getCredentials()).thenReturn(mock(Credentials.class));
     Paragraph spyParagraph = spy(new Paragraph("para_1", mockNote,  null, null, mockInterpreterSettingManager));
 
-    doReturn("spy").when(spyParagraph).getRequiredReplName();
+//    doReturn("spy").when(spyParagraph).getRequiredReplName();
 
 
     Interpreter mockInterpreter = mock(Interpreter.class);
@@ -193,7 +189,7 @@ public class ParagraphTest {
     when(mockNote.getId()).thenReturn("any_id");
     when(mockInterpreterSettingManager.getInterpreterSettings(anyString())).thenReturn(spyInterpreterSettingList);
 
-    doReturn("spy script body").when(spyParagraph).getScriptBody();
+//    doReturn("spy script body").when(spyParagraph).getScriptBody();
 
     when(mockInterpreter.getFormType()).thenReturn(FormType.NONE);
 

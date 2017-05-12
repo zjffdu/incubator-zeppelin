@@ -615,7 +615,7 @@ public class Note implements Serializable, ParagraphJobListener {
     }
 
     p.clearRuntimeInfo(null);
-    String requiredReplName = p.getRequiredReplName();
+    String requiredReplName = p.getReplText();
     Interpreter intp = factory.getInterpreter(p.getUser(), getId(), requiredReplName);
 
     if (intp == null) {

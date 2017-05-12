@@ -81,7 +81,7 @@ public class HeliumApplicationFactory implements ApplicationEventListener, Noteb
     public void run() {
       try {
         // get interpreter process
-        Interpreter intp = paragraph.getRepl(paragraph.getRequiredReplName());
+        Interpreter intp = paragraph.getCurrentRepl();
         InterpreterGroup intpGroup = intp.getInterpreterGroup();
         RemoteInterpreterProcess intpProcess = intpGroup.getRemoteInterpreterProcess();
         if (intpProcess == null) {

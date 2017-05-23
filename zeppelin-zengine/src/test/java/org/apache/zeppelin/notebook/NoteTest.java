@@ -18,7 +18,6 @@
 package org.apache.zeppelin.notebook;
 
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import org.apache.zeppelin.display.AngularObject;
 import org.apache.zeppelin.display.ui.TextBox;
 import org.apache.zeppelin.interpreter.Interpreter;

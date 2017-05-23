@@ -70,7 +70,7 @@ public class LuceneSearchTest {
 
   @Test public void canIndexNotebook() {
     //give
-    Note note1 = newNoteWithParagraph("Notebook1", "test");
+    Note note1 = newNoteWithParagraph("Notebook1", "interpreter/test");
     Note note2 = newNoteWithParagraph("Notebook2", "not test");
     List<Note> notebook = Arrays.asList(note1, note2);
 
@@ -80,7 +80,7 @@ public class LuceneSearchTest {
 
   @Test public void canIndexAndQuery() {
     //given
-    Note note1 = newNoteWithParagraph("Notebook1", "test");
+    Note note1 = newNoteWithParagraph("Notebook1", "interpreter/test");
     Note note2 = newNoteWithParagraphs("Notebook2", "not test", "not test at all");
     noteSearchService.addIndexDocs(Arrays.asList(note1, note2));
 
@@ -96,7 +96,7 @@ public class LuceneSearchTest {
 
   @Test public void canIndexAndQueryByNotebookName() {
     //given
-    Note note1 = newNoteWithParagraph("Notebook1", "test");
+    Note note1 = newNoteWithParagraph("Notebook1", "interpreter/test");
     Note note2 = newNoteWithParagraphs("Notebook2", "not test", "not test at all");
     noteSearchService.addIndexDocs(Arrays.asList(note1, note2));
 

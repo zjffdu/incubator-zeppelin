@@ -57,17 +57,17 @@ import com.google.gson.reflect.TypeToken;
 public class RemoteInterpreterServer
   extends Thread
   implements RemoteInterpreterService.Iface, AngularObjectRegistryListener {
-  Logger logger = LoggerFactory.getLogger(RemoteInterpreterServer.class);
+  private static Logger logger = LoggerFactory.getLogger(RemoteInterpreterServer.class);
 
-  InterpreterGroup interpreterGroup;
-  AngularObjectRegistry angularObjectRegistry;
-  InterpreterHookRegistry hookRegistry;
-  DistributedResourcePool resourcePool;
+  private InterpreterGroup interpreterGroup;
+  private AngularObjectRegistry angularObjectRegistry;
+  private InterpreterHookRegistry hookRegistry;
+  private DistributedResourcePool resourcePool;
   private ApplicationLoader appLoader;
+  private boolean testMode;
+  private Gson gson = new Gson();
 
-  Gson gson = new Gson();
-
-  RemoteInterpreterService.Processor<RemoteInterpreterServer> processor;
+  private RemoteInterpreterService.Processor<RemoteInterpreterServer> processor;
   private int port;
   private TThreadPoolServer server;
 
@@ -82,15 +82,19 @@ public class RemoteInterpreterServer
 
   private final long DEFAULT_SHUTDOWN_TIMEOUT = 2000;
 
-  public RemoteInterpreterServer(int port) throws TTransportException {
+  public RemoteInterpreterServer(int port, boolean testMode) throws TTransportException {
     this.port = port;
-
+    this.testMode = testMode;
     processor = new RemoteInterpreterService.Processor<>(this);
     TServerSocket serverTransport = new TServerSocket(port);
     server = new TThreadPoolServer(
         new TThreadPoolServer.Args(serverTransport).processor(processor));
     remoteWorksResponsePool = Collections.synchronizedMap(new HashMap<String, Object>());
     remoteWorksController = new ZeppelinRemoteWorksController(this, remoteWorksResponsePool);
+  }
+
+  public RemoteInterpreterServer(int port) throws TTransportException {
+    this(port, false);
   }
 
   @Override
@@ -101,7 +105,10 @@ public class RemoteInterpreterServer
 
   @Override
   public void shutdown() throws TException {
-    eventClient.waitForEventQueueBecomesEmpty(DEFAULT_SHUTDOWN_TIMEOUT);
+    if (!testMode) {
+      eventClient.waitForEventQueueBecomesEmpty(DEFAULT_SHUTDOWN_TIMEOUT);
+    }
+
     if (interpreterGroup != null) {
       interpreterGroup.close();
     }
@@ -298,12 +305,12 @@ public class RemoteInterpreterServer
 
 
   @Override
-  public RemoteInterpreterResult interpret(String noteId, String className, String st,
+  public RemoteInterpreterResult interpret(String sessionKey, String className, String st,
       RemoteInterpreterContext interpreterContext) throws TException {
     if (logger.isDebugEnabled()) {
       logger.debug("st:\n{}", st);
     }
-    Interpreter intp = getInterpreter(noteId, className);
+    Interpreter intp = getInterpreter(sessionKey, className);
     InterpreterContext context = convert(interpreterContext);
     context.setClassName(intp.getClassName());
 
@@ -554,10 +561,10 @@ public class RemoteInterpreterServer
   }
 
   @Override
-  public int getProgress(String noteId, String className,
+  public int getProgress(String sessionKey, String className,
                          RemoteInterpreterContext interpreterContext)
       throws TException {
-    Interpreter intp = getInterpreter(noteId, className);
+    Interpreter intp = getInterpreter(sessionKey, className);
     return intp.getProgress(convert(interpreterContext, null));
   }
 

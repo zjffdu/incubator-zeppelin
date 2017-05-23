@@ -30,7 +30,7 @@ public class InterpreterTest {
   public void testDefaultProperty() {
     Properties p = new Properties();
     p.put("p1", "v1");
-    Interpreter intp = new DummyInterpreter(p);
+    Interpreter intp = new EchoInterpreter(p);
 
     assertEquals(1, intp.getProperty().size());
     assertEquals("v1", intp.getProperty().get("p1"));
@@ -41,7 +41,7 @@ public class InterpreterTest {
   public void testOverriddenProperty() {
     Properties p = new Properties();
     p.put("p1", "v1");
-    Interpreter intp = new DummyInterpreter(p);
+    Interpreter intp = new EchoInterpreter(p);
     Properties overriddenProperty = new Properties();
     overriddenProperty.put("p1", "v2");
     intp.setProperty(overriddenProperty);
@@ -73,7 +73,7 @@ public class InterpreterTest {
     Properties p = new Properties();
     p.put("p1", "replName #{noteId}, #{paragraphTitle}, #{paragraphId}, #{paragraphText}, #{replName}, #{noteId}, #{user}," +
         " #{authenticationInfo}");
-    Interpreter intp = new DummyInterpreter(p);
+    Interpreter intp = new EchoInterpreter(p);
     intp.setUserName(user);
     String actual = intp.getProperty("p1");
     InterpreterContext.remove();

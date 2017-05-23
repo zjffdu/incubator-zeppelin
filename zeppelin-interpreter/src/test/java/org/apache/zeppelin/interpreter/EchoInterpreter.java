@@ -5,39 +5,43 @@ import java.util.Properties;
 /**
  *
  */
-public class DummyInterpreter extends Interpreter {
+public class EchoInterpreter extends Interpreter {
 
-  public DummyInterpreter(Properties property) {
+  public boolean openCalled = false;
+  public boolean closeCalled = false;
+  public boolean canceledCalled = false;
+
+  public EchoInterpreter(Properties property) {
     super(property);
   }
 
   @Override
   public void open() {
-
+    this.openCalled = true;
   }
 
   @Override
   public void close() {
-
+    this.closeCalled = true;
   }
 
   @Override
   public InterpreterResult interpret(String st, InterpreterContext context) {
-    return null;
+    return new InterpreterResult(InterpreterResult.Code.SUCCESS, st);
   }
 
   @Override
   public void cancel(InterpreterContext context) {
-
+    this.canceledCalled = true;
   }
 
   @Override
   public FormType getFormType() {
-    return null;
+    return FormType.NATIVE;
   }
 
   @Override
   public int getProgress(InterpreterContext context) {
-    return 0;
+    return 10;
   }
 }

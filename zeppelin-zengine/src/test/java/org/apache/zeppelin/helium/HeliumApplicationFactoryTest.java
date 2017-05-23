@@ -16,10 +16,8 @@
  */
 package org.apache.zeppelin.helium;
 
-import com.google.common.collect.Maps;
 import org.apache.commons.io.FileUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
-import org.apache.zeppelin.dep.Dependency;
 import org.apache.zeppelin.dep.DependencyResolver;
 import org.apache.zeppelin.interpreter.*;
 import org.apache.zeppelin.interpreter.mock.MockInterpreter1;
@@ -77,30 +75,39 @@ public class HeliumApplicationFactoryTest implements JobListenerFactory {
     System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_HOME.getVarName(), home.getAbsolutePath());
     System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_CONF_DIR.getVarName(), tmpDir.getAbsolutePath() + "/conf");
     System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_NOTEBOOK_DIR.getVarName(), notebookDir.getAbsolutePath());
+    System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_INTERPRETER_GROUP_ORDER.getVarName(), "mock1,mock2");
+    System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_INTERPRETER_DIR.getVarName(), tmpDir.getAbsolutePath() + "/interpreter");
 
     conf = new ZeppelinConfiguration();
-
-    this.schedulerFactory = new SchedulerFactory();
-
+    this.schedulerFactory = SchedulerFactory.singleton();
     heliumAppFactory = new HeliumApplicationFactory();
     depResolver = new DependencyResolver(tmpDir.getAbsolutePath() + "/local-repo");
-    interpreterSettingManager = new InterpreterSettingManager(conf, depResolver, new InterpreterOption(true));
-    factory = new InterpreterFactory(conf, null, null, heliumAppFactory, depResolver, false, interpreterSettingManager);
-    HashMap<String, String> env = new HashMap<>();
-    env.put("ZEPPELIN_CLASSPATH", new File("./target/test-classes").getAbsolutePath());
-    factory.setEnv(env);
+    interpreterSettingManager = new InterpreterSettingManager(conf, null, null, null);
+    factory = new InterpreterFactory(interpreterSettingManager);
 
-    ArrayList<InterpreterInfo> interpreterInfos = new ArrayList<>();
-    interpreterInfos.add(new InterpreterInfo(MockInterpreter1.class.getName(), "mock1", true, new HashMap<String, Object>()));
-    interpreterSettingManager.add("mock1", interpreterInfos, new ArrayList<Dependency>(), new InterpreterOption(),
-        Maps.<String, InterpreterProperty>newHashMap(), "mock1", null);
-    interpreterSettingManager.createNewSetting("mock1", "mock1", new ArrayList<Dependency>(), new InterpreterOption(true), new Properties());
+    Properties properties = new Properties();
+    properties.setProperty("ZEPPELIN_CLASSPATH", new File("./target/test-classes").getAbsolutePath());
+    ArrayList<InterpreterInfo> interpreterInfos1 = new ArrayList<>();
+    interpreterInfos1.add(new InterpreterInfo(MockInterpreter1.class.getName(), "mock1", true, new HashMap<String, Object>()));
+    InterpreterSetting interpreterSetting1 = new InterpreterSetting.Builder()
+        .setId("id1")
+        .setName("mock1")
+        .setGroup("mock1")
+        .setInterpreterInfos(interpreterInfos1)
+        .setProperties(properties)
+        .create();
+    interpreterSettingManager.addInterpreterSetting(interpreterSetting1);
 
     ArrayList<InterpreterInfo> interpreterInfos2 = new ArrayList<>();
     interpreterInfos2.add(new InterpreterInfo(MockInterpreter2.class.getName(), "mock2", true, new HashMap<String, Object>()));
-    interpreterSettingManager.add("mock2", interpreterInfos2, new ArrayList<Dependency>(), new InterpreterOption(),
-        Maps.<String, InterpreterProperty>newHashMap(), "mock2", null);
-    interpreterSettingManager.createNewSetting("mock2", "mock2", new ArrayList<Dependency>(), new InterpreterOption(), new Properties());
+    InterpreterSetting interpreterSetting2 = new InterpreterSetting.Builder()
+        .setId("id2")
+        .setName("mock2")
+        .setGroup("mock2")
+        .setInterpreterInfos(interpreterInfos2)
+        .setProperties(properties)
+        .create();
+    interpreterSettingManager.addInterpreterSetting(interpreterSetting2);
 
     SearchService search = mock(SearchService.class);
     notebookRepo = new VFSNotebookRepo(conf);
@@ -151,7 +158,7 @@ public class HeliumApplicationFactoryTest implements JobListenerFactory {
         "", "");
 
     Note note1 = notebook.createNote(anonymous);
-    interpreterSettingManager.setInterpreters("user", note1.getId(),interpreterSettingManager.getDefaultInterpreterSettingList());
+    interpreterSettingManager.setInterpreterBinding("user", note1.getId(),interpreterSettingManager.getInterpreterSettingIds());
 
     Paragraph p1 = note1.addNewParagraph(AuthenticationInfo.ANONYMOUS);
 
@@ -197,7 +204,7 @@ public class HeliumApplicationFactoryTest implements JobListenerFactory {
         "", "");
 
     Note note1 = notebook.createNote(anonymous);
-    interpreterSettingManager.setInterpreters("user", note1.getId(), interpreterSettingManager.getDefaultInterpreterSettingList());
+    interpreterSettingManager.setInterpreterBinding("user", note1.getId(), interpreterSettingManager.getInterpreterSettingIds());
 
     Paragraph p1 = note1.addNewParagraph(AuthenticationInfo.ANONYMOUS);
 
@@ -237,7 +244,7 @@ public class HeliumApplicationFactoryTest implements JobListenerFactory {
         "", "");
 
     Note note1 = notebook.createNote(anonymous);
-    notebook.bindInterpretersToNote("user", note1.getId(), interpreterSettingManager.getDefaultInterpreterSettingList());
+    notebook.bindInterpretersToNote("user", note1.getId(), interpreterSettingManager.getInterpreterSettingIds());
 
     Paragraph p1 = note1.addNewParagraph(AuthenticationInfo.ANONYMOUS);
 
@@ -298,7 +305,7 @@ public class HeliumApplicationFactoryTest implements JobListenerFactory {
         "", "");
 
     Note note1 = notebook.createNote(anonymous);
-    notebook.bindInterpretersToNote("user", note1.getId(), interpreterSettingManager.getDefaultInterpreterSettingList());
+    notebook.bindInterpretersToNote("user", note1.getId(), interpreterSettingManager.getInterpreterSettingIds());
     String mock1IntpSettingId = null;
     for (InterpreterSetting setting : notebook.getBindedInterpreterSettings(note1.getId())) {
       if (setting.getName().equals("mock1")) {

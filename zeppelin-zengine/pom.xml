@@ -36,7 +36,6 @@
 
   <properties>
     <!--library versions-->
-    <commons.lang3.version>3.4</commons.lang3.version>
     <commons.vfs2.version>2.0</commons.vfs2.version>
     <aws.sdk.s3.version>1.10.62</aws.sdk.s3.version>
     <azure.storage.version>4.0.0</azure.storage.version>
@@ -60,6 +59,14 @@
     </dependency>
 
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>zeppelin-interpreter</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -67,11 +74,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>commons-configuration</groupId>
-      <artifactId>commons-configuration</artifactId>
     </dependency>
 
     <dependency>
@@ -282,12 +284,6 @@
       <artifactId>websocket-server</artifactId>
       <version>${jetty.version}</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons.lang3.version}</version>
     </dependency>
 
     <dependency>

@@ -181,7 +181,7 @@ public class AngularObject<T> {
       ws.addAll(watchers);
     }
 
-    ExecutorService executor = ExecutorFactory.singleton().createOrGet("angularObjectWatcher", 50);
+    ExecutorService executor = ExecutorFactory.singleton().getOrCreate("angularObjectWatcher", 50);
     for (final AngularObjectWatcher w : ws) {
       executor.submit(new Runnable() {
         @Override

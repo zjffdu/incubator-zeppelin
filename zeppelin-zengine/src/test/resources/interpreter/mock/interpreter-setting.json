@@ -1,9 +1,58 @@
 [
   {
+    "group": "mock1",
+    "name": "mock1",
+    "className": "org.apache.zeppelin.interpreter.mock.MockInterpreter1",
+    "properties": {
+    },
+    "option": {
+      "remote": false,
+      "port": -1,
+      "perNote": "shared",
+      "perUser": "shared",
+      "isExistingProcess": false,
+      "setPermission": false,
+      "users": []
+    },
+    "editor": {
+      "language": "java"
+    }
+  },
+
+  {
+    "group": "mock2",
+    "name": "mock2",
+    "className": "org.apache.zeppelin.interpreter.mock.MockInterpreter2",
+    "properties": {
+    },
+    "option": {
+      "remote": false,
+      "port": -1,
+      "perNote": "shared",
+      "perUser": "shared",
+      "isExistingProcess": false,
+      "setPermission": false,
+      "users": []
+    },
+    "editor": {
+      "language": "java"
+    }
+  },
+
+  {
     "group": "mock11",
     "name": "mock11",
     "className": "org.apache.zeppelin.interpreter.mock.MockInterpreter11",
     "properties": {
+    },
+    "option": {
+      "remote": false,
+      "port": -1,
+      "perNote": "shared",
+      "perUser": "shared",
+      "isExistingProcess": false,
+      "setPermission": false,
+      "users": []
     },
     "editor": {
       "language": "java"

@@ -17,35 +17,43 @@
 package org.apache.zeppelin.resource;
 
 import com.google.gson.Gson;
-import org.apache.zeppelin.user.AuthenticationInfo;
+import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.display.GUI;
 import org.apache.zeppelin.interpreter.*;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreter;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterEventPoller;
+import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcessListener;
 import org.apache.zeppelin.interpreter.remote.mock.MockInterpreterResourcePool;
+import org.apache.zeppelin.user.AuthenticationInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Properties;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 /**
  * Unittest for DistributedResourcePool
  */
 public class DistributedResourcePoolTest {
+  private static final Logger LOGGER = LoggerFactory.getLogger(DistributedResourcePool.class);
   private static final String INTERPRETER_SCRIPT =
           System.getProperty("os.name").startsWith("Windows") ?
                   "../bin/interpreter.cmd" :
                   "../bin/interpreter.sh";
-  private InterpreterGroup intpGroup1;
-  private InterpreterGroup intpGroup2;
-  private HashMap<String, String> env;
+
+  private File tmpDir;
+  private InterpreterSettingManager interpreterSettingManager;
+  private InterpreterSetting interpreterSetting;
   private RemoteInterpreter intp1;
   private RemoteInterpreter intp2;
   private InterpreterContext context;
@@ -55,50 +63,41 @@ public class DistributedResourcePoolTest {
 
   @Before
   public void setUp() throws Exception {
-    env = new HashMap<>();
-    env.put("ZEPPELIN_CLASSPATH", new File("./target/test-classes").getAbsolutePath());
+    tmpDir = new File(System.getProperty("java.io.tmpdir")+"/ZeppelinLTest_"+System.currentTimeMillis());
+    tmpDir.mkdirs();
+    LOGGER.info("Create tmp directory: {} as root folder of ZEPPELIN_INTERPRETER_DIR & ZEPPELIN_CONF_DIR", tmpDir.getAbsolutePath());
+    String interpreterDir = tmpDir + "/interpreter";
+    String confDir = tmpDir + "/conf";
+    new File(confDir).mkdirs();
+    new File(interpreterDir).mkdirs();
+    System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_CONF_DIR.getVarName(), confDir);
+    System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_INTERPRETER_DIR.getVarName(), interpreterDir);
+    System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_INTERPRETER_GROUP_ORDER.getVarName(), "test");
+    interpreterSettingManager = new InterpreterSettingManager(new ZeppelinConfiguration(), new InterpreterOption(),
+        null, null, null);
 
-    Properties p = new Properties();
+    InterpreterOption interpreterOption = new InterpreterOption();
+    interpreterOption.setRemote(true);
+    interpreterOption.setPerUser("Isolated");
+    InterpreterInfo interpreterInfo1 = new InterpreterInfo(MockInterpreterResourcePool.class.getName(), "mock", true, new HashMap<String, Object>());
+    List<InterpreterInfo> interpreterInfos = new ArrayList<>();
+    interpreterInfos.add(interpreterInfo1);
+    InterpreterRunner runner = new InterpreterRunner(INTERPRETER_SCRIPT, INTERPRETER_SCRIPT);
+    interpreterSetting = new InterpreterSetting.Builder()
+        .setId("test")
+        .setName("test")
+        .setGroup("test")
+        .setInterpreterInfos(interpreterInfos)
+        .setOption(interpreterOption)
+        .setRunner(runner)
+        .setPath("../interpeters/test")
+        .setIntepreterSettingManager(interpreterSettingManager)
+        .setRemoteInterpreterProcessListener(mock(RemoteInterpreterProcessListener.class))
+        .create();
+    interpreterSettingManager.addInterpreterSetting(interpreterSetting);
 
-    intp1 = new RemoteInterpreter(
-        p,
-        "note",
-        MockInterpreterResourcePool.class.getName(),
-        new File(INTERPRETER_SCRIPT).getAbsolutePath(),
-        "fake",
-        "fakeRepo",
-        env,
-        10 * 1000,
-        null,
-        null,
-        "anonymous",
-        false
-    );
-
-    intpGroup1 = new InterpreterGroup("intpGroup1");
-    intpGroup1.put("note", new LinkedList<Interpreter>());
-    intpGroup1.get("note").add(intp1);
-    intp1.setInterpreterGroup(intpGroup1);
-
-    intp2 = new RemoteInterpreter(
-        p,
-        "note",
-        MockInterpreterResourcePool.class.getName(),
-        new File(INTERPRETER_SCRIPT).getAbsolutePath(),
-        "fake",
-        "fakeRepo",        
-        env,
-        10 * 1000,
-        null,
-        null,
-        "anonymous",
-        false
-    );
-
-    intpGroup2 = new InterpreterGroup("intpGroup2");
-    intpGroup2.put("note", new LinkedList<Interpreter>());
-    intpGroup2.get("note").add(intp2);
-    intp2.setInterpreterGroup(intpGroup2);
+    intp1 = (RemoteInterpreter) interpreterSetting.getDefaultInterpreter("user1", "note1");
+    intp2 = (RemoteInterpreter) interpreterSetting.getDefaultInterpreter("user2", "note1");
 
     context = new InterpreterContext(
         "note",
@@ -117,26 +116,13 @@ public class DistributedResourcePoolTest {
     intp1.open();
     intp2.open();
 
-    eventPoller1 = new RemoteInterpreterEventPoller(null, null);
-    eventPoller1.setInterpreterGroup(intpGroup1);
-    eventPoller1.setInterpreterProcess(intpGroup1.getRemoteInterpreterProcess());
-
-    eventPoller2 = new RemoteInterpreterEventPoller(null, null);
-    eventPoller2.setInterpreterGroup(intpGroup2);
-    eventPoller2.setInterpreterProcess(intpGroup2.getRemoteInterpreterProcess());
-
-    eventPoller1.start();
-    eventPoller2.start();
+    eventPoller1 = intp1.getInterpreterGroup().getRemoteInterpreterProcess().getRemoteInterpreterEventPoller();
+    eventPoller2 = intp1.getInterpreterGroup().getRemoteInterpreterProcess().getRemoteInterpreterEventPoller();
   }
 
   @After
   public void tearDown() throws Exception {
-    eventPoller1.shutdown();
-    intp1.close();
-    intpGroup1.close();
-    eventPoller2.shutdown();
-    intp2.close();
-    intpGroup2.close();
+    interpreterSettingManager.close();
   }
 
   @Test
@@ -235,13 +221,13 @@ public class DistributedResourcePoolTest {
 
 
     // then get all resources.
-    assertEquals(4, ResourcePoolUtils.getAllResources().size());
+    assertEquals(4, interpreterSettingManager.getAllResources().size());
 
     // when remove all resources from note1
-    ResourcePoolUtils.removeResourcesBelongsToNote("note1");
+    interpreterSettingManager.removeResourcesBelongsToNote("note1");
 
     // then resources should be removed.
-    assertEquals(2, ResourcePoolUtils.getAllResources().size());
+    assertEquals(2, interpreterSettingManager.getAllResources().size());
     assertEquals("", gson.fromJson(
         intp1.interpret("get note1:paragraph1:key1", context).message().get(0).getData(),
         String.class));
@@ -251,10 +237,10 @@ public class DistributedResourcePoolTest {
 
 
     // when remove all resources from note2:paragraph1
-    ResourcePoolUtils.removeResourcesBelongsToParagraph("note2", "paragraph1");
+    interpreterSettingManager.removeResourcesBelongsToParagraph("note2", "paragraph1");
 
     // then 1
-    assertEquals(1, ResourcePoolUtils.getAllResources().size());
+    assertEquals(1, interpreterSettingManager.getAllResources().size());
     assertEquals("value2", gson.fromJson(
         intp1.interpret("get note2:paragraph2:key2", context).message().get(0).getData(),
         String.class));

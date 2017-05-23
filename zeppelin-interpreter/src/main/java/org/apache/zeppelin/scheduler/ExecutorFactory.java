@@ -16,6 +16,9 @@
  */
 package org.apache.zeppelin.scheduler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -25,35 +28,31 @@ import java.util.concurrent.Executors;
  *
  */
 public class ExecutorFactory {
-  private static ExecutorFactory _executor;
-  private static Long _executorLock = new Long(0);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorFactory.class);
+  private static ExecutorFactory instance;
 
-  Map<String, ExecutorService> executor = new HashMap<>();
+  private Map<String, ExecutorService> executor = new HashMap<>();
 
-  public ExecutorFactory() {
+  private ExecutorFactory() {
 
   }
 
   public static ExecutorFactory singleton() {
-    if (_executor == null) {
-      synchronized (_executorLock) {
-        if (_executor == null) {
-          _executor = new ExecutorFactory();
+    if (instance == null) {
+      synchronized (ExecutorFactory.class) {
+        if (instance == null) {
+          instance = new ExecutorFactory();
         }
       }
     }
-    return _executor;
+    return instance;
   }
 
-  public ExecutorService getDefaultExecutor() {
-    return createOrGet("default");
+  public ExecutorService getOrCreate(String name) {
+    return getOrCreate(name, 100);
   }
 
-  public ExecutorService createOrGet(String name) {
-    return createOrGet(name, 100);
-  }
-
-  public ExecutorService createOrGet(String name, int numThread) {
+  public ExecutorService getOrCreate(String name, int numThread) {
     synchronized (executor) {
       if (!executor.containsKey(name)) {
         executor.put(name, Executors.newScheduledThreadPool(numThread));
@@ -68,6 +67,8 @@ public class ExecutorFactory {
         ExecutorService e = executor.get(name);
         e.shutdown();
         executor.remove(name);
+      } else {
+        LOGGER.warn("Try to shutdown an unknown executor: " + name);
       }
     }
   }
@@ -75,7 +76,7 @@ public class ExecutorFactory {
 
   public void shutdownAll() {
     synchronized (executor) {
-      for (String name : executor.keySet()){
+      for (String name : executor.keySet()) {
         shutdown(name);
       }
     }

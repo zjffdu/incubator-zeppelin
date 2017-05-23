@@ -21,11 +21,12 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zeppelin.interpreter.Interpreter;
+import org.apache.zeppelin.interpreter.InterpreterGroup;
+import org.apache.zeppelin.interpreter.InterpreterSettingManager;
+import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess;
+import org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService;
 import org.apache.zeppelin.notebook.Paragraph;
-import org.apache.zeppelin.resource.DistributedResourcePool;
-import org.apache.zeppelin.resource.ResourcePool;
-import org.apache.zeppelin.resource.ResourcePoolUtils;
-import org.apache.zeppelin.resource.ResourceSet;
+import org.apache.zeppelin.resource.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ public class Helium {
   private final Gson gson;
   private final HeliumBundleFactory bundleFactory;
   private final HeliumApplicationFactory applicationFactory;
+  private final InterpreterSettingManager interpreterSettingManager;
 
   Map<String, List<HeliumPackageSearchResult>> allPackages;
 
@@ -56,13 +58,15 @@ public class Helium {
       String registryPaths,
       File registryCacheDir,
       HeliumBundleFactory bundleFactory,
-      HeliumApplicationFactory applicationFactory)
+      HeliumApplicationFactory applicationFactory,
+      InterpreterSettingManager interpreterSettingManager)
       throws IOException {
     this.heliumConfPath = heliumConfPath;
     this.registryPaths = registryPaths;
     this.registryCacheDir = registryCacheDir;
     this.bundleFactory = bundleFactory;
     this.applicationFactory = applicationFactory;
+    this.interpreterSettingManager = interpreterSettingManager;
 
     GsonBuilder builder = new GsonBuilder();
     builder.setPrettyPrinting();
@@ -364,7 +368,7 @@ public class Helium {
         allResources = resourcePool.getAll();
       }
     } else {
-      allResources = ResourcePoolUtils.getAllResources();
+      allResources = interpreterSettingManager.getAllResources();
     }
 
     for (List<HeliumPackageSearchResult> pkgs : getAllPackageInfoWithoutRefresh().values()) {
@@ -505,5 +509,41 @@ public class Helium {
     mixed.put("confSpec", spec);
 
     return mixed;
+  }
+
+  public ResourceSet getAllResources() {
+    return getAllResourcesExcept(null);
+  }
+
+  private ResourceSet getAllResourcesExcept(String interpreterGroupExcludsion) {
+    ResourceSet resourceSet = new ResourceSet();
+    for (InterpreterGroup intpGroup : interpreterSettingManager.getAllInterpreterGroup()) {
+      if (interpreterGroupExcludsion != null &&
+          intpGroup.getId().equals(interpreterGroupExcludsion)) {
+        continue;
+      }
+
+      RemoteInterpreterProcess remoteInterpreterProcess = intpGroup.getRemoteInterpreterProcess();
+      if (remoteInterpreterProcess == null) {
+        ResourcePool localPool = intpGroup.getResourcePool();
+        if (localPool != null) {
+          resourceSet.addAll(localPool.getAll());
+        }
+      } else if (remoteInterpreterProcess.isRunning()) {
+        List<String> resourceList = remoteInterpreterProcess.callRemoteFunction(
+            new RemoteInterpreterProcess.RemoteFunction<List<String>>() {
+              @Override
+              public List<String> call(RemoteInterpreterService.Client client) throws Exception {
+                return client.resourcePoolGetAll();
+              }
+            }
+        );
+        Gson gson = new Gson();
+        for (String res : resourceList) {
+          resourceSet.add(gson.fromJson(res, Resource.class));
+        }
+      }
+    }
+    return resourceSet;
   }
 }

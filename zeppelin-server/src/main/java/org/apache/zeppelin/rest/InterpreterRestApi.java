@@ -47,7 +47,6 @@ import org.sonatype.aether.repository.RemoteRepository;
 import org.apache.zeppelin.annotation.ZeppelinApi;
 import org.apache.zeppelin.dep.Repository;
 import org.apache.zeppelin.interpreter.InterpreterException;
-import org.apache.zeppelin.interpreter.InterpreterFactory;
 import org.apache.zeppelin.interpreter.InterpreterSetting;
 import org.apache.zeppelin.rest.message.NewInterpreterSettingRequest;
 import org.apache.zeppelin.rest.message.UpdateInterpreterSettingRequest;
@@ -191,7 +190,7 @@ public class InterpreterRestApi {
 
       String noteId = request == null ? null : request.getNoteId();
       if (null == noteId) {
-        interpreterSettingManager.close(setting);
+        interpreterSettingManager.close(settingId);
       } else {
         interpreterSettingManager.restart(settingId, noteId, SecurityUtils.getPrincipal());
       }
@@ -214,7 +213,7 @@ public class InterpreterRestApi {
   @GET
   @ZeppelinApi
   public Response listInterpreter(String message) {
-    Map<String, InterpreterSetting> m = interpreterSettingManager.getAvailableInterpreterSettings();
+    Map<String, InterpreterSetting> m = interpreterSettingManager.getInterpreterSettingTemplates();
     return new JsonResponse<>(Status.OK, "", m).build();
   }
 

@@ -17,20 +17,17 @@
 
 package org.apache.zeppelin.scheduler;
 
-import org.apache.zeppelin.scheduler.Job;
-import org.apache.zeppelin.scheduler.Scheduler;
-import org.apache.zeppelin.scheduler.SchedulerFactory;
 import org.apache.zeppelin.scheduler.Job.Status;
 
 import junit.framework.TestCase;
 
 public class FIFOSchedulerTest extends TestCase {
 
-	private SchedulerFactory schedulerSvc;
+	private SchedulerFactory schedulerFactory;
 
 	@Override
   public void setUp() throws Exception{
-		schedulerSvc = new SchedulerFactory();
+		schedulerFactory = new SchedulerFactory();
 	}
 
 	@Override
@@ -39,7 +36,7 @@ public class FIFOSchedulerTest extends TestCase {
 	}
 
 	public void testRun() throws InterruptedException{
-		Scheduler s = schedulerSvc.createOrGetFIFOScheduler("test");
+		Scheduler s = schedulerFactory.createOrGetFIFOScheduler("test");
 		assertEquals(0, s.getJobsRunning().size());
 		assertEquals(0, s.getJobsWaiting().size());
 
@@ -66,7 +63,7 @@ public class FIFOSchedulerTest extends TestCase {
 	}
 
 	public void testAbort() throws InterruptedException{
-		Scheduler s = schedulerSvc.createOrGetFIFOScheduler("test");
+		Scheduler s = schedulerFactory.createOrGetFIFOScheduler("test");
 		assertEquals(0, s.getJobsRunning().size());
 		assertEquals(0, s.getJobsWaiting().size());
 
@@ -91,7 +88,7 @@ public class FIFOSchedulerTest extends TestCase {
 	}
 
 	 public void testRemoveFromWaitingQueue() throws InterruptedException{
-	    Scheduler s = schedulerSvc.createOrGetFIFOScheduler("test");
+	    Scheduler s = schedulerFactory.createOrGetFIFOScheduler("test");
 	    assertEquals(0, s.getJobsRunning().size());
 	    assertEquals(0, s.getJobsWaiting().size());
 

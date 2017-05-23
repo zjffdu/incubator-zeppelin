@@ -69,10 +69,10 @@ public class Paragraph extends Job implements Serializable, Cloneable {
 
   // since zeppelin-0.7.0, zeppelin stores multiple results of the paragraph
   // see ZEPPELIN-212
-  Object results;
+  volatile Object results;
 
   // For backward compatibility of note.json format after ZEPPELIN-212
-  Object result;
+  volatile Object result;
   private Map<String, ParagraphRuntimeInfo> runtimeInfos;
 
   /**
@@ -133,7 +133,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
   }
 
   @Override
-  public void setResult(Object results) {
+  public synchronized void setResult(Object results) {
     this.results = results;
   }
 
@@ -318,7 +318,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
   }
 
   @Override
-  public Object getReturn() {
+  public synchronized Object getReturn() {
     return results;
   }
 
@@ -365,6 +365,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
       logger.error("Can not find interpreter name " + repl);
       throw new RuntimeException("Can not find interpreter for " + getRequiredReplName());
     }
+    //TODO(zjffdu) check interpreter setting status in interpreter setting itself
     InterpreterSetting intp = getInterpreterSettingById(repl.getInterpreterGroup().getId());
     while (intp.getStatus().equals(
         org.apache.zeppelin.interpreter.InterpreterSetting.Status.DOWNLOADING_DEPENDENCIES)) {
@@ -524,8 +525,10 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     if (!interpreterSettingManager.getInterpreterSettings(note.getId()).isEmpty()) {
       InterpreterSetting intpGroup =
           interpreterSettingManager.getInterpreterSettings(note.getId()).get(0);
-      registry = intpGroup.getInterpreterGroup(getUser(), note.getId()).getAngularObjectRegistry();
-      resourcePool = intpGroup.getInterpreterGroup(getUser(), note.getId()).getResourcePool();
+      registry = intpGroup.getOrCreateInterpreterGroup(getUser(), note.getId())
+          .getAngularObjectRegistry();
+      resourcePool = intpGroup.getOrCreateInterpreterGroup(getUser(), note.getId())
+          .getResourcePool();
     }
 
     List<InterpreterContextRunner> runners = new LinkedList<>();
@@ -555,8 +558,10 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     if (!interpreterSettingManager.getInterpreterSettings(note.getId()).isEmpty()) {
       InterpreterSetting intpGroup =
           interpreterSettingManager.getInterpreterSettings(note.getId()).get(0);
-      registry = intpGroup.getInterpreterGroup(getUser(), note.getId()).getAngularObjectRegistry();
-      resourcePool = intpGroup.getInterpreterGroup(getUser(), note.getId()).getResourcePool();
+      registry = intpGroup.getOrCreateInterpreterGroup(getUser(), note.getId())
+          .getAngularObjectRegistry();
+      resourcePool = intpGroup.getOrCreateInterpreterGroup(getUser(), note.getId())
+          .getResourcePool();
     }
 
     List<InterpreterContextRunner> runners = new LinkedList<>();

@@ -18,15 +18,19 @@
 package org.apache.zeppelin.interpreter;
 
 
+import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.zeppelin.annotation.ZeppelinApi;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.zeppelin.annotation.Experimental;
+import org.apache.zeppelin.annotation.ZeppelinApi;
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.scheduler.SchedulerFactory;
@@ -59,6 +63,19 @@ public abstract class Interpreter {
    */
   @ZeppelinApi
   public abstract void close();
+
+  /**
+   * Run precode if exists.
+   */
+  @ZeppelinApi
+  public InterpreterResult executePrecode(InterpreterContext interpreterContext) {
+    String simpleName = this.getClass().getSimpleName();
+    String precode = getProperty(String.format("zeppelin.%s.precode", simpleName));
+    if (StringUtils.isNotBlank(precode)) {
+      return interpret(precode, interpreterContext);
+    }
+    return null;
+  }
 
   /**
    * Run code and return result, in synchronous way.

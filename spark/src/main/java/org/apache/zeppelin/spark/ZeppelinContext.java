@@ -46,6 +46,8 @@ import org.apache.zeppelin.interpreter.InterpreterContextRunner;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterHookRegistry;
 import org.apache.zeppelin.interpreter.RemoteWorksController;
+import org.apache.zeppelin.interpreter.ResultMessages;
+import org.apache.zeppelin.interpreter.remote.RemoteEventClientWrapper;
 import org.apache.zeppelin.spark.dep.SparkDependencyResolver;
 import org.apache.zeppelin.resource.Resource;
 import org.apache.zeppelin.resource.ResourcePool;
@@ -293,9 +295,9 @@ public class ZeppelinContext {
     }
 
     if (rows.length > maxResult) {
-      msg.append("<!--TABLE_COMMENT-->");
       msg.append("\n");
-      msg.append("<font color=red>Results are limited by " + maxResult + ".</font>");
+      msg.append(ResultMessages.getExceedsLimitRowsMessage(maxResult,
+          SparkSqlInterpreter.MAX_RESULTS));
     }
     sc.clearJobGroup();
     return msg.toString();

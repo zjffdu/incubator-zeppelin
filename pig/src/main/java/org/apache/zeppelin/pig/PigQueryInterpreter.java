@@ -46,6 +46,7 @@ import java.util.Properties;
 public class PigQueryInterpreter extends BasePigInterpreter {
 
   private static Logger LOGGER = LoggerFactory.getLogger(PigQueryInterpreter.class);
+  private static final String MAX_RESULTS = "zeppelin.pig.maxResult";
   private PigServer pigServer;
   private int maxResult;
 
@@ -56,7 +57,7 @@ public class PigQueryInterpreter extends BasePigInterpreter {
   @Override
   public void open() {
     pigServer = getPigInterpreter().getPigServer();
-    maxResult = Integer.parseInt(getProperty("zeppelin.pig.maxResult"));
+    maxResult = Integer.parseInt(getProperty(MAX_RESULTS));
   }
 
   @Override
@@ -105,7 +106,7 @@ public class PigQueryInterpreter extends BasePigInterpreter {
       Iterator<Tuple> iter = pigServer.openIterator(alias);
       boolean firstRow = true;
       int index = 0;
-      while (iter.hasNext() && index <= maxResult) {
+      while (iter.hasNext() && index < maxResult) {
         index++;
         Tuple tuple = iter.next();
         if (firstRow && !schemaKnown) {
@@ -119,7 +120,8 @@ public class PigQueryInterpreter extends BasePigInterpreter {
         resultBuilder.append("\n");
       }
       if (index >= maxResult && iter.hasNext()) {
-        resultBuilder.append("\n<font color=red>Results are limited by " + maxResult + ".</font>");
+        resultBuilder.append("\n");
+        resultBuilder.append(ResultMessages.getExceedsLimitRowsMessage(maxResult, MAX_RESULTS));
       }
     } catch (IOException e) {
       // Extract error in the following order

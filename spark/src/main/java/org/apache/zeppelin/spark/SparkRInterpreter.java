@@ -204,7 +204,8 @@ public class SparkRInterpreter extends Interpreter {
   }
 
   @Override
-  public List<InterpreterCompletion> completion(String buf, int cursor) {
+  public List<InterpreterCompletion> completion(String buf, int cursor,
+      InterpreterContext interpreterContext) {
     return new ArrayList<>();
   }
 

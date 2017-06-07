@@ -1,5 +1,14 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
-
+                set snapshot versions - jenkins (0.7.0.2.6.0.0-SNAPSHOT to 0.7.0.2.6.1.0-SNAPSHOT)
+Zeppelin 2367   Hive JDBC proxy user option should be available even without kerberos
+ZEPPELIN-2216   general solution to precode. refactoring jdbc precode Tinkoff
+ZEPPELIN-2434   Credential feature does work in JDBC interpreter
+ZEPPELIN-2297   improvements  to jdbc autocompleter
+ZEPPELIN-2279   excluded comments from SQL Tinkoff
+ZEPPELIN-2257   notification about incompleteness of data
+ZEPPELIN-2245   separate precode into JDBCInterpreter Tinkoff
+ZEPPELIN-1968   Added property to disable hive user impersonation
+ZEPPELIN-1988   add property "precode" to JDBCInterpreter
 ZEPPELIN-2003   Remove PostgresqlInterpreter
 ZEPPELIN-1876   improved comptetion with schema/table/column separation + sqlcompleter tests
 
@@ -16,6 +25,6 @@ BUG-74897       Include Spark 2 Lab Notebooks with Zeppelin in HDP 2.6
 BUG-73354       Zeppelin ui was unreachable till 2 minutes after it was restarted
 BUG-73712       Ship only approved notebooks with Zeppelin OOB.
 BUG-67291       Zeppelin build failure
- 
+
 
 Note to @prabhu, this is based (e3071d66f0acdfe62ad62c794e53e14956ab2a63) [ZEPPELIN-2492] Use single Dockerfile for each tag (branch-0.7)

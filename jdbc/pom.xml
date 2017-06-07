@@ -15,21 +15,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <artifactId>zeppelin</artifactId>
     <groupId>org.apache.zeppelin</groupId>
-    <version>0.7.0.2.6.0.0-SNAPSHOT</version>
+    <version>0.7.0.2.6.1.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.zeppelin</groupId>
   <artifactId>zeppelin-jdbc</artifactId>
   <packaging>jar</packaging>
-  <version>0.7.0.2.6.0.0-SNAPSHOT</version>
+  <version>0.7.0.2.6.1.0-SNAPSHOT</version>
   <name>Zeppelin: JDBC interpreter</name>
   
   <properties>
@@ -39,10 +37,10 @@
     <hadoop.common.version>2.7.2</hadoop.common.version>
     <h2.version>1.4.190</h2.version>
     <commons.dbcp2.version>2.0.1</commons.dbcp2.version>
-    <hadoop-common.version>2.7.3.2.6.0.2-SNAPSHOT</hadoop-common.version>
-    <hive.version>1.2.1000.2.6.0.2-SNAPSHOT</hive.version>
-    <hive2.version>2.1.0.2.6.0.2-SNAPSHOT</hive2.version>
-    <phoenix.version>4.7.0.2.6.0.2-SNAPSHOT</phoenix.version>
+    <hadoop-common.version>2.7.3.2.6.1.0-SNAPSHOT</hadoop-common.version>
+    <hive.version>1.2.1000.2.6.1.0-SNAPSHOT</hive.version>
+    <hive2.version>2.1.0.2.6.1.0-SNAPSHOT</hive2.version>
+    <phoenix.version>4.7.0.2.6.1.0-SNAPSHOT</phoenix.version>
 
     <!--test library versions-->
     <mockrunner.jdbc.version>1.0.8</mockrunner.jdbc.version>

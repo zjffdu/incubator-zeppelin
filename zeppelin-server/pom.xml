@@ -15,27 +15,26 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <artifactId>zeppelin</artifactId>
     <groupId>org.apache.zeppelin</groupId>
-    <version>0.7.0.2.6.0.0-SNAPSHOT</version>
+    <version>0.7.0.2.6.1.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
   <groupId>org.apache.zeppelin</groupId>
   <artifactId>zeppelin-server</artifactId>
   <packaging>jar</packaging>
-  <version>0.7.0.2.6.0.0-SNAPSHOT</version>
+  <version>0.7.0.2.6.1.0-SNAPSHOT</version>
   <name>Zeppelin: Server</name>
 
   <properties>
     <!--library versions-->
     <cxf.version>2.7.8</cxf.version>
-    <hadoop-common.version>2.6.0</hadoop-common.version>
+    <hadoop-common.version>2.7.3.2.6.1.0-SNAPSHOT</hadoop-common.version>
     <quartz.scheduler.version>2.2.1</quartz.scheduler.version>
     <jersey.servlet.version>1.13</jersey.servlet.version>
     <javax.ws.rsapi.version>2.0-m10</javax.ws.rsapi.version>
@@ -436,7 +435,7 @@
         <artifactId>scalatest-maven-plugin</artifactId>
         <version>${plugin.scalatest.version}</version>
         <configuration>
-          <stderr/>
+          <stderr />
           <systemProperties>
             <spark.testing>1</spark.testing>
           </systemProperties>
@@ -461,7 +460,7 @@
             <phase>pre-integration-test</phase>
             <configuration>
               <target unless="skipTests">
-                <exec executable="./zeppelin-daemon.sh" dir="${zeppelin.daemon.package.base}" spawn="true">
+                <exec dir="${zeppelin.daemon.package.base}" executable="./zeppelin-daemon.sh" spawn="true">
                   <arg value="start" />
                 </exec>
               </target>
@@ -476,7 +475,7 @@
             <phase>post-integration-test</phase>
             <configuration>
               <target unless="skipTests">
-                <exec executable="./zeppelin-daemon.sh" dir="${zeppelin.daemon.package.base}" spawn="false">
+                <exec dir="${zeppelin.daemon.package.base}" executable="./zeppelin-daemon.sh" spawn="false">
                   <arg value="stop" />
                 </exec>
               </target>

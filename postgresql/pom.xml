@@ -15,30 +15,40 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <artifactId>zeppelin</artifactId>
     <groupId>org.apache.zeppelin</groupId>
     <version>0.7.0.2.6.1.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
   </parent>
 
   <groupId>org.apache.zeppelin</groupId>
-  <artifactId>zeppelin-angular</artifactId>
+  <artifactId>zeppelin-postgresql</artifactId>
   <packaging>jar</packaging>
   <version>0.7.0.2.6.1.0-SNAPSHOT</version>
-  <name>Zeppelin: Angular interpreter</name>
+  <name>Zeppelin: PostgreSQL interpreter</name>
+
+  <properties>
+    <!--library versions-->
+    <postgresql.version>9.4-1201-jdbc41</postgresql.version>
+    <jline.version>2.12.1</jline.version>
+
+    <!--test library versions-->
+    <mockrunner.jdbc.version>1.0.8</mockrunner.jdbc.version>
+
+  </properties>
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.apache.zeppelin</groupId>
       <artifactId>zeppelin-interpreter</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
-    </dependency> 
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -49,10 +59,40 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
-    
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>jline</groupId>
+      <artifactId>jline</artifactId>
+      <version>${jline.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mockrunner</groupId>
+      <artifactId>mockrunner-jdbc</artifactId>
+      <version>${mockrunner.jdbc.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -62,9 +102,9 @@
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
-          <execution> 
-            <id>enforce</id> 
-            <phase>none</phase> 
+          <execution>
+            <id>enforce</id>
+            <phase>none</phase>
           </execution>
         </executions>
       </plugin>
@@ -79,7 +119,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/../../interpreter/angular</outputDirectory>
+              <outputDirectory>${project.build.directory}/../../interpreter/psql</outputDirectory>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>false</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
@@ -93,7 +133,7 @@
               <goal>copy</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/../../interpreter/angular</outputDirectory>
+              <outputDirectory>${project.build.directory}/../../interpreter/psql</outputDirectory>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>false</overWriteSnapshots>
               <overWriteIfNewer>true</overWriteIfNewer>
@@ -105,12 +145,11 @@
                   <version>${project.version}</version>
                   <type>${project.packaging}</type>
                 </artifactItem>
-              </artifactItems>              
+              </artifactItems>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-
 </project>

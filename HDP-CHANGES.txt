@@ -1,5 +1,7 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
 
+BUG-80721		ZEPPELIN-1965. Livy SQL Interpreter: Should use df.show(1000, false) to display results
+BUG-80473       ZEPPELIN-2530: Zeppelin user impersonation with domain name suffix is failing
 BUG-80074       jdbc interpreter throwing CNF for SSLContexts class
 BUG-79934       [minor] Improve Session
 BUG-79635       zeppelin build failure in 2.6-maint

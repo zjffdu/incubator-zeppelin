@@ -36,10 +36,12 @@ function baseUrlSrv() {
       skipTrailingSlash(location.pathname) + '/ws';
   };
 
-  this.getRestApiBase = function() {
-    return location.protocol + '//' + location.hostname + ':' +
-      this.getPort() + skipTrailingSlash(location.pathname) +
-      '/api';
+  this.getBase = function() {
+    return location.protocol + '//' + location.hostname + ':' + this.getPort() + location.pathname;
+  };
+
+  this.getRestApiBase = function () {
+    return skipTrailingSlash(this.getBase()) + '/api';
   };
 
   var skipTrailingSlash = function(path) {

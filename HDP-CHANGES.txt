@@ -1,4 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
+
+ZEPPELIN-2601   User does not land on Zeppelin UI Login page after clicking logout button when Zeppelin is running behind proxy server.
                 set snapshot versions - jenkins (0.7.0.2.6.0.0-SNAPSHOT to 0.7.0.2.6.1.0-SNAPSHOT)
 Zeppelin 2367   Hive JDBC proxy user option should be available even without kerberos
 ZEPPELIN-2216   general solution to precode. refactoring jdbc precode Tinkoff

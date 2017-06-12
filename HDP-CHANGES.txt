@@ -1,5 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
 
+ZEPPELIN-2640   Roles are not getting honored from shiro_ini for setting permissions in Zeppelin notebook
 ZEPPELIN-2601   User does not land on Zeppelin UI Login page after clicking logout button when Zeppelin is running behind proxy server.
                 set snapshot versions - jenkins (0.7.0.2.6.0.0-SNAPSHOT to 0.7.0.2.6.1.0-SNAPSHOT)
 Zeppelin 2367   Hive JDBC proxy user option should be available even without kerberos
@@ -14,7 +15,7 @@ ZEPPELIN-1988   add property "precode" to JDBCInterpreter
 ZEPPELIN-2003   Remove PostgresqlInterpreter
 ZEPPELIN-1876   improved comptetion with schema/table/column separation + sqlcompleter tests
 
-BUG-80721		ZEPPELIN-1965. Livy SQL Interpreter: Should use df.show(1000, false) to display results
+BUG-80721       ZEPPELIN-1965. Livy SQL Interpreter: Should use df.show(1000, false) to display results
 BUG-80074       jdbc interpreter throwing CNF for SSLContexts class
 BUG-78257       jdbc interpretor should use only HDP jars
 BUG-77846       upgrade frontend-maven-plugin to latest >= 1.3 to make use of ignore proxy feature

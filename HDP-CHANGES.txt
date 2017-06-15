@@ -1,5 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
 
+ZEPPELIN-2657   Add group search filter option to LdapRealm
 ZEPPELIN-1907   Shell Interpreter does not renew ticket on secure cluster	.
 BUG-82015       Update to Zeppelin (0.7.0.2.6.1.0-SNAPSHOT to 0.7.2.2.6.1.0-SNAPSHOT)
 ZEPPELIN-2640   Roles are not getting honored from shiro_ini for setting permissions in Zeppelin notebook

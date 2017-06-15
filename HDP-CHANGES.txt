@@ -1,5 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
 
+BUG-82015       Update to Zeppelin (0.7.0.2.6.1.0-SNAPSHOT to 0.7.2.2.6.1.0-SNAPSHOT)
 ZEPPELIN-2640   Roles are not getting honored from shiro_ini for setting permissions in Zeppelin notebook
 ZEPPELIN-2601   User does not land on Zeppelin UI Login page after clicking logout button when Zeppelin is running behind proxy server.
                 set snapshot versions - jenkins (0.7.0.2.6.0.0-SNAPSHOT to 0.7.0.2.6.1.0-SNAPSHOT)

@@ -113,6 +113,7 @@ public class Note implements Serializable, ParagraphJobListener {
 
 
   public Note() {
+    generateId();
   }
 
   public Note(NotebookRepo repo, InterpreterFactory factory,

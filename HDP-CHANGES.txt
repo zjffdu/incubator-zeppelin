@@ -1,5 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.2 Apache Release
 
+ZEPPELIN-1515   Notebook: HDFS as a backend storage (Use hadoop client jar)
 BUG-84630       Upgrade Zeppelin compile with Spark2
 ZEPPELIN-2846   Add selenium test case for AnyOfRolesAuthorizationFilter
 BUG-85821       [ZEPPELIN-2825] - Fix Zeppelin to support any of the Shiro roles

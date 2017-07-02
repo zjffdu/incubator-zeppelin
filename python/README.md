@@ -50,3 +50,9 @@ mvn -Dpython.test.exclude='' test -pl python -am
  * Matplotlib figures are displayed inline with the notebook automatically using a built-in backend for zeppelin in conjunction with a post-execute hook.
 
  * `%python.sql` support for Pandas DataFrames is optional and provided using https://github.com/yhat/pandasql if user have one installed
+
+
+ * Jupyter 5.x   conda install jupyter_client
+ * IPython       conda install ipython
+ * ipykernel   (conda install ipykernel)
+ * grpc

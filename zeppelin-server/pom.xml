@@ -177,6 +177,10 @@
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>*</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.woodstox</groupId>
+          <artifactId>woodstox-core-asl</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -285,6 +289,10 @@
         <exclusion>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-compress</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml</groupId>
+          <artifactId>aalto-xml</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

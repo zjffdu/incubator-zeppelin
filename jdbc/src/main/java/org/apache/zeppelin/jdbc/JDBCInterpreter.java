@@ -201,9 +201,11 @@ public class JDBCInterpreter extends KerberosInterpreter {
 
 
   protected boolean isKerboseEnabled() {
-    UserGroupInformation.AuthenticationMethod authType = JDBCSecurityImpl.getAuthtype(property);
-    if (authType.equals(KERBEROS)) {
-      return true;
+    if (!isEmpty(property.getProperty("zeppelin.jdbc.auth.type"))) {
+      UserGroupInformation.AuthenticationMethod authType = JDBCSecurityImpl.getAuthtype(property);
+      if (authType.equals(KERBEROS)) {
+        return true;
+      }
     }
     return false;
   }

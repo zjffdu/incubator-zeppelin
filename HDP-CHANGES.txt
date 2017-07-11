@@ -1,5 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
 
+ZEPPELIN-2760   fix JDBC regression caused after ZEPPELIN-2698
 ZEPPELIN-2698   Apply KerberosInterpreter to JDBCInterpreter
 ZEPPELIN-2657   Add group search filter option to LdapRealm
 ZEPPELIN-1907   Shell Interpreter does not renew ticket on secure cluster	.

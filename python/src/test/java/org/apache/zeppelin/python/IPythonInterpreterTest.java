@@ -308,6 +308,7 @@ public class IPythonInterpreterTest {
     context = getInterpreterContext();
     result = interpreter.interpret("from bokeh.io import output_notebook, show\n" +
         "from bokeh.plotting import figure\n" +
+        "import bkzep\n" +
         "output_notebook(notebook_type='zeppelin')", context);
     Thread.sleep(100);
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
@@ -329,10 +330,11 @@ public class IPythonInterpreterTest {
     Thread.sleep(100);
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
     interpreterResultMessages = context.out.getInterpreterResultMessages();
-    assertEquals(1, interpreterResultMessages.size());
+    assertEquals(2, interpreterResultMessages.size());
     assertEquals(InterpreterResult.Type.HTML, interpreterResultMessages.get(0).getType());
+    assertEquals(InterpreterResult.Type.HTML, interpreterResultMessages.get(1).getType());
     // docs_json is the source data of plotting which bokeh would use to render the plotting.
-    assertTrue(interpreterResultMessages.get(0).getData().contains("docs_json"));
+    assertTrue(interpreterResultMessages.get(1).getData().contains("docs_json"));
 
     // ggplot
     context = getInterpreterContext();

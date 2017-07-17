@@ -426,7 +426,7 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
         ZeppelinServer.notebook.removeNote(note.getId(), anonymous);
     }
 
-    @Test
+//    @Test
     public void pySparkDepLoaderTest() throws IOException, InterpreterException {
         // create new note
         Note note = ZeppelinServer.notebook.createNote(anonymous);

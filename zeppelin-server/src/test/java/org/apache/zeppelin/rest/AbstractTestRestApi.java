@@ -214,6 +214,8 @@ public abstract class AbstractTestRestApi {
         // set spark master and other properties
         sparkProperties.put("master",
             new InterpreterProperty("master", "local[2]", InterpreterPropertyType.TEXTAREA.getValue()));
+        sparkProperties.put("spark.master",
+            new InterpreterProperty("spark.master", "local[2]", InterpreterPropertyType.TEXTAREA.getValue()));
         sparkProperties.put("spark.cores.max",
             new InterpreterProperty("spark.cores.max", "2", InterpreterPropertyType.TEXTAREA.getValue()));
         sparkProperties.put("zeppelin.spark.useHiveContext",
@@ -222,7 +224,7 @@ public abstract class AbstractTestRestApi {
         sparkProperties.put("spark.home",
             new InterpreterProperty("spark.home", getSparkHome(), InterpreterPropertyType.TEXTAREA.getValue()));
         sparkProperties.put("zeppelin.pyspark.useIPython",  new InterpreterProperty("zeppelin.pyspark.useIPython", "false", InterpreterPropertyType.TEXTAREA.getValue()));
-
+        sparkProperties.put("zeppelin.spark.test", new InterpreterProperty("zeppelin.spark.test", "true", InterpreterPropertyType.TEXTAREA.getValue()));
         sparkIntpSetting.setProperties(sparkProperties);
         pySpark = true;
         sparkR = true;
@@ -237,6 +239,8 @@ public abstract class AbstractTestRestApi {
             sparkProperties.put("master",
                 new InterpreterProperty("master", "local[2]", InterpreterPropertyType.TEXTAREA.getValue()));
           }
+          sparkProperties.put("spark.master",
+              new InterpreterProperty("spark.master", "local[2]", InterpreterPropertyType.TEXTAREA.getValue()));
           sparkProperties.put("spark.cores.max",
               new InterpreterProperty("spark.cores.max", "2", InterpreterPropertyType.TEXTAREA.getValue()));
           // set spark home for pyspark
@@ -245,6 +249,7 @@ public abstract class AbstractTestRestApi {
           sparkProperties.put("zeppelin.spark.useHiveContext",
               new InterpreterProperty("zeppelin.spark.useHiveContext", false, InterpreterPropertyType.CHECKBOX.getValue()));
           sparkProperties.put("zeppelin.pyspark.useIPython",  new InterpreterProperty("zeppelin.pyspark.useIPython", "false", InterpreterPropertyType.TEXTAREA.getValue()));
+          sparkProperties.put("zeppelin.spark.test", new InterpreterProperty("zeppelin.spark.test", "true", InterpreterPropertyType.TEXTAREA.getValue()));
 
           pySpark = true;
           sparkR = true;

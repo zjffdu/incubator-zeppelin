@@ -1,5 +1,10 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.3 Apache Release
 
+ZEPPELIN-2833 JDBC Interpreter doesn't follow JDBC specification when getting the results.
+[ZEPPELIN-2930] Releasing session of JDBC interpreter close().
+[hotfix] JDBC connection does not release when got exception.
+[Bug Fix][ZEPPELIN-2554] sql parser fix (backslash)
+[ZEPPELIN-1470] limiting results from jdbc
 BUG-87410       Update Zeppelin with 0.7.3
 ZEPPELIN-2742   Unify Zeppelin's  Storage Layer
 ZEPPELIN-2909   Support shared SparkContext across language in livy interpreter
@@ -51,5 +56,3 @@ BUG-73354       Zeppelin ui was unreachable till 2 minutes after it was restarte
 BUG-73712       Ship only approved notebooks with Zeppelin OOB.
 BUG-67291       Zeppelin build failure
 BUG-87874       ZEPPELIN-2850. URI Data scheme -> Blob creation
-
-Note to @prabhu, this is based (5d246c96b054dcb8854e2beb924fc2c89b767fc1) Preparing Apache Zeppelin release 0.7.3

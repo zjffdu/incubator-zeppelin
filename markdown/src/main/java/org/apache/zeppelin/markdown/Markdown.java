@@ -23,7 +23,6 @@ import java.util.Properties;
 
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
-import org.apache.zeppelin.interpreter.InterpreterPropertyBuilder;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.InterpreterResult.Code;
 import org.apache.zeppelin.interpreter.InterpreterUtils;
@@ -32,6 +31,9 @@ import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.scheduler.SchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.apache.zeppelin.markdown.Markdown.MarkdownParserType.MARKDOWN4j;
+import static org.apache.zeppelin.markdown.Markdown.MarkdownParserType.PEGDOWN;
 
 /**
  * MarkdownInterpreter interpreter for Zeppelin.
@@ -45,37 +47,35 @@ public class Markdown extends Interpreter {
    * Markdown Parser Type.
    */
   public enum MarkdownParserType {
-    PEGDOWN {
-      @Override
-      public String toString() {
-        return PARSER_TYPE_PEGDOWN;
-      }
-    },
 
-    MARKDOWN4j {
-      @Override
-      public String toString() {
-        return PARSER_TYPE_MARKDOWN4J;
-      }
+    FLEXMARK("flexmark"), PEGDOWN("pegdown"), MARKDOWN4j("markdown4j");
+
+    private String name;
+
+    MarkdownParserType(String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
     }
   }
 
   public static final String MARKDOWN_PARSER_TYPE = "markdown.parser.type";
-  public static final String PARSER_TYPE_PEGDOWN = "pegdown";
-  public static final String PARSER_TYPE_MARKDOWN4J = "markdown4j";
 
   public Markdown(Properties property) {
     super(property);
   }
 
-  public static MarkdownParser createMarkdownParser(String parserType) {
+  public MarkdownParser createMarkdownParser(String parserType) {
     LOGGER.debug("Creating " + parserType + " markdown interpreter");
 
-    if (MarkdownParserType.PEGDOWN.toString().equals(parserType)) {
+    if (PEGDOWN.getName().equals(parserType)) {
       return new PegdownParser();
-    } else {
-      /** default parser. */
+    } else if (MARKDOWN4j.getName().equals(parserType)) {
       return new Markdown4jParser();
+    } else {
+      return new FlexmarkParser(property);
     }
   }
 
@@ -95,7 +95,7 @@ public class Markdown extends Interpreter {
 
     try {
       html = parser.render(markdownText);
-    } catch (RuntimeException e) {
+    } catch (IOException e) {
       LOGGER.error("Exception in MarkdownInterpreter while interpret ", e);
       return new InterpreterResult(Code.ERROR, InterpreterUtils.getMostRelevantMessage(e));
     }

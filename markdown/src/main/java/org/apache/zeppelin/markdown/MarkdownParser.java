@@ -17,9 +17,11 @@
 
 package org.apache.zeppelin.markdown;
 
+import java.io.IOException;
+
 /**
  * Abstract Markdown Parser.
  */
 public interface MarkdownParser {
-  String render(String markdownText);
+  String render(String markdownText) throws IOException;
 }

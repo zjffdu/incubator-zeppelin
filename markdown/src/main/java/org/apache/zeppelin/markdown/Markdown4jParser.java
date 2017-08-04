@@ -34,16 +34,7 @@ public class Markdown4jParser implements MarkdownParser {
   }
 
   @Override
-  public String render(String markdownText) {
-    String html = "";
-
-    try {
-      html = processor.process(markdownText);
-    } catch (IOException e) {
-      // convert checked exception to non-checked exception
-      throw new RuntimeException(e);
-    }
-
-    return html;
+  public String render(String markdownText) throws IOException {
+    return processor.process(markdownText);
   }
 }

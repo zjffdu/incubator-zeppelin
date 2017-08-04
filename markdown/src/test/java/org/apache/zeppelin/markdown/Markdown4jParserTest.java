@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.util.Properties;
 
+import static org.apache.zeppelin.markdown.Markdown.MarkdownParserType.MARKDOWN4j;
 import static org.junit.Assert.assertEquals;
 
 public class Markdown4jParserTest {
@@ -33,7 +34,7 @@ public class Markdown4jParserTest {
   @Before
   public void setUp() throws Exception {
     Properties props = new Properties();
-    props.put(Markdown.MARKDOWN_PARSER_TYPE, Markdown.PARSER_TYPE_MARKDOWN4J);
+    props.put(Markdown.MARKDOWN_PARSER_TYPE, MARKDOWN4j.getName());
     md = new Markdown(props);
     md.open();
   }

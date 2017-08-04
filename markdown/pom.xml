@@ -36,6 +36,7 @@
     <commons.lang3.version>3.4</commons.lang3.version>
     <markdown4j.version>2.2-cj-1.0</markdown4j.version>
     <pegdown.version>1.6.0</pegdown.version>
+    <flexmark.version>0.22.20</flexmark.version>
   </properties>
 
   <dependencies>
@@ -54,6 +55,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.vladsch.flexmark</groupId>
+      <artifactId>flexmark-all</artifactId>
+      <version>${flexmark.version}</version>
     </dependency>
 
     <dependency>

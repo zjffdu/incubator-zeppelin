@@ -21,6 +21,8 @@ import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.plugins.PegDownPlugins;
 
+import java.io.IOException;
+
 /**
  * Markdown Parser using pegdown processor.
  */
@@ -39,12 +41,12 @@ public class PegdownParser implements MarkdownParser {
   }
 
   @Override
-  public String render(String markdownText) {
+  public String render(String markdownText) throws IOException {
     String html = "";
     String parsed = processor.markdownToHtml(markdownText);
 
     if (null == parsed) {
-      throw new RuntimeException("Cannot parse markdown text to HTML using pegdown");
+      throw new IOException("Cannot parse markdown text to HTML using pegdown");
     }
 
     html = wrapWithMarkdownClassDiv(parsed);

@@ -40,7 +40,7 @@ public class PegdownParserTest {
   @Before
   public void setUp() throws Exception {
     Properties props = new Properties();
-    props.put(Markdown.MARKDOWN_PARSER_TYPE, Markdown.PARSER_TYPE_PEGDOWN);
+    props.put(Markdown.MARKDOWN_PARSER_TYPE, Markdown.MarkdownParserType.PEGDOWN.getName());
     md = new Markdown(props);
     md.open();
   }

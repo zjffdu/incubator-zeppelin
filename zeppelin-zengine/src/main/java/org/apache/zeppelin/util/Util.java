@@ -17,10 +17,11 @@
 
 package org.apache.zeppelin.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * TODO(moon) : add description.
@@ -45,7 +46,14 @@ public class Util {
    * @return Current Zeppelin version
    */
   public static String getVersion() {
-    return StringUtils.defaultIfEmpty(projectProperties.getProperty(PROJECT_PROPERTIES_VERSION_KEY),
-            StringUtils.EMPTY);
+    final String regex = "^([0-9](.)){2}[0-9]";
+    final Pattern pattern = Pattern.compile(regex);
+    String version = projectProperties.getProperty(PROJECT_PROPERTIES_VERSION_KEY);
+    final Matcher matcher = pattern.matcher(version);
+    if (matcher.find()) {
+      return matcher.group(0);
+    } else {
+      return StringUtils.EMPTY;
+    }
   }
 }

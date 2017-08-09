@@ -1,5 +1,6 @@
-Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
+Changes only in Hortonworks github and not in zeppelin 0.7.2 Apache Release
 
+BUG-84247       Update Zeppelin with 0.7.2
 ZEPPELIN-2775   Strict-Transport-Security and X-XSS-Protection Headers
 ZEPPELIN-1263	  Should specify zeppelin's spark configuration through --conf arguments of spark-submit
 ZEPPELIN-2173   Duplicate user names populated in the Note permission box

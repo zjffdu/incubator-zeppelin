@@ -28,6 +28,7 @@ ZEPPELIN-1968   Added property to disable hive user impersonation
 ZEPPELIN-1988   add property "precode" to JDBCInterpreter
 ZEPPELIN-2003   Remove PostgresqlInterpreter
 ZEPPELIN-1876   improved comptetion with schema/table/column separation + sqlcompleter tests
+ZEPPELIN-2768   Bump up Spark version to 2.2.0
 
 BUG-80721       ZEPPELIN-1965. Livy SQL Interpreter: Should use df.show(1000, false) to display results
 BUG-80074       jdbc interpreter throwing CNF for SSLContexts class

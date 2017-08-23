@@ -222,5 +222,21 @@
       "language": "r",
       "editOnDblClick": false
     }
+  },
+  {
+    "group": "livy",
+    "name": "shared",
+    "className": "org.apache.zeppelin.livy.LivySharedInterpreter",
+    "properties": {
+    },
+    "option": {
+      "remote": true,
+      "port": -1,
+      "perNote": "shared",
+      "perUser": "scoped",
+      "isExistingProcess": false,
+      "setPermission": false,
+      "users": []
+    }
   }
 ]

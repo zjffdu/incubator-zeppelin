@@ -79,6 +79,10 @@ public class LivyVersion {
     return this.newerThanEquals(LIVY_0_4_0);
   }
 
+  public boolean isSharedSupported() {
+    return this.newerThanEquals(LIVY_0_4_0);
+  }
+
   public boolean equals(Object versionToCompare) {
     return version == ((LivyVersion) versionToCompare).version;
   }

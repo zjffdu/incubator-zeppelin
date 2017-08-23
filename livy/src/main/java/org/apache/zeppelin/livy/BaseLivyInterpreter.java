@@ -54,11 +54,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * Base class for livy interpreters.
@@ -77,9 +80,13 @@ public abstract class BaseLivyInterpreter extends Interpreter {
   protected LivyVersion livyVersion;
   private RestTemplate restTemplate;
 
-  // keep tracking the mapping between paragraphId and statementId, so that we can cancel the
-  // statement after we execute it.
-  private ConcurrentHashMap<String, Integer> paragraphId2StmtIdMapping = new ConcurrentHashMap<>();
+  // delegate to sharedInterpreter when it is available
+  protected LivySharedInterpreter sharedInterpreter;
+
+  Set<Object> paragraphsToCancel = Collections.newSetFromMap(
+      new ConcurrentHashMap<Object, Boolean>());
+  private ConcurrentHashMap<String, Integer> paragraphId2StmtProgressMap =
+      new ConcurrentHashMap<>();
 
   public BaseLivyInterpreter(Properties property) {
     super(property);
@@ -98,7 +105,10 @@ public abstract class BaseLivyInterpreter extends Interpreter {
   @Override
   public void open() {
     try {
-      initLivySession();
+      sharedInterpreter = getLivySharedInterpreter();
+      if (!sharedInterpreter.isSupported()) {
+        initLivySession();
+      }
     } catch (LivyException e) {
       String msg = "Fail to create session, please check livy interpreter log and " +
           "livy server log";
@@ -106,8 +116,32 @@ public abstract class BaseLivyInterpreter extends Interpreter {
     }
   }
 
+  protected LivySharedInterpreter getLivySharedInterpreter() {
+    LazyOpenInterpreter lazy = null;
+    LivySharedInterpreter sharedInterpreter = null;
+    Interpreter p = getInterpreterInTheSameSessionByClassName(
+        LivySharedInterpreter.class.getName());
+
+    while (p instanceof WrappedInterpreter) {
+      if (p instanceof LazyOpenInterpreter) {
+        lazy = (LazyOpenInterpreter) p;
+      }
+      p = ((WrappedInterpreter) p).getInnerInterpreter();
+    }
+    sharedInterpreter = (LivySharedInterpreter) p;
+
+    if (lazy != null) {
+      lazy.open();
+    }
+    return sharedInterpreter;
+  }
+
   @Override
   public void close() {
+    if (sharedInterpreter != null && sharedInterpreter.isSupported()) {
+      sharedInterpreter.close();
+      return;
+    }
     if (sessionInfo != null) {
       closeSession(sessionInfo.id);
       // reset sessionInfo to null so that we won't close it twice.
@@ -135,14 +169,6 @@ public abstract class BaseLivyInterpreter extends Interpreter {
     } else {
       LOGGER.info("Create livy session successfully with sessionId: {}", this.sessionInfo.id);
     }
-    // check livy version
-    try {
-      this.livyVersion = getLivyVersion();
-      LOGGER.info("Use livy " + livyVersion);
-    } catch (APINotFoundException e) {
-      this.livyVersion = new LivyVersion("0.2.0");
-      LOGGER.info("Use livy 0.2.0");
-    }
   }
 
   protected abstract String extractAppId() throws LivyException;
@@ -150,17 +176,30 @@ public abstract class BaseLivyInterpreter extends Interpreter {
   protected abstract String extractWebUIAddress() throws LivyException;
 
   public SessionInfo getSessionInfo() {
+    if (sharedInterpreter != null && sharedInterpreter.isSupported()) {
+      return sharedInterpreter.getSessionInfo();
+    }
     return sessionInfo;
+  }
+
+  public String getCodeType() {
+    if (getSessionKind().equalsIgnoreCase("pyspark3")) {
+      return "pyspark";
+    }
+    return getSessionKind();
   }
 
   @Override
   public InterpreterResult interpret(String st, InterpreterContext context) {
+    if (sharedInterpreter != null && sharedInterpreter.isSupported()) {
+      return sharedInterpreter.interpret(st, getCodeType(), context);
+    }
     if (StringUtils.isEmpty(st)) {
       return new InterpreterResult(InterpreterResult.Code.SUCCESS, "");
     }
 
     try {
-      return interpret(st, context.getParagraphId(), this.displayAppInfo, true);
+      return interpret(st, null, context.getParagraphId(), this.displayAppInfo, true);
     } catch (LivyException e) {
       LOGGER.error("Fail to interpret:" + st, e);
       return new InterpreterResult(InterpreterResult.Code.ERROR,
@@ -170,21 +209,12 @@ public abstract class BaseLivyInterpreter extends Interpreter {
 
   @Override
   public void cancel(InterpreterContext context) {
-    if (livyVersion.isCancelSupported()) {
-      String paraId = context.getParagraphId();
-      Integer stmtId = paragraphId2StmtIdMapping.get(paraId);
-      try {
-        if (stmtId != null) {
-          cancelStatement(stmtId);
-        }
-      } catch (LivyException e) {
-        LOGGER.error("Fail to cancel statement " + stmtId + " for paragraph " + paraId, e);
-      } finally {
-        paragraphId2StmtIdMapping.remove(paraId);
-      }
-    } else {
-      LOGGER.warn("cancel is not supported for this version of livy: " + livyVersion);
+    if (sharedInterpreter != null && sharedInterpreter.isSupported()) {
+      sharedInterpreter.cancel(context);
+      return;
     }
+    paragraphsToCancel.add(context.getParagraphId());
+    LOGGER.info("Added paragraph " + context.getParagraphId() + " for cancellation.");
   }
 
   @Override
@@ -194,6 +224,15 @@ public abstract class BaseLivyInterpreter extends Interpreter {
 
   @Override
   public int getProgress(InterpreterContext context) {
+    if (sharedInterpreter != null && sharedInterpreter.isSupported()) {
+      return sharedInterpreter.getProgress(context);
+    }
+
+    if (livyVersion.isGetProgressSupported()) {
+      String paraId = context.getParagraphId();
+      Integer progress = paragraphId2StmtProgressMap.get(paraId);
+      return progress == null ? 0 : progress;
+    }
     return 0;
   }
 
@@ -245,11 +284,20 @@ public abstract class BaseLivyInterpreter extends Interpreter {
                                      String paragraphId,
                                      boolean displayAppInfo,
                                      boolean appendSessionExpired) throws LivyException {
+    return interpret(code, sharedInterpreter.isSupported() ? getSessionKind() : null,
+        paragraphId, displayAppInfo, appendSessionExpired);
+  }
+
+  public InterpreterResult interpret(String code,
+                                     String codeType,
+                                     String paragraphId,
+                                     boolean displayAppInfo,
+                                     boolean appendSessionExpired) throws LivyException {
     StatementInfo stmtInfo = null;
     boolean sessionExpired = false;
     try {
       try {
-        stmtInfo = executeStatement(new ExecuteRequest(code));
+        stmtInfo = executeStatement(new ExecuteRequest(code, codeType));
       } catch (SessionNotFoundException e) {
         LOGGER.warn("Livy session {} is expired, new session will be created.", sessionInfo.id);
         sessionExpired = true;
@@ -261,13 +309,14 @@ public abstract class BaseLivyInterpreter extends Interpreter {
             initLivySession();
           }
         }
-        stmtInfo = executeStatement(new ExecuteRequest(code));
-      }
-      if (paragraphId != null) {
-        paragraphId2StmtIdMapping.put(paragraphId, stmtInfo.id);
+        stmtInfo = executeStatement(new ExecuteRequest(code, codeType));
       }
       // pull the statement status
       while (!stmtInfo.isAvailable()) {
+        if (paragraphId != null && paragraphsToCancel.contains(paragraphId)) {
+          cancel(stmtInfo.id, paragraphId);
+          return new InterpreterResult(InterpreterResult.Code.ERROR, "Job is cancelled");
+        }
         try {
           Thread.sleep(pullStatusInterval);
         } catch (InterruptedException e) {
@@ -275,6 +324,9 @@ public abstract class BaseLivyInterpreter extends Interpreter {
           throw new LivyException(e);
         }
         stmtInfo = getStatementInfo(stmtInfo.id);
+        if (paragraphId != null) {
+          paragraphId2StmtProgressMap.put(paragraphId, (int) (stmtInfo.progress * 100));
+        }
       }
       if (appendSessionExpired) {
         return appendSessionExpire(getResultFromStatementInfo(stmtInfo, displayAppInfo),
@@ -284,8 +336,26 @@ public abstract class BaseLivyInterpreter extends Interpreter {
       }
     } finally {
       if (paragraphId != null) {
-        paragraphId2StmtIdMapping.remove(paragraphId);
+        paragraphId2StmtProgressMap.remove(paragraphId);
+        paragraphsToCancel.remove(paragraphId);
       }
+    }
+  }
+
+  private void cancel(int id, String paragraphId) {
+    if (livyVersion.isCancelSupported()) {
+      try {
+        LOGGER.info("Cancelling statement " + id);
+        cancelStatement(id);
+      } catch (LivyException e) {
+        LOGGER.error("Fail to cancel statement " + id + " for paragraph " + paragraphId, e);
+      }
+      finally {
+        paragraphsToCancel.remove(paragraphId);
+      }
+    } else {
+      LOGGER.warn("cancel is not supported for this version of livy: " + livyVersion);
+      paragraphsToCancel.clear();
     }
   }
 
@@ -323,7 +393,17 @@ public abstract class BaseLivyInterpreter extends Interpreter {
   private InterpreterResult getResultFromStatementInfo(StatementInfo stmtInfo,
                                                        boolean displayAppInfo) {
     if (stmtInfo.output != null && stmtInfo.output.isError()) {
-      return new InterpreterResult(InterpreterResult.Code.ERROR, stmtInfo.output.evalue);
+      InterpreterResult result = new InterpreterResult(InterpreterResult.Code.ERROR);
+      StringBuilder sb = new StringBuilder();
+      sb.append(stmtInfo.output.evalue);
+      // in case evalue doesn't have newline char
+      if (!stmtInfo.output.evalue.contains("\n"))
+        sb.append("\n");
+      if (stmtInfo.output.traceback != null) {
+        sb.append(StringUtils.join(stmtInfo.output.traceback));
+      }
+      result.add(sb.toString());
+      return result;
     } else if (stmtInfo.isCancelled()) {
       // corner case, output might be null if it is cancelled.
       return new InterpreterResult(InterpreterResult.Code.ERROR, "Job is cancelled");
@@ -619,11 +699,12 @@ public abstract class BaseLivyInterpreter extends Interpreter {
     }
   }
 
-  private static class ExecuteRequest {
+  static class ExecuteRequest {
     public final String code;
-
-    public ExecuteRequest(String code) {
+    public final String kind;
+    public ExecuteRequest(String code, String kind) {
       this.code = code;
+      this.kind = kind;
     }
 
     public String toJson() {
@@ -634,13 +715,25 @@ public abstract class BaseLivyInterpreter extends Interpreter {
   private static class StatementInfo {
     public Integer id;
     public String state;
+    public double progress;
     public StatementOutput output;
 
     public StatementInfo() {
     }
 
     public static StatementInfo fromJson(String json) {
-      return gson.fromJson(json, StatementInfo.class);
+      String right_json = "";
+      try {
+        gson.fromJson(json, StatementInfo.class);
+        right_json = json;
+      } catch (Exception e) {
+        if (json.contains("\"traceback\":{}")) {
+          LOGGER.debug("traceback type mismatch, replacing the mismatching part ");
+          right_json = json.replace("\"traceback\":{}", "\"traceback\":[]");
+          LOGGER.debug("new json string is {}", right_json);
+        }
+      }
+      return gson.fromJson(right_json, StatementInfo.class);
     }
 
     public boolean isAvailable() {
@@ -657,7 +750,7 @@ public abstract class BaseLivyInterpreter extends Interpreter {
       public Data data;
       public String ename;
       public String evalue;
-      public Object traceback;
+      public String[] traceback;
       public TableMagic tableMagic;
 
       public boolean isError() {

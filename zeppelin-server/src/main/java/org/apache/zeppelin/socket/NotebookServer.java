@@ -1115,6 +1115,9 @@ public class NotebookServer extends WebSocketServlet
     Map<String, Object> params = (Map<String, Object>) fromMessage.get("params");
     Map<String, Object> config = (Map<String, Object>) fromMessage.get("config");
     String noteId = getOpenNoteId(conn);
+    if (noteId == null) {
+      noteId = (String) fromMessage.get("noteId");
+    }
     final Note note = notebook.getNote(noteId);
     NotebookAuthorization notebookAuthorization = notebook.getNotebookAuthorization();
     AuthenticationInfo subject = new AuthenticationInfo(fromMessage.principal);

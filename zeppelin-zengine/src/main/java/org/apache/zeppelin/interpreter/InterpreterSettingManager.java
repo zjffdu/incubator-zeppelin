@@ -392,6 +392,17 @@ public class InterpreterSettingManager {
     return settings;
   }
 
+  public InterpreterSetting getInterpreterSettingByName(String name) {
+    synchronized (interpreterSettings) {
+      for (InterpreterSetting setting : interpreterSettings.values()) {
+        if (setting.getName().equals(name)) {
+          return setting;
+        }
+      }
+    }
+    throw new RuntimeException("No such interpreter setting: " + name);
+  }
+
   public ManagedInterpreterGroup getInterpreterGroupById(String groupId) {
     for (InterpreterSetting setting : interpreterSettings.values()) {
       ManagedInterpreterGroup interpreterGroup = setting.getInterpreterGroup(groupId);

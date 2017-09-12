@@ -49,6 +49,6 @@ BUG-74897       Include Spark 2 Lab Notebooks with Zeppelin in HDP 2.6
 BUG-73354       Zeppelin ui was unreachable till 2 minutes after it was restarted
 BUG-73712       Ship only approved notebooks with Zeppelin OOB.
 BUG-67291       Zeppelin build failure
-
+BUG-87874       ZEPPELIN-2850. URI Data scheme -> Blob creation
 
 Note to @prabhu, this is based (e3071d66f0acdfe62ad62c794e53e14956ab2a63) [ZEPPELIN-2492] Use single Dockerfile for each tag (branch-0.7)

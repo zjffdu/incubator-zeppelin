@@ -18,6 +18,8 @@
 
 package org.apache.zeppelin.storage;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.hadoop.conf.Configuration;
@@ -44,6 +46,7 @@ import java.io.InputStream;
 public class HDFSConfigStorage extends ConfigStorage {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HDFSConfigStorage.class);
+  private static final Gson gson =  new GsonBuilder().setPrettyPrinting().create();
 
   private Configuration hadoopConf;
   private FileSystem fs;
@@ -64,7 +67,7 @@ public class HDFSConfigStorage extends ConfigStorage {
   @Override
   public void save(InterpreterInfoSaving settingInfos) throws IOException {
     LOGGER.info("Save Interpreter Settings to " + interpreterSettingPath);
-    String json = settingInfos.toJson();
+    String json = gson.toJson(settingInfos);
     InputStream in = new ByteArrayInputStream(json.getBytes(
         zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
     IOUtils.copyBytes(in, fs.create(interpreterSettingPath, true), hadoopConf);
@@ -84,23 +87,20 @@ public class HDFSConfigStorage extends ConfigStorage {
     //TODO(zjffdu) This kind of post processing is ugly.
     JsonParser jsonParser = new JsonParser();
     JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
-    InterpreterInfoSaving infoSaving = InterpreterInfoSaving.fromJson(json);
+    InterpreterInfoSaving infoSaving = gson.fromJson(json, InterpreterInfoSaving.class);
     for (InterpreterSetting interpreterSetting : infoSaving.interpreterSettings.values()) {
       // Always use separate interpreter process
       // While we decided to turn this feature on always (without providing
       // enable/disable option on GUI).
       // previously created setting should turn this feature on here.
       interpreterSetting.getOption().setRemote(true);
-      interpreterSetting.convertPermissionsFromUsersToOwners(
-          jsonObject.getAsJsonObject("interpreterSettings")
-              .getAsJsonObject(interpreterSetting.getId()));
     }
     return infoSaving;
   }
 
   public void save(NotebookAuthorizationInfoSaving authorizationInfoSaving) throws IOException {
     LOGGER.info("Save notebook authorization to file: " + authorizationPath);
-    String json = authorizationInfoSaving.toJson();
+    String json = gson.toJson(authorizationInfoSaving);
     InputStream in = new ByteArrayInputStream(json.getBytes(
         zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
     IOUtils.copyBytes(in, fs.create(authorizationPath, true), hadoopConf);
@@ -118,7 +118,7 @@ public class HDFSConfigStorage extends ConfigStorage {
     IOUtils.copyBytes(fs.open(authorizationPath), jsonBytes, hadoopConf);
     String json = new String(jsonBytes.toString(
         zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
-    return NotebookAuthorizationInfoSaving.fromJson(json);
+    return gson.fromJson(json, NotebookAuthorizationInfoSaving.class);
   }
 
 }

@@ -18,6 +18,8 @@
 
 package org.apache.zeppelin.storage;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.io.IOUtils;
@@ -42,6 +44,7 @@ import java.io.StringReader;
 public class LocalConfigStorage extends ConfigStorage {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LocalConfigStorage.class);
+  private static final Gson gson =  new GsonBuilder().setPrettyPrinting().create();
 
   private String interpreterSettingPath;
   private String authorizationPath;
@@ -55,7 +58,7 @@ public class LocalConfigStorage extends ConfigStorage {
   @Override
   public void save(InterpreterInfoSaving settingInfos) throws IOException {
     LOGGER.info("Save Interpreter Settings to " + interpreterSettingPath);
-    String json = settingInfos.toJson();
+    String json = gson.toJson(settingInfos);
     FileWriter writer = new FileWriter(interpreterSettingPath);
     IOUtils.copy(new StringReader(json), writer);
     writer.close();
@@ -71,23 +74,20 @@ public class LocalConfigStorage extends ConfigStorage {
     //TODO(zjffdu) This kind of post processing is ugly.
     JsonParser jsonParser = new JsonParser();
     JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
-    InterpreterInfoSaving infoSaving = InterpreterInfoSaving.fromJson(json);
+    InterpreterInfoSaving infoSaving = gson.fromJson(json, InterpreterInfoSaving.class);
     for (InterpreterSetting interpreterSetting : infoSaving.interpreterSettings.values()) {
       // Always use separate interpreter process
       // While we decided to turn this feature on always (without providing
       // enable/disable option on GUI).
       // previously created setting should turn this feature on here.
       interpreterSetting.getOption().setRemote(true);
-      interpreterSetting.convertPermissionsFromUsersToOwners(
-          jsonObject.getAsJsonObject("interpreterSettings")
-              .getAsJsonObject(interpreterSetting.getId()));
     }
     return infoSaving;
   }
 
   public void save(NotebookAuthorizationInfoSaving authorizationInfoSaving) throws IOException {
     LOGGER.info("Save notebook authorization to file: " + authorizationPath);
-    String json = authorizationInfoSaving.toJson();
+    String json = gson.toJson(authorizationInfoSaving);
     FileWriter writer = new FileWriter(authorizationPath);
     IOUtils.copy(new StringReader(json), writer);
     writer.close();
@@ -101,6 +101,6 @@ public class LocalConfigStorage extends ConfigStorage {
       return null;
     }
     String json = IOUtils.toString(new FileReader(authorizationPath));
-    return NotebookAuthorizationInfoSaving.fromJson(json);
+    return gson.fromJson(json, NotebookAuthorizationInfoSaving.class);
   }
 }

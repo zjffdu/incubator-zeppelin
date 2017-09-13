@@ -35,6 +35,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
+import org.apache.zeppelin.storage.ConfigStorage;
+import org.apache.zeppelin.storage.LocalConfigStorage;
 import org.apache.zeppelin.user.AuthenticationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,15 +62,18 @@ public class NotebookAuthorization {
    */
   private static Map<String, Set<String>> userRoles = new HashMap<>();
   private static ZeppelinConfiguration conf;
+  private static ConfigStorage configStorage;
   private static Gson gson;
   private static String filePath;
 
   private NotebookAuthorization() {}
 
-  public static NotebookAuthorization init(ZeppelinConfiguration config) {
+  public static NotebookAuthorization init(ZeppelinConfiguration config,
+                                           ConfigStorage configStorage) {
     if (instance == null) {
       instance = new NotebookAuthorization();
       conf = config;
+      instance.configStorage = configStorage;
       filePath = conf.getNotebookAuthorizationPath();
       GsonBuilder builder = new GsonBuilder();
       builder.setPrettyPrinting();
@@ -82,6 +87,10 @@ public class NotebookAuthorization {
     return instance;
   }
 
+  public static NotebookAuthorization init(ZeppelinConfiguration config) {
+    return init(config, new LocalConfigStorage(config));
+  }
+
   public static NotebookAuthorization getInstance() {
     if (instance == null) {
       LOG.warn("Notebook authorization module was called without initialization,"
@@ -92,27 +101,10 @@ public class NotebookAuthorization {
   }
 
   private static void loadFromFile() throws IOException {
-    File settingFile = new File(filePath);
-    LOG.info(settingFile.getAbsolutePath());
-    if (!settingFile.exists()) {
-      // nothing to read
-      return;
+    NotebookAuthorizationInfoSaving info = configStorage.loadNotebookAuthorization();
+    if (info != null) {
+      authInfo = info.authInfo;
     }
-    FileInputStream fis = new FileInputStream(settingFile);
-    InputStreamReader isr = new InputStreamReader(fis);
-    BufferedReader bufferedReader = new BufferedReader(isr);
-    StringBuilder sb = new StringBuilder();
-    String line;
-    while ((line = bufferedReader.readLine()) != null) {
-      sb.append(line);
-    }
-    isr.close();
-    fis.close();
-
-    String json = sb.toString();
-    NotebookAuthorizationInfoSaving info = gson.fromJson(json,
-            NotebookAuthorizationInfoSaving.class);
-    authInfo = info.authInfo;
   }
   
   public void setRoles(String user, Set<String> roles) {
@@ -133,25 +125,10 @@ public class NotebookAuthorization {
   }
   
   private void saveToFile() {
-    String jsonString;
-
-    synchronized (authInfo) {
-      NotebookAuthorizationInfoSaving info = new NotebookAuthorizationInfoSaving();
-      info.authInfo = authInfo;
-      jsonString = gson.toJson(info);
-    }
-
+    NotebookAuthorizationInfoSaving info = new NotebookAuthorizationInfoSaving();
+    info.authInfo = authInfo;
     try {
-      File settingFile = new File(filePath);
-      if (!settingFile.exists()) {
-        settingFile.createNewFile();
-      }
-
-      FileOutputStream fos = new FileOutputStream(settingFile, false);
-      OutputStreamWriter out = new OutputStreamWriter(fos);
-      out.append(jsonString);
-      out.close();
-      fos.close();
+      configStorage.save(info);
     } catch (IOException e) {
       LOG.error("Error saving notebook authorization file: " + e.getMessage());
     }

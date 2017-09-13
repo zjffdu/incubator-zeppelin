@@ -56,6 +56,8 @@ import org.apache.zeppelin.scheduler.SchedulerFactory;
 import org.apache.zeppelin.search.LuceneSearch;
 import org.apache.zeppelin.search.SearchService;
 import org.apache.zeppelin.socket.NotebookServer;
+import org.apache.zeppelin.storage.ConfigStorage;
+import org.apache.zeppelin.storage.HDFSConfigStorage;
 import org.apache.zeppelin.user.Credentials;
 import org.apache.zeppelin.utils.SecurityUtils;
 import org.eclipse.jetty.http.HttpVersion;
@@ -90,6 +92,7 @@ public class ZeppelinServer extends Application {
   private final InterpreterSettingManager interpreterSettingManager;
   private SchedulerFactory schedulerFactory;
   private InterpreterFactory replFactory;
+  private ConfigStorage configStorage;
   private SearchService noteSearchService;
   private NotebookRepoSync notebookRepo;
   private NotebookAuthorization notebookAuthorization;
@@ -126,7 +129,22 @@ public class ZeppelinServer extends Application {
           new File(conf.getRelativeDir("zeppelin-web/src/app/visualization")));
     }
 
-    this.helium = new Helium(
+    this.schedulerFactory = SchedulerFactory.singleton();
+    this.configStorage = ConfigStorage.createConfigStorage(conf);
+    this.interpreterSettingManager = new InterpreterSettingManager(conf, depResolver,
+        new InterpreterOption(true), configStorage);
+    this.replFactory = new InterpreterFactory(conf, notebookWsServer,
+        notebookWsServer, heliumApplicationFactory, depResolver, SecurityUtils.isAuthenticated(),
+        interpreterSettingManager);
+    this.notebookRepo = new NotebookRepoSync(conf);
+    this.noteSearchService = new LuceneSearch();
+    this.notebookAuthorization = NotebookAuthorization.init(conf, configStorage);
+    this.credentials = new Credentials(conf.credentialsPersist(), conf.getCredentialsPath());
+    notebook = new Notebook(conf,
+        notebookRepo, schedulerFactory, replFactory, interpreterSettingManager, notebookWsServer,
+            noteSearchService, notebookAuthorization, credentials);
+
+    ZeppelinServer.helium = new Helium(
         conf.getHeliumConfPath(),
         conf.getHeliumDefaultLocalRegistryPath(),
         heliumVisualizationFactory,
@@ -135,12 +153,7 @@ public class ZeppelinServer extends Application {
     // create visualization bundle
     bundleHeliumVisualizationFactoryInBackground(heliumVisualizationFactory);
 
-    this.schedulerFactory = new SchedulerFactory();
-    this.interpreterSettingManager = new InterpreterSettingManager(conf, depResolver,
-        new InterpreterOption(true));
-    this.replFactory = new InterpreterFactory(conf, notebookWsServer,
-        notebookWsServer, heliumApplicationFactory, depResolver, SecurityUtils.isAuthenticated(),
-        interpreterSettingManager);
+
     this.notebookRepo = new NotebookRepoSync(conf);
     this.noteSearchService = new LuceneSearch();
     this.notebookAuthorization = NotebookAuthorization.init(conf);

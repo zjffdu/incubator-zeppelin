@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -69,6 +70,8 @@ import org.apache.zeppelin.dep.DependencyResolver;
 import org.apache.zeppelin.interpreter.Interpreter.RegisteredInterpreter;
 import org.apache.zeppelin.scheduler.Job;
 import org.apache.zeppelin.scheduler.Job.Status;
+import org.apache.zeppelin.storage.ConfigStorage;
+import org.apache.zeppelin.storage.LocalConfigStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,8 +122,21 @@ public class InterpreterSettingManager {
 
   private final Gson gson;
 
+  private transient ConfigStorage configStorage;
+
+  @VisibleForTesting
   public InterpreterSettingManager(ZeppelinConfiguration zeppelinConfiguration,
-      DependencyResolver dependencyResolver, InterpreterOption interpreterOption)
+                                   DependencyResolver dependencyResolver,
+                                   InterpreterOption interpreterOption)
+      throws IOException, RepositoryException {
+    this(zeppelinConfiguration, dependencyResolver, interpreterOption,
+        new LocalConfigStorage(zeppelinConfiguration));
+  }
+
+  public InterpreterSettingManager(ZeppelinConfiguration zeppelinConfiguration,
+                                   DependencyResolver dependencyResolver,
+                                   InterpreterOption interpreterOption,
+                                   ConfigStorage configStorage)
       throws IOException, RepositoryException {
     this.zeppelinConfiguration = zeppelinConfiguration;
     this.interpreterDirPath = Paths.get(zeppelinConfiguration.getInterpreterDir());
@@ -136,6 +152,7 @@ public class InterpreterSettingManager {
     this.interpreterRepositories = dependencyResolver.getRepos();
 
     this.defaultOption = interpreterOption;
+    this.configStorage = configStorage;
 
     this.cleanCl = Collections.synchronizedMap(new HashMap<String, URLClassLoader>());
 
@@ -154,16 +171,12 @@ public class InterpreterSettingManager {
   /**
    * Remember this method doesn't keep current connections after being called
    */
-  private void  loadFromFile() {
-    if (!Files.exists(interpreterBindingPath)) {
-      // nothing to read
-      return;
-    }
-    InterpreterInfoSaving infoSaving;
-    try (BufferedReader json =
-        Files.newBufferedReader(interpreterBindingPath, StandardCharsets.UTF_8)) {
-      infoSaving = gson.fromJson(json, InterpreterInfoSaving.class);
-
+  private void loadFromFile() {
+    try {
+      InterpreterInfoSaving infoSaving = configStorage.loadInterpreterSettings();
+      if (infoSaving == null) {
+        return;
+      }
       for (String k : infoSaving.interpreterSettings.keySet()) {
         InterpreterSetting setting = infoSaving.interpreterSettings.get(k);
         List<InterpreterInfo> infos = setting.getInterpreterInfos();
@@ -175,7 +188,6 @@ public class InterpreterSettingManager {
           properties.put(key, p.get(key));
         }
         setting.setProperties(properties);
-
         // Always use separate interpreter process
         // While we decided to turn this feature on always (without providing
         // enable/disable option on GUI).
@@ -222,34 +234,13 @@ public class InterpreterSettingManager {
   }
 
   public void saveToFile() throws IOException {
-    String jsonString;
-
     synchronized (interpreterSettings) {
       InterpreterInfoSaving info = new InterpreterInfoSaving();
       info.interpreterBindings = interpreterBindings;
       info.interpreterSettings = interpreterSettings;
       info.interpreterRepositories = interpreterRepositories;
-
-      jsonString = gson.toJson(info);
+      configStorage.save(info);
     }
-
-    if (!Files.exists(interpreterBindingPath)) {
-      Files.createFile(interpreterBindingPath);
-
-      try {
-        Set<PosixFilePermission> permissions = EnumSet.of(OWNER_READ, OWNER_WRITE);
-        Files.setPosixFilePermissions(interpreterBindingPath, permissions);
-      } catch (UnsupportedOperationException e) {
-        // File system does not support Posix file permissions (likely windows) - continue anyway.
-        logger.warn("unable to setPosixFilePermissions on '{}'.", interpreterBindingPath);
-      };
-    }
-
-    FileOutputStream fos = new FileOutputStream(interpreterBindingPath.toFile(), false);
-    OutputStreamWriter out = new OutputStreamWriter(fos);
-    out.append(jsonString);
-    out.close();
-    fos.close();
   }
 
   //TODO(jl): Fix it to remove InterpreterGroupFactory

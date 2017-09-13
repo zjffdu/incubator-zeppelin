@@ -29,6 +29,8 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zeppelin.notebook.repo.GitNotebookRepo;
+import org.apache.zeppelin.storage.HDFSConfigStorage;
+import org.apache.zeppelin.storage.LocalConfigStorage;
 import org.apache.zeppelin.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -389,8 +391,21 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getString(ConfVars.ZEPPELIN_INTERPRETER_JSON);
   }
 
+  public boolean isUsingHDFSConfig() {
+    return getString(ConfVars.ZEPPELIN_CONFIG_STORAGE_CLASS)
+        .equals(HDFSConfigStorage.class.getCanonicalName());
+  }
+
   public String getInterpreterSettingPath() {
-    return getRelativeDir(String.format("%s/interpreter.json", getConfDir()));
+    if (isUsingHDFSConfig()) {
+      String confDir = getConfigHDFSDir();
+      if (StringUtils.isBlank(confDir)) {
+        throw new RuntimeException(ConfVars.ZEPPELIN_CONFIG_HDFS_DIR.varName + " is not specified");
+      }
+      return confDir + "/interpreter.json";
+    } else {
+      return getRelativeDir(String.format("%s/interpreter.json", getConfDir()));
+    }
   }
 
   public String getHeliumConfPath() {
@@ -406,7 +421,15 @@ public class ZeppelinConfiguration extends XMLConfiguration {
   }
 
   public String getNotebookAuthorizationPath() {
-    return getRelativeDir(String.format("%s/notebook-authorization.json", getConfDir()));
+    if (isUsingHDFSConfig()) {
+      String confDir = getConfigHDFSDir();
+      if (StringUtils.isBlank(confDir)) {
+        throw new RuntimeException(ConfVars.ZEPPELIN_CONFIG_HDFS_DIR.varName + " is not specified");
+      }
+      return confDir + "/notebook-authorization.json";
+    } else {
+      return getRelativeDir(String.format("%s/notebook-authorization.json", getConfDir()));
+    }
   }
 
   public Boolean credentialsPersist() {
@@ -460,6 +483,10 @@ public class ZeppelinConfiguration extends XMLConfiguration {
 
   public String getConfDir() {
     return getString(ConfVars.ZEPPELIN_CONF_DIR);
+  }
+
+  public String getConfigHDFSDir() {
+    return getString(ConfVars.ZEPPELIN_CONFIG_HDFS_DIR);
   }
 
   public List<String> getAllowedOrigins()
@@ -625,11 +652,15 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     // Decide when new note is created, interpreter settings will be binded automatically or not.
     ZEPPELIN_NOTEBOOK_AUTO_INTERPRETER_BINDING("zeppelin.notebook.autoInterpreterBinding", true),
     ZEPPELIN_CONF_DIR("zeppelin.conf.dir", "conf"),
+    ZEPPELIN_CONFIG_HDFS_DIR("zeppelin.config.hdfs.dir", ""),
+    ZEPPELIN_CONFIG_STORAGE_CLASS("zeppelin.config.storage.class",
+        LocalConfigStorage.class.getCanonicalName()),
     ZEPPELIN_DEP_LOCALREPO("zeppelin.dep.localrepo", "local-repo"),
     ZEPPELIN_HELIUM_LOCALREGISTRY_DEFAULT("zeppelin.helium.localregistry.default", "helium"),
     ZEPPELIN_HELIUM_NPM_REGISTRY("zeppelin.helium.npm.registry", "http://registry.npmjs.org/"),
     // Allows a way to specify a ',' separated list of allowed origins for rest and websockets
-    // i.e. http://localhost:8080
+    // i.e. http://localhost:
+
     ZEPPELIN_ALLOWED_ORIGINS("zeppelin.server.allowed.origins", "*"),
     ZEPPELIN_ANONYMOUS_ALLOWED("zeppelin.anonymous.allowed", true),
     ZEPPELIN_CREDENTIALS_PERSIST("zeppelin.credentials.persist", true),

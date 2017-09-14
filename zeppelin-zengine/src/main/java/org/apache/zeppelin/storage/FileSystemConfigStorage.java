@@ -22,7 +22,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.InterpreterInfoSaving;
 import org.apache.zeppelin.interpreter.InterpreterSetting;
@@ -30,47 +33,64 @@ import org.apache.zeppelin.notebook.NotebookAuthorizationInfoSaving;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
- * Store configuration in local file system
+ * It could be used either local file system or hadoop distributed file system,
+ * because FileSystem support both local file system and hdfs.
  *
  */
-public class LocalConfigStorage extends ConfigStorage {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(LocalConfigStorage.class);
+public class FileSystemConfigStorage extends ConfigStorage {
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemConfigStorage.class);
   private static final Gson gson =  new GsonBuilder().setPrettyPrinting().create();
 
-  private String interpreterSettingPath;
-  private String authorizationPath;
+  private Configuration hadoopConf;
+  private FileSystem fs;
+  private Path rootConfFolder;
 
-  public LocalConfigStorage(ZeppelinConfiguration zConf) {
+  private Path interpreterSettingPath;
+  private Path authorizationPath;
+
+  public FileSystemConfigStorage(ZeppelinConfiguration zConf) throws IOException {
     super(zConf);
-    this.interpreterSettingPath = zConf.getInterpreterSettingPath();
-    this.authorizationPath = zConf.getNotebookAuthorizationPath();
+    this.hadoopConf = new Configuration();
+    try {
+      this.fs = FileSystem.get(new URI(zConf.getConfigFSDir()), hadoopConf);
+      this.rootConfFolder = fs.makeQualified(new Path(zConf.getConfigFSDir()));
+      LOGGER.info("Store zeppelin configuration files under " + this.rootConfFolder.toString());
+      this.interpreterSettingPath = fs.makeQualified(new Path(zConf.getInterpreterSettingPath()));
+      this.authorizationPath = fs.makeQualified(new Path(zConf.getNotebookAuthorizationPath()));
+    } catch (URISyntaxException e) {
+      throw new IOException(e);
+    }
   }
 
   @Override
   public void save(InterpreterInfoSaving settingInfos) throws IOException {
     LOGGER.info("Save Interpreter Settings to " + interpreterSettingPath);
     String json = gson.toJson(settingInfos);
-    FileWriter writer = new FileWriter(interpreterSettingPath);
-    IOUtils.copy(new StringReader(json), writer);
-    writer.close();
+    InputStream in = new ByteArrayInputStream(json.getBytes(
+        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
+    IOUtils.copyBytes(in, fs.create(interpreterSettingPath, true), hadoopConf);
   }
 
   @Override
   public InterpreterInfoSaving loadInterpreterSettings() throws IOException {
-    LOGGER.info("Load interpreter setting from file: " + interpreterSettingPath);
-    if (!new File(interpreterSettingPath).exists()) {
+    if (!fs.exists(interpreterSettingPath)) {
+      LOGGER.warn("Interpreter Setting file {} is not existed", interpreterSettingPath);
       return null;
     }
-    String json = IOUtils.toString(new FileReader(interpreterSettingPath));
+    LOGGER.info("Load Interpreter Setting from file: " + interpreterSettingPath);
+    ByteArrayOutputStream jsonBytes = new ByteArrayOutputStream();
+    IOUtils.copyBytes(fs.open(interpreterSettingPath), jsonBytes, hadoopConf);
+    String json = new String(jsonBytes.toString(
+        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
     //TODO(zjffdu) This kind of post processing is ugly.
     JsonParser jsonParser = new JsonParser();
     JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
@@ -88,19 +108,24 @@ public class LocalConfigStorage extends ConfigStorage {
   public void save(NotebookAuthorizationInfoSaving authorizationInfoSaving) throws IOException {
     LOGGER.info("Save notebook authorization to file: " + authorizationPath);
     String json = gson.toJson(authorizationInfoSaving);
-    FileWriter writer = new FileWriter(authorizationPath);
-    IOUtils.copy(new StringReader(json), writer);
-    writer.close();
+    InputStream in = new ByteArrayInputStream(json.getBytes(
+        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
+    IOUtils.copyBytes(in, fs.create(authorizationPath, true), hadoopConf);
 
   }
 
   @Override
   public NotebookAuthorizationInfoSaving loadNotebookAuthorization() throws IOException {
-    LOGGER.info("Load notebook authorization from file: " + authorizationPath);
-    if (!new File(authorizationPath).exists()) {
+    if (!fs.exists(authorizationPath)) {
+      LOGGER.warn("Interpreter Setting file {} is not existed", authorizationPath);
       return null;
     }
-    String json = IOUtils.toString(new FileReader(authorizationPath));
+    LOGGER.info("Load notebook authorization from file: " + authorizationPath);
+    ByteArrayOutputStream jsonBytes = new ByteArrayOutputStream();
+    IOUtils.copyBytes(fs.open(authorizationPath), jsonBytes, hadoopConf);
+    String json = new String(jsonBytes.toString(
+        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
     return gson.fromJson(json, NotebookAuthorizationInfoSaving.class);
   }
+
 }

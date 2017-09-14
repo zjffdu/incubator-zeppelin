@@ -36,7 +36,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.storage.ConfigStorage;
-import org.apache.zeppelin.storage.LocalConfigStorage;
+import org.apache.zeppelin.storage.FileSystemConfigStorage;
 import org.apache.zeppelin.user.AuthenticationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +88,11 @@ public class NotebookAuthorization {
   }
 
   public static NotebookAuthorization init(ZeppelinConfiguration config) {
-    return init(config, new LocalConfigStorage(config));
+    try {
+      return init(config, new FileSystemConfigStorage(config));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public static NotebookAuthorization getInstance() {

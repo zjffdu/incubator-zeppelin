@@ -29,8 +29,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zeppelin.notebook.repo.GitNotebookRepo;
-import org.apache.zeppelin.storage.HDFSConfigStorage;
-import org.apache.zeppelin.storage.LocalConfigStorage;
+import org.apache.zeppelin.storage.FileSystemConfigStorage;
 import org.apache.zeppelin.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -265,6 +264,10 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getBooleanValue(propertyName, defaultValue);
   }
 
+  public String getZeppelinHome() {
+    return getString(ConfVars.ZEPPELIN_HOME);
+  }
+
   public boolean useSsl() {
     return getBoolean(ConfVars.ZEPPELIN_SSL);
   }
@@ -391,21 +394,8 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getString(ConfVars.ZEPPELIN_INTERPRETER_JSON);
   }
 
-  public boolean isUsingHDFSConfig() {
-    return getString(ConfVars.ZEPPELIN_CONFIG_STORAGE_CLASS)
-        .equals(HDFSConfigStorage.class.getCanonicalName());
-  }
-
   public String getInterpreterSettingPath() {
-    if (isUsingHDFSConfig()) {
-      String confDir = getConfigHDFSDir();
-      if (StringUtils.isBlank(confDir)) {
-        throw new RuntimeException(ConfVars.ZEPPELIN_CONFIG_HDFS_DIR.varName + " is not specified");
-      }
-      return confDir + "/interpreter.json";
-    } else {
-      return getRelativeDir(String.format("%s/interpreter.json", getConfDir()));
-    }
+    return getConfigFSDir() + "/interpreter.json";
   }
 
   public String getHeliumConfPath() {
@@ -421,15 +411,7 @@ public class ZeppelinConfiguration extends XMLConfiguration {
   }
 
   public String getNotebookAuthorizationPath() {
-    if (isUsingHDFSConfig()) {
-      String confDir = getConfigHDFSDir();
-      if (StringUtils.isBlank(confDir)) {
-        throw new RuntimeException(ConfVars.ZEPPELIN_CONFIG_HDFS_DIR.varName + " is not specified");
-      }
-      return confDir + "/notebook-authorization.json";
-    } else {
-      return getRelativeDir(String.format("%s/notebook-authorization.json", getConfDir()));
-    }
+    return getConfigFSDir() + "/notebook-authorization.json";
   }
 
   public Boolean credentialsPersist() {
@@ -482,11 +464,17 @@ public class ZeppelinConfiguration extends XMLConfiguration {
   }
 
   public String getConfDir() {
-    return getString(ConfVars.ZEPPELIN_CONF_DIR);
+    return getRelativeDir(getString(ConfVars.ZEPPELIN_CONF_DIR));
   }
 
-  public String getConfigHDFSDir() {
-    return getString(ConfVars.ZEPPELIN_CONFIG_HDFS_DIR);
+  public String getConfigFSDir() {
+    String fsConfigDir = getString(ConfVars.ZEPPELIN_CONFIG_FS_DIR);
+    if (StringUtils.isBlank(fsConfigDir)) {
+      LOG.warn(ConfVars.ZEPPELIN_CONFIG_FS_DIR.varName + " is not specified, fall back to " +
+        ConfVars.ZEPPELIN_CONF_DIR.varName);
+      return getConfDir();
+    }
+    return fsConfigDir;
   }
 
   public List<String> getAllowedOrigins()
@@ -652,9 +640,9 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     // Decide when new note is created, interpreter settings will be binded automatically or not.
     ZEPPELIN_NOTEBOOK_AUTO_INTERPRETER_BINDING("zeppelin.notebook.autoInterpreterBinding", true),
     ZEPPELIN_CONF_DIR("zeppelin.conf.dir", "conf"),
-    ZEPPELIN_CONFIG_HDFS_DIR("zeppelin.config.hdfs.dir", ""),
+    ZEPPELIN_CONFIG_FS_DIR("zeppelin.config.fs.dir", ""),
     ZEPPELIN_CONFIG_STORAGE_CLASS("zeppelin.config.storage.class",
-        LocalConfigStorage.class.getCanonicalName()),
+        FileSystemConfigStorage.class.getCanonicalName()),
     ZEPPELIN_DEP_LOCALREPO("zeppelin.dep.localrepo", "local-repo"),
     ZEPPELIN_HELIUM_LOCALREGISTRY_DEFAULT("zeppelin.helium.localregistry.default", "helium"),
     ZEPPELIN_HELIUM_NPM_REGISTRY("zeppelin.helium.npm.registry", "http://registry.npmjs.org/"),

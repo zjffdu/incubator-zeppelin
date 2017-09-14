@@ -71,7 +71,7 @@ import org.apache.zeppelin.interpreter.Interpreter.RegisteredInterpreter;
 import org.apache.zeppelin.scheduler.Job;
 import org.apache.zeppelin.scheduler.Job.Status;
 import org.apache.zeppelin.storage.ConfigStorage;
-import org.apache.zeppelin.storage.LocalConfigStorage;
+import org.apache.zeppelin.storage.FileSystemConfigStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +130,7 @@ public class InterpreterSettingManager {
                                    InterpreterOption interpreterOption)
       throws IOException, RepositoryException {
     this(zeppelinConfiguration, dependencyResolver, interpreterOption,
-        new LocalConfigStorage(zeppelinConfiguration));
+        new FileSystemConfigStorage(zeppelinConfiguration));
   }
 
   public InterpreterSettingManager(ZeppelinConfiguration zeppelinConfiguration,

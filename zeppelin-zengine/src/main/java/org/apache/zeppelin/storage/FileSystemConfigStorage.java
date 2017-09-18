@@ -62,7 +62,11 @@ public class FileSystemConfigStorage extends ConfigStorage {
     this.hadoopConf = new Configuration();
     try {
       this.fs = FileSystem.get(new URI(zConf.getConfigFSDir()), hadoopConf);
+      LOGGER.info("Creating filesystem: " + this.fs.getClass().getCanonicalName());
       this.rootConfFolder = fs.makeQualified(new Path(zConf.getConfigFSDir()));
+      if (!fs.exists(rootConfFolder)) {
+        fs.mkdirs(this.rootConfFolder);
+      }
       LOGGER.info("Store zeppelin configuration files under " + this.rootConfFolder.toString());
       this.interpreterSettingPath = fs.makeQualified(new Path(zConf.getInterpreterSettingPath()));
       this.authorizationPath = fs.makeQualified(new Path(zConf.getNotebookAuthorizationPath()));

@@ -1,6 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.2 Apache Release
 
-ZEPPELIN-2742   Unify Zeppelin's Storage Layer
+ZEPPELIN-2742   Unify Zeppelin's  Storage Layer
 ZEPPELIN-2909   Support shared SparkContext across language in livy interpreter
 ZEPPELIN-2876   Integrate with Livy 0.4.0
 ZEPPELIN-2823   Notebook saved status is wrong if there was a network disconnect or a flaky network.

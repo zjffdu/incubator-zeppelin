@@ -34,7 +34,7 @@
     <script.extension>.sh</script.extension>
     <path.separator>/</path.separator>
     <!--library versions-->
-    <spark.version>1.6.3.2.6.3.0-SNAPSHOT</spark.version>
+    <spark.version>2.2.0.2.6.3.0-SNAPSHOT</spark.version>
     <jsoup.version>[1.8.0,)</jsoup.version>
 
     <!--test library versions-->

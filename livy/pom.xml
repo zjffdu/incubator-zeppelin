@@ -15,10 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -42,8 +39,8 @@
 
         <!--test library versions-->
         <livy.version>0.4.0-incubating</livy.version>
-        <spark.version>2.1.0</spark.version>
-        <hadoop.version>2.6.0</hadoop.version>
+        <spark.version>2.2.0.2.6.3.0-SNAPSHOT</spark.version>
+        <hadoop.version>2.7.3.2.6.3.0-SNAPSHOT</hadoop.version>
         <!--plugin versions-->
         <plugin.failsafe.version>2.16</plugin.failsafe.version>
         <plugin.antrun.version>1.8</plugin.antrun.version>
@@ -385,10 +382,9 @@
                         </goals>
                         <configuration>
                             <target>
-                                <delete file="${project.build.directory}/unit-tests.log"
-                                        quiet="true"/>
-                                <delete file="${project.build.directory}/jacoco.exec" quiet="true"/>
-                                <delete dir="${project.build.directory}/tmp" quiet="true"/>
+                                <delete file="${project.build.directory}/unit-tests.log" quiet="true" />
+                                <delete file="${project.build.directory}/jacoco.exec" quiet="true" />
+                                <delete dir="${project.build.directory}/tmp" quiet="true" />
                             </target>
                         </configuration>
                     </execution>
@@ -401,7 +397,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <mkdir dir="${project.build.directory}/tmp"/>
+                                <mkdir dir="${project.build.directory}/tmp" />
                             </target>
                         </configuration>
                     </execution>

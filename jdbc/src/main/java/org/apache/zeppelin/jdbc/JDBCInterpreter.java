@@ -46,6 +46,7 @@ import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.InterpreterResult.Code;
+import org.apache.zeppelin.interpreter.KerberosInterpreter;
 import org.apache.zeppelin.interpreter.ResultMessages;
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 import org.apache.zeppelin.jdbc.security.JDBCSecurityImpl;
@@ -85,7 +86,7 @@ import static org.apache.hadoop.security.UserGroupInformation.AuthenticationMeth
  * }
  * </p>
  */
-public class JDBCInterpreter extends Interpreter {
+public class JDBCInterpreter extends KerberosInterpreter {
 
   private Logger logger = LoggerFactory.getLogger(JDBCInterpreter.class);
 
@@ -138,12 +139,29 @@ public class JDBCInterpreter extends Interpreter {
     maxLineResults = MAX_LINE_DEFAULT;
   }
 
+  @Override
+  protected boolean runKerberosLogin() {
+    try {
+      if (UserGroupInformation.isLoginKeytabBased()) {
+        UserGroupInformation.getLoginUser().reloginFromKeytab();
+        return true;
+      } else if (UserGroupInformation.isLoginTicketBased()) {
+        UserGroupInformation.getLoginUser().reloginFromTicketCache();
+        return true;
+      }
+    } catch (Exception e) {
+      logger.error("Unable to run kinit for zeppelin", e);
+    }
+    return false;
+  }
+
   public HashMap<String, Properties> getPropertiesMap() {
     return basePropretiesMap;
   }
 
   @Override
   public void open() {
+    super.open();
     for (String propertyKey : property.stringPropertyNames()) {
       logger.debug("propertyKey: {}", propertyKey);
       String[] keyValue = propertyKey.split("\\.", 2);
@@ -181,6 +199,16 @@ public class JDBCInterpreter extends Interpreter {
     setMaxLineResults();
   }
 
+
+  protected boolean isKerboseEnabled() {
+    UserGroupInformation.AuthenticationMethod authType = JDBCSecurityImpl.getAuthtype(property);
+    if (authType.equals(KERBEROS)) {
+      return true;
+    }
+    return false;
+  }
+
+
   private void setMaxLineResults() {
     if (basePropretiesMap.containsKey(COMMON_KEY) &&
         basePropretiesMap.get(COMMON_KEY).containsKey(MAX_LINE_KEY)) {
@@ -207,23 +235,18 @@ public class JDBCInterpreter extends Interpreter {
   }
 
   private void initConnectionPoolMap() {
-    for (String key : jdbcUserConfigurationsMap.keySet()) {
+    for (JDBCUserConfigurations configurations : jdbcUserConfigurationsMap.values()) {
       try {
-        closeDBPool(key, DEFAULT_KEY);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-      try {
-        JDBCUserConfigurations configurations = jdbcUserConfigurationsMap.get(key);
         configurations.initConnectionPoolMap();
-      } catch (SQLException e) {
-        e.printStackTrace();
+      } catch (Exception e) {
+        logger.error("Error while closing initConnectionPoolMap...", e);
       }
     }
   }
 
   @Override
   public void close() {
+    super.close();
     try {
       initStatementMap();
       initConnectionPoolMap();
@@ -340,7 +363,7 @@ public class JDBCInterpreter extends Interpreter {
   public Connection getConnection(String propertyKey, InterpreterContext interpreterContext)
       throws ClassNotFoundException, SQLException, InterpreterException, IOException {
     final String user =  interpreterContext.getAuthenticationInfo().getUser();
-    Connection connection = null;
+    Connection connection;
     if (propertyKey == null || basePropretiesMap.get(propertyKey) == null) {
       return null;
     }
@@ -596,30 +619,20 @@ public class JDBCInterpreter extends Interpreter {
 
   private InterpreterResult executeSql(String propertyKey, String sql,
       InterpreterContext interpreterContext) {
-    Connection connection = null;
+    Connection connection;
     Statement statement;
     ResultSet resultSet = null;
     String paragraphId = interpreterContext.getParagraphId();
     String user = interpreterContext.getAuthenticationInfo().getUser();
 
     InterpreterResult interpreterResult = new InterpreterResult(InterpreterResult.Code.SUCCESS);
-    try {
-      connection = getConnection(propertyKey, interpreterContext);
-    } catch (Exception e) {
-      String errorMsg = Throwables.getStackTraceAsString(e);
-      try {
-        closeDBPool(user, propertyKey);
-      } catch (SQLException e1) {
-        logger.error("Cannot close DBPool for user, propertyKey: " + user + propertyKey, e1);
-      }
-      interpreterResult.add(errorMsg);
-      return new InterpreterResult(Code.ERROR, interpreterResult.message());
-    }
-    if (connection == null) {
-      return new InterpreterResult(Code.ERROR, "Prefix not found.");
-    }
 
     try {
+      connection = getConnection(propertyKey, interpreterContext);
+      if (connection == null) {
+        return new InterpreterResult(Code.ERROR, "Prefix not found.");
+      }
+
       ArrayList<String> multipleSqlArray = splitSqlQueries(sql);
       for (int i = 0; i < multipleSqlArray.size(); i++) {
         String sqlToExecute = multipleSqlArray.get(i);
@@ -670,23 +683,6 @@ public class JDBCInterpreter extends Interpreter {
           }
         }
       }
-    } catch (Throwable e) {
-      if (e.getCause() instanceof TTransportException &&
-          Throwables.getStackTraceAsString(e).contains("GSS") &&
-          getJDBCConfiguration(user).isConnectionInDBDriverPoolSuccessful(propertyKey)) {
-        return reLoginFromKeytab(propertyKey, sql, interpreterContext, interpreterResult);
-      } else {
-        logger.error("Cannot run " + sql, e);
-        String errorMsg = Throwables.getStackTraceAsString(e);
-        try {
-          closeDBPool(user, propertyKey);
-        } catch (SQLException e1) {
-          logger.error("Cannot close DBPool for user, propertyKey: " + user + propertyKey, e1);
-        }
-        interpreterResult.add(errorMsg);
-        return new InterpreterResult(Code.ERROR, interpreterResult.message());
-      }
-    } finally {
       //In case user ran an insert/update/upsert statement
       if (connection != null) {
         try {
@@ -697,34 +693,18 @@ public class JDBCInterpreter extends Interpreter {
         } catch (SQLException e) { /*ignored*/ }
       }
       getJDBCConfiguration(user).removeStatement(paragraphId);
+    } catch (Throwable e) {
+      logger.error("Cannot run " + sql, e);
+      String errorMsg = Throwables.getStackTraceAsString(e);
+      try {
+        closeDBPool(user, propertyKey);
+      } catch (SQLException e1) {
+        logger.error("Cannot close DBPool for user, propertyKey: " + user + propertyKey, e1);
+      }
+      interpreterResult.add(errorMsg);
+      return new InterpreterResult(Code.ERROR, interpreterResult.message());
     }
     return interpreterResult;
-  }
-
-  private InterpreterResult reLoginFromKeytab(String propertyKey, String sql,
-     InterpreterContext interpreterContext, InterpreterResult interpreterResult) {
-    String user = interpreterContext.getAuthenticationInfo().getUser();
-    try {
-      closeDBPool(user, propertyKey);
-    } catch (SQLException e) {
-      logger.error("Error, could not close DB pool in reLoginFromKeytab ", e);
-    }
-    UserGroupInformation.AuthenticationMethod authType =
-        JDBCSecurityImpl.getAuthtype(property);
-    if (authType.equals(KERBEROS)) {
-      try {
-        if (UserGroupInformation.isLoginKeytabBased()) {
-          UserGroupInformation.getLoginUser().reloginFromKeytab();
-        } else if (UserGroupInformation.isLoginTicketBased()) {
-          UserGroupInformation.getLoginUser().reloginFromTicketCache();
-        }
-      } catch (IOException e) {
-        logger.error("Cannot reloginFromKeytab " + sql, e);
-        interpreterResult.add(e.getMessage());
-        return new InterpreterResult(Code.ERROR, interpreterResult.message());
-      }
-    }
-    return executeSql(propertyKey, sql, interpreterContext);
   }
 
   /**

@@ -1,6 +1,7 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.0 Apache Release
 
-ZEPPELIN-1263	Should specify zeppelin's spark configuration through --conf arguments of spark-submit
+ZEPPELIN-2775   Strict-Transport-Security and X-XSS-Protection Headers
+ZEPPELIN-1263	  Should specify zeppelin's spark configuration through --conf arguments of spark-submit
 ZEPPELIN-2173   Duplicate user names populated in the Note permission box
 ZEPPELIN-2014   Jetty Directory Listing on app, assets, components, and scripts
 ZEPPELIN-2461   Masking Jetty Server version with User-configurable parameter

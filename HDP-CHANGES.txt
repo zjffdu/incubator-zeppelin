@@ -1,10 +1,11 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.3 Apache Release
 
-ZEPPELIN-2833 JDBC Interpreter doesn't follow JDBC specification when getting the results.
-[ZEPPELIN-2930] Releasing session of JDBC interpreter close().
-[hotfix] JDBC connection does not release when got exception.
-[Bug Fix][ZEPPELIN-2554] sql parser fix (backslash)
-[ZEPPELIN-1470] limiting results from jdbc
+ZEP-64          (ZEPPELIN-2913) ActiveDirectoryGroupRealm to support creating a role for system user
+ZEPPELIN-2833   JDBC Interpreter doesn't follow JDBC specification when getting the results.
+ZEPPELIN-2930   Releasing session of JDBC interpreter close().
+                [hotfix] JDBC connection does not release when got exception.
+ZEPPELIN-2554   [Bug Fix][ZEPPELIN-2554] sql parser fix (backslash)
+ZEPPELIN-1470   limiting results from jdbc
 BUG-87410       Update Zeppelin with 0.7.3
 ZEPPELIN-2742   Unify Zeppelin's  Storage Layer
 ZEPPELIN-2909   Support shared SparkContext across language in livy interpreter

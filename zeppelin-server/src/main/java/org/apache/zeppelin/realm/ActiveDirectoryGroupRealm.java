@@ -68,6 +68,12 @@ public class ActiveDirectoryGroupRealm extends AbstractLdapRealm {
     this.hadoopSecurityCredentialPath = hadoopSecurityCredentialPath;
   }
 
+  private String systemUserInternalRoleName;
+
+  public void setSystemUserInternalRoleName(String systemUserInternalRoleName) {
+    this.systemUserInternalRoleName = systemUserInternalRoleName;
+  }
+
     /*--------------------------------------------
     |    I N S T A N C E   V A R I A B L E S    |
     ============================================*/
@@ -252,6 +258,9 @@ public class ActiveDirectoryGroupRealm extends AbstractLdapRealm {
 
     try {
       roleNames = getRoleNamesForUser(username, ldapContext);
+      if (username.equals(systemUsername) && systemUserInternalRoleName != null) {
+        roleNames.add(systemUserInternalRoleName);
+      }
     } finally {
       LdapUtils.closeContext(ldapContext);
     }

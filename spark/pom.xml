@@ -541,7 +541,6 @@
         <spark.version>2.2.0.2.6.3.0-SNAPSHOT</spark.version>
         <protobuf.version>2.5.0</protobuf.version>
         <py4j.version>0.10.4</py4j.version>
-        <scala.version>2.11.8</scala.version>
       </properties>
     </profile>
 

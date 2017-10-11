@@ -1,5 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.3 Apache Release
 
+BUG-82571       [Minor] Remove hardcoded key in zeppelinhub.
 ZEPPELIN-2953   Allow custom http header for livy interpreter
 ZEPPELIN-2796   Fetching LDAP roles
 ZEP-64          (ZEPPELIN-2913) ActiveDirectoryGroupRealm to support creating a role for system user

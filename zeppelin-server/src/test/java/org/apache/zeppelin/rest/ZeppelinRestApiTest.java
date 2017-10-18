@@ -56,7 +56,7 @@ public class ZeppelinRestApiTest extends AbstractTestRestApi {
 
   @BeforeClass
   public static void init() throws Exception {
-    AbstractTestRestApi.startUp();
+    AbstractTestRestApi.startUp(ZeppelinRestApiTest.class.getSimpleName());
   }
 
   @AfterClass

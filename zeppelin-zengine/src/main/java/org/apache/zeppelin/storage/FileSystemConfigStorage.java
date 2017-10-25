@@ -25,6 +25,7 @@ import com.google.gson.JsonParser;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.RawLocalFileSystem;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.InterpreterInfoSaving;
@@ -62,6 +63,9 @@ public class FileSystemConfigStorage extends ConfigStorage {
     this.hadoopConf = new Configuration();
     try {
       this.fs = FileSystem.get(new URI(zConf.getConfigFSDir()), hadoopConf);
+      // disable checksum for local file system. because interpreter.json may be updated by
+      // no hadoop filesystem api
+      this.hadoopConf.set("fs.file.impl", RawLocalFileSystem.class.getName());
       LOGGER.info("Creating filesystem: " + this.fs.getClass().getCanonicalName());
       this.rootConfFolder = fs.makeQualified(new Path(zConf.getConfigFSDir()));
       if (!fs.exists(rootConfFolder)) {

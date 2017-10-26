@@ -1,5 +1,6 @@
 Changes only in Hortonworks github and not in zeppelin 0.7.3 Apache Release
 
+ZEP-68          replace com.microsoft.azure:azure-storage with org.apache.hadoop:hadoop-azure
 ZEPPELIN-2988   Zeppelin does not start new Livy session if yarn livy session application is killed
 BUG-82571       [Minor] Remove hardcoded key in zeppelinhub.
 ZEPPELIN-2953   Allow custom http header for livy interpreter

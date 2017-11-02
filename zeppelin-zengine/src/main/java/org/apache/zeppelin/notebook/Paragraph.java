@@ -179,7 +179,6 @@ public class Paragraph extends Job implements Cloneable, JsonSerializable {
   }
 
   public void setText(String newText) {
-    // strip white space from the beginning
     this.text = newText;
     this.dateUpdated = new Date();
     // parse text to get interpreter component

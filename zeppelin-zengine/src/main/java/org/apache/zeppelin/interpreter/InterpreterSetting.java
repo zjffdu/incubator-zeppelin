@@ -362,7 +362,7 @@ public class InterpreterSetting {
     }
 
     //TODO(zjffdu) we encode interpreter setting id into groupId, this is not a good design
-    return id + ":" + key;
+    return name + ":" + key;
   }
 
   private String getInterpreterSessionId(String user, String noteId) {

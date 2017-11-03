@@ -137,7 +137,7 @@ public abstract class BaseLivyInterpreter extends Interpreter {
   public void open() {
     try {
       sharedInterpreter = getLivySharedInterpreter();
-      if (!sharedInterpreter.isSupported()) {
+      if (sharedInterpreter == null || !sharedInterpreter.isSupported()) {
         initLivySession();
       }
     } catch (LivyException e) {

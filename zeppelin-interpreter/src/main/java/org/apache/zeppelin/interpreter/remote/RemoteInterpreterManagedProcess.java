@@ -42,6 +42,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
   private ExecuteWatchdog watchdog;
   boolean running = false;
   private int port = -1;
+  private String portRange;
   private final String interpreterDir;
   private final String localRepoDir;
   private final String interpreterGroupName;
@@ -52,6 +53,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
       String intpRunner,
       String intpDir,
       String localRepoDir,
+      String portRange,
       Map<String, String> env,
       int connectTimeout,
       RemoteInterpreterProcessListener listener,
@@ -64,11 +66,13 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
     this.interpreterDir = intpDir;
     this.localRepoDir = localRepoDir;
     this.interpreterGroupName = interpreterGroupName;
+    this.portRange = portRange;
   }
 
   RemoteInterpreterManagedProcess(String intpRunner,
                                   String intpDir,
                                   String localRepoDir,
+                                  String portRange,
                                   Map<String, String> env,
                                   RemoteInterpreterEventPoller remoteInterpreterEventPoller,
                                   int connectTimeout,
@@ -80,6 +84,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
     this.interpreterDir = intpDir;
     this.localRepoDir = localRepoDir;
     this.interpreterGroupName = interpreterGroupName;
+    this.portRange = portRange;
   }
 
   @Override
@@ -96,7 +101,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
   public void start(String userName, Boolean isUserImpersonate) {
     // start server process
     try {
-      port = RemoteInterpreterUtils.findRandomAvailablePortOnAllLocalInterfaces();
+      port = RemoteInterpreterUtils.findRandomAvailablePortOnAllLocalInterfaces(portRange);
     } catch (IOException e1) {
       throw new InterpreterException(e1);
     }

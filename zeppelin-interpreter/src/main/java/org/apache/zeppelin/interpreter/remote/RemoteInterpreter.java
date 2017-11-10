@@ -61,6 +61,7 @@ public class RemoteInterpreter extends Interpreter {
   private int maxPoolSize;
   private String host;
   private int port;
+  private String portRange;
   private String userName;
   private Boolean isUserImpersonate;
   private int outputLimit = Constants.ZEPPELIN_INTERPRETER_OUTPUT_LIMIT;
@@ -73,7 +74,7 @@ public class RemoteInterpreter extends Interpreter {
       String interpreterRunner, String interpreterPath, String localRepoPath, int connectTimeout,
       int maxPoolSize, RemoteInterpreterProcessListener remoteInterpreterProcessListener,
       ApplicationEventListener appListener, String userName, Boolean isUserImpersonate,
-      int outputLimit, String interpreterGroupName) {
+      int outputLimit, String interpreterGroupName, String portRange) {
     super(property);
     this.sessionKey = sessionKey;
     this.className = className;
@@ -90,6 +91,7 @@ public class RemoteInterpreter extends Interpreter {
     this.isUserImpersonate = isUserImpersonate;
     this.outputLimit = outputLimit;
     this.interpreterGroupName = interpreterGroupName;
+    this.portRange = portRange;
   }
 
 
@@ -209,7 +211,7 @@ public class RemoteInterpreter extends Interpreter {
         } else {
           // create new remote process
           remoteProcess = new RemoteInterpreterManagedProcess(
-              interpreterRunner, interpreterPath, localRepoPath, env, connectTimeout,
+              interpreterRunner, interpreterPath, localRepoPath, portRange, env, connectTimeout,
               remoteInterpreterProcessListener, applicationEventListener, interpreterGroupName);
         }
 

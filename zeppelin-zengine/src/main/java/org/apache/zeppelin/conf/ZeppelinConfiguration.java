@@ -507,6 +507,9 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getString(ConfVars.ZEPPELIN_SERVER_STRICT_TRANSPORT);
   }
 
+  public String getInterpreterPortRange() {
+    return getString(ConfVars.ZEPPELIN_INTERPRETER_PORTRANGE);
+  }
 
   public Map<String, String> dumpConfigurations(ZeppelinConfiguration conf,
                                                 ConfigurationKeyPredicate predicate) {
@@ -658,11 +661,11 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     ZEPPELIN_SERVER_JETTY_NAME("zeppelin.server.jetty.name", null),
     ZEPPELIN_SERVER_STRICT_TRANSPORT("zeppelin.server.strict.transport", "max-age=631138519"),
     ZEPPELIN_SERVER_X_XSS_PROTECTION("zeppelin.server.xxss.protection", "1"),
-
     ZEPPELIN_SERVER_KERBEROS_KEYTAB("zeppelin.server.kerberos.keytab", ""),
     ZEPPELIN_SERVER_KERBEROS_PRINCIPAL("zeppelin.server.kerberos.principal", ""),
+    
+    ZEPPELIN_INTERPRETER_PORTRANGE("zeppelin.interpreter.portRange", ":");
 
-    ZEPPELIN_INTERPRETER_CALLBACK_PORTRANGE("zeppelin.interpreter.callback.portRange", ":");
 
     private String varName;
     @SuppressWarnings("rawtypes")

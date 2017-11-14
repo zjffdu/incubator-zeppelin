@@ -1,5 +1,6 @@
 package org.apache.zeppelin.interpreter.recovery;
 
+import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.display.GUI;
 import org.apache.zeppelin.interpreter.AbstractInterpreterTest;
 import org.apache.zeppelin.interpreter.Interpreter;
@@ -10,6 +11,7 @@ import org.apache.zeppelin.interpreter.InterpreterOption;
 import org.apache.zeppelin.interpreter.InterpreterSetting;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreter;
 import org.apache.zeppelin.user.AuthenticationInfo;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,6 +22,11 @@ import static org.junit.Assert.assertEquals;
 
 public class FileSystemRecoveryStorageTest extends AbstractInterpreterTest {
 
+  @Before
+  public void setUp() throws Exception {
+    System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_RECOVERY_ENABLED.getVarName(), "true");
+    super.setUp();
+  }
 
   @Test
   public void testSingleInterpreterProcess() throws InterpreterException, IOException {

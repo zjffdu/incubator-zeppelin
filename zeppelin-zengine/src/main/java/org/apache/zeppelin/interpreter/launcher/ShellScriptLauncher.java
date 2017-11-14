@@ -30,12 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Interpreter Launcher which use shell script to launch the interpreter process.
- *
  */
 public class ShellScriptLauncher extends InterpreterLauncher {
 
@@ -70,8 +68,13 @@ public class ShellScriptLauncher extends InterpreterLauncher {
         Map<String, InterpreterClient> clients = recoveryStorage.restore();
         if (clients.containsKey(context.getInterpreterGroupId())) {
           InterpreterClient client = clients.get(context.getInterpreterGroupId());
-          LOGGER.info("Recover InterpreterProcess: " + client.getHost() + ":" + client.getPort());
-          return (RemoteInterpreterRunningProcess) client;
+          if (client.isRunning()) {
+            LOGGER.info("Recover InterpreterProcess: " + client.getHost() + ":" + client.getPort());
+            return (RemoteInterpreterRunningProcess) client;
+          } else {
+            LOGGER.warn("Can not recovery interpreter process: " + client.getHost() + ":"
+                + client.getPort() + ", as it is already terminated.");
+          }
         }
       }
 
@@ -80,7 +83,7 @@ public class ShellScriptLauncher extends InterpreterLauncher {
           + context.getInterpreterSettingId();
       return new RemoteInterpreterManagedProcess(
           runner != null ? runner.getPath() : zConf.getInterpreterRemoteRunnerPath(),
-          zConf.getCallbackPortRange(),  zConf.getInterpreterPortRange(),
+          zConf.getCallbackPortRange(), zConf.getInterpreterPortRange(),
           zConf.getInterpreterDir() + "/" + groupName, localRepoPath,
           buildEnvFromProperties(), connectTimeout, name);
     }

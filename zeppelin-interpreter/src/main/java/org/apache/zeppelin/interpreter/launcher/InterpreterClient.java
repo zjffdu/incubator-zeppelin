@@ -33,4 +33,6 @@ public interface InterpreterClient {
   String getHost();
 
   int getPort();
+
+  boolean isRunning();
 }

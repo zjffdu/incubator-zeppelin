@@ -38,6 +38,7 @@ import org.apache.zeppelin.interpreter.launcher.InterpreterLauncher;
 import org.apache.zeppelin.interpreter.launcher.ShellScriptLauncher;
 import org.apache.zeppelin.interpreter.launcher.SparkInterpreterLauncher;
 import org.apache.zeppelin.interpreter.lifecycle.NullLifecycleManager;
+import org.apache.zeppelin.interpreter.recovery.NullRecoveryStorage;
 import org.apache.zeppelin.interpreter.recovery.RecoveryStorage;
 import org.apache.zeppelin.interpreter.remote.RemoteAngularObjectRegistry;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreter;
@@ -243,6 +244,11 @@ public class InterpreterSetting {
       return this;
     }
 
+    public Builder setRecoveryStorage(RecoveryStorage recoveryStorage) {
+      interpreterSetting.recoveryStorage = recoveryStorage;
+      return this;
+    }
+
     public InterpreterSetting create() {
       // post processing
       interpreterSetting.postProcessing();
@@ -261,6 +267,9 @@ public class InterpreterSetting {
     this.status = Status.READY;
     if (this.lifecycleManager == null) {
       this.lifecycleManager = new NullLifecycleManager(conf);
+    }
+    if (this.recoveryStorage == null) {
+      this.recoveryStorage = new NullRecoveryStorage();
     }
   }
 

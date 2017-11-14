@@ -32,6 +32,7 @@ import org.apache.zeppelin.interpreter.ManagedInterpreterGroup;
 import org.apache.zeppelin.interpreter.launcher.InterpreterClient;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterRunningProcess;
+import org.apache.zeppelin.notebook.FileSystemStorage;
 import org.apache.zeppelin.notebook.repo.FileSystemNotebookRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,55 +49,30 @@ import java.util.Map;
 
 
 /**
+ * Hadoop compatible FileSystem based RecoveryStorage implementation.
  *
+ * Save InterpreterProcess in the format of:
+ * InterpreterGroupId host:port
  */
 public class FileSystemRecoveryStorage extends RecoveryStorage {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemNotebookRepo.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemRecoveryStorage.class);
 
   private InterpreterSettingManager interpreterSettingManager;
-  private Configuration hadoopConf;
   private ZeppelinConfiguration zConf;
-  private boolean isSecurityEnabled = false;
-  private FileSystem fs;
+  private FileSystemStorage fs;
   private Path recoveryDir;
 
   public FileSystemRecoveryStorage(ZeppelinConfiguration zConf,
                                    InterpreterSettingManager interpreterSettingManager)
       throws IOException {
 
-    this.zConf = zConf;
     this.interpreterSettingManager = interpreterSettingManager;
-    this.hadoopConf = new Configuration();
-    this.isSecurityEnabled = UserGroupInformation.isSecurityEnabled();
-    if (isSecurityEnabled) {
-      String keytab = zConf.getString(
-          ZeppelinConfiguration.ConfVars.ZEPPELIN_SERVER_KERBEROS_KEYTAB);
-      String principal = zConf.getString(
-          ZeppelinConfiguration.ConfVars.ZEPPELIN_SERVER_KERBEROS_PRINCIPAL);
-      if (StringUtils.isBlank(keytab) || StringUtils.isBlank(principal)) {
-        throw new IOException("keytab and principal can not be empty, keytab: " + keytab
-            + ", principal: " + principal);
-      }
-      UserGroupInformation.loginUserFromKeytab(principal, keytab);
-    }
-
-    try {
-      this.fs = FileSystem.get(new URI(zConf.getRecoveryDir()), new Configuration());
-      LOGGER.info("Creating FileSystem: " + this.fs.getClass().getCanonicalName());
-      this.recoveryDir = fs.makeQualified(new Path(zConf.getRecoveryDir()));
-      LOGGER.info("Using folder {} to store recovery data", recoveryDir);
-    } catch (URISyntaxException e) {
-      throw new IOException(e);
-    }
-    if (!fs.exists(recoveryDir)) {
-      fs.mkdirs(recoveryDir);
-      LOGGER.info("Create recovery dir {} in hdfs", recoveryDir.toString());
-    }
-    if (fs.isFile(recoveryDir)) {
-      throw new IOException("recoveryDir {} is file instead of directory, please remove it or " +
-          "specify another directory");
-    }
+    this.zConf = zConf;
+    this.fs = FileSystemStorage.get(zConf);
+    this.recoveryDir = this.fs.makeQualified(new Path(zConf.getNotebookDir()));
+    LOGGER.info("Using folder {} to store recovery data", recoveryDir);
+    this.fs.tryMkDir(recoveryDir);
   }
 
   @Override
@@ -112,7 +88,6 @@ public class FileSystemRecoveryStorage extends RecoveryStorage {
   private void save(String interpreterSettingName) throws IOException {
     InterpreterSetting interpreterSetting =
         interpreterSettingManager.getInterpreterSettingByName(interpreterSettingName);
-    Path tmpFile = new Path(recoveryDir, interpreterSettingName + ".tmp");
     List<String> recoveryContent = new ArrayList<>();
     for (ManagedInterpreterGroup interpreterGroup : interpreterSetting.getAllInterpreterGroups()) {
       RemoteInterpreterProcess interpreterProcess = interpreterGroup.getInterpreterProcess();
@@ -123,30 +98,20 @@ public class FileSystemRecoveryStorage extends RecoveryStorage {
     }
     LOGGER.debug("Updating recovery data for interpreterSetting: " + interpreterSettingName);
     LOGGER.debug("Recovery Data: " + StringUtils.join(recoveryContent, "\n"));
-    IOUtils.copyBytes(new ByteArrayInputStream(StringUtils.join(recoveryContent, "\n").getBytes()),
-        fs.create(tmpFile), hadoopConf);
     Path recoveryFile = new Path(recoveryDir, interpreterSettingName + ".recovery");
-    fs.delete(recoveryFile, true);
-    fs.rename(tmpFile, recoveryFile);
+    fs.writeFile(StringUtils.join(recoveryContent, "\n"), recoveryFile, true);
   }
 
   @Override
   public Map<String, InterpreterClient> restore() throws IOException {
     Map<String, InterpreterClient> clients = new HashMap<>();
-    FileStatus[] recoveryFiles = fs.listStatus(recoveryDir, new PathFilter() {
-      @Override
-      public boolean accept(Path path) {
-        return path.getName().endsWith(".recovery");
-      }
-    });
+    List<Path> paths = fs.list(new Path(recoveryDir + "/*.recovery"));
 
-    for (FileStatus fileStatus : recoveryFiles) {
-      String fileName = fileStatus.getPath().getName();
+    for (Path path : paths) {
+      String fileName = path.getName();
       String interpreterSettingName = fileName.substring(0,
           fileName.length() - ".recovery".length());
-      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-      IOUtils.copyBytes(fs.open(fileStatus.getPath()), bytes, hadoopConf);
-      String recoveryContent = bytes.toString();
+      String recoveryContent = fs.readFile(path);
       if (!StringUtils.isBlank(recoveryContent)) {
         for (String line : recoveryContent.split("\n")) {
           String[] tokens = line.split("\t");

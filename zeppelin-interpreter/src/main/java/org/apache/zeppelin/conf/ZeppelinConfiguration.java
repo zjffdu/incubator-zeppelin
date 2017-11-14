@@ -356,7 +356,7 @@ public class ZeppelinConfiguration extends XMLConfiguration {
   }
 
   public String getRecoveryDir() {
-    return getString(ConfVars.ZEPPELIN_RECOVERY_DIR);
+    return getRelativeDir(ConfVars.ZEPPELIN_RECOVERY_DIR);
   }
 
   public boolean isRecoveryEnabled() {

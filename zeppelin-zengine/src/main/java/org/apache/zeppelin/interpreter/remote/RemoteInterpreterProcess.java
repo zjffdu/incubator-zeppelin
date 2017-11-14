@@ -51,10 +51,6 @@ public abstract class RemoteInterpreterProcess implements InterpreterClient {
     this.remoteInterpreterEventPoller = eventPoller;
   }
 
-  public abstract String getHost();
-  public abstract int getPort();
-  public abstract boolean isRunning();
-
   public int getConnectTimeout() {
     return connectTimeout;
   }

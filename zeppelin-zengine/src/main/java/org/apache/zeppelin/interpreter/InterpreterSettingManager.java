@@ -35,6 +35,7 @@ import org.apache.zeppelin.display.AngularObjectRegistryListener;
 import org.apache.zeppelin.helium.ApplicationEventListener;
 import org.apache.zeppelin.interpreter.Interpreter.RegisteredInterpreter;
 import org.apache.zeppelin.interpreter.recovery.FileSystemRecoveryStorage;
+import org.apache.zeppelin.interpreter.recovery.NullRecoveryStorage;
 import org.apache.zeppelin.interpreter.recovery.RecoveryStorage;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcessListener;
@@ -157,7 +158,11 @@ public class InterpreterSettingManager {
     this.angularObjectRegistryListener = angularObjectRegistryListener;
     this.remoteInterpreterProcessListener = remoteInterpreterProcessListener;
     this.appEventListener = appEventListener;
-    this.recoveryStorage = new FileSystemRecoveryStorage(conf, this);
+    if (conf.isRecoveryEnabled()) {
+      this.recoveryStorage = new FileSystemRecoveryStorage(conf, this);
+    } else {
+      this.recoveryStorage = new NullRecoveryStorage();
+    }
     try {
       this.lifecycleManager = (LifecycleManager)
           Class.forName(conf.getLifecycleManagerClass()).getConstructor(ZeppelinConfiguration.class)

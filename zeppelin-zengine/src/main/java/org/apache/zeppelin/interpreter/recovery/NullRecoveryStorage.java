@@ -24,14 +24,22 @@ import java.util.Map;
 
 
 /**
- * Interface for Interpreter Process Recovery.
+ * RecoveryStorage that do nothing, used when recovery is not enabled.
  *
  */
-public abstract class RecoveryStorage {
+public class NullRecoveryStorage extends RecoveryStorage {
+  @Override
+  public void onInterpreterClientStart(InterpreterClient client) throws IOException {
 
-  public abstract void onInterpreterClientStart(InterpreterClient client) throws IOException;
+  }
 
-  public abstract void onInterpreterClientStop(InterpreterClient client) throws IOException;
+  @Override
+  public void onInterpreterClientStop(InterpreterClient client) throws IOException {
 
-  public abstract Map<String, InterpreterClient> restore() throws IOException;
+  }
+
+  @Override
+  public Map<String, InterpreterClient> restore() throws IOException {
+    return null;
+  }
 }

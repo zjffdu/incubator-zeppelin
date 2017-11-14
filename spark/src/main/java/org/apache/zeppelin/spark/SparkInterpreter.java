@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.spark.JobProgressUtil;
 import org.apache.spark.SecurityManager;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
@@ -47,7 +48,7 @@ import org.apache.spark.scheduler.Pool;
 import org.apache.spark.scheduler.SparkListenerJobStart;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.ui.SparkUI;
-import org.apache.spark.ui.jobs.JobProgressListener;
+import org.apache.spark.scheduler.SparkListener;
 import org.apache.zeppelin.interpreter.BaseZeppelinContext;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
@@ -113,7 +114,8 @@ public class SparkInterpreter extends Interpreter {
   private static InterpreterHookRegistry hooks;
   private static SparkEnv env;
   private static Object sparkSession;    // spark 2.x
-  private static JobProgressListener sparkListener;
+  private static SparkListener sparkListener;
+  private static JobProgressUtil jobProgressUtil;
   private static AbstractFile classOutputDir;
   private static Integer sharedInterpreterLock = new Integer(0);
   private static AtomicInteger numReferenceOfSparkContext = new AtomicInteger(0);
@@ -173,8 +175,8 @@ public class SparkInterpreter extends Interpreter {
     }
   }
 
-  static JobProgressListener setupListeners(SparkContext context) {
-    JobProgressListener pl = new JobProgressListener(context.getConf()) {
+  static SparkListener setupListeners(SparkContext context) {
+    SparkListener pl = new SparkListener() {
       @Override
       public synchronized void onJobStart(SparkListenerJobStart jobStart) {
         super.onJobStart(jobStart);
@@ -224,7 +226,7 @@ public class SparkInterpreter extends Interpreter {
           continue;
         }
 
-        if (!parameterTypes[0].isAssignableFrom(JobProgressListener.class)) {
+        if (!parameterTypes[0].isAssignableFrom(SparkListener.class)) {
           continue;
         }
 
@@ -925,6 +927,8 @@ public class SparkInterpreter extends Interpreter {
     }
 
     numReferenceOfSparkContext.incrementAndGet();
+
+    jobProgressUtil = new JobProgressUtil(sc);
   }
 
   public String getSparkUIUrl() {
@@ -1274,48 +1278,10 @@ public class SparkInterpreter extends Interpreter {
   @Override
   public int getProgress(InterpreterContext context) {
     String jobGroup = Utils.buildJobGroupId(context);
-    int completedTasks = 0;
-    int totalTasks = 0;
-
-    DAGScheduler scheduler = sc.dagScheduler();
-    if (scheduler == null) {
-      return 0;
-    }
-    HashSet<ActiveJob> jobs = scheduler.activeJobs();
-    if (jobs == null || jobs.size() == 0) {
-      return 0;
-    }
-    Iterator<ActiveJob> it = jobs.iterator();
-    while (it.hasNext()) {
-      ActiveJob job = it.next();
-      String g = (String) job.properties().get("spark.jobGroup.id");
-      if (jobGroup.equals(g)) {
-        int[] progressInfo = null;
-        try {
-          Object finalStage = job.getClass().getMethod("finalStage").invoke(job);
-          if (sparkVersion.getProgress1_0()) {
-            progressInfo = getProgressFromStage_1_0x(sparkListener, finalStage);
-          } else {
-            progressInfo = getProgressFromStage_1_1x(sparkListener, finalStage);
-          }
-        } catch (IllegalAccessException | IllegalArgumentException
-            | InvocationTargetException | NoSuchMethodException
-            | SecurityException e) {
-          logger.error("Can't get progress info", e);
-          return 0;
-        }
-        totalTasks += progressInfo[0];
-        completedTasks += progressInfo[1];
-      }
-    }
-
-    if (totalTasks == 0) {
-      return 0;
-    }
-    return completedTasks * 100 / totalTasks;
+    return jobProgressUtil.progress(jobGroup);
   }
 
-  private int[] getProgressFromStage_1_0x(JobProgressListener sparkListener, Object stage)
+  private int[] getProgressFromStage_1_0x(SparkListener sparkListener, Object stage)
       throws IllegalAccessException, IllegalArgumentException,
       InvocationTargetException, NoSuchMethodException, SecurityException {
     int numTasks = (int) stage.getClass().getMethod("numTasks").invoke(stage);
@@ -1345,7 +1311,7 @@ public class SparkInterpreter extends Interpreter {
     return new int[] {numTasks, completedTasks};
   }
 
-  private int[] getProgressFromStage_1_1x(JobProgressListener sparkListener, Object stage)
+  private int[] getProgressFromStage_1_1x(SparkListener sparkListener, Object stage)
       throws IllegalAccessException, IllegalArgumentException,
       InvocationTargetException, NoSuchMethodException, SecurityException {
     int numTasks = (int) stage.getClass().getMethod("numTasks").invoke(stage);
@@ -1421,7 +1387,7 @@ public class SparkInterpreter extends Interpreter {
     return FormType.NATIVE;
   }
 
-  public JobProgressListener getJobProgressListener() {
+  public SparkListener getJobProgressListener() {
     return sparkListener;
   }
 

@@ -53,8 +53,6 @@ public abstract class RemoteInterpreterProcess implements InterpreterClient {
 
   public abstract String getHost();
   public abstract int getPort();
-  public abstract void start(String userName, Boolean isUserImpersonate);
-  public abstract void stop();
   public abstract boolean isRunning();
 
   public int getConnectTimeout() {

@@ -21,13 +21,16 @@ package org.apache.zeppelin.interpreter.launcher;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.InterpreterOption;
 import org.apache.zeppelin.interpreter.InterpreterRunner;
+import org.apache.zeppelin.interpreter.recovery.RecoveryStorage;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterManagedProcess;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterRunningProcess;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,12 +41,12 @@ public class ShellScriptLauncher extends InterpreterLauncher {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ShellScriptLauncher.class);
 
-  public ShellScriptLauncher(ZeppelinConfiguration zConf) {
-    super(zConf);
+  public ShellScriptLauncher(ZeppelinConfiguration zConf, RecoveryStorage recoveryStorage) {
+    super(zConf, recoveryStorage);
   }
 
   @Override
-  public InterpreterClient launch(InterpreterLaunchContext context) {
+  public InterpreterClient launch(InterpreterLaunchContext context) throws IOException {
     LOGGER.info("Launching Interpreter: " + context.getInterpreterSettingGroup());
     this.properties = context.getProperties();
     InterpreterOption option = context.getOption();
@@ -53,12 +56,25 @@ public class ShellScriptLauncher extends InterpreterLauncher {
 
     int connectTimeout =
         zConf.getInt(ZeppelinConfiguration.ConfVars.ZEPPELIN_INTERPRETER_CONNECT_TIMEOUT);
+    boolean recoveryEnabled = zConf.isRecoveryEnabled();
+
     if (option.isExistingProcess()) {
       return new RemoteInterpreterRunningProcess(
+          context.getInterpreterSettingName(),
           connectTimeout,
           option.getHost(),
           option.getPort());
     } else {
+      // try to recovery first
+      if (recoveryEnabled) {
+        Map<String, InterpreterClient> clients = recoveryStorage.restore();
+        if (clients.containsKey(context.getInterpreterGroupId())) {
+          InterpreterClient client = clients.get(context.getInterpreterGroupId());
+          LOGGER.info("Recover InterpreterProcess: " + client.getHost() + ":" + client.getPort());
+          return (RemoteInterpreterRunningProcess) client;
+        }
+      }
+
       // create new remote process
       String localRepoPath = zConf.getInterpreterLocalRepoPath() + "/"
           + context.getInterpreterSettingId();

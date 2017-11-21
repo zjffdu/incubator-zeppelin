@@ -260,63 +260,63 @@ public class SqlCompleter {
 
     Set<String> completions = new TreeSet<>();
 
-    if (null != connection) {
-      DatabaseMetaData metaData = connection.getMetaData();
-
-      // Add the driver specific SQL completions
-      String driverSpecificKeywords =
-              "/" + metaData.getDriverName().replace(" ", "-").toLowerCase() + "-sql.keywords";
-      logger.info("JDBC DriverName:" + driverSpecificKeywords);
-      try {
-        if (SqlCompleter.class.getResource(driverSpecificKeywords) != null) {
-          String driverKeywords =
-                  new BufferedReader(new InputStreamReader(
-                          SqlCompleter.class.getResourceAsStream(driverSpecificKeywords)))
-                          .readLine();
-          keywords += "," + driverKeywords.toUpperCase();
-        }
-      } catch (Exception e) {
-        logger.debug("fail to get driver specific SQL completions for " +
-                driverSpecificKeywords + " : " + e, e);
-      }
-
-
-      // Add the keywords from the current JDBC connection
-      try {
-        keywords += "," + metaData.getSQLKeywords();
-      } catch (Exception e) {
-        logger.debug("fail to get SQL key words from database metadata: " + e, e);
-      }
-      try {
-        keywords += "," + metaData.getStringFunctions();
-      } catch (Exception e) {
-        logger.debug("fail to get string function names from database metadata: " + e, e);
-      }
-      try {
-        keywords += "," + metaData.getNumericFunctions();
-      } catch (Exception e) {
-        logger.debug("fail to get numeric function names from database metadata: " + e, e);
-      }
-      try {
-        keywords += "," + metaData.getSystemFunctions();
-      } catch (Exception e) {
-        logger.debug("fail to get system function names from database metadata: " + e, e);
-      }
-      try {
-        keywords += "," + metaData.getTimeDateFunctions();
-      } catch (Exception e) {
-        logger.debug("fail to get time date function names from database metadata: " + e, e);
-      }
-
-      // Set all keywords to lower-case versions
-      keywords = keywords.toLowerCase();
-
-    }
-
-    StringTokenizer tok = new StringTokenizer(keywords, ", ");
-    while (tok.hasMoreTokens()) {
-      completions.add(tok.nextToken());
-    }
+//    if (null != connection) {
+//      DatabaseMetaData metaData = connection.getMetaData();
+//
+//      // Add the driver specific SQL completions
+//      String driverSpecificKeywords =
+//              "/" + metaData.getDriverName().replace(" ", "-").toLowerCase() + "-sql.keywords";
+//      logger.info("JDBC DriverName:" + driverSpecificKeywords);
+//      try {
+//        if (SqlCompleter.class.getResource(driverSpecificKeywords) != null) {
+//          String driverKeywords =
+//                  new BufferedReader(new InputStreamReader(
+//                          SqlCompleter.class.getResourceAsStream(driverSpecificKeywords)))
+//                          .readLine();
+//          keywords += "," + driverKeywords.toUpperCase();
+//        }
+//      } catch (Exception e) {
+//        logger.debug("fail to get driver specific SQL completions for " +
+//                driverSpecificKeywords + " : " + e, e);
+//      }
+//
+//
+//      // Add the keywords from the current JDBC connection
+//      try {
+//        keywords += "," + metaData.getSQLKeywords();
+//      } catch (Exception e) {
+//        logger.debug("fail to get SQL key words from database metadata: " + e, e);
+//      }
+//      try {
+//        keywords += "," + metaData.getStringFunctions();
+//      } catch (Exception e) {
+//        logger.debug("fail to get string function names from database metadata: " + e, e);
+//      }
+//      try {
+//        keywords += "," + metaData.getNumericFunctions();
+//      } catch (Exception e) {
+//        logger.debug("fail to get numeric function names from database metadata: " + e, e);
+//      }
+//      try {
+//        keywords += "," + metaData.getSystemFunctions();
+//      } catch (Exception e) {
+//        logger.debug("fail to get system function names from database metadata: " + e, e);
+//      }
+//      try {
+//        keywords += "," + metaData.getTimeDateFunctions();
+//      } catch (Exception e) {
+//        logger.debug("fail to get time date function names from database metadata: " + e, e);
+//      }
+//
+//      // Set all keywords to lower-case versions
+//      keywords = keywords.toLowerCase();
+//
+//    }
+//
+//    StringTokenizer tok = new StringTokenizer(keywords, ", ");
+//    while (tok.hasMoreTokens()) {
+//      completions.add(tok.nextToken());
+//    }
 
     return completions;
   }
@@ -391,19 +391,19 @@ public class SqlCompleter {
       Set<String> schemas = new HashSet<>();
       Set<String> catalogs = new HashSet<>();
       Set<String> keywords = getSqlKeywordsCompletions(connection);
-      if (connection != null) {
-        schemas = getSchemaNames(connection.getMetaData(), schemaFilters);
-        catalogs = getCatalogNames(connection.getMetaData(), schemaFilters);
-        if (schemas.size() == 0) {
-          schemas.addAll(catalogs);
-        }
-        for (String schema : schemas) {
-          for (String schemaFilter : schemaFilters) {
-            fillTableAndColumnNames(schema, connection.getMetaData(), schemaFilter, tables,
-                columns);
-          }
-        }
-      }
+//      if (connection != null) {
+//        schemas = getSchemaNames(connection.getMetaData(), schemaFilters);
+//        catalogs = getCatalogNames(connection.getMetaData(), schemaFilters);
+//        if (schemas.size() == 0) {
+//          schemas.addAll(catalogs);
+//        }
+//        for (String schema : schemas) {
+//          for (String schemaFilter : schemaFilters) {
+//            fillTableAndColumnNames(schema, connection.getMetaData(), schemaFilter, tables,
+//                columns);
+//          }
+//        }
+//      }
       init(schemas, tables, columns, keywords);
       logger.info("Completer initialized with " + schemas.size() + " schemas, " +
               columns.size() + " tables and " + keywords.size() + " keywords");

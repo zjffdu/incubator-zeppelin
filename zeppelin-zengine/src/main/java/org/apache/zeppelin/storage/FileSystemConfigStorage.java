@@ -62,6 +62,9 @@ public class FileSystemConfigStorage extends ConfigStorage {
     super(zConf);
     this.hadoopConf = new Configuration();
     try {
+      // disable checksum for local file system. because interpreter.json may be updated by
+      // no hadoop filesystem api
+      this.hadoopConf.set("fs.file.impl", RawLocalFileSystem.class.getName());
       this.fs = FileSystem.get(new URI(zConf.getConfigFSDir()), hadoopConf);
       // disable checksum for local file system. because interpreter.json may be updated by
       // no hadoop filesystem api

@@ -63,3 +63,7 @@ BUG-73354       Zeppelin ui was unreachable till 2 minutes after it was restarte
 BUG-73712       Ship only approved notebooks with Zeppelin OOB.
 BUG-67291       Zeppelin build failure
 BUG-87874       ZEPPELIN-2850. URI Data scheme -> Blob creation
+BUG-91117       Disable SQL completer in JDBC interpreter
+BUG-91917       ZEPPELIN-3063 Notebook loses formatting when importing from 0.6.x
+BUG-91441       ZEPPELIN-3040 Allow to specify portRange for interpreter process thrift service
+BUG-91194       Shared Interpreter code should not crash when interpreter.json is missing shared interpreter config

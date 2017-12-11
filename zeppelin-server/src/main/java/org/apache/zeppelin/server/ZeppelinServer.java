@@ -27,6 +27,7 @@ import javax.servlet.DispatcherType;
 import javax.ws.rs.core.Application;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
@@ -303,7 +304,7 @@ public class ZeppelinServer extends Application {
     final ServletHolder servletHolder = new ServletHolder(notebookWsServer);
     servletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
 
-    final ServletContextHandler context = new ServletContextHandler(
+    final ServletContextHandler cxfContext = new ServletContextHandler(
         ServletContextHandler.SESSIONS);
 
     webapp.addServlet(servletHolder, "/ws/*");
@@ -333,15 +334,13 @@ public class ZeppelinServer extends Application {
   private static void setupRestApiContextHandler(WebAppContext webapp,
                                                  ZeppelinConfiguration conf) {
 
-    final ServletHolder servletHolder = new ServletHolder(
-            new org.glassfish.jersey.servlet.ServletContainer());
-
-    servletHolder.setInitParameter("javax.ws.rs.Application", ZeppelinServer.class.getName());
-    servletHolder.setName("rest");
-    servletHolder.setForcedPath("rest");
+    final ServletHolder cxfServletHolder = new ServletHolder(new CXFNonSpringJaxrsServlet());
+    cxfServletHolder.setInitParameter("javax.ws.rs.Application", ZeppelinServer.class.getName());
+    cxfServletHolder.setName("rest");
+    cxfServletHolder.setForcedPath("rest");
 
     webapp.setSessionHandler(new SessionHandler());
-    webapp.addServlet(servletHolder, "/api/*");
+    webapp.addServlet(cxfServletHolder, "/api/*");
 
     String shiroIniPath = conf.getShiroPath();
     if (!StringUtils.isBlank(shiroIniPath)) {

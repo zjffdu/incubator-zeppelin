@@ -92,11 +92,14 @@ class SparkScala210Interpreter(override val conf: SparkConf,
     if (context != null) {
       interpreterOutput.setInterpreterOutput(context.out)
       context.out.clear()
+    } else {
+      interpreterOutput.setInterpreterOutput(null)
     }
 
     Console.withOut(if (context != null) context.out else Console.out) {
       interpreterOutput.ignoreLeadingNewLinesFromScalaReporter()
-      val lines = code.split("\\n")
+      // add print("") at the end in case the last line is comment which lead to INCOMPLETE
+      val lines = code.split("\\n") ++ List("print(\"\")")
       var incompleteCode = ""
       var lastStatus: InterpreterResult.Code = null
       for (line <- lines if !line.trim.isEmpty) {
@@ -118,7 +121,8 @@ class SparkScala210Interpreter(override val conf: SparkConf,
             lastStatus = InterpreterResult.Code.INCOMPLETE
         }
       }
-      scalaInterpret("Console.flush()")
+      // flush all output before returning result to frontend
+      Console.flush()
       interpreterOutput.setInterpreterOutput(null)
       return new InterpreterResult(lastStatus)
     }
@@ -127,7 +131,7 @@ class SparkScala210Interpreter(override val conf: SparkConf,
   def scalaInterpret(code: String): scala.tools.nsc.interpreter.IR.Result =
     sparkILoop.interpret(code)
 
-  override protected def bind(name: String, tpe: String, value: Object, modifier: List[String]): Unit = {
+  protected def bind(name: String, tpe: String, value: Object, modifier: List[String]): Unit = {
     sparkILoop.beQuietDuring {
       sparkILoop.bind(name, tpe, value, modifier)
     }

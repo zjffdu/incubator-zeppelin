@@ -93,17 +93,15 @@ public class SparkInterpreterTest {
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     // single line comment
-    // pure comment will cause INCOMPLETE, This behavior is consistent with spark-shell
     result = interpreter.interpret("/*comment here*/", getInterpreterContext());
-    assertEquals(InterpreterResult.Code.INCOMPLETE, result.code());
+    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     result = interpreter.interpret("/*comment here*/\nprint(\"hello world\")", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     // multiple line comment
-    // pure comment will cause INCOMPLETE, This behavior is consistent with spark-shell
     result = interpreter.interpret("/*line 1 \n line 2*/", getInterpreterContext());
-    assertEquals(InterpreterResult.Code.INCOMPLETE, result.code());
+    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     result = interpreter.interpret("/*line 1 \n line 2*/print(\"hello world\")", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());

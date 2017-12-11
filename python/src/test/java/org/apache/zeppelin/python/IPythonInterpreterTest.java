@@ -81,6 +81,9 @@ public class IPythonInterpreterTest {
     InterpreterResult result = interpreter.interpret("from __future__ import print_function", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
+    result = interpreter.interpret("import sys\nprint(sys.version_info)", getInterpreterContext());
+    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+
     // single output without print
     InterpreterContext context = getInterpreterContext();
     result = interpreter.interpret("'hello world'", context);
@@ -195,6 +198,9 @@ public class IPythonInterpreterTest {
 
     context = getInterpreterContext();
     completions = interpreter.completion("sys.std", 7, context);
+    for (InterpreterCompletion completion : completions) {
+      System.out.println(completion.getValue());
+    }
     assertEquals(3, completions.size());
     assertEquals("sys.stderr", completions.get(0).getValue());
     assertEquals("sys.stdin", completions.get(1).getValue());

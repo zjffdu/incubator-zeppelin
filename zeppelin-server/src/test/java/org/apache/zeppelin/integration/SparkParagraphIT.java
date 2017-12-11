@@ -199,7 +199,7 @@ public class SparkParagraphIT extends AbstractZeppelinIT {
     }
   }
 
-  @Test
+//  @Test
   public void testDep() throws Exception {
     if (!endToEndTestEnabled()) {
       return;

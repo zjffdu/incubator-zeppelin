@@ -27,6 +27,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RawLocalFileSystem;
 import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.InterpreterInfoSaving;
 import org.apache.zeppelin.interpreter.InterpreterSetting;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * It could be used either local file system or hadoop distributed file system,
@@ -71,9 +73,15 @@ public class FileSystemConfigStorage extends ConfigStorage {
       this.hadoopConf.set("fs.file.impl", RawLocalFileSystem.class.getName());
       LOGGER.info("Creating filesystem: " + this.fs.getClass().getCanonicalName());
       this.rootConfFolder = fs.makeQualified(new Path(zConf.getConfigFSDir()));
-      if (!fs.exists(rootConfFolder)) {
-        fs.mkdirs(this.rootConfFolder);
-      }
+      callHdfsOperation(new HdfsOperation<Void>() {
+        @Override
+        public Void call() throws IOException {
+          if (!fs.exists(rootConfFolder)) {
+            fs.mkdirs(rootConfFolder);
+          }
+          return null;
+        }
+      });
       LOGGER.info("Store zeppelin configuration files under " + this.rootConfFolder.toString());
       this.interpreterSettingPath = fs.makeQualified(new Path(zConf.getInterpreterSettingPath()));
       this.authorizationPath = fs.makeQualified(new Path(zConf.getNotebookAuthorizationPath()));
@@ -83,60 +91,105 @@ public class FileSystemConfigStorage extends ConfigStorage {
   }
 
   @Override
-  public void save(InterpreterInfoSaving settingInfos) throws IOException {
-    LOGGER.info("Save Interpreter Settings to " + interpreterSettingPath);
-    String json = gson.toJson(settingInfos);
-    InputStream in = new ByteArrayInputStream(json.getBytes(
-        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
-    IOUtils.copyBytes(in, fs.create(interpreterSettingPath, true), hadoopConf);
+  public void save(final InterpreterInfoSaving settingInfos) throws IOException {
+    callHdfsOperation(new HdfsOperation<Void>() {
+      @Override
+      public Void call() throws IOException {
+        LOGGER.info("Save Interpreter Settings to " + interpreterSettingPath);
+        String json = gson.toJson(settingInfos);
+        InputStream in = new ByteArrayInputStream(json.getBytes(
+                zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
+        IOUtils.copyBytes(in, fs.create(interpreterSettingPath, true), hadoopConf);
+        return null;
+      }
+    });
   }
 
   @Override
   public InterpreterInfoSaving loadInterpreterSettings() throws IOException {
-    if (!fs.exists(interpreterSettingPath)) {
-      LOGGER.warn("Interpreter Setting file {} is not existed", interpreterSettingPath);
-      return null;
-    }
-    LOGGER.info("Load Interpreter Setting from file: " + interpreterSettingPath);
-    ByteArrayOutputStream jsonBytes = new ByteArrayOutputStream();
-    IOUtils.copyBytes(fs.open(interpreterSettingPath), jsonBytes, hadoopConf);
-    String json = new String(jsonBytes.toString(
-        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
-    //TODO(zjffdu) This kind of post processing is ugly.
-    JsonParser jsonParser = new JsonParser();
-    JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
-    InterpreterInfoSaving infoSaving = gson.fromJson(json, InterpreterInfoSaving.class);
-    for (InterpreterSetting interpreterSetting : infoSaving.interpreterSettings.values()) {
-      // Always use separate interpreter process
-      // While we decided to turn this feature on always (without providing
-      // enable/disable option on GUI).
-      // previously created setting should turn this feature on here.
-      interpreterSetting.getOption().setRemote(true);
-    }
-    return infoSaving;
+    return callHdfsOperation(new HdfsOperation<InterpreterInfoSaving>() {
+      @Override
+      public InterpreterInfoSaving call() throws IOException {
+        if (!fs.exists(interpreterSettingPath)) {
+          LOGGER.warn("Interpreter Setting file {} is not existed", interpreterSettingPath);
+          return null;
+        }
+        LOGGER.info("Load Interpreter Setting from file: " + interpreterSettingPath);
+        ByteArrayOutputStream jsonBytes = new ByteArrayOutputStream();
+        IOUtils.copyBytes(fs.open(interpreterSettingPath), jsonBytes, hadoopConf);
+        String json = new String(jsonBytes.toString(
+                zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
+        //TODO(zjffdu) This kind of post processing is ugly.
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonObject = jsonParser.parse(json).getAsJsonObject();
+        InterpreterInfoSaving infoSaving = gson.fromJson(json, InterpreterInfoSaving.class);
+        for (InterpreterSetting interpreterSetting : infoSaving.interpreterSettings.values()) {
+          // Always use separate interpreter process
+          // While we decided to turn this feature on always (without providing
+          // enable/disable option on GUI).
+          // previously created setting should turn this feature on here.
+          interpreterSetting.getOption().setRemote(true);
+        }
+        return infoSaving;
+      }
+    });
   }
 
-  public void save(NotebookAuthorizationInfoSaving authorizationInfoSaving) throws IOException {
-    LOGGER.info("Save notebook authorization to file: " + authorizationPath);
-    String json = gson.toJson(authorizationInfoSaving);
-    InputStream in = new ByteArrayInputStream(json.getBytes(
-        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
-    IOUtils.copyBytes(in, fs.create(authorizationPath, true), hadoopConf);
-
+  public void save(
+          final NotebookAuthorizationInfoSaving authorizationInfoSaving) throws IOException {
+    callHdfsOperation(new HdfsOperation<Void>() {
+      @Override
+      public Void call() throws IOException {
+        LOGGER.info("Save notebook authorization to file: " + authorizationPath);
+        String json = gson.toJson(authorizationInfoSaving);
+        InputStream in = new ByteArrayInputStream(json.getBytes(
+                zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
+        IOUtils.copyBytes(in, fs.create(authorizationPath, true), hadoopConf);
+        return null;
+      }
+    });
   }
 
   @Override
   public NotebookAuthorizationInfoSaving loadNotebookAuthorization() throws IOException {
-    if (!fs.exists(authorizationPath)) {
-      LOGGER.warn("Interpreter Setting file {} is not existed", authorizationPath);
-      return null;
+    return callHdfsOperation(new HdfsOperation<NotebookAuthorizationInfoSaving>() {
+      @Override
+      public NotebookAuthorizationInfoSaving call() throws IOException {
+        if (!fs.exists(authorizationPath)) {
+          LOGGER.warn("Interpreter Setting file {} is not existed", authorizationPath);
+          return null;
+        }
+        LOGGER.info("Load notebook authorization from file: " + authorizationPath);
+        ByteArrayOutputStream jsonBytes = new ByteArrayOutputStream();
+        IOUtils.copyBytes(fs.open(authorizationPath), jsonBytes, hadoopConf);
+        String json = new String(jsonBytes.toString(
+                zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
+        return gson.fromJson(json, NotebookAuthorizationInfoSaving.class);
+      }
+    });
+  }
+
+  private interface HdfsOperation<T> {
+    T call() throws IOException;
+  }
+
+  public synchronized <T> T callHdfsOperation(
+          final FileSystemConfigStorage.HdfsOperation<T> func) throws IOException {
+    if (UserGroupInformation.isSecurityEnabled()) {
+      // This does not seem to be needed since the default UGI is the loginUser UGI
+      try {
+        return UserGroupInformation.getCurrentUser().doAs(new PrivilegedExceptionAction<T>() {
+          @Override
+          public T run() throws Exception {
+            return func.call();
+          }
+        });
+      } catch (InterruptedException e) {
+        throw new IOException(e);
+      }
+    } else {
+      return func.call();
     }
-    LOGGER.info("Load notebook authorization from file: " + authorizationPath);
-    ByteArrayOutputStream jsonBytes = new ByteArrayOutputStream();
-    IOUtils.copyBytes(fs.open(authorizationPath), jsonBytes, hadoopConf);
-    String json = new String(jsonBytes.toString(
-        zConf.getString(ZeppelinConfiguration.ConfVars.ZEPPELIN_ENCODING)));
-    return gson.fromJson(json, NotebookAuthorizationInfoSaving.class);
   }
 
 }

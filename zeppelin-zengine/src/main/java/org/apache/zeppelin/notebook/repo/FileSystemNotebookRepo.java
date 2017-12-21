@@ -59,17 +59,6 @@ public class FileSystemNotebookRepo implements NotebookRepo {
     this.hadoopConf = new Configuration();
 
     this.isSecurityEnabled = UserGroupInformation.isSecurityEnabled();
-    if (isSecurityEnabled) {
-      String keytab = zConf.getString(
-          ZeppelinConfiguration.ConfVars.ZEPPELIN_SERVER_KERBEROS_KEYTAB);
-      String principal = zConf.getString(
-          ZeppelinConfiguration.ConfVars.ZEPPELIN_SERVER_KERBEROS_PRINCIPAL);
-      if (StringUtils.isBlank(keytab) || StringUtils.isBlank(principal)) {
-        throw new IOException("keytab and principal can not be empty, keytab: " + keytab
-            + ", principal: " + principal);
-      }
-      UserGroupInformation.loginUserFromKeytab(principal, keytab);
-    }
 
     try {
       this.fs = FileSystem.get(new URI(zConf.getNotebookDir()), new Configuration());
@@ -79,14 +68,21 @@ public class FileSystemNotebookRepo implements NotebookRepo {
     } catch (URISyntaxException e) {
       throw new IOException(e);
     }
-    if (!fs.exists(notebookDir)) {
-      fs.mkdirs(notebookDir);
-      LOGGER.info("Create notebook dir {} in hdfs", notebookDir.toString());
-    }
-    if (fs.isFile(notebookDir)) {
-      throw new IOException("notebookDir {} is file instead of directory, please remove it or " +
-          "specify another directory");
-    }
+    callHdfsOperation(new HdfsOperation<Void>() {
+      @Override
+      public Void call() throws IOException {
+        if (!fs.exists(notebookDir)) {
+          fs.mkdirs(notebookDir);
+          LOGGER.info("Create notebook dir {} in hdfs", notebookDir.toString());
+        }
+        if (fs.isFile(notebookDir)) {
+          throw new IOException(
+                  "notebookDir {} is file instead of directory, please remove it or " +
+                  "specify another directory");
+        }
+        return null;
+      }
+    });
   }
 
   @Override
@@ -200,7 +196,6 @@ public class FileSystemNotebookRepo implements NotebookRepo {
 
   public synchronized <T> T callHdfsOperation(final HdfsOperation<T> func) throws IOException {
     if (isSecurityEnabled) {
-      UserGroupInformation.getLoginUser().reloginFromKeytab();
       try {
         return UserGroupInformation.getCurrentUser().doAs(new PrivilegedExceptionAction<T>() {
           @Override

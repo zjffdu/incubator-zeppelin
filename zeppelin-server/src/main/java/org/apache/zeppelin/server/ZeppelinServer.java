@@ -28,6 +28,7 @@ import javax.ws.rs.core.Application;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
@@ -186,10 +187,31 @@ public class ZeppelinServer extends Application {
     t.start();
   }
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) throws InterruptedException, IOException {
 
+    // This create should not try to access Hadoop
     ZeppelinConfiguration conf = ZeppelinConfiguration.create();
     conf.setProperty("args", args);
+
+    // this must be called before any access to Hadoop. Else that access will find a null loginUser
+    // and start a client side renewer thread instead of a server side keytab based renewal
+    if (UserGroupInformation.isSecurityEnabled()) {
+      String keytab = conf.getString(
+              ZeppelinConfiguration.ConfVars.ZEPPELIN_SERVER_KERBEROS_KEYTAB);
+      String principal = conf.getString(
+              ZeppelinConfiguration.ConfVars.ZEPPELIN_SERVER_KERBEROS_PRINCIPAL);
+      if (StringUtils.isBlank(keytab) || StringUtils.isBlank(principal)) {
+        throw new IOException("keytab and principal can not be empty in a secure cluster keytab: "
+                + keytab + ", principal: " + principal);
+      } else {
+        LOG.info("Kerberos principal " + principal + " and keytab " + keytab);
+      }
+      // This will save the login information and there is no need to relogon as long as Hadoop
+      // RPC is being used since Hadoop RPC will auto-relogon using the saved information.
+      // If non-Hadoop RPC (e.g. webHDFS) is used then we need to do self periodic relogin
+      UserGroupInformation.loginUserFromKeytab(principal, keytab);
+    }
+
 
     jettyWebServer = setupJettyServer(conf);
 

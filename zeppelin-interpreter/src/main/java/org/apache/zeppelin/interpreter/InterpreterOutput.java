@@ -47,6 +47,8 @@ public class InterpreterOutput extends OutputStream {
   private final InterpreterOutputChangeListener changeListener;
 
   private int size = 0;
+  // For ZEPPELIN-2826
+  private int lastCRIndex = -1;
 
   // change static var to set interpreter output limit
   // limit will be applied to all InterpreterOutput object.
@@ -84,6 +86,7 @@ public class InterpreterOutput extends OutputStream {
 
       buffer.reset();
       size = 0;
+      lastCRIndex = -1;
 
       if (currentOut != null) {
         currentOut.flush();
@@ -146,6 +149,7 @@ public class InterpreterOutput extends OutputStream {
 
   public void clear() {
     size = 0;
+    lastCRIndex = -1;
     truncated = false;
     buffer.reset();
 
@@ -202,6 +206,14 @@ public class InterpreterOutput extends OutputStream {
             return;
           }
         }
+      }
+
+      if (b == '\r') {
+        if (lastCRIndex == -1) {
+          lastCRIndex = size;
+        }
+        // reset size to index of last carriage return
+        size = lastCRIndex;
       }
 
       if (startOfTheNewLine) {

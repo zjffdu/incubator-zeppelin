@@ -181,7 +181,6 @@ public class Paragraph extends Job implements Cloneable, JsonSerializable {
     // strip white space from the beginning
     this.text = newText;
     this.dateUpdated = new Date();
-    parseText();
   }
 
   public void parseText() {
@@ -376,6 +375,7 @@ public class Paragraph extends Job implements Cloneable, JsonSerializable {
 
   @Override
   protected Object jobRun() throws Throwable {
+    parseText();
     logger.info("Run paragraph [paragraph_id: {}, interpreter: {}, note_id: {}, user: {}]",
             getId(), intpText, note.getId(), authenticationInfo.getUser());
     this.interpreter = getBindedInterpreter();

@@ -332,6 +332,9 @@ public class IPythonInterpreterTest {
 
     // matplotlib
     context = getInterpreterContext();
+    result = interpreter.interpret("import matplotlib\nmatplotlib.__version__", context);
+
+    context = getInterpreterContext();
     result = interpreter.interpret("%matplotlib inline\nimport matplotlib.pyplot as plt\ndata=[1,1,2,3,4]\nplt.figure()\nplt.plot(data)", context);
     Thread.sleep(100);
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());

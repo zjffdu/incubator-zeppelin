@@ -588,14 +588,17 @@ public class PySparkInterpreter extends Interpreter implements ExecuteResultHand
         }
       }
       if (statementError) {
+        LOGGER.info("statementError");
         return new LinkedList<>();
       }
       Gson gson = new Gson();
+      LOGGER.info("statementOutput: " + statementOutput);
       completionList = gson.fromJson(statementOutput, String[].class);
     }
     //end code for completion
 
     if (completionList == null) {
+      LOGGER.info("completionList: " + completionList);
       return new LinkedList<>();
     }
 
@@ -603,6 +606,7 @@ public class PySparkInterpreter extends Interpreter implements ExecuteResultHand
     for (String name: completionList) {
       results.add(new InterpreterCompletion(name, name, StringUtils.EMPTY));
     }
+    LOGGER.info("result: " + results.size());
     return results;
   }
 

@@ -215,9 +215,7 @@ public class InterpreterSettingManager {
       List<String> oldSettingIdList = entry.getValue();
       List<String> newSettingIdList = new ArrayList<>();
       for (String oldId : oldSettingIdList) {
-        if (infoSaving.interpreterSettings.containsKey(oldId)) {
-          newSettingIdList.add(infoSaving.interpreterSettings.get(oldId).getName());
-        };
+        newSettingIdList.add(infoSaving.interpreterSettings.get(oldId).getName());
       }
       newBindingMap.put(noteId, newSettingIdList);
     }
@@ -258,19 +256,7 @@ public class InterpreterSettingManager {
             interpreterSettingTemplate.getInterpreterRunner());
       } else {
         LOGGER.warn("No InterpreterSetting Template found for InterpreterSetting: "
-            + savedInterpreterSetting.getGroup() + ", but it is found in interpreter.json, "
-            + "it would be skipped.");
-        // also delete its binding
-        for (Map.Entry<String, List<String>> entry : interpreterBindings.entrySet()) {
-          List<String> ids = entry.getValue();
-          Iterator<String> iter = ids.iterator();
-          while(iter.hasNext()) {
-            if (iter.next().equals(savedInterpreterSetting.getId())) {
-              iter.remove();
-            }
-          }
-        }
-        continue;
+            + savedInterpreterSetting.getGroup());
       }
 
       // Overwrite the default InterpreterSetting we registered from InterpreterSetting Templates

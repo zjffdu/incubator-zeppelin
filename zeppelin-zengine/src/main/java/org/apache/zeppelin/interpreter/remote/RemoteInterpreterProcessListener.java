@@ -18,6 +18,8 @@ package org.apache.zeppelin.interpreter.remote;
 
 import org.apache.zeppelin.interpreter.InterpreterResult;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,9 +31,9 @@ public interface RemoteInterpreterProcessListener {
       String noteId, String paragraphId, int index, InterpreterResult.Type type, String output);
   public void onOutputClear(String noteId, String paragraphId);
   public void onMetaInfosReceived(String settingId, Map<String, String> metaInfos);
-  public void onRemoteRunParagraph(String noteId, String ParagraphID) throws Exception;
-  public void onGetParagraphRunners(
-      String noteId, String paragraphId, RemoteWorksEventListener callback);
+  void runParagraphs(String noteId, List<Integer> paragraphIndices, List<String> paragraphIds,
+                     String curParagraphId)
+      throws IOException;
 
   /**
    * Remote works for Interpreter callback listener

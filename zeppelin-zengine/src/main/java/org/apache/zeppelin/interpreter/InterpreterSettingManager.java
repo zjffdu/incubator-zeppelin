@@ -123,6 +123,7 @@ public class InterpreterSettingManager {
   private LifecycleManager lifecycleManager;
   private RecoveryStorage recoveryStorage;
   private ConfigStorage configStorage;
+  private RemoteInterpreterEventServer interpreterEventServer;
 
   public InterpreterSettingManager(ZeppelinConfiguration zeppelinConfiguration,
                                    AngularObjectRegistryListener angularObjectRegistryListener,
@@ -173,7 +174,8 @@ public class InterpreterSettingManager {
     LOGGER.info("Using LifecycleManager: " + this.lifecycleManager.getClass().getName());
 
     this.configStorage = configStorage;
-
+    this.interpreterEventServer = new RemoteInterpreterEventServer(conf, this);
+    this.interpreterEventServer.start();
     init();
   }
 
@@ -203,6 +205,7 @@ public class InterpreterSettingManager {
         .setDependencyResolver(dependencyResolver)
         .setLifecycleManager(lifecycleManager)
         .setRecoveryStorage(recoveryStorage)
+        .setInterpreterEventServer(interpreterEventServer)
         .postProcessing();
   }
 

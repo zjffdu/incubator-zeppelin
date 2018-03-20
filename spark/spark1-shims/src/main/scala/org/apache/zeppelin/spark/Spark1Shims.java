@@ -39,18 +39,21 @@ import org.apache.spark.scheduler.SparkListenerTaskStart;
 import org.apache.spark.scheduler.SparkListenerUnpersistRDD;
 import org.apache.spark.ui.jobs.JobProgressListener;
 import org.apache.zeppelin.interpreter.BaseZeppelinContext;
+import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.remote.RemoteEventClientWrapper;
+import org.apache.zeppelin.interpreter.remote.RemoteInterpreterEventClient;
 
 import java.util.Map;
 
 public class Spark1Shims extends SparkShims {
 
-  public void setupSparkListener(final String sparkWebUrl) {
+  public void setupSparkListener(final String sparkWebUrl,
+                                 final InterpreterContext context) {
     SparkContext sc = SparkContext.getOrCreate();
     sc.addSparkListener(new JobProgressListener(sc.getConf()) {
       @Override
       public void onJobStart(SparkListenerJobStart jobStart) {
-        buildSparkJobUrl(sparkWebUrl, jobStart.jobId(), jobStart.properties());
+        buildSparkJobUrl(sparkWebUrl, jobStart.jobId(), jobStart.properties(), context);
       }
     });
   }

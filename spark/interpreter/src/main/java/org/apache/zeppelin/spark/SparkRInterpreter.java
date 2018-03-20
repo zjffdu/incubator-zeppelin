@@ -33,6 +33,7 @@ import org.apache.zeppelin.scheduler.SchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,9 @@ public class SparkRInterpreter extends Interpreter {
       sparkRLibPath = "sparkr";
     }
 
+    if (!new File(sparkRLibPath).exists()) {
+      throw new InterpreterException(String.format("sparkRLib %s doesn't exist", sparkRLibPath));
+    }
     // Share the same SparkRBackend across sessions
     synchronized (SparkRBackend.backend()) {
       if (!SparkRBackend.isStarted()) {

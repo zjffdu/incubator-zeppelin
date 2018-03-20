@@ -35,6 +35,8 @@ public class InterpreterLaunchContext {
   private String interpreterSettingId;
   private String interpreterSettingGroup;
   private String interpreterSettingName;
+  private int callbackPort;
+  private String callbackHost;
 
   public InterpreterLaunchContext(Properties properties,
                                   InterpreterOption option,
@@ -43,7 +45,9 @@ public class InterpreterLaunchContext {
                                   String interpreterGroupId,
                                   String interpreterSettingId,
                                   String interpreterSettingGroup,
-                                  String interpreterSettingName) {
+                                  String interpreterSettingName,
+                                  int callbackPort,
+                                  String callbackHost) {
     this.properties = properties;
     this.option = option;
     this.runner = runner;
@@ -52,6 +56,8 @@ public class InterpreterLaunchContext {
     this.interpreterSettingId = interpreterSettingId;
     this.interpreterSettingGroup = interpreterSettingGroup;
     this.interpreterSettingName = interpreterSettingName;
+    this.callbackPort = callbackPort;
+    this.callbackHost = callbackHost;
   }
 
   public Properties getProperties() {
@@ -84,5 +90,13 @@ public class InterpreterLaunchContext {
 
   public String getUserName() {
     return userName;
+  }
+
+  public int getCallbackPort() {
+    return callbackPort;
+  }
+
+  public String getCallbackHost() {
+    return callbackHost;
   }
 }

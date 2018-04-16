@@ -71,7 +71,7 @@ import com.google.common.collect.Maps;
 /**
  * Paragraph is a representation of an execution unit.
  */
-public class Paragraph extends Job implements Cloneable, JsonSerializable {
+public class Paragraph extends Job<InterpreterResult> implements Cloneable, JsonSerializable {
 
   private static Logger logger = LoggerFactory.getLogger(Paragraph.class);
   private static Pattern REPL_PATTERN = Pattern.compile("(\\s*)%([\\w\\.]+).*", Pattern.DOTALL);

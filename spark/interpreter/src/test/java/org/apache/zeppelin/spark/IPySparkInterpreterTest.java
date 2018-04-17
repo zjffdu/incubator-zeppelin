@@ -35,7 +35,10 @@ import org.apache.zeppelin.user.AuthenticationInfo;
 import org.junit.Test;
 
 import java.io.IOException;
+<<<<<<< Updated upstream
 import java.util.ArrayList;
+=======
+>>>>>>> Stashed changes
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

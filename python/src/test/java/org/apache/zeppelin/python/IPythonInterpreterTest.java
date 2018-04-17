@@ -224,6 +224,17 @@ public class IPythonInterpreterTest extends BasePythonInterpreterTest {
     // to make this test can run under both python2 and python3
     result = interpreter.interpret("from __future__ import print_function", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+<<<<<<< Updated upstream
+=======
+    interpreterResultMessages = context.out.toInterpreterResultMessage();
+    // interpreterResultMessages.size() could be either 2 or 3, it is not determined, Sometimes
+    // you will get an additional InterpreterResultMessage like this
+    // %text <matplotlib.figure.Figure at 0x1c237718d0>
+    assertTrue("InterpreterReulstMessage size is incorrect: " + interpreterResultMessages.size(),
+        interpreterResultMessages.size() == 2 || interpreterResultMessages.size() == 3);
+    assertEquals(InterpreterResult.Type.HTML, interpreterResultMessages.get(0).getType());
+    assertEquals(InterpreterResult.Type.IMG, interpreterResultMessages.get(1).getType());
+>>>>>>> Stashed changes
 
     context = getInterpreterContext();
     result = interpreter.interpret("print('1'*3000)", context);

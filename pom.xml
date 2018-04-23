@@ -133,7 +133,7 @@
     <plugin.scm.version>1.8.1</plugin.scm.version>
     <plugin.enforcer.version>1.3.1</plugin.enforcer.version>
     <plugin.checkstyle.version>2.13</plugin.checkstyle.version>
-    <plugin.surefire.version>2.17</plugin.surefire.version>
+    <plugin.surefire.version>2.19</plugin.surefire.version>
     <plugin.assembly.version>3.0.0</plugin.assembly.version>
     <plugin.exec.version>1.2.1</plugin.exec.version>
     <plugin.cobertura.version>2.7</plugin.cobertura.version>
@@ -598,20 +598,16 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${plugin.surefire.version}</version>
-          <configuration combine.children="append">
-            <argLine>-Xmx2g -Xms1g -Dfile.encoding=UTF-8</argLine>
+          <configuration>
+            <skipAfterFailureCount>1</skipAfterFailureCount>
             <environmentVariables>
               <IS_ZEPPELIN_TEST>true</IS_ZEPPELIN_TEST>
+              <ZEPPELIN_FORCE_STOP>1</ZEPPELIN_FORCE_STOP>
             </environmentVariables>
             <excludes>
               <exclude>${tests.to.exclude}</exclude>
             </excludes>
           </configuration>
-          <!-- <excludes> <exclude>**/itest/**</exclude> </excludes> <executions>
-            <execution> <id>surefire-itest</id> <phase>integration-test</phase> <goals>
-            <goal>test</goal> </goals> <configuration> <excludes> <exclude>none</exclude>
-            </excludes> <includes> <include>**/itest/**</include> </includes> </configuration>
-            </execution> </executions> -->
         </plugin>
 
         <plugin>

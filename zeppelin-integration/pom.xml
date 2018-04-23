@@ -141,17 +141,8 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${plugin.surefire.version}</version>
-        <configuration combine.children="append">
-          <argLine>-Xmx2g -Xms1g -Dfile.encoding=UTF-8</argLine>
-          <excludes>
-            <exclude>${tests.to.exclude}</exclude>
-          </excludes>
-          <environmentVariables>
-            <ZEPPELIN_FORCE_STOP>1</ZEPPELIN_FORCE_STOP>
-          </environmentVariables>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

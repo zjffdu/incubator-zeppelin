@@ -49,6 +49,10 @@ public class GitHubNotebookRepo extends GitNotebookRepo {
   private ZeppelinConfiguration zeppelinConfiguration;
   private Git git;
 
+  public GitHubNotebookRepo() {
+
+  }
+
   public GitHubNotebookRepo(ZeppelinConfiguration conf) throws IOException {
     super(conf);
 

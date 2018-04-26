@@ -84,11 +84,13 @@ public class PluginManager {
     }
     URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[0]));
     Iterator<NotebookRepo> iter = ServiceLoader.load(NotebookRepo.class, classLoader).iterator();
-    NotebookRepo notebookRepo = iter.next();
-    if (notebookRepo == null) {
-      LOGGER.warn("Unable to load NotebookRepo Plugin: " + notebookRepoClassName);
+    while(iter.hasNext()) {
+      NotebookRepo notebookRepo = iter.next();
+      if (notebookRepo.getClass().getName().equals(notebookRepoClassName)) {
+        return notebookRepo;
+      }
     }
-    return notebookRepo;
+    throw new IOException("Unable to load NotebookRepo Plugin: " + notebookRepoClassName);
   }
 
 }

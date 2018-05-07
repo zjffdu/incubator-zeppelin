@@ -46,15 +46,15 @@ if [[ $RELEASE_VERSION == *"SNAPSHOT"* ]]; then
   DO_SNAPSHOT="yes"
 fi
 
-PUBLISH_PROFILES="-Ppublish-distr -Pspark-2.2 -Pr"
+PUBLISH_PROFILES="-Pspark-2.2 -Pr -DskipRat"
 PROJECT_OPTIONS="-pl !zeppelin-distribution"
 NEXUS_STAGING="https://repository.apache.org/service/local/staging"
 NEXUS_PROFILE="153446d1ac37c4"
 
 function cleanup() {
   echo "Remove working directory and maven local repository"
-  rm -rf ${WORKING_DIR}
-  rm -rf ${tmp_repo}
+  #rm -rf ${WORKING_DIR}
+  #rm -rf ${tmp_repo}
 }
 
 function curl_error() {
@@ -126,14 +126,15 @@ function publish_to_maven() {
 
   echo "Created Nexus staging repository: ${staged_repo_id}"
 
-  tmp_repo="$(mktemp -d /tmp/zeppelin-repo-XXXXX)"
+  mkdir /tmp/zeppelin-repo-${RELEASE_VERSION}
+  tmp_repo="/tmp/zeppelin-repo-${RELEASE_VERSION}"
 
   # build with scala-2.10
   echo "mvn clean install -DskipTests \
     -Dmaven.repo.local=${tmp_repo} -Pscala-2.10 -Pbeam \
     ${PUBLISH_PROFILES} ${PROJECT_OPTIONS}"
-  mvn clean install -DskipTests -Dmaven.repo.local="${tmp_repo}" -Pscala-2.10 -Pbeam \
-    ${PUBLISH_PROFILES} ${PROJECT_OPTIONS}
+  #mvn clean install -DskipTests -Dmaven.repo.local="${tmp_repo}" -Pscala-2.10 -Pbeam \
+  #  ${PUBLISH_PROFILES} ${PROJECT_OPTIONS}
   if [[ $? -ne 0 ]]; then
     echo "Build with scala 2.10 failed."
     exit 1
@@ -145,8 +146,8 @@ function publish_to_maven() {
   echo "mvn clean install -DskipTests \
     -Dmaven.repo.local=${tmp_repo} -Pscala-2.11 \
     ${PUBLISH_PROFILES} ${PROJECT_OPTIONS}"
-  mvn clean install -DskipTests -Dmaven.repo.local="${tmp_repo}" -Pscala-2.11 \
-    ${PUBLISH_PROFILES} ${PROJECT_OPTIONS}
+  #mvn clean install -DskipTests -Dmaven.repo.local="${tmp_repo}" -Pscala-2.11 \
+  #  ${PUBLISH_PROFILES} ${PROJECT_OPTIONS}
   if [[ $? -ne 0 ]]; then
     echo "Build with scala 2.11 failed."
     exit 1
@@ -188,7 +189,7 @@ function publish_to_maven() {
   echo "Once release candidate pass the vote, do not forget to hit the release button in https://repository.apache.org"
 }
 
-git_clone
+#git_clone
 if [[ "${DO_SNAPSHOT}" == 'yes' ]]; then
   publish_snapshot_to_maven
 else

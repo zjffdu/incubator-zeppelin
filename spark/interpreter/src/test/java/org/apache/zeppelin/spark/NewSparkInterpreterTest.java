@@ -101,6 +101,7 @@ public class NewSparkInterpreterTest {
     result = interpreter.interpret("println(b)", getInterpreterContext());
     assertEquals(InterpreterResult.Code.ERROR, result.code());
     assertTrue(output.contains("not found: value b"));
+    assertTrue(output.contains("Error in Executing line 1: println(b)"));
 
     // multiple line
     result = interpreter.interpret("\"123\".\ntoInt", getInterpreterContext());

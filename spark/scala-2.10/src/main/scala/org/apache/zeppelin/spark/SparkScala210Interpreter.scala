@@ -101,9 +101,10 @@ class SparkScala210Interpreter(override val conf: SparkConf,
       interpreterOutput.ignoreLeadingNewLinesFromScalaReporter()
       // add print("") at the end in case the last line is comment which lead to INCOMPLETE
       val lines = code.split("\\n") ++ List("print(\"\")")
+      var lineNum = 1
       var incompleteCode = ""
       var lastStatus: InterpreterResult.Code = null
-      for (line <- lines if !line.trim.isEmpty) {
+      for (line <- lines) {
         val nextLine = if (incompleteCode != "") {
           incompleteCode + "\n" + line
         } else {
@@ -115,12 +116,18 @@ class SparkScala210Interpreter(override val conf: SparkConf,
             incompleteCode = ""
             lastStatus = InterpreterResult.Code.SUCCESS
           case error@scala.tools.nsc.interpreter.IR.Error =>
+            Console.out.println()
+            Console.out.println("%html <hr/> <font color=\"red\">")
+            Console.out.println(s"Error in Executing line $lineNum: $nextLine")
+            Console.out.println("</font>")
+            Console.out.println()
             return new InterpreterResult(InterpreterResult.Code.ERROR)
           case scala.tools.nsc.interpreter.IR.Incomplete =>
             // put this line into inCompleteCode for the next execution.
             incompleteCode = incompleteCode + "\n" + line
             lastStatus = InterpreterResult.Code.INCOMPLETE
         }
+        lineNum += 1
       }
       // flush all output before returning result to frontend
       Console.flush()

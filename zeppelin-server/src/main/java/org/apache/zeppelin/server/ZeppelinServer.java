@@ -34,6 +34,7 @@ import org.apache.shiro.web.servlet.ShiroFilter;
 import org.apache.zeppelin.rest.AdminRestApi;
 import org.apache.zeppelin.rest.exception.WebApplicationExceptionMapper;
 import org.apache.zeppelin.service.AdminService;
+import org.apache.zeppelin.util.EnvironmentUtil;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -225,6 +226,8 @@ public class ZeppelinServer extends Application {
   }
 
   public static void main(String[] args) throws InterruptedException {
+    EnvironmentUtil.logEnvironmentInfo(LOG, "ZeppelinServer");
+
     final ZeppelinConfiguration conf = ZeppelinConfiguration.create();
     conf.setProperty("args", args);
 

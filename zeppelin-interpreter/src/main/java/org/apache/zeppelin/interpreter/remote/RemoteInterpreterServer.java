@@ -73,6 +73,7 @@ import org.apache.zeppelin.scheduler.JobListener;
 import org.apache.zeppelin.scheduler.JobProgressPoller;
 import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.user.AuthenticationInfo;
+import org.apache.zeppelin.util.EnvironmentUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -264,6 +265,8 @@ public class RemoteInterpreterServer extends Thread
 
   public static void main(String[] args)
       throws TTransportException, InterruptedException, IOException {
+    EnvironmentUtil.logEnvironmentInfo(logger, "Interpreter Process");
+
     String zeppelinServerHost = null;
     int port = Constants.ZEPPELIN_INTERPRETER_DEFAUlT_PORT;
     String portRange = ":";

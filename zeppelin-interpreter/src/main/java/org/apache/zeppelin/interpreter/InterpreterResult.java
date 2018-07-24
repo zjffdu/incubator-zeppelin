@@ -52,6 +52,7 @@ public class InterpreterResult implements Serializable, JsonSerializable {
     HTML,
     ANGULAR,
     TABLE,
+    ARROW,
     IMG,
     SVG,
     NULL,
@@ -98,6 +99,10 @@ public class InterpreterResult implements Serializable, JsonSerializable {
   }
 
   public void add(Type type, String data) {
+    msg.add(new InterpreterResultMessage(type, data));
+  }
+
+  public void add(Type type, byte[] data) {
     msg.add(new InterpreterResultMessage(type, data));
   }
 

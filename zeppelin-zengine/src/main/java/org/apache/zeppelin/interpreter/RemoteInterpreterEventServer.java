@@ -213,7 +213,7 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
     for (int i = 0; i < event.getMsg().size(); i++) {
       RemoteInterpreterResultMessage msg = event.getMsg().get(i);
       listener.onOutputUpdated(event.getNoteId(), event.getParagraphId(), i,
-          InterpreterResult.Type.valueOf(msg.getType()), msg.getData());
+          InterpreterResult.Type.valueOf(msg.getType()), new String(msg.getData()));
     }
   }
 

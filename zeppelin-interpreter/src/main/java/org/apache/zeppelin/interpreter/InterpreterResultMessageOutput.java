@@ -204,7 +204,7 @@ public class InterpreterResultMessageOutput extends OutputStream {
   }
 
   public InterpreterResultMessage toInterpreterResultMessage() throws IOException {
-    return new InterpreterResultMessage(type, new String(toByteArray()));
+    return new InterpreterResultMessage(type, toByteArray());
   }
 
   private void flush(boolean append) throws IOException {

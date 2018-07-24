@@ -23,9 +23,14 @@ import java.io.Serializable;
  */
 public class InterpreterResultMessage implements Serializable {
   InterpreterResult.Type type;
-  String data;
+  byte[] data;
 
   public InterpreterResultMessage(InterpreterResult.Type type, String data) {
+    this.type = type;
+    this.data = data.getBytes();
+  }
+
+  public InterpreterResultMessage(InterpreterResult.Type type, byte[] data) {
     this.type = type;
     this.data = data;
   }
@@ -35,10 +40,14 @@ public class InterpreterResultMessage implements Serializable {
   }
 
   public String getData() {
+    return new String(data);
+  }
+
+  public byte[] getRawData() {
     return data;
   }
 
   public String toString() {
-    return "%" + type.name().toLowerCase() + " " + data;
+    return "%" + type.name().toLowerCase() + " " + new String(data);
   }
 }

@@ -18,15 +18,11 @@
 package org.apache.zeppelin.spark
 
 import java.io.{BufferedReader, File}
-import java.net.URLClassLoader
 import java.nio.file.{Files, Paths}
 
 import org.apache.spark.SparkConf
-import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion
 import org.apache.zeppelin.interpreter.util.InterpreterOutputStream
-import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
-import org.slf4j.LoggerFactory
-import org.slf4j.Logger
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.tools.nsc.Settings
 import scala.tools.nsc.interpreter._

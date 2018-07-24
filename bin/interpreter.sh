@@ -81,14 +81,17 @@ if [[ -d "${ZEPPELIN_HOME}/zeppelin-zengine/target/test-classes" ]]; then
   ZEPPELIN_INTP_CLASSPATH+=":${ZEPPELIN_HOME}/zeppelin-zengine/target/test-classes"
 fi
 
-addJarInDirForIntp "${ZEPPELIN_HOME}/zeppelin-interpreter/target/lib"
+INTERPRETER_ID=$(basename "${INTERPRETER_DIR}")
+if [[ "${INTERPRETER_ID}" != "spark" ]]; then
+    # spark already include zeppelin-interpreter and its transitive dependencies, so don't need to include it again
+    addJarInDirForIntp "${ZEPPELIN_HOME}/zeppelin-interpreter/target/lib"
+fi
 addJarInDirForIntp "${ZEPPELIN_HOME}/lib/interpreter"
 addJarInDirForIntp "${INTERPRETER_DIR}"
 
 HOSTNAME=$(hostname)
 ZEPPELIN_SERVER=org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer
 
-INTERPRETER_ID=$(basename "${INTERPRETER_DIR}")
 ZEPPELIN_PID="${ZEPPELIN_PID_DIR}/zeppelin-interpreter-${INTERPRETER_ID}-${ZEPPELIN_IDENT_STRING}-${HOSTNAME}-${PORT}.pid"
 ZEPPELIN_LOGFILE="${ZEPPELIN_LOG_DIR}/zeppelin-interpreter-${INTERPRETER_SETTING_NAME}-"
 

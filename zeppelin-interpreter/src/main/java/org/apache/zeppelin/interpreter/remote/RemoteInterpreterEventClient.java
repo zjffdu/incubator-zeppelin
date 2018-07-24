@@ -242,7 +242,7 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
     for (InterpreterResultMessage message : messages) {
       thriftMessages.add(
           new org.apache.zeppelin.interpreter.thrift.RemoteInterpreterResultMessage(
-              message.getType().name(), message.getData()));
+              message.getType().name(), ByteBuffer.wrap(message.getRawData())));
     }
     return thriftMessages;
   }

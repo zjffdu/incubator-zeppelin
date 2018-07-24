@@ -18,7 +18,11 @@
 package org.apache.zeppelin.spark;
 
 import com.google.common.collect.Lists;
+import org.apache.arrow.vector.types.pojo.Field;
+import org.apache.arrow.vector.types.pojo.Schema;
 import org.apache.spark.SparkContext;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
 import org.apache.zeppelin.annotation.ZeppelinApi;
 import org.apache.zeppelin.display.AngularObjectWatcher;
 import org.apache.zeppelin.display.ui.OptionInput;
@@ -28,6 +32,7 @@ import org.apache.zeppelin.interpreter.InterpreterHookRegistry;
 import scala.Tuple2;
 import scala.Unit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -91,9 +96,56 @@ public class SparkZeppelinContext extends BaseZeppelinContext {
     return interpreterClassMap;
   }
 
+  /**
+   * display special types of objects for interpreter.
+   * Each interpreter can has its own supported classes.
+   *
+   * @param o         object
+   * @param maxResult maximum number of rows to display
+   */
+  @ZeppelinApi
+  public void show(Object o, int maxResult) {
+    try {
+      if (isSupportedObject(o)) {
+        interpreterContext.out.write(sparkShims.showDataFrame(o, maxResult));
+      } else {
+        interpreterContext.out.write("ZeppelinContext doesn't support to show type: "
+            + o.getClass().getCanonicalName() + "\n");
+        interpreterContext.out.write(o.toString());
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @Override
-  public String showData(Object obj) {
+  protected String showData(Object obj) {
     return sparkShims.showDataFrame(obj, maxResult);
+  }
+
+  //  public byte[] toArrow(Object obj) {
+//    if (obj instanceof DataFrame) {
+//      DataFrame df = (DataFrame) obj;
+//      StructType sparkSchema = df.schema();
+//      Schema schema = Schema.createRecord()
+//      VectorSchemaRoot vectorSchemaRoot = VectorSchemaRoot.create()
+//    } else {
+//      return obj.toString().getBytes();
+//
+//    }
+//
+//  }
+
+  private Schema convertToArrowSchema(StructType sparkSchema) {
+    List<Field> fields = new ArrayList<>();
+    for (StructField field : sparkSchema.fields()) {
+      fields.add(covertToArrowField(field));
+    }
+    return new Schema(fields);
+  }
+
+  private Field covertToArrowField(StructField field) {
+    return null;
   }
 
   @ZeppelinApi

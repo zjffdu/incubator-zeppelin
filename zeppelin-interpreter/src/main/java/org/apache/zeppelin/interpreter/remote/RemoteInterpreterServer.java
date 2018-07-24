@@ -830,7 +830,7 @@ public class RemoteInterpreterServer extends Thread
     for (InterpreterResultMessage m : result.message()) {
       msg.add(new RemoteInterpreterResultMessage(
           m.getType().name(),
-          m.getData()));
+          ByteBuffer.wrap(m.getRawData())));
     }
 
     return new RemoteInterpreterResult(

@@ -34,7 +34,7 @@ struct RemoteInterpreterContext {
 
 struct RemoteInterpreterResultMessage {
   1: string type,
-  2: string data
+  2: binary data
 }
 struct RemoteInterpreterResult {
   1: string code,

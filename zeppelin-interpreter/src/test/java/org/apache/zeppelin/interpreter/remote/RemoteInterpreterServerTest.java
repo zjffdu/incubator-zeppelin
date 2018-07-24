@@ -136,22 +136,22 @@ public class RemoteInterpreterServerTest {
         "SINGLE_OUTPUT_SUCCESS", intpContext);
     assertEquals("SUCCESS", result.code);
     assertEquals(1, result.getMsg().size());
-    assertEquals("SINGLE_OUTPUT_SUCCESS", result.getMsg().get(0).getData());
+    assertEquals("SINGLE_OUTPUT_SUCCESS", new String(result.getMsg().get(0).getData()));
 
     // combo output of SUCCESS
     result = server.interpret("session_1", Test1Interpreter.class.getName(), "COMBO_OUTPUT_SUCCESS",
         intpContext);
     assertEquals("SUCCESS", result.code);
     assertEquals(2, result.getMsg().size());
-    assertEquals("INTERPRETER_OUT", result.getMsg().get(0).getData());
-    assertEquals("SINGLE_OUTPUT_SUCCESS", result.getMsg().get(1).getData());
+    assertEquals("INTERPRETER_OUT", new String(result.getMsg().get(0).getData()));
+    assertEquals("SINGLE_OUTPUT_SUCCESS", new String(result.getMsg().get(1).getData()));
 
     // single output of ERROR
     result = server.interpret("session_1", Test1Interpreter.class.getName(), "SINGLE_OUTPUT_ERROR",
         intpContext);
     assertEquals("ERROR", result.code);
     assertEquals(1, result.getMsg().size());
-    assertEquals("SINGLE_OUTPUT_ERROR", result.getMsg().get(0).getData());
+    assertEquals("SINGLE_OUTPUT_ERROR", new String(result.getMsg().get(0).getData()));
 
     // getFormType
     String formType = server.getFormType("session_1", Test1Interpreter.class.getName());

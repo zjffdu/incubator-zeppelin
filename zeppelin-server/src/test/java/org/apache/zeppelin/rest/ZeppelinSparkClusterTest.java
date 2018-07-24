@@ -115,7 +115,8 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
             new InterpreterProperty("zeppelin.spark.useNew", "true"));
     sparkProperties.put("zeppelin.spark.test",
             new InterpreterProperty("zeppelin.spark.test", "true"));
-
+    sparkProperties.put("spark.driver.userClassPathFirst",
+        new InterpreterProperty("spark.driver.userClassPathFirst", "true"));
     ZeppelinServer.notebook.getInterpreterSettingManager().restart(sparkIntpSetting.getId());
   }
 

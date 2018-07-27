@@ -189,7 +189,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
 
   }
 
-  // called by RemoteInterpreterServer to notify that RemoteInterpreter Process is started
+  // called by RemoteInterpreterEventServer to notify that RemoteInterpreter Process is started
   public void processStarted(int port, String host) {
     this.port = port;
     this.host = host;

@@ -25,7 +25,7 @@ import org.apache.thrift.transport.TServerSocket;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.display.AngularObject;
 import org.apache.zeppelin.helium.ApplicationEventListener;
-import org.apache.zeppelin.interpreter.remote.AppendOutputRunner;
+import org.apache.zeppelin.interpreter.remote.AppendOutputThread;
 import org.apache.zeppelin.interpreter.remote.InvokeResourceMethodEventMessage;
 import org.apache.zeppelin.interpreter.remote.RemoteAngularObject;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterManagedProcess;
@@ -59,7 +59,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class RemoteInterpreterEventServer implements RemoteInterpreterEventService.Iface {
 
@@ -71,10 +70,7 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
   private TThreadPoolServer thriftServer;
   private InterpreterSettingManager interpreterSettingManager;
 
-  private final ScheduledExecutorService appendService =
-      Executors.newSingleThreadScheduledExecutor();
-  private ScheduledFuture<?> appendFuture;
-  private AppendOutputRunner runner;
+  private AppendOutputThread appendOutputThread;
   private final RemoteInterpreterProcessListener listener;
   private final ApplicationEventListener appListener;
   private final Gson gson = new Gson();
@@ -87,45 +83,24 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
     this.appListener = interpreterSettingManager.getAppEventListener();
   }
 
-  public void run() {
-    TServerSocket tSocket = null;
-    try {
-      tSocket = RemoteInterpreterUtils.createTServerSocket(portRange);
-      port = tSocket.getServerSocket().getLocalPort();
-      host = RemoteInterpreterUtils.findAvailableHostAddress();
-    } catch (IOException e1) {
-      throw new RuntimeException(e1);
-    }
-
-    LOGGER.info("InterpreterEventServer will start. Port: {}", port);
-    RemoteInterpreterEventService.Processor processor =
-        new RemoteInterpreterEventService.Processor(this);
-    this.thriftServer = new TThreadPoolServer(
-        new TThreadPoolServer.Args(tSocket).processor(processor));
-    this.thriftServer.serve();
-  }
-
   public void start() throws IOException {
-    Thread startingThread = new Thread() {
-      @Override
-      public void run() {
-        TServerSocket tSocket = null;
-        try {
-          tSocket = RemoteInterpreterUtils.createTServerSocket(portRange);
-          port = tSocket.getServerSocket().getLocalPort();
-          host = RemoteInterpreterUtils.findAvailableHostAddress();
-        } catch (IOException e1) {
-          throw new RuntimeException(e1);
-        }
-
-        LOGGER.info("InterpreterEventServer will start. Port: {}", port);
-        RemoteInterpreterEventService.Processor processor =
-            new RemoteInterpreterEventService.Processor(RemoteInterpreterEventServer.this);
-        thriftServer = new TThreadPoolServer(
-            new TThreadPoolServer.Args(tSocket).processor(processor));
-        thriftServer.serve();
+    Thread startingThread = new Thread(() -> {
+      TServerSocket tSocket = null;
+      try {
+        tSocket = RemoteInterpreterUtils.createTServerSocket(portRange);
+        port = tSocket.getServerSocket().getLocalPort();
+        host = RemoteInterpreterUtils.findAvailableHostAddress();
+      } catch (IOException e1) {
+        throw new RuntimeException(e1);
       }
-    };
+
+      LOGGER.info("InterpreterEventServer will start. Port: {}", port);
+      RemoteInterpreterEventService.Processor processor =
+          new RemoteInterpreterEventService.Processor(RemoteInterpreterEventServer.this);
+      thriftServer = new TThreadPoolServer(
+          new TThreadPoolServer.Args(tSocket).processor(processor));
+      thriftServer.serve();
+    });
     startingThread.start();
     long start = System.currentTimeMillis();
     while ((System.currentTimeMillis() - start) < 30 * 1000) {
@@ -142,19 +117,18 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
     if (thriftServer != null && !thriftServer.isServing()) {
       throw new IOException("Fail to start InterpreterEventServer in 30 seconds.");
     }
-    LOGGER.info("InterpreterEventServer is started");
+    LOGGER.info("RemoteInterpreterEventServer is started");
 
-    runner = new AppendOutputRunner(listener);
-    appendFuture = appendService.scheduleWithFixedDelay(
-        runner, 0, AppendOutputRunner.BUFFER_TIME_MS, TimeUnit.MILLISECONDS);
+    appendOutputThread = new AppendOutputThread(listener);
+
   }
 
   public void stop() {
     if (thriftServer != null) {
       thriftServer.stop();
     }
-    if (appendFuture != null) {
-      appendFuture.cancel(true);
+    if (appendOutputThread != null) {
+      appendOutputThread.interrupt();
     }
   }
 
@@ -188,7 +162,7 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
   @Override
   public void appendOutput(OutputAppendEvent event) throws TException {
     if (event.getAppId() == null) {
-      runner.appendBuffer(
+      appendOutputThread.appendBuffer(
           event.getNoteId(), event.getParagraphId(), event.getIndex(), event.getData());
     } else {
       appListener.onOutputAppend(event.getNoteId(), event.getParagraphId(), event.getIndex(),
@@ -241,10 +215,10 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
       listener.runParagraphs(event.getNoteId(), event.getParagraphIndices(),
           event.getParagraphIds(), event.getCurParagraphId());
       if (InterpreterContext.get() != null) {
-        LOGGER.info("complete runParagraphs." + InterpreterContext.get().getParagraphId() + " "
+        LOGGER.info("Complete runParagraphs." + InterpreterContext.get().getParagraphId() + " "
           + event);
       } else {
-        LOGGER.info("complete runParagraphs." + event);
+        LOGGER.info("Complete runParagraphs." + event);
       }
     } catch (IOException e) {
       throw new RuntimeException(e.getMessage());
@@ -308,8 +282,7 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
         }.getType());
     String noteId = paraInfos.get("noteId");
     String paraId = paraInfos.get("paraId");
-    String settingId = RemoteInterpreterUtils.
-        getInterpreterSettingId(interpreterGroup.getId());
+    String settingId = RemoteInterpreterUtils.getInterpreterSettingId(interpreterGroup.getId());
     if (noteId != null && paraId != null && settingId != null) {
       listener.onParaInfosReceived(noteId, paraId, settingId, paraInfos);
     }

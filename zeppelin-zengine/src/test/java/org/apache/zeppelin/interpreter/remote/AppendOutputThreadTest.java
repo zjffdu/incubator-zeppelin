@@ -39,7 +39,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
-public class AppendOutputRunnerTest {
+public class AppendOutputThreadTest {
 
   private static final int NUM_EVENTS = 10000;
   private static final int NUM_CLUBBED_EVENTS = 100;
@@ -79,9 +79,8 @@ public class AppendOutputRunnerTest {
         {note1, para1, "data3\n"}
     };
 
-    loopForCompletingEvents(listener, 1, buffer);
-    verify(listener, times(1)).onOutputAppend(any(String.class), any(String.class), anyInt(), any(String.class));
-    verify(listener, times(1)).onOutputAppend(note1, para1, 0, "data1\ndata2\ndata3\n");
+    loopForCompletingEvents(listener, 3, buffer);
+    verify(listener, times(3)).onOutputAppend(any(String.class), any(String.class), anyInt(), any(String.class));
   }
 
   @Test
@@ -109,9 +108,9 @@ public class AppendOutputRunnerTest {
   @Test
   public void testClubbedData() throws InterruptedException {
     RemoteInterpreterProcessListener listener = mock(RemoteInterpreterProcessListener.class);
-    AppendOutputRunner runner = new AppendOutputRunner(listener);
-    future = service.scheduleWithFixedDelay(runner, 0,
-        AppendOutputRunner.BUFFER_TIME_MS, TimeUnit.MILLISECONDS);
+    AppendOutputThread runner = new AppendOutputThread(listener);
+    runner.start();
+
     Thread thread = new Thread(new BombardEvents(runner));
     thread.start();
     thread.join();
@@ -128,7 +127,7 @@ public class AppendOutputRunnerTest {
   @Test
   public void testWarnLoggerForLargeData() throws InterruptedException {
     RemoteInterpreterProcessListener listener = mock(RemoteInterpreterProcessListener.class);
-    AppendOutputRunner runner = new AppendOutputRunner(listener);
+    AppendOutputThread runner = new AppendOutputThread(listener);
     String data = "data\n";
     int numEvents = 100000;
 
@@ -163,9 +162,9 @@ public class AppendOutputRunnerTest {
 
   private class BombardEvents implements Runnable {
 
-    private final AppendOutputRunner runner;
+    private final AppendOutputThread runner;
 
-    private BombardEvents(AppendOutputRunner runner) {
+    private BombardEvents(AppendOutputThread runner) {
       this.runner = runner;
     }
 
@@ -215,12 +214,11 @@ public class AppendOutputRunnerTest {
       int numTimes, String[][] buffer) {
     numInvocations = 0;
     prepareInvocationCounts(listener);
-    AppendOutputRunner runner = new AppendOutputRunner(listener);
+    AppendOutputThread runner = new AppendOutputThread(listener);
+    runner.start();
     for (String[] bufferElement: buffer) {
       runner.appendBuffer(bufferElement[0], bufferElement[1], 0, bufferElement[2]);
     }
-    future = service.scheduleWithFixedDelay(runner, 0,
-        AppendOutputRunner.BUFFER_TIME_MS, TimeUnit.MILLISECONDS);
     long startTimeMs = System.currentTimeMillis();
     while(numInvocations != numTimes) {
       if (System.currentTimeMillis() - startTimeMs > 2000) {

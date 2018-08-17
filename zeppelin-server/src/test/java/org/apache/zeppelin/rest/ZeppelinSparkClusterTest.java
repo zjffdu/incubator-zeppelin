@@ -57,8 +57,6 @@ import org.apache.zeppelin.user.AuthenticationInfo;
 @RunWith(value = Parameterized.class)
 public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ZeppelinSparkClusterTest.class);
-
   //This is for only run setupSparkInterpreter one time for each spark version, otherwise
   //each test method will run setupSparkInterpreter which will cost a long time and may cause travis
   //ci timeout.
@@ -96,7 +94,7 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
     Map<String, InterpreterProperty> sparkProperties =
         (Map<String, InterpreterProperty>) sparkIntpSetting.getProperties();
-    LOG.info("SPARK HOME detected " + sparkHome);
+    AbstractTestRestApi.LOGGER.info("SPARK HOME detected " + sparkHome);
     if (System.getenv("SPARK_MASTER") != null) {
       sparkProperties.put("master",
           new InterpreterProperty("master", System.getenv("SPARK_MASTER")));
@@ -138,7 +136,7 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {
-        LOG.error("Exception in WebDriverManager while getWebDriver ", e);
+        AbstractTestRestApi.LOGGER.error("Exception in WebDriverManager while getWebDriver ", e);
       }
     }
   }

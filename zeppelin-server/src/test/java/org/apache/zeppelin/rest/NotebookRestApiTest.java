@@ -186,7 +186,7 @@ public class NotebookRestApiTest extends AbstractTestRestApi {
   public void testCloneNote() throws IOException {
     Note note1 = ZeppelinServer.notebook.createNote(anonymous);
     PostMethod post = httpPost("/notebook/" + note1.getId(), "");
-    LOG.info("testCloneNote response\n" + post.getResponseBodyAsString());
+    LOGGER.info("testCloneNote response\n" + post.getResponseBodyAsString());
     assertThat(post, isAllowed());
     Map<String, Object> resp = gson.fromJson(post.getResponseBodyAsString(),
             new TypeToken<Map<String, Object>>() {}.getType());
@@ -266,7 +266,7 @@ public class NotebookRestApiTest extends AbstractTestRestApi {
 
     // clear paragraph result
     PutMethod put = httpPut("/notebook/" + note.getId() + "/clear", "");
-    LOG.info("test clear paragraph output response\n" + put.getResponseBodyAsString());
+    LOGGER.info("test clear paragraph output response\n" + put.getResponseBodyAsString());
     assertThat(put, isAllowed());
     put.releaseConnection();
 
@@ -313,7 +313,7 @@ public class NotebookRestApiTest extends AbstractTestRestApi {
     assertThat(post1, isAllowed());
     post1.releaseConnection();
     PutMethod put = httpPut("/notebook/" + note1.getId() + "/clear", "");
-    LOG.info("test clear paragraph output response\n" + put.getResponseBodyAsString());
+    LOGGER.info("test clear paragraph output response\n" + put.getResponseBodyAsString());
     assertThat(put, isAllowed());
     put.releaseConnection();
 

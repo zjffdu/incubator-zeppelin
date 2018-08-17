@@ -117,7 +117,7 @@ public class InterpreterRestApiTest extends AbstractTestRestApi {
     JsonObject jsonRequest = gson.fromJson(rawRequest, JsonElement.class).getAsJsonObject();
     PostMethod post = httpPost("/interpreter/setting/", jsonRequest.toString());
     String postResponse = post.getResponseBodyAsString();
-    LOG.info("testSettingCRUD create response\n" + post.getResponseBodyAsString());
+    LOGGER.info("testSettingCRUD create response\n" + post.getResponseBodyAsString());
     InterpreterSetting created = convertResponseToInterpreterSetting(postResponse);
     String newSettingId = created.getId();
     // then : call create setting API
@@ -127,7 +127,7 @@ public class InterpreterRestApiTest extends AbstractTestRestApi {
     // when: call read setting API
     GetMethod get = httpGet("/interpreter/setting/" + newSettingId);
     String getResponse = get.getResponseBodyAsString();
-    LOG.info("testSettingCRUD get response\n" + getResponse);
+    LOGGER.info("testSettingCRUD get response\n" + getResponse);
     InterpreterSetting previouslyCreated = convertResponseToInterpreterSetting(getResponse);
     // then : read Setting API
     assertThat("Test get method:", get, isAllowed());
@@ -141,14 +141,14 @@ public class InterpreterRestApiTest extends AbstractTestRestApi {
     jsonObject.addProperty("type", "textarea");
     jsonRequest.getAsJsonObject("properties").add("propname2", jsonObject);
     PutMethod put = httpPut("/interpreter/setting/" + newSettingId, jsonRequest.toString());
-    LOG.info("testSettingCRUD update response\n" + put.getResponseBodyAsString());
+    LOGGER.info("testSettingCRUD update response\n" + put.getResponseBodyAsString());
     // then: call update setting API
     assertThat("test update method:", put, isAllowed());
     put.releaseConnection();
 
     // when: call delete setting API
     DeleteMethod delete = httpDelete("/interpreter/setting/" + newSettingId);
-    LOG.info("testSettingCRUD delete response\n" + delete.getResponseBodyAsString());
+    LOGGER.info("testSettingCRUD delete response\n" + delete.getResponseBodyAsString());
     // then: call delete setting API
     assertThat("Test delete method:", delete, isAllowed());
     delete.releaseConnection();
@@ -227,7 +227,7 @@ public class InterpreterRestApiTest extends AbstractTestRestApi {
   public void testSettingsCreateWithEmptyJson() throws IOException {
     // Call Create Setting REST API
     PostMethod post = httpPost("/interpreter/setting/", "");
-    LOG.info("testSettingCRUD create response\n" + post.getResponseBodyAsString());
+    LOGGER.info("testSettingCRUD create response\n" + post.getResponseBodyAsString());
     assertThat("test create method:", post, isBadRequest());
     post.releaseConnection();
   }

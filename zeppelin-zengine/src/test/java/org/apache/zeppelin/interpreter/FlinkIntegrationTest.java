@@ -41,8 +41,9 @@ public class FlinkIntegrationTest {
   @Parameterized.Parameters
   public static List<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"1.5.1"},
-        {"1.5.2"}
+//        {"1.5.1"},
+//        {"1.5.2"},
+        {"1.6.0"}
     });
 
   }
@@ -96,11 +97,11 @@ public class FlinkIntegrationTest {
   }
 
   // TODO(zjffdu) enable it when make yarn integration test work
-  //  @Test
+  @Test
   public void testYarnMode() throws IOException, InterpreterException, YarnException {
     InterpreterSetting flinkInterpreterSetting = interpreterSettingManager.getInterpreterSettingByName("flink");
     flinkInterpreterSetting.setProperty("HADOOP_CONF_DIR", hadoopCluster.getConfigPath());
-    flinkInterpreterSetting.setProperty("FLINK_HOME", flinkHome);
+    flinkInterpreterSetting.setProperty("FLINK_HOME", "/Users/jzhang/github/flink/flink-dist/target/flink-1.7-SNAPSHOT-bin/flink-1.7-SNAPSHOT");
     flinkInterpreterSetting.setProperty("ZEPPELIN_CONF_DIR", zeppelin.getZeppelinConfDir().getAbsolutePath());
     flinkInterpreterSetting.setProperty("flink.execution.mode", "YARN");
     testInterpreterBasics();

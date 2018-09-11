@@ -106,7 +106,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
     flinkILoop.in = reader
     flinkILoop.initializeSynchronous()
-    callMethod(flinkILoop, "scala$tools$nsc$interpreter$ILoop$$loopPostInit")
+    flinkILoop.intp.setContextClassLoader()
+    reader.postInit()
     this.scalaCompleter = reader.completion.completer()
 
     this.benv = flinkILoop.scalaBenv

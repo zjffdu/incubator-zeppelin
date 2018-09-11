@@ -202,9 +202,12 @@ elif [[ "${INTERPRETER_ID}" == "pig" ]]; then
     echo "TEZ_CONF_DIR is not set, configuration might not be loaded"
   fi
 elif [[ "${INTERPRETER_ID}" == "flink" ]]; then
+  export FLINK_SUBMIT=$FLINK_HOME/bin/flink
+  FLINK_APP_JAR="$(ls ${ZEPPELIN_HOME}/interpreter/flink/zeppelin-flink-*.jar)"
   if [[ -n "${HADOOP_CONF_DIR}" ]] && [[ -d "${HADOOP_CONF_DIR}" ]]; then
     ZEPPELIN_INTP_CLASSPATH+=":${HADOOP_CONF_DIR}"
     export HADOOP_CONF_DIR=${HADOOP_CONF_DIR}
+    export HADOOP_HOME=${HADOOP_HOME}
   else
     # autodetect HADOOP_CONF_HOME by heuristic
     if [[ -n "${HADOOP_HOME}" ]] && [[ -z "${HADOOP_CONF_DIR}" ]]; then
@@ -234,14 +237,19 @@ fi
 
 if [[ -n "${SPARK_SUBMIT}" ]]; then
     INTERPRETER_RUN_COMMAND+=' '` echo ${SPARK_SUBMIT} --class ${ZEPPELIN_SERVER} --driver-class-path \"${ZEPPELIN_INTP_CLASSPATH_OVERRIDES}:${ZEPPELIN_INTP_CLASSPATH}\" --driver-java-options \"${JAVA_INTP_OPTS}\" ${SPARK_SUBMIT_OPTIONS} ${ZEPPELIN_SPARK_CONF} ${SPARK_APP_JAR} ${CALLBACK_HOST} ${PORT} ${INTP_GROUP_ID} ${INTP_PORT}`
+elif [[ -n "${FLINK_SUBMIT}" ]]; then
+    INTERPRETER_RUN_COMMAND+=' '` echo ${FLINK_SUBMIT} run --class ${ZEPPELIN_SERVER} -yt ${FLINK_HOME}/opt/flink-table_2.11-1.7-SNAPSHOT.jar ${FLINK_APP_JAR} ${CALLBACK_HOST} ${PORT} ${INTP_GROUP_ID} ${INTP_PORT}`
 else
     INTERPRETER_RUN_COMMAND+=' '` echo ${ZEPPELIN_RUNNER} ${JAVA_INTP_OPTS} ${ZEPPELIN_INTP_MEM} -cp ${ZEPPELIN_INTP_CLASSPATH_OVERRIDES}:${ZEPPELIN_INTP_CLASSPATH} ${ZEPPELIN_SERVER} ${CALLBACK_HOST} ${PORT} ${INTP_GROUP_ID} ${INTP_PORT}`
 fi
 
-
 if [[ ! -z "$ZEPPELIN_IMPERSONATE_USER" ]] && [[ -n "${suid}" || -z "${SPARK_SUBMIT}" ]]; then
     INTERPRETER_RUN_COMMAND+="'"
 fi
+
+echo "HADOOP_CONF_DIR:${HADOOP_CONF_DIR}"
+echo "HADOOP_HOME:${HADOOP_HOME}"
+echo $INTERPRETER_RUN_COMMAND
 
 eval $INTERPRETER_RUN_COMMAND &
 pid=$!

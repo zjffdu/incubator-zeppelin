@@ -36,7 +36,7 @@
   <properties>
     <!--library versions-->
     <interpreter.name>flink</interpreter.name>
-    <flink.version>1.5.2</flink.version>
+    <flink.version>1.7-SNAPSHOT</flink.version>
     <flink.akka.version>2.3.7</flink.akka.version>
     <scala.macros.version>2.0.1</scala.macros.version>
     <scala.binary.version>2.11</scala.binary.version>
@@ -76,42 +76,49 @@
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-core</artifactId>
       <version>${flink.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-clients_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-runtime_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-yarn_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-table_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
+      <!--<scope>provided</scope>-->
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-scala_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-scala-shell_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -124,18 +131,21 @@
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
       <version>${scala.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-compiler</artifactId>
       <version>${scala.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-reflect</artifactId>
       <version>${scala.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>

@@ -137,7 +137,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
       executor.execute(cmdLine, procEnv, this);
     } catch (IOException e) {
       running.set(false);
-      throw new RuntimeException(e);
+      throw new RuntimeException(cmdOut.toString(), e);
     }
 
     try {

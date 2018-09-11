@@ -20,12 +20,6 @@ include "RemoteInterpreterService.thrift"
 
 namespace java org.apache.zeppelin.interpreter.thrift
 
-struct RegisterInfo {
-  1: string host,
-  2: i32 port
-  3: string interpreterGroupId
-}
-
 struct OutputAppendEvent {
   1: string noteId,
   2: string paragraphId,
@@ -86,8 +80,29 @@ struct AppStatusUpdateEvent {
   4: string status
 }
 
+struct RegisterInfo {
+  1: string host,
+  2: i32 port
+  3: string interpreterGroupId
+}
+
+struct JobInfo {
+  1: string jobId,
+  2: string status,
+  3: i32 progress
+}
+
+struct HeartbeatInfo {
+  1: i32 timestamp,
+  2: list<JobInfo> jobInfos
+}
+
+
 service RemoteInterpreterEventService {
+
   void registerInterpreterProcess(1: RegisterInfo registerInfo);
+  void heartbeat(1: HeartbeatInfo heartbeatInfo);
+
   void appendOutput(1: OutputAppendEvent event);
   void updateOutput(1: OutputUpdateEvent event);
   void updateAllOutput(1: OutputUpdateAllEvent event);
@@ -108,3 +123,4 @@ service RemoteInterpreterEventService {
   binary getResource(1: string resourceIdJson);
   binary invokeMethod(1: string intpGroupId, 2: string invokeMethodJson);
 }
+

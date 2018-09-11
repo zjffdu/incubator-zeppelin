@@ -35,6 +35,7 @@ import org.apache.zeppelin.interpreter.remote.RemoteInterpreterUtils;
 import org.apache.zeppelin.interpreter.thrift.AppOutputAppendEvent;
 import org.apache.zeppelin.interpreter.thrift.AppOutputUpdateEvent;
 import org.apache.zeppelin.interpreter.thrift.AppStatusUpdateEvent;
+import org.apache.zeppelin.interpreter.thrift.HeartbeatInfo;
 import org.apache.zeppelin.interpreter.thrift.RegisterInfo;
 import org.apache.zeppelin.interpreter.thrift.OutputAppendEvent;
 import org.apache.zeppelin.interpreter.thrift.OutputUpdateAllEvent;
@@ -183,6 +184,11 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
     }
     ((RemoteInterpreterManagedProcess) interpreterProcess)
         .processStarted(registerInfo.port, registerInfo.host);
+  }
+
+  @Override
+  public void heartbeat(HeartbeatInfo heartbeatInfo) throws TException {
+
   }
 
   @Override

@@ -119,8 +119,6 @@ public class RemoteInterpreterServer extends Thread
   private final Map<String, RunningApplication> runningApplications =
       Collections.synchronizedMap(new HashMap<String, RunningApplication>());
 
-  private Map<String, Object> remoteWorksResponsePool;
-
   private final long DEFAULT_SHUTDOWN_TIMEOUT = 2000;
 
   // Hold information for manual progress update
@@ -172,7 +170,6 @@ public class RemoteInterpreterServer extends Thread
     server = new TThreadPoolServer(
         new TThreadPoolServer.Args(serverTransport).processor(processor));
     logger.info("Starting remote interpreter server on port {}", port);
-    remoteWorksResponsePool = Collections.synchronizedMap(new HashMap<String, Object>());
   }
 
   @Override

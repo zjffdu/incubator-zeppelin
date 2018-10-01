@@ -42,7 +42,7 @@ Apache Spark is supported in Zeppelin with Spark interpreter group which consist
   <tr>
     <td>%spark.pyspark</td>
     <td>PySparkInterpreter</td>
-    <td>Provides a Python environment</td>
+    <td>Provides a Python environment with PySpark support</td>
   </tr>
   <tr>
     <td>%spark.r</td>
@@ -77,7 +77,7 @@ You can also set other Spark properties which are not listed in the table. For a
   </tr>
     <td>master</td>
     <td>local[*]</td>
-    <td>Spark master uri. <br/> ex) spark://masterhost:7077</td>
+    <td>Spark master uri. <br/> ex) spark://masterhost:7077 <br/>yarn-client<br/>yarn-cluster</td>
   <tr>
     <td>spark.app.name</td>
     <td>Zeppelin</td>
@@ -117,7 +117,7 @@ You can also set other Spark properties which are not listed in the table. For a
   </tr>
   <tr>
     <td>zeppelin.spark.concurrentSQL</td>
-    <td>false</td>
+    <td>true</td>
     <td>Execute multiple SQL concurrently if set true.</td>
   </tr>
   <tr>
@@ -160,11 +160,21 @@ You can also set other Spark properties which are not listed in the table. For a
     <td></td>
     <td>Overrides Spark UI default URL. Value should be a full URL (ex: http://{hostName}/{uniquePath}</td>
   </tr>
+  <tr>
+    <td>zeppelin.spark.useNew</td>
+    <td>true</td>
+    <td>We introduce a new implementation of Spark Interpter in 0.8, user can fall back to the old implemention via setting this as false</td>
+  </tr>
+  <tr>
+    <td>zeppelin.pyspark.useIPython</td>
+    <td>true</td>
+    <td>Whether to enable ipython for pyspark</td>
+  </tr>
 </table>
 
-Without any configuration, Spark interpreter works out of box in local mode. But if you want to connect to your Spark cluster, you'll need to follow below two simple steps.
+Without any configuration, Spark interpreter works out of box in local embedded mode (Not all configuration can take effect for local embedded mode). But if you want to connect to your Spark cluster, you'll need to follow below two simple steps.
 
-### 1. Export SPARK_HOME
+### 1. Export SPARK_HOME in zeppelin-env.sh
 In `conf/zeppelin-env.sh`, export `SPARK_HOME` environment variable with your Spark installation path.
 
 For example,
@@ -179,9 +189,6 @@ You can optionally set more environment variables
 # set hadoop conf dir
 export HADOOP_CONF_DIR=/usr/lib/hadoop
 
-# set options to pass spark-submit command
-export SPARK_SUBMIT_OPTIONS="--packages com.databricks:spark-csv_2.10:1.2.0"
-
 # extra classpath. e.g. set classpath for hive-site.xml
 export ZEPPELIN_INTP_CLASSPATH_OVERRIDES=/etc/hive/conf
 ```
@@ -189,6 +196,8 @@ export ZEPPELIN_INTP_CLASSPATH_OVERRIDES=/etc/hive/conf
 For Windows, ensure you have `winutils.exe` in `%HADOOP_HOME%\bin`. Please see [Problems running Hadoop on Windows](https://wiki.apache.org/hadoop/WindowsProblems) for the details.
 
 ### 2. Set master in Interpreter menu
+The above approach has limitation that you can use one version of spark. If you want to use multiple versiosn of spark in one zeppelin instance. You can create new spark interpreter for each spark versions.
+And set `SPARK_HOME` for each spark interpreter.
 After start Zeppelin, go to **Interpreter** menu and edit **master** property in your Spark interpreter setting. The value may vary depending on your Spark cluster deployment type.
 
 For example,
@@ -202,7 +211,7 @@ For example,
 That's it. Zeppelin will work with any version of Spark and any deployment type without rebuilding Zeppelin in this way.
 For the further information about Spark & Zeppelin version compatibility, please refer to "Available Interpreters" section in [Zeppelin download page](https://zeppelin.apache.org/download.html).
 
-> Note that without exporting `SPARK_HOME`, it's running in local mode with included version of Spark. The included version may vary depending on the build profile.
+> Note that without exporting `SPARK_HOME`, it's running in local embedded mode with included version of Spark. The included version may vary depending on the build profile.
 
 ### 3. Yarn mode
 Zeppelin support both yarn client and yarn cluster mode (yarn cluster mode is supported from 0.8.0). For yarn mode, you must specify `SPARK_HOME` & `HADOOP_CONF_DIR`.
@@ -225,7 +234,7 @@ Staring from 0.6.1 SparkSession is available as variable `spark` when you are us
 There're 2 kinds of properties that would be passed to SparkConf
 
  * Standard spark property (prefix with `spark.`). e.g. `spark.executor.memory` will be passed to `SparkConf`
- * Non-standard spark property (prefix with `zeppelin.spark.`).  e.g. `zeppelin.spark.property_1`, `property_1` will be passed to `SparkConf`
+ * Non-standard spark property (prefix with `zeppelin.spark.`).  e.g. `zeppelin.spark.concurrentSQL`, it will be passed to `properties` of SparkInterpreter.
 
 ## Dependency Management
 There are two ways to load external libraries in Spark interpreter. First is using interpreter setting menu and second is loading Spark properties.
@@ -234,7 +243,7 @@ There are two ways to load external libraries in Spark interpreter. First is usi
 Please see [Dependency Management](../usage/interpreter/dependency_management.html) for the details.
 
 ### 2. Loading Spark Properties
-Once `SPARK_HOME` is set in `conf/zeppelin-env.sh`, Zeppelin uses `spark-submit` as spark interpreter runner. `spark-submit` supports two ways to load configurations.
+Once `SPARK_HOME` is set, Zeppelin uses `spark-submit` as spark interpreter runner. `spark-submit` supports two ways to load configurations.
 The first is command line options such as --master and Zeppelin can pass these options to `spark-submit` by exporting `SPARK_SUBMIT_OPTIONS` in `conf/zeppelin-env.sh`. Second is reading configuration options from `SPARK_HOME/conf/spark-defaults.conf`. Spark properties that user can set to distribute libraries are:
 
 <table class="table-configuration">

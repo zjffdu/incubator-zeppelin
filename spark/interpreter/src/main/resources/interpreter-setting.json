@@ -105,7 +105,7 @@
       "zeppelin.spark.concurrentSQL": {
         "envName": "ZEPPELIN_SPARK_CONCURRENTSQL",
         "propertyName": "zeppelin.spark.concurrentSQL",
-        "defaultValue": false,
+        "defaultValue": true,
         "description": "Execute multiple SQL concurrently if set true.",
         "type": "checkbox"
       },

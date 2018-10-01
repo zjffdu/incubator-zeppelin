@@ -32,7 +32,8 @@ The following guides explain how to use Apache Zeppelin that enables you to writ
 - also, provides [PySpark](../interpreter/spark.html)
 - with [matplotlib integration](../interpreter/python.html#matplotlib-integration)
 - can create results including **UI widgets** using [Dynamic Form](../interpreter/python.html#using-zeppelin-dynamic-forms)
-
+- support ipython
+- support most of the popular visualization libraries (such as matplotlib, bokeh, seaborn and etc)
 <br/>
 
 For the further information about Spark support in Zeppelin, please check 

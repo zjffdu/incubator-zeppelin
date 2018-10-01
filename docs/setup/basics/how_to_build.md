@@ -42,7 +42,7 @@ If you want to build from source, you must first install the following dependenc
   </tr>
   <tr>
     <td>JDK</td>
-    <td>1.7</td>
+    <td>1.8</td>
   </tr>
 </table>
 
@@ -69,7 +69,7 @@ If you're unsure about the options, use the same commands that creates official 
 ```bash
 # update all pom.xml to use scala 2.11
 ./dev/change_scala_version.sh 2.11
-# build zeppelin with all interpreters and include latest version of Apache spark support for local mode.
+# build zeppelin with all interpreters and include Apache spark 2.0 support for local embedded mode.
 mvn clean package -DskipTests -Pspark-2.0 -Phadoop-2.4 -Pr -Pscala-2.11
 ```
 

@@ -30,7 +30,7 @@ import java.util.List;
  * Factory class for creating interpreters.
  *
  */
-public class InterpreterFactory {
+public class InterpreterFactory implements InterpreterFactoryInterface {
   private static final Logger LOGGER = LoggerFactory.getLogger(InterpreterFactory.class);
 
   private final InterpreterSettingManager interpreterSettingManager;
@@ -39,6 +39,7 @@ public class InterpreterFactory {
     this.interpreterSettingManager = interpreterSettingManager;
   }
 
+  @Override
   public Interpreter getInterpreter(String user,
                                     String noteId,
                                     String replName,

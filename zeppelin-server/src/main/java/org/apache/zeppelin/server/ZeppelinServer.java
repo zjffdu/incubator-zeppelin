@@ -38,6 +38,7 @@ import org.apache.shiro.realm.text.IniRealm;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.ShiroFilter;
+import org.apache.zeppelin.cluster.ClusterManagerServer;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.conf.ZeppelinConfiguration.ConfVars;
 import org.apache.zeppelin.helium.Helium;
@@ -245,6 +246,12 @@ public class ZeppelinServer extends ResourceConfig {
           }
         });
     packages("org.apache.zeppelin.rest");
+
+    setupCluster();
+  }
+
+  private void setupCluster() {
+    ClusterManagerServer.getInstance().start(replFactory);
   }
 
   public static void main(String[] args) throws InterruptedException {

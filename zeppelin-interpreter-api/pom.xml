@@ -145,6 +145,10 @@
             <relocation>
               <pattern>io</pattern>
               <shadedPattern>${shaded.dependency.prefix}.io</shadedPattern>
+              <excludes>
+                <exclude>io/atomix/*</exclude>
+                <exclude>io/atomix/**/*</exclude>
+              </excludes>
             </relocation>
           </relocations>
         </configuration>

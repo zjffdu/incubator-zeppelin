@@ -31,6 +31,8 @@ import javax.servlet.ServletContextListener;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
+import org.apache.zeppelin.cluster.ClusterManager;
+import org.apache.zeppelin.cluster.ClusterManagerServer;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.conf.ZeppelinConfiguration.ConfVars;
 import org.apache.zeppelin.display.AngularObjectRegistryListener;
@@ -42,6 +44,7 @@ import org.apache.zeppelin.interpreter.InterpreterFactory;
 import org.apache.zeppelin.interpreter.InterpreterOutput;
 import org.apache.zeppelin.interpreter.InterpreterSettingManager;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcessListener;
+import org.apache.zeppelin.interpreter.thrift.ClusterManagerService;
 import org.apache.zeppelin.notebook.NoteEventListener;
 import org.apache.zeppelin.notebook.Notebook;
 import org.apache.zeppelin.notebook.NotebookAuthorization;
@@ -161,6 +164,13 @@ public class ZeppelinServer extends ResourceConfig {
                 .to(NoteEventListener.class)
                 .to(WebSocketServlet.class)
                 .in(Singleton.class);
+            bindAsContract(ClusterManagerServer.class)
+                .to(ClusterManager.class)
+                .to(ClusterManagerService.Iface.class)
+                .in(Singleton.class);
+            InterpreterFactory interpreterFactory
+                = sharedServiceLocator.getService(InterpreterFactory.class);
+            sharedServiceLocator.getService(ClusterManagerServer.class).start(interpreterFactory);
           }
         });
 

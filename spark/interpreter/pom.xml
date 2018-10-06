@@ -127,6 +127,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>${jsoup.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-repl_${scala.binary.version}</artifactId>
       <version>${spark.version}</version>
@@ -283,6 +289,10 @@
       <artifactId>wagon-http</artifactId>
       <version>${wagon.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.maven.wagon</groupId>
+          <artifactId>wagon-http-shared</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -329,12 +339,6 @@
       <artifactId>commons-compress</artifactId>
       <version>${commons.compress.version}</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>${jsoup.version}</version>
     </dependency>
 
     <!--test libraries-->

@@ -200,6 +200,9 @@ public class FlinkInterpreterTest {
     List<InterpreterCompletion> completions = interpreter.completion("a.", 2,
         getInterpreterContext());
     assertTrue(completions.size() > 0);
+
+    completions = interpreter.completion("benv.", 5, getInterpreterContext());
+    assertTrue(completions.size() > 0);
   }
 
 

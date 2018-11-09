@@ -44,7 +44,7 @@ public class FlinkInterpreter extends Interpreter {
 
     // bind ZeppelinContext
     int maxRow = Integer.parseInt(getProperty("zeppelin.flink.maxResult", "1000"));
-    this.z = new FlinkZeppelinContext(innerIntp.getBatchTableEnviroment(),
+    this.z = new FlinkZeppelinContext(innerIntp.getBatchTableEnvironment(),
         getInterpreterGroup().getInterpreterHookRegistry(), maxRow);
     List<String> modifiers = new ArrayList<>();
     modifiers.add("@transient");
@@ -67,7 +67,7 @@ public class FlinkInterpreter extends Interpreter {
 
   @Override
   public void cancel(InterpreterContext context) throws InterpreterException {
-
+    this.innerIntp.cancel(context);
   }
 
   @Override
@@ -93,7 +93,7 @@ public class FlinkInterpreter extends Interpreter {
   }
 
   ExecutionEnvironment getExecutionEnviroment() {
-    return this.innerIntp.getExecutionEnviroment();
+    return this.innerIntp.getExecutionEnvironment();
   }
 
   FlinkZeppelinContext getZeppelinContext() {

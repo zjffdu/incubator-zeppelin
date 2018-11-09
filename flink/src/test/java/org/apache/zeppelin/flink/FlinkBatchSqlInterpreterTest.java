@@ -33,10 +33,10 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
-public class FlinkSQLInterpreterTest {
+public class FlinkBatchSqlInterpreterTest {
 
   private FlinkInterpreter interpreter;
-  private FlinkSQLInterpreter sqlInterpreter;
+  private FlinkBatchSqlInterpreter sqlInterpreter;
   private InterpreterContext context;
 
   // catch the streaming output in onAppend
@@ -48,7 +48,7 @@ public class FlinkSQLInterpreterTest {
   public void setUp() throws InterpreterException {
     Properties p = new Properties();
     interpreter = new FlinkInterpreter(p);
-    sqlInterpreter = new FlinkSQLInterpreter(p);
+    sqlInterpreter = new FlinkBatchSqlInterpreter(p);
     InterpreterGroup intpGroup = new InterpreterGroup();
     interpreter.setInterpreterGroup(intpGroup);
     sqlInterpreter.setInterpreterGroup(intpGroup);

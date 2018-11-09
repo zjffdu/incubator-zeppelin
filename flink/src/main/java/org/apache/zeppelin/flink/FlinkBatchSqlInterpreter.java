@@ -25,11 +25,11 @@ import org.apache.zeppelin.interpreter.InterpreterResult;
 
 import java.util.Properties;
 
-public class FlinkSQLInterpreter extends Interpreter {
+public class FlinkBatchSqlInterpreter extends Interpreter {
 
-  private FlinkSQLScalaInterpreter sqlScalaInterpreter;
+  private FlinkScalaBatchSqlInterpreter scalaBatchSqlInterpreter;
 
-  public FlinkSQLInterpreter(Properties properties) {
+  public FlinkBatchSqlInterpreter(Properties properties) {
     super(properties);
   }
 
@@ -40,7 +40,7 @@ public class FlinkSQLInterpreter extends Interpreter {
         getInterpreterInTheSameSessionByClassName(FlinkInterpreter.class);
     FlinkZeppelinContext z = flinkInterpreter.getZeppelinContext();
     int maxRow = Integer.parseInt(getProperty("zeppelin.flink.maxResult", "1000"));
-    this.sqlScalaInterpreter = new FlinkSQLScalaInterpreter(
+    this.scalaBatchSqlInterpreter = new FlinkScalaBatchSqlInterpreter(
         flinkInterpreter.getInnerScalaInterpreter(), z, maxRow);
   }
 
@@ -52,7 +52,7 @@ public class FlinkSQLInterpreter extends Interpreter {
   @Override
   public InterpreterResult interpret(String st, InterpreterContext context)
       throws InterpreterException {
-    return sqlScalaInterpreter.interpret(st, context);
+    return scalaBatchSqlInterpreter.interpret(st, context);
   }
 
   @Override

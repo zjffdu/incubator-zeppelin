@@ -287,4 +287,9 @@ public class RemoteSchedulerTest extends AbstractInterpreterTest
                                   String interpreterSettingId, Map<String, String> metaInfos) {
   }
 
+  @Override
+  public void onUpdateParagraphConfig(String noteId, String paragraphId, Map<String, String> config) throws IOException {
+
+  }
+
 }

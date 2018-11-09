@@ -39,38 +39,162 @@ At the "Interpreters" menu, you have to create a new Flink interpreter and provi
     <th>Description</th>
   </tr>
   <tr>
-    <td>host</td>
-    <td>local</td>
-    <td>host name of running JobManager. 'local' runs flink in local mode (default)</td>
+    <td>flink.execution.mode</td>
+    <td>local|remote|yarn</td>
+    <td>execution mode flink.</td>
   </tr>
   <tr>
-    <td>port</td>
-    <td>6123</td>
-    <td>port of running JobManager</td>
+    <td>flink.execution.remote.host</td>
+    <td></td>
+    <td>host name of job manager in remote mode</td>
   </tr>
+  <tr>
+    <td>flink.execution.remote.port</td>
+    <td></td>
+    <td>port of job manager rest service in remote mode</td>
+  </tr>
+  <tr>
+    <td>flink.yarn.appName</td>
+    <td></td>
+    <td>Yarn app name of flink session</td>
+  </tr>
+  <tr>
+    <td>flink.yarn.jm.memory</td>
+    <td>1g</td>
+    <td>Memory of Job Manager</td>
+  </tr>
+  <tr>
+    <td>flink.yarn.tm.memory</td>
+    <td>1g</td>
+    <td>Memory of Task Manager</td>
+  </tr>
+  <tr>
+    <td>flink.yarn.tm.num</td>
+    <td>2</td>
+    <td>Number of Task Manager</td>
+  </tr>
+  <tr>
+    <td>flink.yarn.tm.slot</td>
+    <td>1</td>
+    <td>Slot number per Task Manager</td>
+  </tr>
+  <tr>
+    <td>flink.yarn.queue</td>
+    <td>default</td>
+    <td>Queue name for yarn app</td>
+  </tr>  
+  <tr>
+    <td>zeppelin.flink.printREPLOutput</td>
+    <td>true</td>
+    <td>Whether to print repl output</td>
+  </tr> 
+  <tr>
+    <td>zeppelin.flink.maxResult</td>
+    <td>1000</td>
+    <td>Max rows of result for Sql output</td>
+  </tr> 
+  <tr>
+    <td>zeppelin.flink.concurrentBatchSql</td>
+    <td>10</td>
+    <td>Max number of batch sql executed concurrently</td>
+  </tr> 
+  <tr>
+    <td>zeppelin.flink.concurrentStreamSql</td>
+    <td>10</td>
+    <td>Max number of stream sql executed concurrently</td>
+  </tr> 
+                      
 </table>
 
-For more information about Flink configuration, you can find it [here](https://ci.apache.org/projects/flink/flink-docs-release-1.0/setup/config.html).
+For more information about Flink configuration, you can find it [here](https://ci.apache.org/projects/flink/flink-docs-release-1.7/ops/config.html).
 
-## How to test it's working
-You can find an example of Flink usage in the Zeppelin Tutorial folder or try the following word count example, by using the [Zeppelin notebook](https://www.zeppelinhub.com/viewer/notebooks/aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL05GTGFicy96ZXBwZWxpbi1ub3RlYm9va3MvbWFzdGVyL25vdGVib29rcy8yQVFFREs1UEMvbm90ZS5qc29u) from Till Rohrmann's presentation [Interactive data analysis with Apache Flink](http://www.slideshare.net/tillrohrmann/data-analysis-49806564) for Apache Flink Meetup.
+## What can Flink Interpreter do
 
-```
-%sh
-rm 10.txt.utf-8
-wget http://www.gutenberg.org/ebooks/10.txt.utf-8
+Zeppelin's Flink interpreter support 3 kinds of interpreter:
+* %flink.scala (FlinkScalaInterpreter)
+* %flink.bsql (FlinkBatchSqlInterpreter)
+* %flink.ssql (FlinkStreamSqlInterpreter)
+
+### FlinkScalaInterpreter
+FlinkScalaInterpreter allow user to run scala code in zeppelin. 4 variables are created for users:
+* senv   (StreamExecutionEnvironment)
+* benv  (ExecutionEnvironment)
+* stenv (StreamTableEnvironment)
+* btenv (BatchTableEnvironment)
+
+Users can use these variables to run DataSet/DataStream/BatchTable/StreamTable related job.
+
+e.g. The following is to use benv to run a batch style WordCount
+
 ```
 {% highlight scala %}
 %flink
-case class WordCount(word: String, frequency: Int)
-val bible:DataSet[String] = benv.readTextFile("10.txt.utf-8")
-val partialCounts: DataSet[WordCount] = bible.flatMap{
-    line =>
-        """\b\w+\b""".r.findAllIn(line).map(word => WordCount(word, 1))
-//        line.split(" ").map(word => WordCount(word, 1))
-}
-val wordCounts = partialCounts.groupBy("word").reduce{
-    (left, right) => WordCount(left.word, left.frequency + right.frequency)
-}
-val result10 = wordCounts.first(10).collect()
+
+val data = benv.fromElements("hello world", "hello flink", "hello hadoop")
+data.flatMap(line => line.split("\\s"))
+  .map(w => (w, 1))
+  .groupBy(0)
+  .sum(1)
+  .print()
 {% endhighlight %}
+```
+
+The following is to use senv to run a stream style WordCount
+
+```
+{% highlight scala %}
+%flink
+
+val data = senv.fromElements("hello world", "hello flink", "hello hadoop")
+data.flatMap(line => line.split("\\s"))
+  .map(w => (w, 1))
+  .keyBy(0)
+  .sum(1)
+  .print
+
+senv.execute()
+{% endhighlight %}
+```
+
+### FlinkBatchSqlInterpreter
+
+FlinkBatchSqlInterpreter support to run sql to query tables registered in BatchTableEnvironment.
+
+e.g. We can query the `wc` table which is registered in FlinkScalaInterpreter
+
+```
+{% highlight scala %}
+%flink
+
+val data = benv.fromElements("hello world", "hello flink", "hello hadoop")
+val table = data.flatMap(line=>line.split("\\s")).
+   map(w => (w, 1)).
+   toTable(btenv, 'word, 'number)
+btenv.registerOrReplaceTable("wc", table)
+
+{% endhighlight %}
+```
+
+
+```
+{% highlight scala %}
+
+%flink.bsql
+
+select word, count(1) as c from wc group by word
+
+{% endhighlight %}
+```
+
+### FlinkStreamSqlInterpreter (not mature yet)
+
+
+### Other Features
+
+* Job Canceling
+    - User can cancel job via the job cancel button
+* Flink Job url association
+    - User can link to the flink job url in JM dashboard 
+* Code completion
+    - As other interpreters, user can use `tab` for code completion
+   

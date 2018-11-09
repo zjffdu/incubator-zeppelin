@@ -36,4 +36,8 @@ public interface RemoteInterpreterProcessListener {
 
   public void onParaInfosReceived(String noteId, String paragraphId,
                                   String interpreterSettingId, Map<String, String> metaInfos);
+
+  public void onUpdateParagraphConfig(String noteId,
+                                      String paragraphId,
+                                      Map<String, String> config) throws IOException;
 }

@@ -1,40 +1,124 @@
 [
   {
     "group": "flink",
-    "name": "flink",
+    "name": "scala",
     "className": "org.apache.zeppelin.flink.FlinkInterpreter",
     "properties": {
-      "host": {
-        "envName": "host",
+      "flink.execution.mode": {
+        "envName": null,
         "propertyName": null,
         "defaultValue": "local",
-        "description": "host name of running JobManager. 'local' runs flink in local mode.",
+        "description": "execution mode, it could be local, yarn or remote",
         "type": "string"
       },
-      "port": {
-        "envName": "port",
+      "flink.execution.remote.host": {
+        "envName": null,
         "propertyName": null,
-        "defaultValue": "6123",
-        "description": "port of running JobManager.",
+        "defaultValue": "local",
+        "description": "host name of JobManager, used in remote mode",
+        "type": "string"
+      },
+      "flink.execution.remote.port": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "local",
+        "description": "rest port of JobManager, used in remote mode",
+        "type": "number"
+      },
+      "flink.yarn.appName": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "Zeppelin Flink Session",
+        "description": "Yarn app name",
+        "type": "string"
+      },
+      "flink.yarn.queue": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "default",
+        "description": "Queue name of yarn app",
+        "type": "string"
+      },
+      "flink.yarn.tm.num": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "1",
+        "description": "number of task manager for this flink app",
+        "type": "number"
+      },
+      "flink.yarn.tm.slot": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "1",
+        "description": "number of slot per task manager",
+        "type": "number"
+      },
+      "flink.yarn.tm.memory": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "1g",
+        "description": "memory of TaskManager",
+        "type": "string"
+      },
+      "flink.yarn.jm.memory": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "1g",
+        "description": "memory of JobManager",
+        "type": "string"
+      },
+      "zeppelin.flink.printREPLOutput": {
+        "envName": null,
+        "propertyName": "zeppelin.flink.printREPLOutput",
+        "defaultValue": true,
+        "description": "Print REPL output",
+        "type": "checkbox"
+      },
+      "zeppelin.flink.maxResult": {
+        "envName": "zeppelin.flink.maxResult",
+        "propertyName": "zeppelin.flink.maxResult",
+        "defaultValue": "1000",
+        "description": "max number of row returned by sql interpreter.",
         "type": "number"
       }
     },
     "editor": {
       "language": "scala",
+      "editOnDblClick": false,
+      "completionKey": "TAB",
+      "completionSupport": true
+    }
+  },
+
+  {
+    "group": "flink",
+    "name": "bsql",
+    "className": "org.apache.zeppelin.flink.FlinkBatchSqlInterpreter",
+    "properties": {
+      "zeppelin.flink.concurrentBatchSql": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "10",
+        "description": "max number of batch sql executed concurrently.",
+        "type": "number"
+      }
+    },
+    "editor": {
+      "language": "sql",
       "editOnDblClick": false
     }
   },
 
   {
     "group": "flink",
-    "name": "sql",
-    "className": "org.apache.zeppelin.flink.FlinkSQLInterpreter",
+    "name": "ssql",
+    "className": "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter",
     "properties": {
-      "zeppelin.flink.maxResult": {
-        "envName": "zeppelin.flink.maxResult",
-        "propertyName": "zeppelin.flink.maxResult",
-        "defaultValue": "1000",
-        "description": "max number of row returned by sql interpreter.",
+      "zeppelin.flink.concurrentStreamSql": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "10",
+        "description": "max number of stream sql executed concurrently.",
         "type": "number"
       }
     },

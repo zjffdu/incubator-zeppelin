@@ -299,6 +299,17 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
   }
 
   @Override
+  public void updateParagraphConfig(String noteId,
+                                    String paragraphId,
+                                    Map<String, String> config) throws TException {
+    try {
+      listener.onUpdateParagraphConfig(noteId, paragraphId, config);
+    } catch (IOException e) {
+      throw new TException(e);
+    }
+  }
+
+  @Override
   public List<String> getAllResources(String intpGroupId) throws TException {
     ResourceSet resourceSet = getAllResourcePoolExcept(intpGroupId);
     List<String> resourceList = new LinkedList<>();

@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * InterpreterMessageOutputStream
@@ -43,13 +45,22 @@ public class InterpreterResultMessageOutput extends OutputStream {
   private InterpreterOutputChangeWatcher watcher;
   private final InterpreterResultMessageOutputListener flushListener;
   private InterpreterResult.Type type = InterpreterResult.Type.TEXT;
+  private Map<String, String> config = new HashMap<>();
   private boolean firstWrite = true;
 
   public InterpreterResultMessageOutput(
       InterpreterResult.Type type,
+      Map<String, String> config,
       InterpreterResultMessageOutputListener listener) {
     this.type = type;
+    this.config = config;
     this.flushListener = listener;
+  }
+
+  public InterpreterResultMessageOutput(
+          InterpreterResult.Type type,
+          InterpreterResultMessageOutputListener listener) {
+    this(type, new HashMap<>(), listener);
   }
 
   public InterpreterResultMessageOutput(
@@ -73,6 +84,10 @@ public class InterpreterResultMessageOutput extends OutputStream {
     }
   }
 
+  public Map<String, String> getConfig() {
+    return config;
+  }
+
   public void clear() {
     synchronized (outList) {
       buffer.reset();
@@ -92,6 +107,7 @@ public class InterpreterResultMessageOutput extends OutputStream {
     synchronized (outList) {
       buffer.write(b);
       if (b == NEW_LINE_CHAR) {
+//        flush(isAppendSupported());
         // first time use of this outputstream.
         if (firstWrite) {
           // clear the output on gui
@@ -213,7 +229,7 @@ public class InterpreterResultMessageOutput extends OutputStream {
       byte[] bytes = buffer.toByteArray();
       if (bytes != null && bytes.length > 0) {
         outList.add(bytes);
-        if (append) {
+        if (append && !firstWrite) {
           if (flushListener != null) {
             flushListener.onAppend(this, bytes);
           }
@@ -221,6 +237,7 @@ public class InterpreterResultMessageOutput extends OutputStream {
           if (flushListener != null) {
             flushListener.onUpdate(this);
           }
+          firstWrite = false;
         }
       }
       buffer.reset();
@@ -260,7 +277,18 @@ public class InterpreterResultMessageOutput extends OutputStream {
 
   public String toString() {
     try {
-      return "%" + type.name().toLowerCase() + " " + new String(toByteArray());
+      if (config.isEmpty()) {
+        return "%" + type.name().toLowerCase() + " " + new String(toByteArray());
+      } else {
+        StringBuilder configBuilder = new StringBuilder("(");
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+          configBuilder.append(entry.getKey() + "=" + entry.getValue() + ",");
+        }
+        configBuilder.deleteCharAt(configBuilder.length() - 1);
+        configBuilder.append(")");
+        return "%" + type.name().toLowerCase() + configBuilder.toString() +
+                " " + new String(toByteArray());
+      }
     } catch (IOException e) {
       logger.error(e.getMessage(), e);
       return "%" + type.name().toLowerCase() + "\n";

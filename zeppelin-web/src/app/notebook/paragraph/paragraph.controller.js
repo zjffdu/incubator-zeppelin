@@ -213,7 +213,7 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
       }
 
       let update = ($scope.paragraph.results.msg[data.index]) ? true : false;
-
+      console.log('*******************update: ' + update);
       $scope.paragraph.results.msg[data.index] = {
         data: data.data,
         type: data.type,
@@ -1654,7 +1654,7 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
         if (!$scope.paragraph.results.msg) {
           $scope.paragraph.results.msg = [];
         }
-
+        console.log('**************Append data: ' + data);
         $scope.paragraph.results.msg[data.index] = {
           data: data.data,
           type: data.type,

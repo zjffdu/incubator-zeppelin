@@ -26,8 +26,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * InterpreterOutput is OutputStream that supposed to print content on notebook
@@ -50,6 +53,8 @@ public class InterpreterOutput extends OutputStream {
   private int size = 0;
   private int lastCRIndex = -1;
 
+  private boolean ignoreLimit = false;
+
   // change static var to set interpreter output limit
   // limit will be applied to all InterpreterOutput object.
   // so we can expect the consistent behavior
@@ -69,7 +74,11 @@ public class InterpreterOutput extends OutputStream {
     clear();
   }
 
-  public void setType(InterpreterResult.Type type) throws IOException {
+  public void setIgnoreLimit(boolean ignoreLimit) {
+    this.ignoreLimit = ignoreLimit;
+  }
+
+  public void setTypeAndConfig(InterpreterResult.Type type) throws IOException {
     InterpreterResultMessageOutput out = null;
 
     synchronized (resultMessageOutputs) {
@@ -77,8 +86,27 @@ public class InterpreterOutput extends OutputStream {
       InterpreterResultMessageOutputListener listener =
           createInterpreterResultMessageOutputListener(index);
 
+      Map<String, String> config = new HashMap<>();
+      String displaySystem = buffer.toString();
+      int left = displaySystem.indexOf("(");
+      if (left != -1) {
+        if (displaySystem.charAt(displaySystem.length() - 1) != ')') {
+          throw new IOException("Invalid display system: " + displaySystem);
+        } else {
+          String configStr = displaySystem.substring(left + 1, displaySystem.length() - 1);
+          String[] splits = configStr.split(",");
+          for (String split : splits) {
+            String[] tokens = split.split("=");
+            if (tokens.length != 2) {
+              throw new IOException("Invalid config: " + split);
+            }
+            config.put(tokens[0], tokens[1]);
+          }
+        }
+      }
+
       if (changeListener == null) {
-        out = new InterpreterResultMessageOutput(type, listener);
+        out = new InterpreterResultMessageOutput(type, config, listener);
       } else {
         out = new InterpreterResultMessageOutput(type, listener, changeListener);
       }
@@ -185,11 +213,11 @@ public class InterpreterOutput extends OutputStream {
     synchronized (resultMessageOutputs) {
       currentOut = getCurrentOutput();
 
-      if (++size > limit) {
+      if (++size > limit && !ignoreLimit) {
         if (b == NEW_LINE_CHAR && currentOut != null) {
           InterpreterResult.Type type = currentOut.getType();
           if (type == InterpreterResult.Type.TEXT || type == InterpreterResult.Type.TABLE) {
-            setType(InterpreterResult.Type.HTML);
+            setTypeAndConfig(InterpreterResult.Type.HTML);
             getCurrentOutput().write(ResultMessages.getExceedsLimitSizeMessage(limit,
                 "ZEPPELIN_INTERPRETER_OUTPUT_LIMIT").getData().getBytes());
             truncated = true;
@@ -235,9 +263,9 @@ public class InterpreterOutput extends OutputStream {
           firstCharIsPercentSign = false;
           String displaySystem = buffer.toString();
           for (InterpreterResult.Type type : InterpreterResult.Type.values()) {
-            if (displaySystem.equals('%' + type.name().toLowerCase())) {
+            if (displaySystem.startsWith('%' + type.name().toLowerCase())) {
               // new type detected
-              setType(type);
+              setTypeAndConfig(type);
               previousChar = b;
               return;
             }
@@ -267,7 +295,7 @@ public class InterpreterOutput extends OutputStream {
       InterpreterResultMessageOutput out = getCurrentOutput();
       if (out == null) {
         // add text type result message
-        setType(InterpreterResult.Type.TEXT);
+        setTypeAndConfig(InterpreterResult.Type.TEXT);
         out = getCurrentOutput();
       }
       return out;

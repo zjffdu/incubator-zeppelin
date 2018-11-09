@@ -43,6 +43,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+
 public class FlinkInterpreterTest {
 
   private FlinkInterpreter interpreter;
@@ -56,6 +57,7 @@ public class FlinkInterpreterTest {
   @Before
   public void setUp() throws InterpreterException {
     Properties p = new Properties();
+    p.setProperty("zeppelin.flink.printREPLOutput", "false");
     interpreter = new FlinkInterpreter(p);
     InterpreterGroup intpGroup = new InterpreterGroup();
     interpreter.setInterpreterGroup(intpGroup);
@@ -200,20 +202,48 @@ public class FlinkInterpreterTest {
     List<InterpreterCompletion> completions = interpreter.completion("a.", 2,
         getInterpreterContext());
     assertTrue(completions.size() > 0);
+
+    completions = interpreter.completion("benv.", 5, getInterpreterContext());
+    assertTrue(completions.size() > 0);
   }
 
-
-  // Disable it for now as there's extra std output from flink shell.
   @Test
-  public void testWordCount() throws InterpreterException, IOException {
-    interpreter.interpret("val text = benv.fromElements(\"To be or not to be\")",
+  public void testBatchWordCount() throws InterpreterException, IOException {
+    interpreter.interpret(
+            "val data = benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")",
         getInterpreterContext());
-    interpreter.interpret("val counts = text.flatMap { _.toLowerCase.split(\" \") }" +
-        ".map { (_, 1) }.groupBy(0).sum(1)", getInterpreterContext());
-    InterpreterResult result = interpreter.interpret("counts.print()", getInterpreterContext());
+    InterpreterResult result = interpreter.interpret(
+            "data.flatMap(line => line.split(\"\\\\s\"))\n" +
+            "  .map(w => (w, 1))\n" +
+            "  .groupBy(0)\n" +
+            "  .sum(1)\n" +
+            "  .print()", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
-    String[] expectedCounts = {"(to,2)", "(be,2)", "(or,1)", "(not,1)"};
+    String[] expectedCounts = {"(hello,3)", "(world,1)", "(flink,1)", "(hadoop,1)"};
+    Arrays.sort(expectedCounts);
+
+    String[] counts = output.split("\n");
+    Arrays.sort(counts);
+
+    assertArrayEquals(expectedCounts, counts);
+  }
+
+  @Test
+  public void testBatchTableWordCount() throws InterpreterException {
+    interpreter.interpret(
+            "val data = benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")",
+            getInterpreterContext());
+    InterpreterResult result = interpreter.interpret(
+            "val table = data.flatMap(line=>line.split(\"\\\\s\")).\n" +
+            "   map(w => (w, 1)).\n" +
+            "   toTable(btenv, 'word, 'number)\n" +
+            "btenv.registerOrReplaceTable(\"wc\", table)\n" +
+            "btenv.sqlQuery(\"select word, count(1) from wc group by word\").\n" +
+            "    toDataSet[Row].print()", getInterpreterContext());
+    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+
+    String[] expectedCounts = {"(hello,3)", "(world,1)", "(flink,1)", "(hadoop,1)"};
     Arrays.sort(expectedCounts);
 
     String[] counts = output.split("\n");

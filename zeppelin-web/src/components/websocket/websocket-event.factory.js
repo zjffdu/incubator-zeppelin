@@ -41,7 +41,9 @@ function WebsocketEventFactory($rootScope, $websocket, $location, baseUrlSrv, ng
       data.ticket = '';
       data.roles = '';
     }
-    console.log('Send >> %o, %o, %o, %o, %o', data.op, data.principal, data.ticket, data.roles, data);
+    if (data.op !== 'PING') {
+      console.log('Send >> %o, %o, %o, %o, %o', data.op, data.principal, data.ticket, data.roles, data);
+    }
     return websocketCalls.ws.send(JSON.stringify(data));
   };
 
@@ -55,7 +57,9 @@ function WebsocketEventFactory($rootScope, $websocket, $location, baseUrlSrv, ng
       payload = angular.fromJson(event.data);
     }
 
-    console.log('Receive << %o, %o', payload.op, payload);
+    if (payload.op !== 'PROGRESS') {
+      console.log('Receive << %o, %o', payload.op, payload);
+    }
 
     let op = payload.op;
     let data = payload.data;

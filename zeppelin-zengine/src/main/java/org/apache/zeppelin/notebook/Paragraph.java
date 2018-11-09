@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
+import com.google.gson.internal.StringMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zeppelin.common.JsonSerializable;
 import org.apache.zeppelin.display.AngularObject;
@@ -335,11 +337,11 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
   }
 
   public boolean execute(boolean blocking) {
-    if (isBlankParagraph()) {
-      LOGGER.info("Skip to run blank paragraph. {}", getId());
-      setStatus(Job.Status.FINISHED);
-      return true;
-    }
+    //    if (isBlankParagraph()) {
+    //      LOGGER.info("Skip to run blank paragraph. {}", getId());
+    //      setStatus(Job.Status.FINISHED);
+    //      return true;
+    //    }
 
     try {
       this.interpreter = getBindedInterpreter();
@@ -363,7 +365,7 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
       }
     } catch (InterpreterNotFoundException e) {
       InterpreterResult intpResult =
-          new InterpreterResult(InterpreterResult.Code.ERROR);
+          new InterpreterResult(InterpreterResult.Code.ERROR, "");
       setReturn(intpResult, e);
       setStatus(Job.Status.ERROR);
       throw new RuntimeException(e);
@@ -567,6 +569,21 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
 
   public void setConfig(Map<String, Object> config) {
     this.config = config;
+    if (getId().equalsIgnoreCase("paragraph_1546062726396_-81435013")) {
+      if (config.containsKey("results")) {
+        StringMap results = (StringMap) config.get("results");
+        if (results.containsKey("0")) {
+          StringMap result0 = (StringMap) results.get("0");
+          if (result0.containsKey("graph")) {
+            StringMap graph = (StringMap) result0.get("graph");
+            if (graph.containsKey("groups")) {
+              List groups = (List) graph.get("groups");
+              LOGGER.info("***************groups: " + groups.size() + ", " + groups);
+            }
+          }
+        }
+      }
+    }
   }
 
   public void setReturn(InterpreterResult value, Throwable t) {
@@ -675,6 +692,21 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
     return gui;
   }
 
+  public synchronized void updateResult(int index,
+                           InterpreterResult.Type type,
+                           Map<String, String> config,
+                           String output) {
+    if (results == null) {
+      results = new InterpreterResult(Code.SUCCESS);
+    }
+    if (index == results.message().size()) {
+      results.message().add(new InterpreterResultMessage(type, output));
+    } else {
+      LOGGER.warn("Update result of index: {}, but only has {} results", index,
+              results.message().size());
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -735,5 +767,4 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
   public static Paragraph fromJson(String json) {
     return Note.getGson().fromJson(json, Paragraph.class);
   }
-
 }

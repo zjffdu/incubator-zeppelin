@@ -22,25 +22,25 @@
   <parent>
     <artifactId>zeppelin-interpreter-parent</artifactId>
     <groupId>org.apache.zeppelin</groupId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.9.0-blink-SNAPSHOT</version>
     <relativePath>../zeppelin-interpreter-parent/pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.zeppelin</groupId>
   <artifactId>zeppelin-flink</artifactId>
   <packaging>jar</packaging>
-  <version>0.9.0-SNAPSHOT</version>
+  <version>0.9.0-blink-SNAPSHOT</version>
   <name>Zeppelin: Flink</name>
   <description>Zeppelin flink support</description>
 
   <properties>
     <!--library versions-->
     <interpreter.name>flink</interpreter.name>
-    <flink.version>1.5.2</flink.version>
-    <flink.akka.version>2.3.7</flink.akka.version>
+    <flink.version>blink-3.1-SNAPSHOT</flink.version>
+    <flink.akka.version>2.4.20</flink.akka.version>
     <scala.macros.version>2.0.1</scala.macros.version>
     <scala.binary.version>2.11</scala.binary.version>
-    <scala.version>2.11.8</scala.version>
+    <scala.version>2.11.12</scala.version>
 
     <!--plugin versions-->
     <plugin.scalamaven.version>3.2.2</plugin.scalamaven.version>
@@ -51,10 +51,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
@@ -84,6 +80,12 @@
       <groupId>org.apache.flink</groupId>
       <artifactId>flink-table_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
+      <exclusions>
+          <exclusion>
+            <groupId>org.spark-project.hive</groupId>
+            <artifactId>hive-exec</artifactId>
+          </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -98,10 +100,43 @@
       <version>${flink.version}</version>
     </dependency>
 
+    <!--<dependency>-->
+      <!--<groupId>org.apache.flink</groupId>-->
+      <!--<artifactId>flink-catalog-hive</artifactId>-->
+      <!--<version>${flink.version}</version>-->
+      <!--<exclusions>-->
+        <!--<exclusion>-->
+          <!--<groupId>jline</groupId>-->
+          <!--<artifactId>jline</artifactId>-->
+        <!--</exclusion>-->
+      <!--</exclusions>-->
+    <!--</dependency>-->
+
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-streaming-java_2.11</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-streaming-scala_2.11</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-java</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>18.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
     </dependency>
 
     <dependency>
@@ -122,19 +157,46 @@
       <version>${scala.version}</version>
     </dependency>
 
+    <!--<dependency>-->
+      <!--<groupId>jline</groupId>-->
+      <!--<artifactId>jline</artifactId>-->
+      <!--<version>2.14.3</version>-->
+    <!--</dependency>-->
+
   </dependencies>
 
   <build>
     <plugins>
 
-      <!-- Scala Compiler -->
+      <plugin>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-maven-plugin</artifactId>
+        <configuration>
+          <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+          <junitxml>.</junitxml>
+          <filereports>WDF TestSuite.txt</filereports>
+        </configuration>
+        <executions>
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
-        <version>${plugin.scalamaven.version}</version>
+        <version>3.2.2</version>
         <executions>
-          <!-- Run scala compiler in the process-resources phase, so that dependencies on
-               scala classes can be resolved later in the (Java) compile phase -->
+          <execution>
+            <id>eclipse-add-source</id>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+          </execution>
           <execution>
             <id>scala-compile-first</id>
             <phase>process-resources</phase>
@@ -142,11 +204,8 @@
               <goal>compile</goal>
             </goals>
           </execution>
-
-          <!-- Run scala compiler in the process-test-resources phase, so that dependencies on
-               scala classes can be resolved later in the (Java) test-compile phase -->
           <execution>
-            <id>scala-test-compile</id>
+            <id>scala-test-compile-first</id>
             <phase>process-test-resources</phase>
             <goals>
               <goal>testCompile</goal>
@@ -154,19 +213,30 @@
           </execution>
         </executions>
         <configuration>
+          <scalaVersion>${scala.compile.version}</scalaVersion>
+          <!--<recompileMode>incremental</recompileMode>-->
+          <!--<useZincServer>true</useZincServer>-->
+          <args>
+            <arg>-unchecked</arg>
+            <arg>-deprecation</arg>
+            <arg>-feature</arg>
+          </args>
           <jvmArgs>
-            <jvmArg>-Xms128m</jvmArg>
-            <jvmArg>-Xmx512m</jvmArg>
+            <jvmArg>-Xms1024m</jvmArg>
+            <jvmArg>-Xmx1024m</jvmArg>
+            <jvmArg>-XX:PermSize=${PermGen}</jvmArg>
+            <jvmArg>-XX:MaxPermSize=${MaxPermGen}</jvmArg>
           </jvmArgs>
-          <compilerPlugins combine.children="append">
-            <compilerPlugin>
-              <groupId>org.scalamacros</groupId>
-              <artifactId>paradise_${scala.version}</artifactId>
-              <version>${scala.macros.version}</version>
-            </compilerPlugin>
-          </compilerPlugins>
+          <javacArgs>
+            <javacArg>-source</javacArg>
+            <javacArg>${java.version}</javacArg>
+            <javacArg>-target</javacArg>
+            <javacArg>${java.version}</javacArg>
+            <javacArg>-Xlint:all,-serial,-path,-options</javacArg>
+          </javacArgs>
         </configuration>
       </plugin>
+
 
       <!-- Eclipse Integration -->
       <plugin>
@@ -232,29 +302,29 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.scalastyle</groupId>
-        <artifactId>scalastyle-maven-plugin</artifactId>
-        <version>${plugin.scalastyle.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <verbose>false</verbose>
-          <failOnViolation>true</failOnViolation>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <failOnWarning>false</failOnWarning>
-          <sourceDirectory>${basedir}/src/main/scala</sourceDirectory>
-          <testSourceDirectory>${basedir}/src/test/scala</testSourceDirectory>
-          <configLocation>${project.basedir}/../_tools/scalastyle.xml</configLocation>
-          <outputFile>${project.basedir}/target/scalastyle-output.xml</outputFile>
-          <outputEncoding>UTF-8</outputEncoding>
-        </configuration>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.scalastyle</groupId>-->
+        <!--<artifactId>scalastyle-maven-plugin</artifactId>-->
+        <!--<version>${plugin.scalastyle.version}</version>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<goals>-->
+              <!--<goal>check</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+        <!--<configuration>-->
+          <!--<verbose>false</verbose>-->
+          <!--<failOnViolation>true</failOnViolation>-->
+          <!--<includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+          <!--<failOnWarning>false</failOnWarning>-->
+          <!--<sourceDirectory>${basedir}/src/main/scala</sourceDirectory>-->
+          <!--<testSourceDirectory>${basedir}/src/test/scala</testSourceDirectory>-->
+          <!--<configLocation>${project.basedir}/../_tools/scalastyle.xml</configLocation>-->
+          <!--<outputFile>${project.basedir}/target/scalastyle-output.xml</outputFile>-->
+          <!--<outputEncoding>UTF-8</outputEncoding>-->
+        <!--</configuration>-->
+      <!--</plugin>-->
 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -276,8 +346,49 @@
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
+        <version>${plugin.shade.version}</version>
+        <configuration>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>org/datanucleus/**</exclude>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+
+          <artifactSet>
+            <excludes>
+              <exclude>org.scala-lang:scala-library</exclude>
+              <exclude>org.scala-lang:scala-compiler</exclude>
+              <exclude>org.scala-lang:scala-reflect</exclude>
+              <exclude>org.apache.flink:*</exclude>
+            </excludes>
+          </artifactSet>
+
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+              <resource>reference.conf</resource>
+            </transformer>
+          </transformers>
+          <outputFile>${project.basedir}/../interpreter/${interpreter.name}/${project.artifactId}-${project.version}.jar</outputFile>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

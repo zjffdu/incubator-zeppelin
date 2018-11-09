@@ -122,7 +122,7 @@ public class RemoteInterpreterOutputTestStream extends AbstractInterpreterTest
   }
 
   @Override
-  public void onOutputUpdated(String noteId, String paragraphId, int index, InterpreterResult.Type type, String output) {
+  public void onOutputUpdated(String noteId, String paragraphId, int index, InterpreterResult.Type type, Map<String, String> config, String output) {
 
   }
 
@@ -139,6 +139,11 @@ public class RemoteInterpreterOutputTestStream extends AbstractInterpreterTest
   @Override
   public void onParaInfosReceived(String noteId, String paragraphId,
       String interpreterSettingId, Map<String, String> metaInfos) {
+  }
+
+  @Override
+  public void onUpdateParagraphConfig(String noteId, String paragraphId, Map<String, String> config) throws IOException {
+
   }
 
 }

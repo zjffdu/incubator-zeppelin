@@ -28,7 +28,8 @@ import java.util.Map;
 public interface RemoteInterpreterProcessListener {
   public void onOutputAppend(String noteId, String paragraphId, int index, String output);
   public void onOutputUpdated(
-      String noteId, String paragraphId, int index, InterpreterResult.Type type, String output);
+      String noteId, String paragraphId, int index, InterpreterResult.Type type,
+      Map<String, String> config, String output);
   public void onOutputClear(String noteId, String paragraphId);
   void runParagraphs(String noteId, List<Integer> paragraphIndices, List<String> paragraphIds,
                      String curParagraphId)
@@ -36,4 +37,8 @@ public interface RemoteInterpreterProcessListener {
 
   public void onParaInfosReceived(String noteId, String paragraphId,
                                   String interpreterSettingId, Map<String, String> metaInfos);
+
+  public void onUpdateParagraphConfig(String noteId,
+                                      String paragraphId,
+                                      Map<String, String> config) throws IOException;
 }

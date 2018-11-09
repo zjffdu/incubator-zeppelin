@@ -379,8 +379,13 @@ public class NotebookService {
     if (p == null) {
       throw new ParagraphNotFoundException(paragraphId);
     }
-    p.abort();
-    callback.onSuccess(p, context);
+    try {
+      p.abort();
+      callback.onSuccess(p, context);
+    } catch (Exception e) {
+      callback.onFailure(e, context);
+    }
+
   }
 
   public void moveParagraph(String noteId,

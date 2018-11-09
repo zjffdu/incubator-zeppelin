@@ -200,7 +200,7 @@ abstract class AbstractAngularElem(val interpreterContext: InterpreterContext,
   @ZeppelinApi
   def display(): Unit = {
     val out = interpreterContext.out
-    out.setType(InterpreterResult.Type.ANGULAR)
+    out.setTypeAndConfig(InterpreterResult.Type.ANGULAR)
     out.write(this.toString())
     out.flush()
   }

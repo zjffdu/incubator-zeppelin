@@ -1,0 +1,614 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /Users/jzhang/github/flink-ali/build-target\nflink.execution.mode local\nflink.execution.remote.host localhost\nflink.execution.remote.port 8081\n#flink.execution.jars /Users/jzhang/flink-connector-kafka-0.11_2.11-1.8.1-SNAPSHOT.jar:/Users/jzhang/flink-connector-kafka_2.11-1.8.1-SNAPSHOT.jar:/Users/jzhang/flink-connector-kafka-base_2.11-1.8.1-SNAPSHOT.jar\nflink.yarn.tm.num 3\n\nquery.proxy.ports: 9289-9989\nquery.server.ports: 9287-9987\nstate.savepoints.dir: file:///flink/save_point\ntaskmanager.numberOfTaskSlots 16\nlocal.number-taskmanager 3\nsql.exec.source.parallelism 1\nsql.exec.default-parallelism 1\nzeppelin.flink.printREPLOutput true\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 13:11:00.507",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1541748061631_1345891257",
+      "id": "paragraph_1541748061631_1345891257",
+      "dateCreated": "2018-11-09 15:21:01.631",
+      "dateStarted": "2018-12-29 13:04:44.879",
+      "dateFinished": "2018-12-29 13:04:44.895",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Batch WordCount",
+      "text": "%flink\n\n//import org.apache.flink.table.descriptors.Kafka\n\nval data \u003d benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\n\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\"))\n  .map(w \u003d\u003e (w, 1))\n  .groupBy(0)\n  .sum(1)\n  .print()\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-28 16:48:25.969",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "(flink,1)\n(hadoop,1)\n(hello,3)\n(world,1)\ndata: org.apache.flink.api.scala.DataSet[String] \u003d org.apache.flink.api.scala.DataSet@6dcd48ae\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542180894088_-1597654667",
+      "id": "paragraph_1542180894088_-1597654667",
+      "dateCreated": "2018-11-14 15:34:54.089",
+      "dateStarted": "2018-12-28 16:48:25.990",
+      "dateFinished": "2018-12-28 16:48:56.472",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Stream WordCount",
+      "text": "%flink\n\nval data \u003d senv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\"))\n  .map(w \u003d\u003e (w, 1))\n  .keyBy(0)\n  .sum(1)\n  .print\n\nsenv.execute()\n\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-28 13:40:40.217",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "(hello,1)\n(world,1)\n(hello,2)\n(flink,1)\n(hello,3)\n(hadoop,1)\ndata: org.apache.flink.streaming.api.scala.DataStream[String] \u003d org.apache.flink.streaming.api.scala.DataStream@2e099914\nres2: org.apache.flink.api.common.JobExecutionResult \u003d org.apache.flink.api.common.JobExecutionResult@8b4aa36\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1541748102781_201164988",
+      "id": "paragraph_1541748102781_201164988",
+      "dateCreated": "2018-11-09 15:21:42.781",
+      "dateStarted": "2018-12-28 13:40:40.224",
+      "dateFinished": "2018-12-28 13:40:51.565",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Batch Table WordCount",
+      "text": "%flink\n\nval data \u003d senv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\").\n    flatMap(line \u003d\u003e line.split(\"\\\\s\")).\n    map(w \u003d\u003e (w, 1))\n\nbtenv.registerOrReplaceBoundedStream(\"wc\", \n    data, \n    \u0027word,\u0027number)\n    \nbtenv.sqlQuery(\"select word, sum(number) as c from wc group by word\").print\n    \n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-28 16:17:01.628",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "hello,3\nworld,1\nhadoop,1\nflink,1\ndata: org.apache.flink.streaming.api.scala.DataStream[(String, Int)] \u003d org.apache.flink.streaming.api.scala.DataStream@50fa4f45\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542181035170_-303897117",
+      "id": "paragraph_1542181035170_-303897117",
+      "dateCreated": "2018-11-14 15:37:15.171",
+      "dateStarted": "2018-12-28 16:17:01.634",
+      "dateFinished": "2018-12-28 16:17:20.799",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n\nselect word, sum(number) as c from wc group by word  \n\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 13:12:45.817",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "word": "string",
+                      "c": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "word",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "c",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "word\tc\nworld\t1\nhello\t3\nhadoop\t1\nflink\t1\n"
+          },
+          {
+            "type": "TEXT",
+            "data": ""
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1545976569815_-1416384088",
+      "id": "paragraph_1545976569815_-1416384088",
+      "dateCreated": "2018-12-28 13:56:09.816",
+      "dateStarted": "2018-12-28 16:17:23.386",
+      "dateFinished": "2018-12-28 16:17:38.605",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\nimport org.apache.flink.streaming.api.functions.source.SourceFunction\nimport org.apache.flink.table.api.TableEnvironment\nimport org.apache.flink.streaming.api.TimeCharacteristic\nimport org.apache.flink.streaming.api.checkpoint.ListCheckpointed\nimport java.util.Collections\nimport scala.collection.JavaConversions._\n\nsenv.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)\nsenv.enableCheckpointing(1000)\n\nval data \u003d senv.addSource(new SourceFunction[(Long, String)] with ListCheckpointed[java.lang.Long] {\n\n  val pages \u003d Seq(\"home\", \"search\", \"search\", \"product\", \"product\", \"product\")\n  var count: Long \u003d 0\n  // startTime is 2018/1/1\n  var startTime: Long \u003d new java.util.Date(2018 - 1900,0,1).getTime\n  var sleepInterval \u003d 100\n  \n  override def run(ctx: SourceFunction.SourceContext[(Long, String)]): Unit \u003d {\n    val lock \u003d ctx.getCheckpointLock\n    \n    while (count \u003c 100000) {\n      lock.synchronized({\n        ctx.collect((startTime + count * sleepInterval, pages(count.toInt % pages.size)))\n        count +\u003d 1\n        Thread.sleep(sleepInterval)\n      })\n    }\n  }\n\n  override def cancel(): Unit \u003d {\n\n  }\n\n  override def snapshotState(checkpointId: Long, timestamp: Long): java.util.List[java.lang.Long] \u003d {\n    Collections.singletonList(count)\n  }\n\n  override def restoreState(state: java.util.List[java.lang.Long]): Unit \u003d {\n    state.foreach(s \u003d\u003e count \u003d s)\n  }\n\n}).assignAscendingTimestamps(_._1)\n\n\nstenv.registerOrReplaceDataStream(\"log\", data, \u0027time, \u0027url, \u0027rowtime.rowtime)\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 13:04:48.829",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "warning: there was one deprecation warning; re-run with -deprecation for details\nimport org.apache.flink.streaming.api.functions.source.SourceFunction\nimport org.apache.flink.table.api.TableEnvironment\nimport org.apache.flink.streaming.api.TimeCharacteristic\nimport org.apache.flink.streaming.api.checkpoint.ListCheckpointed\nimport java.util.Collections\nimport scala.collection.JavaConversions._\ndata: org.apache.flink.streaming.api.scala.DataStream[(Long, String)] \u003d org.apache.flink.streaming.api.scala.DataStream@51ca2bf5\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542253287025_972234736",
+      "id": "paragraph_1542253287025_972234736",
+      "dateCreated": "2018-11-15 11:41:27.025",
+      "dateStarted": "2018-12-29 13:04:48.843",
+      "dateFinished": "2018-12-29 13:05:11.276",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Total Clicks",
+      "text": "%flink.ssql(type\u003dsingle, refreshInterval\u003d3000, template\u003d\u003ch1\u003e{}\u003c/h1\u003e, enableSavePoint\u003dtrue, runWithSavePoint\u003dtrue)\n\nselect count(1) from log",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 09:38:12.307",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true,
+        "savepointPath": "file:/flink/save_point/savepoint-bbda8a-c051d2ad1da0"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch1\u003e70757\u003c/h1\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1545978279086_1976146521",
+      "id": "paragraph_1545978279086_1976146521",
+      "dateCreated": "2018-12-28 14:24:39.087",
+      "dateStarted": "2018-12-29 09:38:12.312",
+      "dateFinished": "2018-12-29 10:07:48.386",
+      "status": "ABORT",
+      "errorMessage": "org.apache.thrift.transport.TTransportException\n\tat org.apache.thrift.transport.TIOStreamTransport.read(TIOStreamTransport.java:132)\n\tat org.apache.thrift.transport.TTransport.readAll(TTransport.java:86)\n\tat org.apache.thrift.protocol.TBinaryProtocol.readAll(TBinaryProtocol.java:429)\n\tat org.apache.thrift.protocol.TBinaryProtocol.readI32(TBinaryProtocol.java:318)\n\tat org.apache.thrift.protocol.TBinaryProtocol.readMessageBegin(TBinaryProtocol.java:219)\n\tat org.apache.thrift.TServiceClient.receiveBase(TServiceClient.java:77)\n\tat org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService$Client.recv_interpret(RemoteInterpreterService.java:254)\n\tat org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService$Client.interpret(RemoteInterpreterService.java:238)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter$4.call(RemoteInterpreter.java:222)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter$4.call(RemoteInterpreter.java:218)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess.callRemoteFunction(RemoteInterpreterProcess.java:118)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.interpret(RemoteInterpreter.java:217)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:432)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:75)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.RemoteScheduler$JobRunner.run(RemoteScheduler.java:187)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n"
+    },
+    {
+      "title": "Clicks Per Page",
+      "text": "%flink.ssql(refreshInterval\u003d2000,  enableSavePoint\u003dtrue,  runWithSavePoint\u003dfalse)\n\nselect \n    url, \n    count(1) as pv\nfrom log \n    group by url\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 13:12:45.848",
+      "config": {
+        "savepointPath": "file:/flink/save_point/savepoint-1f264d-98b6095fa35c",
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "url": "string",
+                      "pv": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {},
+              "keys": [],
+              "groups": [],
+              "values": []
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": ""
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1544754494812_-649566263",
+      "id": "paragraph_1544754494812_-649566263",
+      "dateCreated": "2018-12-14 10:28:14.812",
+      "dateStarted": "2018-12-29 13:05:45.822",
+      "dateFinished": "2018-12-29 13:11:28.340",
+      "status": "ABORT",
+      "errorMessage": "org.apache.thrift.transport.TTransportException\n\tat org.apache.thrift.transport.TIOStreamTransport.read(TIOStreamTransport.java:132)\n\tat org.apache.thrift.transport.TTransport.readAll(TTransport.java:86)\n\tat org.apache.thrift.protocol.TBinaryProtocol.readAll(TBinaryProtocol.java:429)\n\tat org.apache.thrift.protocol.TBinaryProtocol.readI32(TBinaryProtocol.java:318)\n\tat org.apache.thrift.protocol.TBinaryProtocol.readMessageBegin(TBinaryProtocol.java:219)\n\tat org.apache.thrift.TServiceClient.receiveBase(TServiceClient.java:77)\n\tat org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService$Client.recv_interpret(RemoteInterpreterService.java:254)\n\tat org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService$Client.interpret(RemoteInterpreterService.java:238)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter$4.call(RemoteInterpreter.java:222)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter$4.call(RemoteInterpreter.java:218)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess.callRemoteFunction(RemoteInterpreterProcess.java:118)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.interpret(RemoteInterpreter.java:217)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:432)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:75)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.RemoteScheduler$JobRunner.run(RemoteScheduler.java:187)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n"
+    },
+    {
+      "text": "%flink.ssql(type\u003dts, refreshInterval\u003d2000, enableSavePoint\u003dfalse, runWithSavePoint\u003dfalse)\n\nselect\n    TUMBLE_START(rowtime, INTERVAL \u00272\u0027 SECOND) as start_time,\n    url, \n    count(1) as pv\nfrom log \n    group by TUMBLE(rowtime, INTERVAL \u00272\u0027 SECOND), url\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 13:12:45.898",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "lineChart",
+              "height": 300.0,
+              "optionOpen": true,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "start_time": "string",
+                      "url": "string",
+                      "pv": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "lineChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "start_time",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "url",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "start_time\turl\tpv\n2018-01-01 00:00:00.0\thome\t4\n2018-01-01 00:00:00.0\tsearch\t7\n2018-01-01 00:00:00.0\tproduct\t9\n2018-01-01 00:00:02.0\tsearch\t7\n2018-01-01 00:00:02.0\thome\t3\n2018-01-01 00:00:02.0\tproduct\t10\n2018-01-01 00:00:04.0\tproduct\t11\n2018-01-01 00:00:04.0\tsearch\t6\n2018-01-01 00:00:04.0\thome\t3\n2018-01-01 00:00:06.0\thome\t4\n2018-01-01 00:00:06.0\tsearch\t7\n2018-01-01 00:00:06.0\tproduct\t9\n2018-01-01 00:00:08.0\tsearch\t7\n2018-01-01 00:00:08.0\thome\t3\n2018-01-01 00:00:08.0\tproduct\t10\n2018-01-01 00:00:10.0\tproduct\t11\n2018-01-01 00:00:10.0\thome\t3\n2018-01-01 00:00:10.0\tsearch\t6\n2018-01-01 00:00:12.0\tsearch\t7\n2018-01-01 00:00:12.0\tproduct\t9\n2018-01-01 00:00:12.0\thome\t4\n2018-01-01 00:00:14.0\tproduct\t10\n2018-01-01 00:00:14.0\tsearch\t7\n2018-01-01 00:00:14.0\thome\t3\n2018-01-01 00:00:16.0\tproduct\t11\n2018-01-01 00:00:16.0\tsearch\t6\n2018-01-01 00:00:16.0\thome\t3\n2018-01-01 00:00:18.0\thome\t4\n2018-01-01 00:00:18.0\tsearch\t7\n2018-01-01 00:00:18.0\tproduct\t9\n2018-01-01 00:00:20.0\tproduct\t10\n2018-01-01 00:00:20.0\thome\t3\n2018-01-01 00:00:20.0\tsearch\t7\n2018-01-01 00:00:22.0\thome\t3\n2018-01-01 00:00:22.0\tproduct\t11\n2018-01-01 00:00:22.0\tsearch\t6\n2018-01-01 00:00:24.0\thome\t4\n2018-01-01 00:00:24.0\tsearch\t7\n2018-01-01 00:00:24.0\tproduct\t9\n2018-01-01 00:00:26.0\tsearch\t7\n2018-01-01 00:00:26.0\tproduct\t10\n2018-01-01 00:00:26.0\thome\t3\n2018-01-01 00:00:28.0\tsearch\t6\n2018-01-01 00:00:28.0\thome\t3\n2018-01-01 00:00:28.0\tproduct\t11\n2018-01-01 00:00:30.0\thome\t4\n2018-01-01 00:00:30.0\tproduct\t9\n2018-01-01 00:00:30.0\tsearch\t7\n2018-01-01 00:00:32.0\tsearch\t7\n2018-01-01 00:00:32.0\tproduct\t10\n2018-01-01 00:00:32.0\thome\t3\n2018-01-01 00:00:34.0\tsearch\t6\n2018-01-01 00:00:34.0\thome\t3\n2018-01-01 00:00:34.0\tproduct\t11\n2018-01-01 00:00:36.0\tproduct\t9\n2018-01-01 00:00:36.0\tsearch\t7\n2018-01-01 00:00:36.0\thome\t4\n2018-01-01 00:00:38.0\tsearch\t7\n2018-01-01 00:00:38.0\thome\t3\n2018-01-01 00:00:38.0\tproduct\t10\n2018-01-01 00:00:40.0\tproduct\t11\n2018-01-01 00:00:40.0\tsearch\t6\n2018-01-01 00:00:40.0\thome\t3\n2018-01-01 00:00:42.0\thome\t4\n2018-01-01 00:00:42.0\tsearch\t7\n2018-01-01 00:00:42.0\tproduct\t9\n2018-01-01 00:00:44.0\tproduct\t10\n2018-01-01 00:00:44.0\thome\t3\n2018-01-01 00:00:44.0\tsearch\t7\n2018-01-01 00:00:46.0\thome\t3\n2018-01-01 00:00:46.0\tproduct\t11\n2018-01-01 00:00:46.0\tsearch\t6\n2018-01-01 00:00:48.0\thome\t4\n2018-01-01 00:00:48.0\tproduct\t9\n2018-01-01 00:00:48.0\tsearch\t7\n2018-01-01 00:00:50.0\tsearch\t7\n2018-01-01 00:00:50.0\tproduct\t10\n2018-01-01 00:00:50.0\thome\t3\n2018-01-01 00:00:52.0\tsearch\t6\n2018-01-01 00:00:52.0\thome\t3\n2018-01-01 00:00:52.0\tproduct\t11\n2018-01-01 00:00:54.0\thome\t4\n2018-01-01 00:00:54.0\tproduct\t9\n2018-01-01 00:00:54.0\tsearch\t7\n2018-01-01 00:00:56.0\tsearch\t7\n2018-01-01 00:00:56.0\tproduct\t10\n2018-01-01 00:00:56.0\thome\t3\n2018-01-01 00:00:58.0\thome\t3\n2018-01-01 00:00:58.0\tsearch\t6\n2018-01-01 00:00:58.0\tproduct\t11\n2018-01-01 00:01:00.0\thome\t4\n2018-01-01 00:01:00.0\tsearch\t7\n2018-01-01 00:01:00.0\tproduct\t9\n2018-01-01 00:01:02.0\tsearch\t7\n2018-01-01 00:01:02.0\tproduct\t10\n2018-01-01 00:01:02.0\thome\t3\n2018-01-01 00:01:04.0\tproduct\t11\n2018-01-01 00:01:04.0\thome\t3\n2018-01-01 00:01:04.0\tsearch\t6\n2018-01-01 00:01:06.0\tsearch\t7\n2018-01-01 00:01:06.0\tproduct\t9\n2018-01-01 00:01:06.0\thome\t4\n2018-01-01 00:01:08.0\tproduct\t10\n2018-01-01 00:01:08.0\tsearch\t7\n2018-01-01 00:01:08.0\thome\t3\n2018-01-01 00:01:10.0\thome\t3\n2018-01-01 00:01:10.0\tsearch\t6\n2018-01-01 00:01:10.0\tproduct\t11\n2018-01-01 00:01:12.0\thome\t4\n2018-01-01 00:01:12.0\tsearch\t7\n2018-01-01 00:01:12.0\tproduct\t9\n2018-01-01 00:01:14.0\tproduct\t10\n2018-01-01 00:01:14.0\thome\t3\n2018-01-01 00:01:14.0\tsearch\t7\n2018-01-01 00:01:16.0\thome\t3\n2018-01-01 00:01:16.0\tproduct\t11\n2018-01-01 00:01:16.0\tsearch\t6\n2018-01-01 00:01:18.0\thome\t4\n2018-01-01 00:01:18.0\tproduct\t9\n2018-01-01 00:01:18.0\tsearch\t7\n2018-01-01 00:01:20.0\tsearch\t7\n2018-01-01 00:01:20.0\tproduct\t10\n2018-01-01 00:01:20.0\thome\t3\n2018-01-01 00:01:22.0\tproduct\t11\n2018-01-01 00:01:22.0\thome\t3\n2018-01-01 00:01:22.0\tsearch\t6\n2018-01-01 00:01:24.0\tproduct\t9\n2018-01-01 00:01:24.0\tsearch\t7\n2018-01-01 00:01:24.0\thome\t4\n2018-01-01 00:01:26.0\tsearch\t7\n2018-01-01 00:01:26.0\thome\t3\n2018-01-01 00:01:26.0\tproduct\t10\n2018-01-01 00:01:28.0\tproduct\t11\n2018-01-01 00:01:28.0\tsearch\t6\n2018-01-01 00:01:28.0\thome\t3\n2018-01-01 00:01:30.0\thome\t4\n2018-01-01 00:01:30.0\tproduct\t9\n2018-01-01 00:01:30.0\tsearch\t7\n2018-01-01 00:01:32.0\tsearch\t7\n2018-01-01 00:01:32.0\tproduct\t10\n2018-01-01 00:01:32.0\thome\t3\n2018-01-01 00:01:34.0\tsearch\t6\n2018-01-01 00:01:34.0\thome\t3\n2018-01-01 00:01:34.0\tproduct\t11\n2018-01-01 00:01:36.0\thome\t4\n2018-01-01 00:01:36.0\tsearch\t7\n2018-01-01 00:01:36.0\tproduct\t9\n2018-01-01 00:01:38.0\thome\t3\n2018-01-01 00:01:38.0\tproduct\t10\n2018-01-01 00:01:38.0\tsearch\t7\n2018-01-01 00:01:40.0\tsearch\t6\n2018-01-01 00:01:40.0\thome\t3\n2018-01-01 00:01:40.0\tproduct\t11\n2018-01-01 00:01:42.0\thome\t4\n2018-01-01 00:01:42.0\tsearch\t7\n2018-01-01 00:01:42.0\tproduct\t9\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1545989579749_375755675",
+      "id": "paragraph_1545989579749_375755675",
+      "dateCreated": "2018-12-28 17:32:59.749",
+      "dateStarted": "2018-12-29 13:08:19.452",
+      "dateFinished": "2018-12-29 13:10:34.671",
+      "status": "ABORT"
+    },
+    {
+      "text": "%flink.ssql(type\u003dts, refreshInterval\u003d5000, enableSavePoint\u003dfalse, runWithSavePoint\u003dfalse)\n\nselect\n    TUMBLE_START(rowtime, INTERVAL \u00272\u0027 SECOND) as start_time,\n    url, \n    count(1) as pv\nfrom log \n    group by TUMBLE(rowtime, INTERVAL \u00272\u0027 SECOND), url",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 13:12:45.971",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "lineChart",
+              "height": 300.0,
+              "optionOpen": true,
+              "setting": {
+                "lineChart": {
+                  "xLabelStatus": "default",
+                  "rotate": {
+                    "degree": "-45"
+                  }
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "start_time",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [
+                {
+                  "name": "url",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "pv",
+                  "index": 2.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "start_time\turl\tpv\n2018-01-01 00:00:00.0\thome\t4\n2018-01-01 00:00:00.0\tsearch\t7\n2018-01-01 00:00:00.0\tproduct\t9\n2018-01-01 00:00:02.0\tsearch\t7\n2018-01-01 00:00:02.0\thome\t3\n2018-01-01 00:00:02.0\tproduct\t10\n2018-01-01 00:00:04.0\tproduct\t11\n2018-01-01 00:00:04.0\tsearch\t6\n2018-01-01 00:00:04.0\thome\t3\n2018-01-01 00:00:06.0\thome\t4\n2018-01-01 00:00:06.0\tsearch\t7\n2018-01-01 00:00:06.0\tproduct\t9\n2018-01-01 00:00:08.0\tsearch\t7\n2018-01-01 00:00:08.0\thome\t3\n2018-01-01 00:00:08.0\tproduct\t10\n2018-01-01 00:00:10.0\tproduct\t11\n2018-01-01 00:00:10.0\thome\t3\n2018-01-01 00:00:10.0\tsearch\t6\n2018-01-01 00:00:12.0\thome\t4\n2018-01-01 00:00:12.0\tsearch\t7\n2018-01-01 00:00:12.0\tproduct\t9\n2018-01-01 00:00:14.0\thome\t3\n2018-01-01 00:00:14.0\tproduct\t10\n2018-01-01 00:00:14.0\tsearch\t7\n2018-01-01 00:00:16.0\tproduct\t11\n2018-01-01 00:00:16.0\thome\t3\n2018-01-01 00:00:16.0\tsearch\t6\n2018-01-01 00:00:18.0\tproduct\t9\n2018-01-01 00:00:18.0\tsearch\t7\n2018-01-01 00:00:18.0\thome\t4\n2018-01-01 00:00:20.0\tsearch\t7\n2018-01-01 00:00:20.0\tproduct\t10\n2018-01-01 00:00:20.0\thome\t3\n2018-01-01 00:00:22.0\tsearch\t6\n2018-01-01 00:00:22.0\thome\t3\n2018-01-01 00:00:22.0\tproduct\t11\n2018-01-01 00:00:24.0\tproduct\t9\n2018-01-01 00:00:24.0\tsearch\t7\n2018-01-01 00:00:24.0\thome\t4\n2018-01-01 00:00:26.0\tsearch\t7\n2018-01-01 00:00:26.0\tproduct\t10\n2018-01-01 00:00:26.0\thome\t3\n2018-01-01 00:00:28.0\thome\t3\n2018-01-01 00:00:28.0\tproduct\t11\n2018-01-01 00:00:28.0\tsearch\t6\n2018-01-01 00:00:30.0\thome\t4\n2018-01-01 00:00:30.0\tproduct\t9\n2018-01-01 00:00:30.0\tsearch\t7\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546007659587_1486798346",
+      "id": "paragraph_1546007659587_1486798346",
+      "dateCreated": "2018-12-28 22:34:19.587",
+      "dateStarted": "2018-12-29 11:40:00.567",
+      "dateFinished": "2018-12-29 11:40:57.721",
+      "status": "ABORT"
+    },
+    {
+      "text": "%flink.ssql\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-29 09:21:27.092",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546046487092_551743319",
+      "id": "paragraph_1546046487092_551743319",
+      "dateCreated": "2018-12-29 09:21:27.092",
+      "status": "READY"
+    }
+  ],
+  "name": "Flink_Tutorial",
+  "id": "2DXQMS9M8",
+  "defaultInterpreterGroup": "spark",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

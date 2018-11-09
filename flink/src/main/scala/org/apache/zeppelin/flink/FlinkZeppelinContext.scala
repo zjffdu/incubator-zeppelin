@@ -43,7 +43,8 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   private val interpreterClassMap = Map(
     "flink" -> "org.apache.zeppelin.flink.FlinkInterpreter",
-    "sql" -> "org.apache.zeppelin.flink.FlinkSqlInterpreter"
+    "bsql" -> "org.apache.zeppelin.flink.FlinkBatchSqlInterpreter",
+    "ssql" -> "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter"
   )
 
   private val supportedClasses = Seq(classOf[DataSet[_]])
@@ -56,9 +57,9 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   override def showData(obj: Any): String = {
     def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getColumnNames
+      val columnNames: Array[String] = table.getSchema.getFieldNames
       val dsRow: DataSet[Row] = btenv.toDataSet[Row](table)
-      val builder: StringBuilder = new StringBuilder("%table ")
+      val builder = new StringBuilder("%table\n")
       builder.append(columnNames.mkString("\t"))
       builder.append("\n")
       val rows = dsRow.first(maxResult).collect()

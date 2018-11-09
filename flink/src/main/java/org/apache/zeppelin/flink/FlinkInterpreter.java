@@ -17,7 +17,8 @@
 
 package org.apache.zeppelin.flink;
 
-import org.apache.flink.api.scala.ExecutionEnvironment;
+import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
+import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -44,7 +45,7 @@ public class FlinkInterpreter extends Interpreter {
 
     // bind ZeppelinContext
     int maxRow = Integer.parseInt(getProperty("zeppelin.flink.maxResult", "1000"));
-    this.z = new FlinkZeppelinContext(innerIntp.getBatchTableEnviroment(),
+    this.z = new FlinkZeppelinContext(innerIntp.getBatchTableEnvironment(),
         getInterpreterGroup().getInterpreterHookRegistry(), maxRow);
     List<String> modifiers = new ArrayList<>();
     modifiers.add("@transient");
@@ -67,12 +68,12 @@ public class FlinkInterpreter extends Interpreter {
 
   @Override
   public void cancel(InterpreterContext context) throws InterpreterException {
-
+    this.innerIntp.cancel(context);
   }
 
   @Override
   public FormType getFormType() throws InterpreterException {
-    return FormType.NATIVE;
+    return FormType.SIMPLE;
   }
 
   @Override
@@ -92,8 +93,16 @@ public class FlinkInterpreter extends Interpreter {
     return this.innerIntp;
   }
 
-  ExecutionEnvironment getExecutionEnviroment() {
-    return this.innerIntp.getExecutionEnviroment();
+  StreamExecutionEnvironment getStreamExecutionEnvironment() {
+    return this.innerIntp.getStreamExecutionEnvironment();
+  }
+
+  StreamTableEnvironment getStreamTableEnvironment() {
+    return this.innerIntp.getStreamTableEnvionment();
+  }
+
+  JobManager getJobManager() {
+    return this.innerIntp.getJobManager();
   }
 
   FlinkZeppelinContext getZeppelinContext() {

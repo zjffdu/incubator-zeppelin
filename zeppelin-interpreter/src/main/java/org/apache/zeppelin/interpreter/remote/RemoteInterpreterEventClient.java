@@ -260,8 +260,21 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
     }
   }
 
+  public synchronized void updateParagraphConfig(String noteId,
+                                                 String paragraphId,
+                                                 Map<String, String> config) {
+    try {
+      intpEventServiceClient.updateParagraphConfig(noteId, paragraphId, config);
+    } catch (TException e) {
+      LOGGER.warn("Fail to updateParagraphConfig for noteId: " + noteId +
+              ", paragraphId: " + paragraphId + ", config: " + config, e);
+    }
+  }
+
   public synchronized void onAppOutputAppend(
       String noteId, String paragraphId, int index, String appId, String output) {
+    LOGGER.debug("AppendOutput for paragraph: " + paragraphId + ", index: " + index +
+            ", output: " + output);
     AppOutputAppendEvent event =
         new AppOutputAppendEvent(noteId, paragraphId, appId, index, output);
     try {
@@ -296,6 +309,7 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
 
   public synchronized void onParaInfosReceived(Map<String, String> infos) {
     try {
+      LOGGER.debug("Send paragraphInfos: " + infos);
       intpEventServiceClient.sendParagraphInfo(intpGroupId, gson.toJson(infos));
     } catch (TException e) {
       LOGGER.warn("Fail to onParaInfosReceived: " + infos, e);

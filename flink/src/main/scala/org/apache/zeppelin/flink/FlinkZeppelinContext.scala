@@ -28,8 +28,7 @@ import org.apache.flink.types.Row
 import org.apache.zeppelin.annotation.ZeppelinApi
 import org.apache.zeppelin.display.AngularObjectWatcher
 import org.apache.zeppelin.display.ui.OptionInput.ParamOption
-import org.apache.zeppelin.interpreter.{BaseZeppelinContext, InterpreterContext,
-  InterpreterHookRegistry}
+import org.apache.zeppelin.interpreter.{BaseZeppelinContext, InterpreterContext, InterpreterHookRegistry, ResultMessages}
 
 import scala.collection.{JavaConversions, Seq}
 
@@ -43,7 +42,8 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   private val interpreterClassMap = Map(
     "flink" -> "org.apache.zeppelin.flink.FlinkInterpreter",
-    "sql" -> "org.apache.zeppelin.flink.FlinkSqlInterpreter"
+    "bsql" -> "org.apache.zeppelin.flink.FlinkBatchSqlInterpreter",
+    "ssql" -> "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter"
   )
 
   private val supportedClasses = Seq(classOf[DataSet[_]])
@@ -56,12 +56,12 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   override def showData(obj: Any): String = {
     def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getColumnNames
+      val columnNames: Array[String] = table.getSchema.getFieldNames
       val dsRow: DataSet[Row] = btenv.toDataSet[Row](table)
-      val builder: StringBuilder = new StringBuilder("%table ")
+      val builder = new StringBuilder("%table\n")
       builder.append(columnNames.mkString("\t"))
       builder.append("\n")
-      val rows = dsRow.first(maxResult).collect()
+      val rows = dsRow.first(maxResult + 1).collect()
       for (row <- rows) {
         var i = 0;
         while (i < row.getArity) {
@@ -72,6 +72,11 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
           }
         }
         builder.append("\n")
+      }
+      if (rows.size > maxResult) {
+        builder.append("\n")
+        builder.append(ResultMessages.getExceedsLimitRowsMessage(maxResult,
+          "zeppelin.flink.maxResult"))
       }
       // append %text at the end, otherwise the following output will be put in table as well.
       builder.append("\n%text ")

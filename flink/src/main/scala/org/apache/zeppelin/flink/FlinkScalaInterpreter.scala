@@ -18,21 +18,26 @@
 
 package org.apache.zeppelin.flink
 
-import java.io.BufferedReader
+import java.io.{BufferedReader, File}
 import java.nio.file.Files
+import java.util
 import java.util.Properties
+import java.util.concurrent.TimeUnit
 
+import org.apache.flink.api.common.{JobExecutionResult, JobID}
+import org.apache.flink.api.java.JobListener
 import org.apache.flink.api.scala.FlinkShell._
 import org.apache.flink.api.scala.{ExecutionEnvironment, FlinkILoop}
 import org.apache.flink.client.program.ClusterClient
 import org.apache.flink.configuration.GlobalConfiguration
-import org.apache.flink.runtime.minicluster.{MiniCluster, StandaloneMiniCluster}
+import org.apache.flink.runtime.minicluster.MiniCluster
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.table.api.TableEnvironment
 import org.apache.flink.table.api.scala.{BatchTableEnvironment, StreamTableEnvironment}
+import org.apache.hadoop.util.VersionInfo
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion
 import org.apache.zeppelin.interpreter.util.InterpreterOutputStream
-import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
+import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterException, InterpreterHookRegistry, InterpreterResult}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConverters._
@@ -45,8 +50,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
   lazy val LOGGER: Logger = LoggerFactory.getLogger(getClass)
 
   private var flinkILoop: FlinkILoop = _
-  private var cluster: Option[Either[Either[StandaloneMiniCluster, MiniCluster],
-    ClusterClient[_]]] = _
+  private var cluster: Option[Either[MiniCluster, ClusterClient[_]]] = _
   private var scalaCompleter: ScalaCompleter = _
   private val interpreterOutput = new InterpreterOutputStream(LOGGER)
 
@@ -55,25 +59,101 @@ class FlinkScalaInterpreter(val properties: Properties) {
   private var btenv: BatchTableEnvironment = _
   private var stenv: StreamTableEnvironment = _
   private var z: FlinkZeppelinContext = _
+  private var jmWebUrl: String = _
+  private var jobManager: JobManager = _
 
   def open(): Unit = {
     var config = Config(executionMode = ExecutionMode.withName(
       properties.getProperty("flink.execution.mode", "LOCAL").toUpperCase))
-    val containerNum = Integer.parseInt(properties.getProperty("flink.yarn.num_container", "1"))
-    config = config.copy(yarnConfig =
-      Some(ensureYarnConfig(config).copy(containers = Some(containerNum))))
+
+    if (properties.containsKey("flink.yarn.jm.memory")) {
+      val jmMemory = properties.getProperty("flink.yarn.jm.memory")
+      config = config.copy(yarnConfig =
+        Some(ensureYarnConfig(config)
+          .copy(jobManagerMemory = Some(jmMemory))))
+    }
+    if (properties.containsKey("flink.yarn.tm.memory")) {
+      val tmMemory = properties.getProperty("flink.yarn.tm.memory")
+      config = config.copy(yarnConfig =
+        Some(ensureYarnConfig(config)
+          .copy(taskManagerMemory = Some(tmMemory))))
+    }
+    if (properties.containsKey("flink.yarn.tm.num")) {
+      val tmNum = Integer.parseInt(properties.getProperty("flink.yarn.tm.num"))
+      config = config.copy(yarnConfig =
+        Some(ensureYarnConfig(config)
+          .copy(containers = Some(tmNum))))
+    }
+    if (properties.containsKey("flink.yarn.appName")) {
+      val appName = properties.getProperty("flink.yarn.appName")
+      config = config.copy(yarnConfig =
+        Some(ensureYarnConfig(config)
+          .copy(name = Some(appName))))
+    }
+    if (properties.containsKey("flink.yarn.tm.slot")) {
+      val slotNum = Integer.parseInt(properties.getProperty("flink.yarn.tm.slot"))
+      config = config.copy(yarnConfig =
+        Some(ensureYarnConfig(config)
+          .copy(slots = Some(slotNum))))
+    }
+    if (properties.containsKey("flink.yarn.queue")) {
+      val queue = (properties.getProperty("flink.yarn.queue"))
+      config = config.copy(yarnConfig =
+        Some(ensureYarnConfig(config)
+          .copy(queue = Some(queue))))
+    }
+
     val configuration = GlobalConfiguration.loadConfiguration(System.getenv("FLINK_CONF_DIR"))
-    val replOut = new JPrintWriter(interpreterOutput, true)
+    val userJars = getUserJars
+    config = config.copy(externalJars = Some(userJars.toArray))
+    configuration.setString("flink.yarn.jars", userJars.mkString(":"))
+
+    // load other configuration from interpreter properties
+    properties.asScala.foreach(entry => configuration.setString(entry._1, entry._2))
+
+    if (config.executionMode == ExecutionMode.REMOTE) {
+      val host = properties.getProperty("flink.execution.remote.host")
+      val port = properties.getProperty("flink.execution.remote.port")
+      if (host == null) {
+        throw new InterpreterException("flink.execution.remote.host is not " +
+          "specified when using REMOTE mode")
+      }
+      if (port == null) {
+        throw new InterpreterException("flink.execution.remote.port is not " +
+          "specified when using REMOTE mode")
+      }
+      config = config.copy(host = Some(host))
+          .copy(port = Some(Integer.parseInt(port)))
+    }
+
+    val printReplOutput = properties.getProperty("zeppelin.flink.printREPLOutput", "true").toBoolean
+    val replOut = if (printReplOutput) {
+      new JPrintWriter(interpreterOutput, true)
+    } else {
+      new JPrintWriter(Console.out, true)
+    }
 
     val (iLoop, cluster) = try {
       val (host, port, cluster) = fetchConnectionInfo(configuration, config)
       val conf = cluster match {
-        case Some(Left(Left(miniCluster))) => miniCluster.getConfiguration
-        case Some(Left(Right(_))) => configuration
-        case Some(Right(yarnCluster)) => yarnCluster.getFlinkConfiguration
-        case None => configuration
+        case Some(Left(_)) =>
+          // local mode
+          this.jmWebUrl = "http://localhost:" + port
+          configuration
+        case Some(Right(yarnCluster)) =>
+          // yarn mode
+          this.jmWebUrl = yarnCluster.getWebInterfaceURL
+          LOGGER.info("JobManager WebUrl: " + this.jmWebUrl)
+          yarnCluster.getFlinkConfiguration
+        case None =>
+          // remote mode
+          this.jmWebUrl = "http://" + host + ":" + port
+          configuration
+
       }
       LOGGER.info(s"\nConnecting to Flink cluster (host: $host, port: $port).\n")
+      LOGGER.info("externalJars: " +
+        config.externalJars.getOrElse(Array.empty[String]).mkString(":"))
       val repl = new FlinkILoop(host, port, conf, config.externalJars, None, replOut)
 
       (repl, cluster)
@@ -88,6 +168,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     val settings = new Settings()
     settings.usejavacp.value = true
     settings.Yreplsync.value = true
+    settings.classpath.value = getUserJars.mkString(File.pathSeparator)
 
     val outputDir = Files.createTempDirectory("flink-repl");
     val interpArguments = List(
@@ -106,11 +187,14 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
     flinkILoop.in = reader
     flinkILoop.initializeSynchronous()
-    callMethod(flinkILoop, "scala$tools$nsc$interpreter$ILoop$$loopPostInit")
+    flinkILoop.intp.setContextClassLoader()
+    reader.postInit()
     this.scalaCompleter = reader.completion.completer()
 
     this.benv = flinkILoop.scalaBenv
     this.senv = flinkILoop.scalaSenv
+    this.benv.setSessionTimeout(300 * 1000)
+
     this.btenv = TableEnvironment.getTableEnvironment(this.benv)
     this.stenv = TableEnvironment.getTableEnvironment(this.senv)
     bind("btenv", btenv.getClass.getCanonicalName, btenv, List("@transient"))
@@ -121,6 +205,57 @@ class FlinkScalaInterpreter(val properties: Properties) {
       this.benv.getConfig.disableSysoutLogging()
       this.senv.getConfig.disableSysoutLogging()
     }
+
+    flinkILoop.interpret("import org.apache.flink.api.scala._")
+    flinkILoop.interpret("import org.apache.flink.table.api.scala._")
+    flinkILoop.interpret("import org.apache.flink.types.Row")
+
+    this.z = new FlinkZeppelinContext(this.btenv, new InterpreterHookRegistry(), 1000)
+    this.jobManager = new JobManager(this.benv, this.senv, this.z)
+
+    val jobListener = new JobListener {
+      override def onJobSubmitted(jobId: JobID): Unit = {
+        LOGGER.info("Job {} is submitted", jobId)
+        if (InterpreterContext.get() == null) {
+          LOGGER.warn("Unable to associate this job {}, as InterpreterContext is null", jobId)
+        } else {
+          jobManager.addJob(InterpreterContext.get().getParagraphId, jobId)
+          if (jmWebUrl != null) {
+            buildFlinkJobUrl(jobId, InterpreterContext.get())
+          }
+        }
+      }
+
+      private def buildFlinkJobUrl(jobId: JobID, context: InterpreterContext) {
+        var jobUrl: String = jmWebUrl + "#/jobs/" + jobId
+        val version: String = VersionInfo.getVersion
+        val infos: util.Map[String, String] = new util.HashMap[String, String]
+        infos.put("jobUrl", jobUrl)
+        infos.put("label", "FLINK JOB")
+        infos.put("tooltip", "View in Flink web UI")
+        infos.put("noteId", context.getNoteId)
+        infos.put("paraId", context.getParagraphId)
+        context.getIntpEventClient.onParaInfosReceived(infos)
+      }
+
+      override def onJobExecuted(jobExecutionResult: JobExecutionResult): Unit = {
+        LOGGER.info("Job {} is executed with time {} seconds", jobExecutionResult.getJobID,
+          jobExecutionResult.getNetRuntime(TimeUnit.SECONDS))
+        if (InterpreterContext.get() != null) {
+          jobManager.remoteJob(InterpreterContext.get().getParagraphId)
+        } else {
+          LOGGER.warn("Unable to remove this job {}, as InterpreterContext is null",
+            jobExecutionResult.getJobID)
+        }
+      }
+
+      override def onJobCanceled(jobID: JobID, savepointPath : String): Unit = {
+        LOGGER.info("Job {} is canceled", jobID)
+      }
+    }
+
+    this.benv.addJobListener(jobListener)
+    this.senv.addJobListener(jobListener)
   }
 
   // for use in java side
@@ -145,7 +280,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
   protected def completion(buf: String,
                            cursor: Int,
                            context: InterpreterContext): java.util.List[InterpreterCompletion] = {
-    val completions = scalaCompleter.complete(buf, cursor).candidates
+    val completions = scalaCompleter.complete(buf.substring(0, cursor), cursor).candidates
       .map(e => new InterpreterCompletion(e, e, null))
     scala.collection.JavaConversions.seqAsJavaList(completions)
   }
@@ -170,6 +305,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
   }
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
+    this.z.setInterpreterContext(context)
 
     val originalOut = System.out
 
@@ -207,20 +343,21 @@ class FlinkScalaInterpreter(val properties: Properties) {
     new InterpreterResult(lastStatus)
   }
 
+  def cancel(context: InterpreterContext): Unit = {
+    jobManager.cancelJob(context)
+  }
+
   def close(): Unit = {
     if (flinkILoop != null) {
       flinkILoop.close()
     }
     if (cluster != null) {
       cluster match {
-        case Some(Left(Left(legacyMiniCluster))) =>
-          LOGGER.info("Shutdown LegacyMiniCluster")
-          legacyMiniCluster.close()
-        case Some(Left(Right(newMiniCluster))) =>
-          LOGGER.info("Shutdown NewMiniCluster")
-          newMiniCluster.close()
+        case Some(Left(miniCluster)) =>
+          LOGGER.info("Close MiniCluster")
+          miniCluster.close()
         case Some(Right(yarnCluster)) =>
-          LOGGER.info("Shutdown YarnCluster")
+          LOGGER.info("Shutdown Yarn Cluster")
           yarnCluster.shutDownCluster()
           yarnCluster.shutdown()
         case e =>
@@ -229,10 +366,34 @@ class FlinkScalaInterpreter(val properties: Properties) {
     }
   }
 
-  def getExecutionEnviroment(): ExecutionEnvironment = this.benv
+  def getExecutionEnvironment(): ExecutionEnvironment = this.benv
 
-  def getStreamingExecutionEnviroment(): StreamExecutionEnvironment = this.senv
+  def getStreamExecutionEnvironment(): StreamExecutionEnvironment = this.senv
 
-  def getBatchTableEnviroment(): BatchTableEnvironment = this.btenv
+  def getBatchTableEnvironment(): BatchTableEnvironment = this.btenv
 
+  def getStreamTableEnvionment(): StreamTableEnvironment = this.stenv
+
+  def getUserJars: Seq[String] = {
+    // FLINK_HOME is not necessary in unit test
+    if (System.getenv("FLINK_HOME") != null) {
+      val flinkLibJars = new File(System.getenv("FLINK_HOME") + "/lib")
+        .listFiles().map(e => e.getAbsolutePath).filter(e => e.endsWith(".jar"))
+      val flinkOptJars = new File(System.getenv("FLINK_HOME") + "/opt")
+        .listFiles().map(e => e.getAbsolutePath()).filter(e => e.endsWith(".jar"))
+      if (properties.containsKey("flink.execution.jars")) {
+        flinkLibJars ++ flinkOptJars ++ properties.getProperty("flink.execution.jars").split(":")
+      } else {
+        flinkLibJars ++ flinkOptJars
+      }
+    } else {
+      if (properties.containsKey("flink.execution.jars")) {
+        properties.getProperty("flink.execution.jars").split(":")
+      } else {
+        Seq.empty[String]
+      }
+    }
+  }
+
+  def getJobManager = this.jobManager
 }

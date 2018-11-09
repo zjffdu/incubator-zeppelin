@@ -746,7 +746,7 @@ public class RemoteInterpreterServer extends Thread
       @Override
       public void onAppend(int index, InterpreterResultMessageOutput out, byte[] line) {
         String output = new String(line);
-        logger.debug("Output Append: {}", output);
+        logger.debug("Output Append for index {}: {}", index, output);
         intpEventClient.onInterpreterOutputAppend(
             noteId, paragraphId, index, output);
       }

@@ -112,6 +112,8 @@ public class NotebookServer extends WebSocketServlet
   }
 
 
+  private static Logger LOGGER = LoggerFactory.getLogger(NotebookServer.class);
+
   private Boolean collaborativeModeEnable = ZeppelinConfiguration
       .create()
       .isZeppelinNotebookCollaborativeModeEnable();
@@ -1370,6 +1372,8 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputAppend(String noteId, String paragraphId, int index, String output) {
+    LOGGER.debug("AppendOutput for paragraph: {}, index: {}, output: {}",
+            paragraphId, index, output);
     Message msg = new Message(OP.PARAGRAPH_APPEND_OUTPUT).put("noteId", noteId)
         .put("paragraphId", paragraphId).put("index", index).put("data", output);
     connectionManager.broadcast(noteId, msg);
@@ -1449,6 +1453,17 @@ public class NotebookServer extends WebSocketServlet
     connectionManager.broadcast(noteId, msg);
   }
 
+
+  @Override
+  public void onUpdateParagraphConfig(String noteId,
+                                      String paragraphId,
+                                      Map<String, String> config) throws IOException {
+    Notebook notebook = notebook();
+    Note note = notebook.getNote(noteId);
+    Paragraph p = note.getParagraph(paragraphId);
+    p.getConfig().putAll(config);
+    notebook.saveNote(note, AuthenticationInfo.ANONYMOUS);
+  }
 
   @Override
   public void runParagraphs(String noteId,
@@ -1635,6 +1650,8 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputAppend(Paragraph paragraph, int idx, String output) {
+    LOGGER.debug("AppendOutput for paragraph: " + paragraph.getId() + ", index: " +
+             idx + ", output: " + output);
     Message msg =
         new Message(OP.PARAGRAPH_APPEND_OUTPUT).put("noteId", paragraph.getNote().getId())
             .put("paragraphId", paragraph.getId()).put("data", output);
@@ -1646,6 +1663,8 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputUpdate(Paragraph paragraph, int idx, InterpreterResultMessage result) {
+    LOGGER.debug("UpdateOutput for paragraph: " + paragraph.getId() + ", index: " +
+            idx + ", output: " + result.toString());
     Message msg =
         new Message(OP.PARAGRAPH_UPDATE_OUTPUT).put("noteId", paragraph.getNote().getId())
             .put("paragraphId", paragraph.getId()).put("data", result.getData());

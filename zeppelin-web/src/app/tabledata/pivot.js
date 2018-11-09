@@ -13,6 +13,7 @@
  */
 
 import Transformation from './transformation';
+import {DefaultDisplayType} from '../spell/spell-result';
 
 /**
  * pivot table data and return d3 chart data
@@ -56,10 +57,28 @@ export default class PivotTransformation extends Transformation {
     };
   }
 
+  filterRowsByTimeLimit(tableData, limit, key) {
+    const timeKey = tableData.columns.find((col) => col.name === key);
+
+    if (timeKey) {
+      const maxTime = Math.max(...tableData.rows.map((row) => new Date(row[timeKey.index]).getTime()));
+      if (Number.isFinite(maxTime)) {
+        tableData.rows = tableData.rows.filter((row) => {
+          const time = new Date(row[timeKey.index]).getTime();
+          if (!Number.isFinite(time)) {
+            return false;
+          } else {
+            return (time + limit) >= maxTime;
+          }
+        });
+      }
+    }
+  }
+
   /**
    * Method will be invoked when tableData or config changes
    */
-  transform(tableData) {
+  transform(tableData, type, resultConfig) {
     this.tableDataColumns = tableData.columns;
     this.config.common = this.config.common || {};
     this.config.common.pivot = this.config.common.pivot || {};
@@ -69,6 +88,12 @@ export default class PivotTransformation extends Transformation {
     config.keys = config.keys || [];
     config.groups = config.groups || [];
     config.values = config.values || [];
+
+    // TODO Should be is flink table type
+    if (type === DefaultDisplayType.TABLE && resultConfig && resultConfig.type === 'ts') {
+      let threshold = resultConfig.threshold ? parseInt(resultConfig.threshold) : (1000 * 60 * 30);
+      this.filterRowsByTimeLimit(tableData, threshold, tableData.columns[0].name);
+    }
 
     this.removeUnknown();
     if (firstTime) {

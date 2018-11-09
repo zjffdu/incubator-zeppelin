@@ -851,4 +851,11 @@ public abstract class BaseZeppelinContext {
     ResourcePool resourcePool = interpreterContext.getResourcePool();
     return resourcePool.getAll();
   }
+
+  public void updateParagraphConfig(String noteId,
+                                    String paragraphId,
+                                    Map<String, String> config) {
+    interpreterContext.getIntpEventClient()
+            .updateParagraphConfig(noteId, paragraphId, config);
+  }
 }

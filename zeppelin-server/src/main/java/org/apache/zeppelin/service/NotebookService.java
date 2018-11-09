@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import javax.inject.Inject;
+
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.display.AngularObject;
@@ -1146,6 +1148,7 @@ public class NotebookService {
     RUNNER,
     OWNER,
   }
+
 
   /**
    * Return null when it is allowed, otherwise return the error message which could be

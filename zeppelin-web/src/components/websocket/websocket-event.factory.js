@@ -54,8 +54,9 @@ function WebsocketEventFactory($rootScope, $websocket, $location, baseUrlSrv, ng
     if (event.data) {
       payload = angular.fromJson(event.data);
     }
-
-    console.log('Receive << %o, %o', payload.op, payload);
+    if (payload.op !== 'PROGRESS') {
+      console.log('Receive << %o, %o', payload.op, payload);
+    }
 
     let op = payload.op;
     let data = payload.data;

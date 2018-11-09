@@ -191,10 +191,10 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
 
   public synchronized void onInterpreterOutputUpdate(
       String noteId, String paragraphId, int outputIndex,
-      InterpreterResult.Type type, String output) {
+      InterpreterResult.Type type, Map<String, String> config, String output) {
     try {
       intpEventServiceClient.updateOutput(
-          new OutputUpdateEvent(noteId, paragraphId, outputIndex, type.name(), output, null));
+          new OutputUpdateEvent(noteId, paragraphId, outputIndex, type.name(), config, output, null));
     } catch (TException e) {
       LOGGER.warn("Fail to updateOutput", e);
     }
@@ -235,8 +235,21 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
     }
   }
 
+  public synchronized void updateParagraphConfig(String noteId,
+                                                 String paragraphId,
+                                                 Map<String, String> config) {
+    try {
+      intpEventServiceClient.updateParagraphConfig(noteId, paragraphId, config);
+    } catch (TException e) {
+      LOGGER.warn("Fail to updateParagraphConfig for noteId: " + noteId +
+              ", paragraphId: " + paragraphId + ", config: " + config, e);
+    }
+  }
+
   public synchronized void onAppOutputAppend(
       String noteId, String paragraphId, int index, String appId, String output) {
+    LOGGER.debug("AppendOutput for paragraph: " + paragraphId + ", index: " + index +
+            ", output: " + output);
     AppOutputAppendEvent event =
         new AppOutputAppendEvent(noteId, paragraphId, appId, index, output);
     try {
@@ -271,6 +284,7 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
 
   public synchronized void onParaInfosReceived(Map<String, String> infos) {
     try {
+      LOGGER.debug("Send paragraphInfos: " + infos);
       intpEventServiceClient.sendParagraphInfo(intpGroupId, gson.toJson(infos));
     } catch (TException e) {
       LOGGER.warn("Fail to onParaInfosReceived: " + infos, e);

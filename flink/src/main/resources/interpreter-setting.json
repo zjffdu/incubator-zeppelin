@@ -4,6 +4,20 @@
     "name": "flink",
     "className": "org.apache.zeppelin.flink.FlinkInterpreter",
     "properties": {
+      "flink.execution.mode": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "local",
+        "description": "execution mode, it could be local or yarn",
+        "type": "string"
+      },
+      "flink.yarn.num_container": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "1",
+        "description": "number of yarn contains for this flink app",
+        "type": "number"
+      },
       "host": {
         "envName": "host",
         "propertyName": null,
@@ -17,19 +31,14 @@
         "defaultValue": "6123",
         "description": "port of running JobManager.",
         "type": "number"
-      }
-    },
-    "editor": {
-      "language": "scala",
-      "editOnDblClick": false
-    }
-  },
-
-  {
-    "group": "flink",
-    "name": "sql",
-    "className": "org.apache.zeppelin.flink.FlinkSQLInterpreter",
-    "properties": {
+      },
+      "zeppelin.flink.printREPLOutput": {
+        "envName": null,
+        "propertyName": "zeppelin.flink.printREPLOutput",
+        "defaultValue": true,
+        "description": "Print REPL output",
+        "type": "checkbox"
+      },
       "zeppelin.flink.maxResult": {
         "envName": "zeppelin.flink.maxResult",
         "propertyName": "zeppelin.flink.maxResult",
@@ -39,8 +48,36 @@
       }
     },
     "editor": {
+      "language": "scala",
+      "editOnDblClick": false,
+      "completionKey": "TAB",
+      "completionSupport": true
+    }
+  },
+
+  {
+    "group": "flink",
+    "name": "bsql",
+    "className": "org.apache.zeppelin.flink.FlinkBatchSqlInterpreter",
+    "properties": {
+
+    },
+    "editor": {
       "language": "sql",
       "editOnDblClick": false
     }
+  },
+
+  {
+  "group": "flink",
+  "name": "ssql",
+  "className": "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter",
+  "properties": {
+
+  },
+  "editor": {
+    "language": "sql",
+    "editOnDblClick": false
+  }
   }
 ]

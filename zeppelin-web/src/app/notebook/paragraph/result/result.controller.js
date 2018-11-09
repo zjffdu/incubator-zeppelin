@@ -127,6 +127,8 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
   // type
   $scope.type = null;
 
+  $scope.resultConfig = null;
+
   // Data of the result
   let data;
 
@@ -196,6 +198,11 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
       });
     });
 
+    console.log('****************init, result', result);
+    console.log('****************init, resultConfig', result.resultConfig);
+    console.log('****************init, result.type', result.type);
+    console.log('****************init, config', config);
+    $scope.resultConfig = result.resultConfig;
     updateData(result, config, paragraph, index);
     renderResult($scope.type);
   };
@@ -270,6 +277,13 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
 
     $scope.id = paragraph.id + '_' + index;
     $scope.type = result.type;
+    $scope.resultConfig = result.resultConfig;
+
+    console.log('****************type', $scope.type);
+    console.log('****************data', result.data);
+    console.log('****************resultConfig', $scope.resultConfig);
+
+    // $scope.resultConfig = $scope.resultConfig ? $scope.resultConfig : result.resultConfig;
     config = config ? config : {};
 
     // initialize default config values
@@ -557,7 +571,9 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
           data.data);
         $rootScope.$broadcast(
           'updateResult',
-          {'data': $scope.$parent.result.data[data.index], 'type': 'TABLE'},
+          {'data': $scope.$parent.result.data[data.index],
+            'resultConfig': $scope.resultConfig,
+            'type': 'TABLE'},
           $scope.config,
           paragraph,
           data.index);
@@ -664,7 +680,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
           transformation._createNewScope = createNewScope;
 
           // render
-          const transformed = transformation.transform(tableData);
+          const transformed = transformation.transform(tableData, $scope.type, $scope.resultConfig);
           transformation.renderSetting(transformationSettingTargetEl);
           builtInViz.instance.render(transformed);
           builtInViz.instance.renderSetting(visualizationSettingTargetEl);
@@ -697,7 +713,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
         loadedElem.height(height);
         const transformation = builtInViz.instance.getTransformation();
         transformation.setConfig(config);
-        const transformed = transformation.transform(tableData);
+        const transformed = transformation.transform(tableData, $scope.type, $scope.resultConfig);
         transformation.renderSetting(transformationSettingTargetEl);
         builtInViz.instance.setConfig(config);
         builtInViz.instance.render(transformed);
@@ -790,32 +806,30 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
   };
 
   const commitVizConfigChange = function(config, vizId) {
-    if ([ParagraphStatus.RUNNING, ParagraphStatus.PENDING].indexOf(paragraph.status) < 0) {
-      let newConfig = angular.copy($scope.config);
-      if (!newConfig.graph) {
-        newConfig.graph = {};
-      }
-      // copy setting for vizId
-      if (!newConfig.graph.setting) {
-        newConfig.graph.setting = {};
-      }
-      newConfig.graph.setting[vizId] = angular.copy(config);
-      // copy common setting
-      if (newConfig.graph.setting[vizId]) {
-        newConfig.graph.commonSetting = newConfig.graph.setting[vizId].common;
-        delete newConfig.graph.setting[vizId].common;
-      }
-      // copy pivot setting
-      if (newConfig.graph.commonSetting && newConfig.graph.commonSetting.pivot) {
-        newConfig.graph.keys = newConfig.graph.commonSetting.pivot.keys;
-        newConfig.graph.groups = newConfig.graph.commonSetting.pivot.groups;
-        newConfig.graph.values = newConfig.graph.commonSetting.pivot.values;
-        delete newConfig.graph.commonSetting.pivot;
-      }
-      console.debug('committVizConfig', newConfig);
-      let newParams = angular.copy(paragraph.settings.params);
-      commitParagraphResult(paragraph.title, paragraph.text, newConfig, newParams);
+    let newConfig = angular.copy($scope.config);
+    if (!newConfig.graph) {
+      newConfig.graph = {};
     }
+    // copy setting for vizId
+    if (!newConfig.graph.setting) {
+      newConfig.graph.setting = {};
+    }
+    newConfig.graph.setting[vizId] = angular.copy(config);
+    // copy common setting
+    if (newConfig.graph.setting[vizId]) {
+      newConfig.graph.commonSetting = newConfig.graph.setting[vizId].common;
+      delete newConfig.graph.setting[vizId].common;
+    }
+    // copy pivot setting
+    if (newConfig.graph.commonSetting && newConfig.graph.commonSetting.pivot) {
+      newConfig.graph.keys = newConfig.graph.commonSetting.pivot.keys;
+      newConfig.graph.groups = newConfig.graph.commonSetting.pivot.groups;
+      newConfig.graph.values = newConfig.graph.commonSetting.pivot.values;
+      delete newConfig.graph.commonSetting.pivot;
+    }
+    console.debug('committVizConfig', newConfig);
+    let newParams = angular.copy(paragraph.settings.params);
+    commitParagraphResult(paragraph.title, paragraph.text, newConfig, newParams);
   };
 
   $scope.$on('paragraphResized', function(event, paragraphId) {

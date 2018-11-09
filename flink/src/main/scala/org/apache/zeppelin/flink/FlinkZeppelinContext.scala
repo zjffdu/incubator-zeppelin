@@ -21,15 +21,14 @@ package org.apache.zeppelin.flink
 import java.util
 
 import org.apache.flink.api.scala.DataSet
-import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.Table
 import org.apache.flink.table.api.scala.BatchTableEnvironment
+import org.apache.flink.table.sinks.CollectRowTableSink
 import org.apache.flink.types.Row
 import org.apache.zeppelin.annotation.ZeppelinApi
 import org.apache.zeppelin.display.AngularObjectWatcher
 import org.apache.zeppelin.display.ui.OptionInput.ParamOption
-import org.apache.zeppelin.interpreter.{BaseZeppelinContext, InterpreterContext,
-  InterpreterHookRegistry}
+import org.apache.zeppelin.interpreter.{BaseZeppelinContext, InterpreterContext, InterpreterHookRegistry, ResultMessages}
 
 import scala.collection.{JavaConversions, Seq}
 
@@ -43,52 +42,56 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   private val interpreterClassMap = Map(
     "flink" -> "org.apache.zeppelin.flink.FlinkInterpreter",
-    "sql" -> "org.apache.zeppelin.flink.FlinkSqlInterpreter"
+    "bsql" -> "org.apache.zeppelin.flink.FlinkBatchSqlInterpreter",
+    "ssql" -> "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter"
   )
 
   private val supportedClasses = Seq(classOf[DataSet[_]])
 
-  override def getSupportedClasses: util.List[Class[_]] =
+  override def getSupportedClasses: java.util.List[Class[_]] =
     JavaConversions.seqAsJavaList(supportedClasses)
 
-  override def getInterpreterClassMap: util.Map[String, String] =
+  override def getInterpreterClassMap: java.util.Map[String, String] =
     JavaConversions.mapAsJavaMap(interpreterClassMap)
 
   override def showData(obj: Any, maxResult: Int): String = {
-    def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getColumnNames
-      val dsRow: DataSet[Row] = btenv.toDataSet[Row](table)
-      val builder: StringBuilder = new StringBuilder("%table ")
-      builder.append(columnNames.mkString("\t"))
-      builder.append("\n")
-      val rows = dsRow.first(maxResult).collect()
-      for (row <- rows) {
-        var i = 0;
-        while (i < row.getArity) {
-          builder.append(row.getField(i))
-          i += 1
-          if (i != row.getArity) {
-            builder.append("\t");
-          }
-        }
-        builder.append("\n")
-      }
-      // append %text at the end, otherwise the following output will be put in table as well.
-      builder.append("\n%text ")
-      builder.toString()
-    }
-
     if (obj.isInstanceOf[DataSet[_]]) {
-      val ds = obj.asInstanceOf[DataSet[_]]
-      val table = btenv.fromDataSet(ds)
-      showTable(table)
+      throw new RuntimeException("DataSet is not supported")
     } else if (obj.isInstanceOf[Table]) {
-      showTable(obj.asInstanceOf[Table])
+      showTable(obj.asInstanceOf[Table], "Flink ShowTable Job")
     } else {
       obj.toString
     }
   }
 
+  def showTable(table: Table, jobName: String): String = {
+    val columnNames: Array[String] = table.getSchema.getFieldNames
+    val rows: Seq[Row] = table.fetch(maxResult + 1).collectSink(new CollectRowTableSink, Some(jobName))
+    val builder = new StringBuilder("%table\n")
+    builder.append(columnNames.mkString("\t"))
+    builder.append("\n")
+
+    builder.append(rows.map(r => rowString(r)).mkString("\n"))
+    if (rows.size > maxResult) {
+      builder.append("\n")
+      builder.append(ResultMessages.getExceedsLimitRowsMessage(maxResult,
+        "zeppelin.flink.maxResult"))
+    }
+    builder.toString()
+  }
+
+  private def rowString(r: Row): String = {
+    val rowStringBuilder = new StringBuilder
+    var i = 0
+    while (i < r.getArity) {
+      rowStringBuilder.append(r.getField(i))
+      i += 1
+      if (i != r.getArity) {
+        rowStringBuilder.append("\t");
+      }
+    }
+    rowStringBuilder.toString()
+  }
 
   @ZeppelinApi
   def select(name: String, options: Seq[(Any, String)]): Any = select(name, null, options)
@@ -174,4 +177,5 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
     }
     angularWatch(name, noteId, w)
   }
+
 }

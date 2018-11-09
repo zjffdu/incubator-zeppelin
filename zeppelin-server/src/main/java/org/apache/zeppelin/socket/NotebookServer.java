@@ -17,6 +17,7 @@
 package org.apache.zeppelin.socket;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -123,6 +124,10 @@ public class NotebookServer extends WebSocketServlet
     }
   }
 
+
+  private static Logger LOGGER = LoggerFactory.getLogger(NotebookServer.class);
+  private static Set<Message.OP> READ_OPS = Sets.newHashSet(Message.OP.GET_NOTE,
+          Message.OP.NOTES_INFO);
 
   private Boolean collaborativeModeEnable = ZeppelinConfiguration
       .create()
@@ -269,6 +274,8 @@ public class NotebookServer extends WebSocketServlet
       if (StringUtils.isEmpty(conn.getUser())) {
         connectionManager.addUserConnection(messagereceived.principal, conn);
       }
+
+
 
       // Lets be elegant here
       switch (messagereceived.op) {
@@ -1422,6 +1429,8 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputAppend(String noteId, String paragraphId, int index, String output) {
+    LOGGER.debug("AppendOutput for paragraph: {}, index: {}, output: {}",
+            paragraphId, index, output);
     Message msg = new Message(OP.PARAGRAPH_APPEND_OUTPUT).put("noteId", noteId)
         .put("paragraphId", paragraphId).put("index", index).put("data", output);
     connectionManager.broadcast(noteId, msg);
@@ -1434,9 +1443,11 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputUpdated(String noteId, String paragraphId, int index,
-                              InterpreterResult.Type type, String output) {
+                              InterpreterResult.Type type, Map<String, String> config, String output) {
     Message msg = new Message(OP.PARAGRAPH_UPDATE_OUTPUT).put("noteId", noteId)
-        .put("paragraphId", paragraphId).put("index", index).put("type", type).put("data", output);
+        .put("paragraphId", paragraphId).put("index", index).put("type", type)
+            .put("resultConfig", config)
+            .put("data", output);
     Note note = getNotebook().getNote(noteId);
 
     if (note.isPersonalizedMode()) {
@@ -1500,6 +1511,17 @@ public class NotebookServer extends WebSocketServlet
     connectionManager.broadcast(noteId, msg);
   }
 
+
+  @Override
+  public void onUpdateParagraphConfig(String noteId,
+                                      String paragraphId,
+                                      Map<String, String> config) throws IOException {
+    Notebook notebook = getNotebook();
+    Note note = notebook.getNote(noteId);
+    Paragraph p = note.getParagraph(paragraphId);
+    p.getConfig().putAll(config);
+    notebook.saveNote(note, AuthenticationInfo.ANONYMOUS);
+  }
 
   @Override
   public void runParagraphs(String noteId,
@@ -1685,6 +1707,8 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputAppend(Paragraph paragraph, int idx, String output) {
+    LOGGER.debug("AppendOutput for paragraph: " + paragraph.getId() + ", index: " +
+             idx + ", output: " + output);
     Message msg =
         new Message(OP.PARAGRAPH_APPEND_OUTPUT).put("noteId", paragraph.getNote().getId())
             .put("paragraphId", paragraph.getId()).put("data", output);
@@ -1696,6 +1720,8 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputUpdate(Paragraph paragraph, int idx, InterpreterResultMessage result) {
+    LOGGER.debug("UpdateOutput for paragraph: " + paragraph.getId() + ", index: " +
+            idx + ", output: " + result.toString());
     Message msg =
         new Message(OP.PARAGRAPH_UPDATE_OUTPUT).put("noteId", paragraph.getNote().getId())
             .put("paragraphId", paragraph.getId()).put("data", result.getData());

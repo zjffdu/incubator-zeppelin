@@ -139,7 +139,8 @@ public abstract class AbstractScheduler implements Scheduler {
       runningJob.setStatus(Job.Status.FINISHED);
     }
 
-    LOGGER.info("Job " + runningJob.getId() + " finished by scheduler " + name);
+    LOGGER.info("Job " + runningJob.getId() + " is finished with status: " + runningJob.getStatus()
+            + " by scheduler " + name);
     // reset aborted flag to allow retry
     runningJob.aborted = false;
     jobs.remove(runningJob.getId());

@@ -1,0 +1,419 @@
+{
+  "paragraphs": [
+    {
+      "title": "Introduction",
+      "text": "%md\n\nThis is a tutorial note for Flink Streaming application. You can run flink scala api via `%flink` and run flink stream sql via `%flink.ssql`. We provide 2 examples in this tutorial:\n\n* Classical word count example via Flink streaming\n* We simulate a web log stream source, and then query and visualize this streaming data in Zeppelin.\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-01-21 15:22:29.357",
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eThis is a tutorial note for Flink Streaming application. You can run flink scala api via \u003ccode\u003e%flink\u003c/code\u003e and run flink stream sql via \u003ccode\u003e%flink.ssql\u003c/code\u003e. We provide 2 examples in this tutorial:\u003c/p\u003e\n\u003cul\u003e\n  \u003cli\u003eClassical word count example via Flink streaming\u003c/li\u003e\n  \u003cli\u003eWe simulate a web log stream source, and then query and visualize this streaming data in Zeppelin.\u003c/li\u003e\n\u003c/ul\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1548052720723_1943177100",
+      "id": "paragraph_1548052720723_1943177100",
+      "dateCreated": "2019-01-21 14:38:40.726",
+      "dateStarted": "2019-01-21 15:22:29.476",
+      "dateFinished": "2019-01-21 15:22:30.763",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Configure Flink Interpreter",
+      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages com.alibaba.blink:flink-connector-kafka-0.11_2.11:1.5.1-SNAPSHOT,com.alibaba.blink:flink-connector-filesystem_2.11:1.5.1-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\n#state.savepoints.dir: file:///blink/save_point\n#taskmanager.numberOfTaskSlots 2\nlocal.number-taskmanager 2\n#taskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-26 10:04:01.503",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546571299955_275296580",
+      "id": "paragraph_1546571299955_275296580",
+      "dateCreated": "2019-01-04 11:08:19.955",
+      "dateStarted": "2019-03-26 10:04:01.509",
+      "dateFinished": "2019-03-26 10:04:01.513",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Stream WordCount",
+      "text": "%flink\n\nval data \u003d senv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\"))\n  .map(w \u003d\u003e (w, 1))\n  .keyBy(0)\n  .sum(1)\n  .print\n\nsenv.execute()\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-26 10:03:30.098",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "org.apache.flink.client.program.ProgramInvocationException: Could not submit job (JobID: 654171794c203a97296f02e803198c89)\n  at org.apache.flink.client.program.rest.RestClusterClient.submitJob(RestClusterClient.java:260)\n  at org.apache.flink.client.program.ClusterClient.run(ClusterClient.java:526)\n  at org.apache.flink.client.program.ClusterClient.run(ClusterClient.java:517)\n  at org.apache.flink.streaming.api.environment.RemoteStreamEnvironment.executeRemotely(RemoteStreamEnvironment.java:207)\n  at org.apache.flink.api.java.ScalaShellRemoteStreamEnvironment.executeRemotely(ScalaShellRemoteStreamEnvironment.java:102)\n  at org.apache.flink.streaming.api.environment.RemoteStreamEnvironment.executeInternal(RemoteStreamEnvironment.java:180)\n  at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:1893)\n  at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:1877)\n  at org.apache.flink.streaming.api.scala.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.scala:760)\n  ... 79 elided\nCaused by: org.apache.flink.runtime.client.JobSubmissionException: Failed to submit JobGraph.\n  at org.apache.flink.client.program.rest.RestClusterClient.lambda$submitJob$8(RestClusterClient.java:406)\n  at java.util.concurrent.CompletableFuture.uniExceptionally(CompletableFuture.java:870)\n  at java.util.concurrent.CompletableFuture$UniExceptionally.tryFire(CompletableFuture.java:852)\n  at java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n  at java.util.concurrent.CompletableFuture.completeExceptionally(CompletableFuture.java:1977)\n  at org.apache.flink.runtime.concurrent.FutureUtils.lambda$retryOperationWithDelay$5(FutureUtils.java:214)\n  at java.util.concurrent.CompletableFuture.uniWhenComplete(CompletableFuture.java:760)\n  at java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(CompletableFuture.java:736)\n  at java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n  at java.util.concurrent.CompletableFuture.postFire(CompletableFuture.java:561)\n  at java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:929)\n  at java.util.concurrent.CompletableFuture$Completion.run(CompletableFuture.java:442)\n  ... 3 more\nCaused by: java.util.concurrent.CompletionException: org.apache.flink.runtime.concurrent.FutureUtils$RetryException: Could not complete the operation. Exception is not retryable.\n  at java.util.concurrent.CompletableFuture.encodeRelay(CompletableFuture.java:326)\n  at java.util.concurrent.CompletableFuture.completeRelay(CompletableFuture.java:338)\n  at java.util.concurrent.CompletableFuture.uniRelay(CompletableFuture.java:911)\n  at java.util.concurrent.CompletableFuture$UniRelay.tryFire(CompletableFuture.java:899)\n  ... 12 more\nCaused by: org.apache.flink.runtime.concurrent.FutureUtils$RetryException: Could not complete the operation. Exception is not retryable.\n  ... 10 more\nCaused by: java.util.concurrent.CompletionException: org.apache.flink.runtime.rest.util.RestClientException: [Job submission failed.]\n  at java.util.concurrent.CompletableFuture.encodeRelay(CompletableFuture.java:326)\n  at java.util.concurrent.CompletableFuture.completeRelay(CompletableFuture.java:338)\n  at java.util.concurrent.CompletableFuture.uniRelay(CompletableFuture.java:911)\n  at java.util.concurrent.CompletableFuture.uniCompose(CompletableFuture.java:953)\n  at java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:926)\n  ... 4 more\nCaused by: org.apache.flink.runtime.rest.util.RestClientException: [Job submission failed.]\n  at org.apache.flink.runtime.rest.RestClient.parseResponse(RestClient.java:310)\n  at org.apache.flink.runtime.rest.RestClient.lambda$submitRequest$3(RestClient.java:293)\n  at java.util.concurrent.CompletableFuture.uniCompose(CompletableFuture.java:952)\n  ... 5 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546571324670_-435705916",
+      "id": "paragraph_1546571324670_-435705916",
+      "dateCreated": "2019-01-04 11:08:44.671",
+      "dateStarted": "2019-03-26 10:03:30.103",
+      "dateFinished": "2019-03-26 10:03:32.224",
+      "status": "ERROR"
+    },
+    {
+      "title": "Register a Stream DataSource to simulate web log",
+      "text": "%flink\n\nimport org.apache.flink.streaming.api.functions.source.SourceFunction\nimport org.apache.flink.table.api.TableEnvironment\nimport org.apache.flink.streaming.api.TimeCharacteristic\nimport org.apache.flink.streaming.api.checkpoint.ListCheckpointed\nimport java.util.Collections\nimport scala.collection.JavaConversions._\n\nsenv.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)\nsenv.enableCheckpointing(1000)\n\nval data \u003d senv.addSource(new SourceFunction[(Long, String)] with ListCheckpointed[java.lang.Long] {\n\n  val pages \u003d Seq(\"home\", \"search\", \"search\", \"product\", \"product\", \"product\")\n  var count: Long \u003d 0\n  // startTime is 2018/1/1\n  var startTime: Long \u003d new java.util.Date(2018 - 1900,0,1).getTime\n  var sleepInterval \u003d 100\n  \n  override def run(ctx: SourceFunction.SourceContext[(Long, String)]): Unit \u003d {\n    val lock \u003d ctx.getCheckpointLock\n    \n    while (count \u003c 10000000) {\n      lock.synchronized({\n        ctx.collect((startTime + count * sleepInterval, pages(count.toInt % pages.size)))\n        count +\u003d 1\n        Thread.sleep(sleepInterval)\n      })\n    }\n  }\n\n  override def cancel(): Unit \u003d {\n\n  }\n\n  override def snapshotState(checkpointId: Long, timestamp: Long): java.util.List[java.lang.Long] \u003d {\n    Collections.singletonList(count)\n  }\n\n  override def restoreState(state: java.util.List[java.lang.Long]): Unit \u003d {\n    state.foreach(s \u003d\u003e count \u003d s)\n  }\n\n}).assignAscendingTimestamps(_._1)\n\nstenv.registerOrReplaceDataStream(\"log\", data, \u0027time, \u0027url, \u0027rowtime.rowtime)\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-26 10:04:05.505",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[33mwarning: \u001b[0mthere was one deprecation warning; re-run with -deprecation for details\nimport org.apache.flink.streaming.api.functions.source.SourceFunction\nimport org.apache.flink.table.api.TableEnvironment\nimport org.apache.flink.streaming.api.TimeCharacteristic\nimport org.apache.flink.streaming.api.checkpoint.ListCheckpointed\nimport java.util.Collections\nimport scala.collection.JavaConversions._\n\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.streaming.api.scala.DataStream[(Long, String)]\u001b[0m \u003d org.apache.flink.streaming.api.scala.DataStream@3b17fe37\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546571333074_1869171983",
+      "id": "paragraph_1546571333074_1869171983",
+      "dateCreated": "2019-01-04 11:08:53.074",
+      "dateStarted": "2019-03-26 10:04:05.509",
+      "dateFinished": "2019-03-26 10:04:20.937",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Total Page View",
+      "text": "%flink.ssql(type\u003dsingle, parallelism\u003d1, refreshInterval\u003d3000, template\u003d\u003ch1\u003e{1}\u003c/h1\u003e until \u003ch2\u003e{0}\u003c/h2\u003e, enableSavePoint\u003dfalse, runWithSavePoint\u003dfalse)\n\nselect max(rowtime), count(1) from log\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-26 10:04:27.470",
+      "config": {
+        "savepointPath": "file:/tmp/save_point/savepoint-13e681-f552013d6184",
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 141.0,
+              "optionOpen": false
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546571459644_596843735",
+      "id": "paragraph_1546571459644_596843735",
+      "dateCreated": "2019-01-04 11:10:59.644",
+      "dateStarted": "2019-03-26 10:04:27.476",
+      "dateFinished": "2019-03-26 10:04:29.969",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Page View by Page",
+      "text": "%flink.ssql(type\u003dretract, refreshInterval\u003d2000, parallelism\u003d1, enableSavePoint\u003dfalse,  runWithSavePoint\u003dfalse)\n\nselect url, count(1) as pv from log group by url",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-26 09:13:28.563",
+      "config": {
+        "savepointPath": "file:/flink/save_point/savepoint-e4f781-996290516ef1",
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 198.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "url": "string",
+                      "pv": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "xLabelStatus": "default",
+                  "rotate": {
+                    "degree": "-45"
+                  }
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "url",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "pv",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 86.0,
+              "optionOpen": false
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546571485092_-716357716",
+      "id": "paragraph_1546571485092_-716357716",
+      "dateCreated": "2019-01-04 11:11:25.092",
+      "dateStarted": "2019-02-02 13:18:19.027",
+      "dateFinished": "2019-01-25 11:05:34.829",
+      "status": "ABORT"
+    },
+    {
+      "title": "Page View Per Page for each 5 Seconds",
+      "text": "%flink.ssql(type\u003dts, parallelism\u003d1, refreshInterval\u003d2000, enableSavePoint\u003dfalse, runWithSavePoint\u003dfalse, threshold\u003d60000)\n\nselect TUMBLE_START(rowtime, INTERVAL \u00275\u0027 SECOND) as start_time, url, count(1) as pv from log group by TUMBLE(rowtime, INTERVAL \u00275\u0027 SECOND), url",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-02 13:19:05.368",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "lineChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "start_time": "string",
+                      "url": "string",
+                      "pv": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "lineChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "rotate"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "start_time",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [
+                {
+                  "name": "url",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "pv",
+                  "index": 2.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546571542468_1571709353",
+      "id": "paragraph_1546571542468_1571709353",
+      "dateCreated": "2019-01-04 11:12:22.469",
+      "dateStarted": "2019-02-02 13:18:29.253",
+      "dateFinished": "2019-01-25 11:06:21.271",
+      "status": "ABORT"
+    },
+    {
+      "text": "%flink.ssql\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-01-04 11:13:23.746",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1546571603746_-749250139",
+      "id": "paragraph_1546571603746_-749250139",
+      "dateCreated": "2019-01-04 11:13:23.746",
+      "status": "READY"
+    }
+  ],
+  "name": "Flink Stream Tutorial",
+  "id": "2E1Z1DUH6",
+  "defaultInterpreterGroup": "flink",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

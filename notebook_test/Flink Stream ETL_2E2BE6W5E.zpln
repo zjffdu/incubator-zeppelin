@@ -1,0 +1,313 @@
+{
+  "paragraphs": [
+    {
+      "title": "Introduction",
+      "text": "%md\n\nIn this tuorial, we provide a simple example to illustrate how to do streaming ETL via flink.\nWe assume the data source is in kafka, and we use flink to read streaming data from kafka and then processed the data and write it to file system for ecach miniute.\n\nWe use the kafka [docker image](https://kafka-connect-datagen.readthedocs.io/en/latest/#) here to simuate the streaming data.\n\nIn the streaming ETL job, we would have 2 sinks, one sink to write data to file system as our data lake, and another sink to write the cleaned data back to kafka to ETL job monitoring via stream sql. \n\n\u003cspan style\u003d\"color:red\"\u003eTo be noticed\u003c/span\u003e, this tutorial note require kafka-connector and blink artifacts is not released to maven repository yet, you have to build blink first and copy the artifacts to this container\u0027s local repo folder first, and then uncomment the line `flink.execution.packages` in `%flink.conf` , and restart the flink interpreter.\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-02 11:04:41.952",
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003eIn this tuorial, we provide a simple example to illustrate how to do streaming ETL via flink.\u003cbr/\u003eWe assume the data source is in kafka, and we use flink to read streaming data from kafka and then processed the data and write it to file system for ecach miniute.\u003c/p\u003e\n\u003cp\u003eWe use the kafka \u003ca href\u003d\"https://kafka-connect-datagen.readthedocs.io/en/latest/#\"\u003edocker image\u003c/a\u003e here to simuate the streaming data.\u003c/p\u003e\n\u003cp\u003eIn the streaming ETL job, we would have 2 sinks, one sink to write data to file system as our data lake, and another sink to write the cleaned data back to kafka to ETL job monitoring via stream sql. \u003c/p\u003e\n\u003cp\u003e\u003cspan style\u003d\"color:red\"\u003eTo be noticed\u003c/span\u003e, this tutorial note require kafka-connector and blink artifacts is not released to maven repository yet, you have to build blink first and copy the artifacts to this container\u0026rsquo;s local repo folder first, and then uncomment the line \u003ccode\u003eflink.execution.packages\u003c/code\u003e in \u003ccode\u003e%flink.conf\u003c/code\u003e , and restart the flink interpreter.\u003c/p\u003e\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1548054339902_-906128824",
+      "id": "paragraph_1548054339902_-906128824",
+      "dateCreated": "2019-01-21 15:05:39.906",
+      "dateStarted": "2019-02-02 11:04:41.951",
+      "dateFinished": "2019-02-02 11:04:41.980",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Configure Flink Interpreter",
+      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages com.alibaba.blink:flink-connector-kafka-0.11_2.11:1.5.1-SNAPSHOT,com.alibaba.blink:flink-connector-filesystem_2.11:1.5.1-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\nstate.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 4\nlocal.number-taskmanager 4\ntaskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-03 11:30:04.287",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1547717383660_2082509195",
+      "id": "paragraph_1547717383660_2082509195",
+      "dateCreated": "2019-01-17 17:29:43.660",
+      "dateStarted": "2019-02-03 11:30:04.293",
+      "dateFinished": "2019-02-03 11:30:04.300",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\nimport java.sql.Timestamp\nimport java.util.Properties\n\nimport com.google.gson.Gson\nimport org.apache.flink.api.common.serialization.SimpleStringSchema\nimport org.apache.flink.api.scala._\nimport org.apache.flink.table.api.scala._\nimport org.apache.flink.streaming.api.TimeCharacteristic\nimport org.apache.flink.streaming.api.datastream.DataStreamUtils\nimport org.apache.flink.streaming.api.functions.AssignerWithPunctuatedWatermarks\nimport org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}\nimport org.apache.flink.streaming.api.watermark.Watermark\nimport org.apache.flink.streaming.connectors.fs.{DateTimeBucketer, RollingSink}\nimport org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011\nimport org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer011\nimport org.apache.flink.table.api.{TableEnvironment, Types}\nimport org.apache.flink.table.descriptors._\nimport org.apache.flink.types.Row\n\ncase class Record(status: String, direction: String, var event_ts: Long)\n\nval properties \u003d new Properties()\nproperties.setProperty(\"bootstrap.servers\", \"localhost:9092\")\nval sourceData \u003d senv.addSource(new FlinkKafkaConsumer011[String](\"generated.events\", new SimpleStringSchema(), properties));\nval data: DataStream[String] \u003d sourceData.map(line \u003d\u003e {\n  val gson \u003d new Gson()\n  val record \u003d gson.fromJson(line, classOf[Record])\n  record.status + \",\" + record.direction + \",\" + record.event_ts\n})\n\nval tablePath \u003d \"/app/warehouse/table_1\"\nval rollingSink \u003d new RollingSink[String](tablePath)\nrollingSink.setBucketer(new DateTimeBucketer(\"yyyy-MM-dd-HH-mm\")) // do a bucket for each minute\n\ndata.addSink(rollingSink).name(\"Rolling FileSystem Sink\")\n\nval kafkaSink \u003d new FlinkKafkaProducer011(\"localhost:9092\", \"processed.events\",  new SimpleStringSchema())\ndata.addSink(kafkaSink).name(\"Kafka Sink\")\nsenv.submit()\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-02-02 13:17:47.490",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u003cconsole\u003e:29: \u001b[31merror: \u001b[0mobject connectors is not a member of package org.apache.flink.streaming\n       import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer011\n                                         ^\n\u003cconsole\u003e:28: \u001b[31merror: \u001b[0mobject connectors is not a member of package org.apache.flink.streaming\n       import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011\n                                         ^\n\u003cconsole\u003e:27: \u001b[31merror: \u001b[0mobject connectors is not a member of package org.apache.flink.streaming\n       import org.apache.flink.streaming.connectors.fs.{DateTimeBucketer, RollingSink}\n                                         ^\n\u003cconsole\u003e:38: \u001b[31merror: \u001b[0mnot found: type FlinkKafkaConsumer011\n       val sourceData \u003d senv.addSource(new FlinkKafkaConsumer011[String](\"generated.events\", new SimpleStringSchema(), properties));\n                                           ^\n\u003cconsole\u003e:46: \u001b[31merror: \u001b[0mnot found: type RollingSink\n       val rollingSink \u003d new RollingSink[String](tablePath)\n                             ^\n\u003cconsole\u003e:51: \u001b[31merror: \u001b[0mnot found: type FlinkKafkaProducer011\n       val kafkaSink \u003d new FlinkKafkaProducer011(\"localhost:9092\", \"processed.events\",  new SimpleStringSchema())\n                           ^\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1547717446266_535615993",
+      "id": "paragraph_1547717446266_535615993",
+      "dateCreated": "2019-01-17 17:30:46.266",
+      "dateStarted": "2019-02-02 13:17:47.494",
+      "dateFinished": "2019-02-02 13:17:47.693",
+      "status": "ERROR"
+    },
+    {
+      "text": "%flink\n\nsenv.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)\nval processedData \u003d senv.addSource(new FlinkKafkaConsumer011[String](\"processed.events\", new SimpleStringSchema(), properties));\nval data \u003d processedData.map(line \u003d\u003e {\n  val splits \u003d line.split(\",\")\n  (splits(0), splits(1), splits(2).toLong)\n})\n\nstenv.registerOrReplaceDataStream(\"table_1\", data, \u0027status, \u0027direction, \u0027time)\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-01-22 14:42:05.422",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mprocessedData\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.streaming.api.scala.DataStream[String]\u001b[0m \u003d org.apache.flink.streaming.api.scala.DataStream@64c4f573\n\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.streaming.api.scala.DataStream[(String, String, Long)]\u001b[0m \u003d org.apache.flink.streaming.api.scala.DataStream@54e70069\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1547778634969_516549317",
+      "id": "paragraph_1547778634969_516549317",
+      "dateCreated": "2019-01-18 10:30:34.969",
+      "dateStarted": "2019-01-22 14:42:05.427",
+      "dateFinished": "2019-01-22 14:42:06.920",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Monitor the total number of events",
+      "text": "\n%flink.ssql(type\u003dsingle, refreshInterval\u003d1000, template\u003d\u003ch1\u003e{0}\u003c/h1\u003e)\n\nselect count(1) from table_1",
+      "user": "anonymous",
+      "dateUpdated": "2019-01-22 14:42:43.494",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch1\u003e40\u003c/h1\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1547778713667_-1347365146",
+      "id": "paragraph_1547778713667_-1347365146",
+      "dateCreated": "2019-01-18 10:31:53.667",
+      "dateStarted": "2019-01-22 14:42:43.501",
+      "dateFinished": "2019-01-22 14:43:07.084",
+      "status": "ABORT"
+    },
+    {
+      "title": "Monitor the number of events by status and direction",
+      "text": "%flink.ssql(type\u003dretract)\n\nselect status, direction, count(1) from table_1 group by status, direction\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-15 15:22:37.507",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "title": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "multiBarChart": {
+                  "xLabelStatus": "default",
+                  "rotate": {
+                    "degree": "-45"
+                  }
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "status",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [
+                {
+                  "name": "direction",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ],
+              "values": [
+                {
+                  "name": "EXPR$2",
+                  "index": 2.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "status\tdirection\tEXPR$2\nbar\tdown\t251\nbar\tleft\t248\nbar\tup\t255\nbar\tright\t265\nbaz\tdown\t273\nbaz\tright\t273\nbaz\tup\t258\nbaz\tleft\t254\nfoo\tdown\t284\nfoo\tup\t264\nfoo\tright\t261\nfoo\tleft\t274\n"
+          },
+          {
+            "type": "TEXT",
+            "data": ""
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1547782059767_1783516353",
+      "id": "paragraph_1547782059767_1783516353",
+      "dateCreated": "2019-01-18 11:27:39.767",
+      "dateStarted": "2019-01-22 14:42:14.556",
+      "dateFinished": "2019-01-22 17:17:45.363",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.ssql\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-01-18 10:15:25.678",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1547777725678_2014436502",
+      "id": "paragraph_1547777725678_2014436502",
+      "dateCreated": "2019-01-18 10:15:25.678",
+      "status": "READY"
+    }
+  ],
+  "name": "Flink Stream ETL",
+  "id": "2E2BE6W5E",
+  "defaultInterpreterGroup": "spark",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

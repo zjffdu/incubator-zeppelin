@@ -703,6 +703,10 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getRelativeDir(ConfVars.ZEPPELIN_K8S_TEMPLATE_DIR);
   }
 
+  public boolean isOnlyReadable() {
+    return getBoolean(ConfVars.ZEPPELIN_ONLY_READABLE);
+  }
+
   public Map<String, String> dumpConfigurations(Predicate<String> predicate) {
     Map<String, String> properties = new HashMap<>();
 
@@ -875,7 +879,8 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     ZEPPELIN_PROXY_USER("zeppelin.proxy.user", null),
     ZEPPELIN_PROXY_PASSWORD("zeppelin.proxy.password", null),
     ZEPPELIN_SEARCH_USE_DISK("zeppelin.search.use.disk", false),
-    ZEPPELIN_SEARCH_TEMP_PATH("zeppelin.search.temp.path", System.getProperty("java.io.tmpdir"));
+    ZEPPELIN_SEARCH_TEMP_PATH("zeppelin.search.temp.path", System.getProperty("java.io.tmpdir")),
+    ZEPPELIN_ONLY_READABLE("zeppelin.onlyreadable", false);
 
     private String varName;
     @SuppressWarnings("rawtypes")

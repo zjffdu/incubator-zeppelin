@@ -1,0 +1,224 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /Users/jzhang/github/flink-ali/build-target\nflink.execution.mode local\nflink.yarn.tm.num 2\n\n#rest.port 8091\n#flink.execution.packages com.alibaba.blink:flink-connector-kafka-0.11_2.11:1.5.1-SNAPSHOT,com.alibaba.blink:flink-connector-filesystem_2.11:1.5.1-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\n#state.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 2\nlocal.number-taskmanager 1\n#taskmanager.managed.memory.size 512\n\nparallelism.default 10\nsql.resource.default.parallelism 1\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-20 16:14:57.560",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1553047122586_-1249652289",
+      "id": "paragraph_1553047122586_-1249652289",
+      "dateCreated": "2019-03-20 09:58:42.586",
+      "dateStarted": "2019-03-20 16:14:57.565",
+      "dateFinished": "2019-03-20 16:14:57.574",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.ssql\n\nDROP TABLE IF EXISTS source;\nCREATE TABLE source (msg INT) WITH (type \u003d \u0027csv\u0027, path\u003d\u0027file:///Users/jzhang/Temp/a.txt\u0027);\nDROP TABLE IF EXISTS dest;\nCREATE TABLE dest(msg INT) WITH (type \u003d \u0027parquet\u0027, path\u003d\u0027file:///tmp/a/orc\u0027);\nINSERT INTO dest SELECT * FROM source;",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-20 10:14:14.900",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been removed.\nTable has been created.\nTable has been removed.\nTable has been created.\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "Fail to run sql command: INSERT INTO dest SELECT * FROM source\norg.apache.flink.table.api.NoMatchingTableFactoryException: Could not find a suitable table factory for \u0027org.apache.flink.table.factories.StreamTableSinkFactory\u0027 in\nthe classpath.\n\nReason: No context matches.\n\nThe following properties are requested:\nconnector.property-version\u003d1\nconnector.type\u003dparquet\npath\u003dfile:///tmp/a/orc\n\nThe following factories have been considered:\norg.apache.flink.table.sources.csv.CsvBatchTableSourceFactory\norg.apache.flink.table.sources.csv.CsvAppendTableSourceFactory\norg.apache.flink.table.sinks.csv.CsvBatchTableSinkFactory\norg.apache.flink.table.sinks.csv.CsvAppendTableSinkFactory\norg.apache.flink.table.factories.csv.CsvTableFactory\norg.apache.flink.table.factories.orc.OrcTableFactory\norg.apache.flink.table.factories.parquet.ParquetTableFactory\norg.apache.flink.table.sinks.filesystem.FileSystemTableSinkFactory\norg.apache.flink.streaming.connectors.hive.HiveTableFactory\n\n\tat org.apache.flink.table.factories.TableFactoryService$.filterByContext(TableFactoryService.scala:217)\n\tat org.apache.flink.table.factories.TableFactoryService$.findInternal(TableFactoryService.scala:128)\n\tat org.apache.flink.table.factories.TableFactoryService$.find(TableFactoryService.scala:53)\n\tat org.apache.flink.table.catalog.ExternalTableUtil$.toTableSink(ExternalTableUtil.scala:101)\n\tat org.apache.flink.table.plan.schema.CatalogCalciteTable.streamTableSink(CatalogCalciteTable.scala:140)\n\tat org.apache.flink.table.plan.schema.CatalogCalciteTable.tableSink(CatalogCalciteTable.scala:127)\n\tat org.apache.flink.table.api.TableEnvironment.writeTo(TableEnvironment.scala:1418)\n\tat org.apache.flink.table.api.TableEnvironment.sqlNodeUpdate(TableEnvironment.scala:1323)\n\tat org.apache.flink.table.api.TableEnvironment.sqlUpdate(TableEnvironment.scala:1299)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callInsertInto(FlinkSqlInterrpeter.java:224)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callCommand(FlinkSqlInterrpeter.java:144)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.runSqlList(FlinkSqlInterrpeter.java:101)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.interpret(FlinkSqlInterrpeter.java:77)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:103)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:595)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:488)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.ParallelScheduler.lambda$runJobInScheduler$0(ParallelScheduler.java:39)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1553047155702_1133571511",
+      "id": "paragraph_1553047155702_1133571511",
+      "dateCreated": "2019-03-20 09:59:15.702",
+      "dateStarted": "2019-03-20 10:14:14.906",
+      "dateFinished": "2019-03-20 10:14:15.557",
+      "status": "ERROR"
+    },
+    {
+      "text": "%flink\n\nimport org.apache.flink.api.scala._\nimport org.apache.flink.table.api.scala._\nimport org.apache.flink.table.api.functions.ScalarFunction\n\nclass AddOne extends ScalarFunction {\n  def eval(a: Int): Int \u003d a + 1\n  def eval(a: Long): Long \u003d a + 1\n}\n\nstenv.registerFunction(\"addOne\", new AddOne())\nbtenv.registerFunction(\"addOne\", new AddOne())\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-20 10:01:08.499",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.flink.api.scala._\nimport org.apache.flink.table.api.scala._\nimport org.apache.flink.table.api.functions.ScalarFunction\ndefined class AddOne\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1553047197013_1736571113",
+      "id": "paragraph_1553047197013_1736571113",
+      "dateCreated": "2019-03-20 09:59:57.013",
+      "dateStarted": "2019-03-20 10:01:08.503",
+      "dateFinished": "2019-03-20 10:01:08.811",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\nbenv.setParallelism(4)\n\nval data \u003d benv.fromElements(1,2,3,4,5,6,7,8)\ndata.setParallelism(6)\ndata.map(e\u003d\u003e{\n    Thread.sleep(1000*2);\n    e\n}).collect()",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-20 16:15:01.343",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.api.scala.DataSet[Int]\u001b[0m \u003d org.apache.flink.api.scala.DataSet@219ffe41\n\u001b[1m\u001b[34mres1\u001b[0m: \u001b[1m\u001b[32mSeq[Int]\u001b[0m \u003d Buffer(1, 7, 2, 8, 3, 4, 5, 6)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1553063045565_-164330867",
+      "id": "paragraph_1553063045565_-164330867",
+      "dateCreated": "2019-03-20 14:24:05.565",
+      "dateStarted": "2019-03-20 16:15:01.348",
+      "dateFinished": "2019-03-20 16:15:11.312",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.ssql\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-20 10:02:19.127",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Fail to run sql command: INSERT INTO dest SELECT * FROM source\norg.apache.flink.table.api.NoMatchingTableFactoryException: Could not find a suitable table factory for \u0027org.apache.flink.table.factories.StreamTableSinkFactory\u0027 in\nthe classpath.\n\nReason: No context matches.\n\nThe following properties are requested:\nconnector.property-version\u003d1\nconnector.type\u003dorc\npath\u003dfile:///tmp/a/orc\n\nThe following factories have been considered:\norg.apache.flink.table.sources.csv.CsvBatchTableSourceFactory\norg.apache.flink.table.sources.csv.CsvAppendTableSourceFactory\norg.apache.flink.table.sinks.csv.CsvBatchTableSinkFactory\norg.apache.flink.table.sinks.csv.CsvAppendTableSinkFactory\norg.apache.flink.table.factories.csv.CsvTableFactory\norg.apache.flink.table.factories.orc.OrcTableFactory\norg.apache.flink.table.factories.parquet.ParquetTableFactory\norg.apache.flink.table.sinks.filesystem.FileSystemTableSinkFactory\norg.apache.flink.streaming.connectors.hive.HiveTableFactory\n\n\tat org.apache.flink.table.factories.TableFactoryService$.filterByContext(TableFactoryService.scala:217)\n\tat org.apache.flink.table.factories.TableFactoryService$.findInternal(TableFactoryService.scala:128)\n\tat org.apache.flink.table.factories.TableFactoryService$.find(TableFactoryService.scala:53)\n\tat org.apache.flink.table.catalog.ExternalTableUtil$.toTableSink(ExternalTableUtil.scala:101)\n\tat org.apache.flink.table.plan.schema.CatalogCalciteTable.streamTableSink(CatalogCalciteTable.scala:140)\n\tat org.apache.flink.table.plan.schema.CatalogCalciteTable.tableSink(CatalogCalciteTable.scala:127)\n\tat org.apache.flink.table.api.TableEnvironment.writeTo(TableEnvironment.scala:1418)\n\tat org.apache.flink.table.api.TableEnvironment.sqlNodeUpdate(TableEnvironment.scala:1323)\n\tat org.apache.flink.table.api.TableEnvironment.sqlUpdate(TableEnvironment.scala:1299)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callInsertInto(FlinkSqlInterrpeter.java:224)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callCommand(FlinkSqlInterrpeter.java:144)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.runSqlList(FlinkSqlInterrpeter.java:101)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.interpret(FlinkSqlInterrpeter.java:77)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:103)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:595)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:488)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.ParallelScheduler.lambda$runJobInScheduler$0(ParallelScheduler.java:39)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1553047268502_695880422",
+      "id": "paragraph_1553047268502_695880422",
+      "dateCreated": "2019-03-20 10:01:08.502",
+      "dateStarted": "2019-03-20 10:01:45.831",
+      "dateFinished": "2019-03-20 10:01:46.920",
+      "status": "ERROR"
+    },
+    {
+      "text": "%flink.ssql\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-03-20 10:01:45.830",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1553047305830_-1510392611",
+      "id": "paragraph_1553047305830_-1510392611",
+      "dateCreated": "2019-03-20 10:01:45.830",
+      "status": "READY"
+    }
+  ],
+  "name": "ORC Tutorial",
+  "id": "2E7415FV9",
+  "defaultInterpreterGroup": "flink",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

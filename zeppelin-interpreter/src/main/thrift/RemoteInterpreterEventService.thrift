@@ -39,8 +39,9 @@ struct OutputUpdateEvent {
   2: string paragraphId,
   3: i32 index,
   4: string type,
-  5: string data,
-  6: string appId
+  5: map<string, string> config,
+  6: string data,
+  7: string appId
 }
 
 struct OutputUpdateAllEvent {
@@ -114,6 +115,7 @@ service RemoteInterpreterEventService {
   void removeAngularObject(1: string intpGroupId, 2: string noteId, 3: string paragraphId, 4: string name);
 
   void sendParagraphInfo(1: string intpGroupId, 2: string json);
+  void updateParagraphConfig(1: string noteId, 2: string paragraphId, 3: map<string, string> config)
 
   list<string> getAllResources(1: string intpGroupId);
   binary getResource(1: string resourceIdJson);

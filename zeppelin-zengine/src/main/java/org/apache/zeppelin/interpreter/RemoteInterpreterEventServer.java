@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -185,7 +186,7 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
   public void updateOutput(OutputUpdateEvent event) throws TException {
     if (event.getAppId() == null) {
       listener.onOutputUpdated(event.getNoteId(), event.getParagraphId(), event.getIndex(),
-          InterpreterResult.Type.valueOf(event.getType()), event.getData());
+          InterpreterResult.Type.valueOf(event.getType()), event.getConfig(), event.getData());
     } else {
       appListener.onOutputUpdated(event.getNoteId(), event.getParagraphId(), event.getIndex(),
           event.getAppId(), InterpreterResult.Type.valueOf(event.getType()), event.getData());
@@ -198,7 +199,7 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
     for (int i = 0; i < event.getMsg().size(); i++) {
       RemoteInterpreterResultMessage msg = event.getMsg().get(i);
       listener.onOutputUpdated(event.getNoteId(), event.getParagraphId(), i,
-          InterpreterResult.Type.valueOf(msg.getType()), msg.getData());
+          InterpreterResult.Type.valueOf(msg.getType()), new HashMap<>(), msg.getData());
     }
   }
 
@@ -297,6 +298,17 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
         getInterpreterSettingId(interpreterGroup.getId());
     if (noteId != null && paraId != null && settingId != null) {
       listener.onParaInfosReceived(noteId, paraId, settingId, paraInfos);
+    }
+  }
+
+  @Override
+  public void updateParagraphConfig(String noteId,
+                                    String paragraphId,
+                                    Map<String, String> config) throws TException {
+    try {
+      listener.onUpdateParagraphConfig(noteId, paragraphId, config);
+    } catch (IOException e) {
+      throw new TException(e);
     }
   }
 

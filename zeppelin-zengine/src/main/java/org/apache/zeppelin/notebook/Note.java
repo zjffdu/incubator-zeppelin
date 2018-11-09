@@ -515,7 +515,6 @@ public class Note implements JsonSerializable {
 
   public void clearParagraphOutputFields(Paragraph p) {
     p.setReturn(null, null);
-    p.cleanRuntimeInfos();
   }
 
   public Paragraph clearPersonalizedParagraphOutput(String paragraphId, String user) {

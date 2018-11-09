@@ -20,6 +20,7 @@ package org.apache.zeppelin.interpreter.remote;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -638,6 +639,8 @@ public class RemoteInterpreterServer extends Thread
           }
         }
         return new InterpreterResult(result.code(), resultMessages);
+      } catch (Exception e) {
+        return new InterpreterResult(Code.ERROR, ExceptionUtils.getStackTrace(e));
       } finally {
         Thread.currentThread().setContextClassLoader(currentThreadContextClassloader);
         InterpreterContext.remove();
@@ -766,7 +769,7 @@ public class RemoteInterpreterServer extends Thread
       @Override
       public void onAppend(int index, InterpreterResultMessageOutput out, byte[] line) {
         String output = new String(line);
-        logger.debug("Output Append: {}", output);
+        logger.debug("Output Append for index {}: {}", index, output);
         intpEventClient.onInterpreterOutputAppend(
             noteId, paragraphId, index, output);
       }
@@ -778,7 +781,7 @@ public class RemoteInterpreterServer extends Thread
           output = new String(out.toByteArray());
           logger.debug("Output Update for index {}: {}", index, output);
           intpEventClient.onInterpreterOutputUpdate(
-              noteId, paragraphId, index, out.getType(), output);
+              noteId, paragraphId, index, out.getType(), out.getConfig(), output);
         } catch (IOException e) {
           logger.error(e.getMessage(), e);
         }
@@ -1132,7 +1135,7 @@ public class RemoteInterpreterServer extends Thread
       ApplicationContext context = runningApp.app.context();
       try {
         context.out.clear();
-        context.out.setType(InterpreterResult.Type.ANGULAR);
+        context.out.setTypeAndConfig(InterpreterResult.Type.ANGULAR);
         ResourceSet resource = appLoader.findRequiredResourceSet(
             runningApp.pkg.getResources(),
             context.getNoteId(),

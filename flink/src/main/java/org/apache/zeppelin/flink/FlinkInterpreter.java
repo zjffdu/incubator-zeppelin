@@ -17,14 +17,17 @@
 
 package org.apache.zeppelin.flink;
 
-import org.apache.flink.api.scala.ExecutionEnvironment;
+import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
+import org.apache.flink.table.api.BatchTableEnvironment;
+import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -41,14 +44,7 @@ public class FlinkInterpreter extends Interpreter {
   @Override
   public void open() throws InterpreterException {
     this.innerIntp.open();
-
-    // bind ZeppelinContext
-    int maxRow = Integer.parseInt(getProperty("zeppelin.flink.maxResult", "1000"));
-    this.z = new FlinkZeppelinContext(innerIntp.getBatchTableEnviroment(),
-        getInterpreterGroup().getInterpreterHookRegistry(), maxRow);
-    List<String> modifiers = new ArrayList<>();
-    modifiers.add("@transient");
-    this.innerIntp.bind("z", z.getClass().getCanonicalName(), z, modifiers);
+    this.z = this.innerIntp.getZeppelinContext();
   }
 
   @Override
@@ -67,17 +63,17 @@ public class FlinkInterpreter extends Interpreter {
 
   @Override
   public void cancel(InterpreterContext context) throws InterpreterException {
-
+    this.innerIntp.cancel(context);
   }
 
   @Override
   public FormType getFormType() throws InterpreterException {
-    return FormType.NATIVE;
+    return FormType.SIMPLE;
   }
 
   @Override
   public int getProgress(InterpreterContext context) throws InterpreterException {
-    return 0;
+    return this.innerIntp.getProgress(context);
   }
 
   @Override
@@ -92,12 +88,43 @@ public class FlinkInterpreter extends Interpreter {
     return this.innerIntp;
   }
 
-  ExecutionEnvironment getExecutionEnviroment() {
-    return this.innerIntp.getExecutionEnviroment();
+  StreamExecutionEnvironment getStreamExecutionEnvironment() {
+    return this.innerIntp.getStreamExecutionEnvironment();
+  }
+
+  StreamTableEnvironment getStreamTableEnvironment() {
+    return this.innerIntp.getStreamTableEnvionment();
+  }
+
+  BatchTableEnvironment getBatchTableEnvironment() {
+    return this.innerIntp.getBatchTableEnvironment();
+  }
+
+  JobManager getJobManager() {
+    return this.innerIntp.getJobManager();
+  }
+
+  int getDefaultParallelism() {
+    return this.innerIntp.getDefaultParallelism();
+  }
+
+  public ClassLoader getFlinkScalaShellLoader() {
+    return innerIntp.getFlinkScalaShellLoader();
   }
 
   FlinkZeppelinContext getZeppelinContext() {
     return this.z;
   }
 
+  Configuration getFlinkConfiguration() {
+    return this.innerIntp.getConfiguration();
+  }
+
+  ClusterClient getClusterClient() {
+    return this.innerIntp.getClusterClient();
+  }
+
+  public FlinkScalaInterpreter getInnerIntp() {
+    return this.innerIntp;
+  }
 }

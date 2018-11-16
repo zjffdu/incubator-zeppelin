@@ -147,7 +147,7 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
   }
 
   @Test
-  public void scalaOutputTest() throws IOException {
+  public void scalaOutputTest() throws IOException, InterruptedException {
     // create new note
     Note note = ZeppelinServer.notebook.createNote("note1", anonymous);
     Paragraph p = note.addNewParagraph(anonymous);
@@ -176,6 +176,17 @@ public class ZeppelinSparkClusterTest extends AbstractTestRestApi {
     // test code completion
     List<InterpreterCompletion> completions = note.completion(p.getId(), "sc.", 2);
     assertTrue(completions.size() > 0);
+
+    // test cancel
+    p.setText("%spark sc.range(1,10).map(e=>{Thread.sleep(1000); e}).collect()");
+    note.run(p.getId(), false);
+    // wait for 3 seconds so that job is started before cancel
+    Thread.sleep(3000);
+    p.abort();
+    // wait for 3 seconds so that paragraph will update to its correct status.
+    Thread.sleep(3000);
+    assertEquals(Status.ABORT, p.getStatus());
+
     ZeppelinServer.notebook.removeNote(note.getId(), anonymous);
   }
 

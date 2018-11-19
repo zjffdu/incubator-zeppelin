@@ -363,7 +363,7 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
       }
     } catch (InterpreterNotFoundException e) {
       InterpreterResult intpResult =
-          new InterpreterResult(InterpreterResult.Code.ERROR);
+          new InterpreterResult(InterpreterResult.Code.ERROR, "");
       setReturn(intpResult, e);
       setStatus(Job.Status.ERROR);
       throw new RuntimeException(e);

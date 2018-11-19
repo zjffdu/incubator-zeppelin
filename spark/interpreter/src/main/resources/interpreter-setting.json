@@ -263,5 +263,19 @@
       "editOnDblClick": false,
       "completionSupport": false
     }
+  },
+
+  {
+    "group": "spark",
+    "name": "perf",
+    "className": "org.apache.zeppelin.spark.SparkBenchmarkInterpreter",
+    "properties": {
+
+    },
+    "editor": {
+      "language": "benchmark",
+      "editOnDblClick": false,
+      "completionSupport": false
+    }
   }
 ]

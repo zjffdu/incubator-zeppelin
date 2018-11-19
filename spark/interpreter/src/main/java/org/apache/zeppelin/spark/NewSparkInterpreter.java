@@ -93,6 +93,10 @@ public class NewSparkInterpreter extends AbstractSparkInterpreter {
           conf.set("spark.scheduler.mode", "FAIR");
         }
       }
+
+      int blockSize = 536870912;
+      conf.set("dfs.blocksize", blockSize + "");
+
       // use local mode for embedded spark mode when spark.master is not found
       conf.setIfMissing("spark.master", "local");
 

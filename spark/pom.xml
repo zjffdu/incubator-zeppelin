@@ -245,16 +245,16 @@
             </modules>
         </profile>
 
-        <profile>
-            <id>spark-1.6</id>
-            <properties>
-                <spark.version>1.6.3</spark.version>
-                <py4j.version>0.9</py4j.version>
-            </properties>
-            <modules>
-                <module>scala-2.10</module>
-            </modules>
-        </profile>
+        <!--<profile>-->
+            <!--<id>spark-1.6</id>-->
+            <!--<properties>-->
+                <!--<spark.version>1.6.3</spark.version>-->
+                <!--<py4j.version>0.9</py4j.version>-->
+            <!--</properties>-->
+            <!--<modules>-->
+                <!--<module>scala-2.10</module>-->
+            <!--</modules>-->
+        <!--</profile>-->
 
     </profiles>
 </project>

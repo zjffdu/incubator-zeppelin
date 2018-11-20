@@ -166,7 +166,7 @@ object QueryBenchmark {
     }
   }
 
-  private def setupTables(
+  def setupTables(
       spark: SparkSession,
       context: SQLContext,
       params: Params): Map[String, Long] = {
@@ -280,7 +280,6 @@ object QueryBenchmark {
   private def runBenchmark(spark: SparkSession, params: Params, queries: Array[String],
                            context: InterpreterContext): Unit = {
     val sqlContext = spark.sqlContext
-    setupTables(spark, sqlContext, params)
 
     if (params.warmUp) {
       runQuery("warm.q", 1, true, params, sqlContext, context)

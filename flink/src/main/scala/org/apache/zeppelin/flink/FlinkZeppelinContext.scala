@@ -33,7 +33,6 @@ import org.apache.zeppelin.interpreter.{BaseZeppelinContext, InterpreterContext,
 
 import scala.collection.{JavaConversions, Seq}
 
-
 /**
   * ZeppelinContext for Flink
   */
@@ -57,12 +56,11 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   override def showData(obj: Any): String = {
     def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getFieldNames
-      val dsRow: DataSet[Row] = btenv.toDataSet[Row](table)
+      val columnNames: Array[String] = table.getSchema.getColumnNames
+      val rows: Seq[Row] = table.collect()
       val builder = new StringBuilder("%table\n")
       builder.append(columnNames.mkString("\t"))
       builder.append("\n")
-      val rows = dsRow.first(maxResult).collect()
       for (row <- rows) {
         var i = 0;
         while (i < row.getArity) {
@@ -80,9 +78,11 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
     }
 
     if (obj.isInstanceOf[DataSet[_]]) {
-      val ds = obj.asInstanceOf[DataSet[_]]
-      val table = btenv.fromDataSet(ds)
-      showTable(table)
+      throw new RuntimeException("DataSet is not supported yet")
+      //      val table = btenv.from
+      //      val ds = obj.asnstanceOf[DataSet[_]]
+      //      val table = btenv.fro
+      //      showTable(table)
     } else if (obj.isInstanceOf[Table]) {
       showTable(obj.asInstanceOf[Table])
     } else {

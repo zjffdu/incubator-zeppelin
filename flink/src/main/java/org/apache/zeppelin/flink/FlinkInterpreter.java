@@ -18,6 +18,7 @@
 package org.apache.zeppelin.flink;
 
 import org.apache.flink.api.scala.ExecutionEnvironment;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -94,6 +95,10 @@ public class FlinkInterpreter extends Interpreter {
 
   ExecutionEnvironment getExecutionEnviroment() {
     return this.innerIntp.getExecutionEnvironment();
+  }
+
+  StreamExecutionEnvironment getStreamExecutionEnvironment() {
+    return this.innerIntp.getStreamExecutionEnvironment().getJavaEnv();
   }
 
   FlinkZeppelinContext getZeppelinContext() {

@@ -37,7 +37,7 @@ class FlinkScalaStreamSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
       if (context.getLocalProperties.getOrDefault("stream_type", "append").equals("append")) {
         val iter = DataStreamUtils.collect(table.toAppendStream[Row].javaStream)
         context.out.write("%table\n")
-        val columnsNames = table.getSchema.getFieldNames
+        val columnsNames = table.getSchema.getColumnNames
         context.out.write(columnsNames.mkString("\t"))
         context.out.write("\n")
 

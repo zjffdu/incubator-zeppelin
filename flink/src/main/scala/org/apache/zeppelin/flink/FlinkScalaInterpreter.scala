@@ -23,15 +23,19 @@ import java.nio.file.Files
 import java.util.Properties
 
 import org.apache.commons.lang3.StringUtils
-import org.apache.flink.api.common.{JobExecutionResult, JobID}
-import org.apache.flink.api.java.JobListener
+import org.apache.flink.api.common.JobID
+import org.apache.flink.runtime.minicluster.StandaloneMiniCluster
+import org.apache.flink.table.api.TableEnvironment
+
+import scala.tools.nsc.interpreter.StdReplTags.tagOfIMain
+import scala.tools.nsc.interpreter.{IMain, NamedParam, Results, StdReplTags, isReplPower, replProps}
+//import org.apache.flink.api.java.JobListener
 import org.apache.flink.api.scala.FlinkShell._
 import org.apache.flink.api.scala.{ExecutionEnvironment, FlinkILoop}
 import org.apache.flink.client.program.ClusterClient
 import org.apache.flink.configuration.GlobalConfiguration
 import org.apache.flink.runtime.minicluster.MiniCluster
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
-import org.apache.flink.table.api.TableEnvironment
 import org.apache.flink.table.api.scala.{BatchTableEnvironment, StreamTableEnvironment}
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion
 import org.apache.zeppelin.interpreter.util.InterpreterOutputStream
@@ -48,7 +52,10 @@ class FlinkScalaInterpreter(val properties: Properties) {
   lazy val LOGGER: Logger = LoggerFactory.getLogger(getClass)
 
   private var flinkILoop: FlinkILoop = _
-  private var cluster: Option[Either[MiniCluster, ClusterClient[_]]] = _
+  private type LocalCluster = Either[StandaloneMiniCluster, MiniCluster]
+
+  private var cluster: Option[Either[LocalCluster, ClusterClient[_]]] = _
+
   private var scalaCompleter: ScalaCompleter = _
   private val interpreterOutput = new InterpreterOutputStream(LOGGER)
 
@@ -66,6 +73,11 @@ class FlinkScalaInterpreter(val properties: Properties) {
     val containerNum = Integer.parseInt(properties.getProperty("flink.yarn.num_container", "1"))
     config = config.copy(yarnConfig =
       Some(ensureYarnConfig(config).copy(containers = Some(containerNum))))
+    if (properties.containsKey("flink.execution.remote.host")) {
+      config = config.copy(host = Some(properties.getProperty("flink.execution.remote.host")))
+      config = config.copy(port = Some(properties.getProperty("flink.execution.remote.port").toInt))
+    }
+
     if (!StringUtils.isBlank(properties.getProperty("flink.execution.jars"))) {
       config = config.copy(
         externalJars = Some(properties.getProperty("flink.execution.jars").split(":")))
@@ -85,7 +97,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
     val (iLoop, cluster) = try {
       val (host, port, cluster) = fetchConnectionInfo(configuration, config)
       val conf = cluster match {
-        case Some(Left(_)) => configuration
+        case Some(Left(Left(miniCluster))) => miniCluster.getConfiguration
+        case Some(Left(Right(_))) => configuration
         case Some(Right(yarnCluster)) => yarnCluster.getFlinkConfiguration
         case None => configuration
       }
@@ -126,12 +139,15 @@ class FlinkScalaInterpreter(val properties: Properties) {
     flinkILoop.in = reader
     flinkILoop.initializeSynchronous()
     flinkILoop.intp.setContextClassLoader()
+    loopPostInit(this)
+    this.scalaCompleter = reader.completion.completer()
     reader.postInit()
     this.scalaCompleter = reader.completion.completer()
 
     this.benv = flinkILoop.scalaBenv
     this.senv = flinkILoop.scalaSenv
-    this.btEnv = TableEnvironment.getTableEnvironment(this.benv)
+    this.senv.getJavaEnv.setMultiHeadChainMode(true)
+    this.btEnv = TableEnvironment.getBatchTableEnvironment(this.senv)
     this.stEnv = TableEnvironment.getTableEnvironment(this.senv)
     bind("btEnv", btEnv.getClass.getCanonicalName, btEnv, List("@transient"))
     bind("stEnv", stEnv.getClass.getCanonicalName, stEnv, List("@transient"))
@@ -146,19 +162,20 @@ class FlinkScalaInterpreter(val properties: Properties) {
     flinkILoop.interpret("import org.apache.flink.types.Row")
 
 
-    this.benv.addListener(new JobListener {
-      override def onJobSubmitted(jobID: JobID): Unit = {
-        jobs.put(InterpreterContext.get().getParagraphId, jobID)
-      }
 
-      override def onJobExecuted(jobExecutionResult: JobExecutionResult): Unit = {
-
-      }
-
-      override def onJobCanceled(jobID: JobID): Unit = {
-
-      }
-    })
+    //    this.benv.addListener(new JobListener {
+    //      override def onJobSubmitted(jobID: JobID): Unit = {
+    //        jobs.put(InterpreterContext.get().getParagraphId, jobID)
+    //      }
+    //
+    //      override def onJobExecuted(jobExecutionResult: JobExecutionResult): Unit = {
+    //
+    //      }
+    //
+    //      override def onJobCanceled(jobID: JobID): Unit = {
+    //
+    //      }
+    //    })
   }
 
   // for use in java side
@@ -246,28 +263,36 @@ class FlinkScalaInterpreter(val properties: Properties) {
   }
 
   def cancel(context: InterpreterContext): Unit = {
-    if (jobs.contains(context.getParagraphId)) {
-      this.benv.cancel(jobs(context.getParagraphId))
-    } else {
-      LOGGER.warn("Unable to cancel this paragraph as no job is associated with this paragraph: "
-        + context.getParagraphId)
-    }
+    //    if (jobs.contains(context.getParagraphId)) {
+    //      this.benv.cancel(jobs(context.getParagraphId))
+    //    } else {
+    //      LOGGER.warn("Unable to cancel this paragraph as no job is associated with this paragraph: "
+    //        + context.getParagraphId)
+    //    }
   }
 
   def close(): Unit = {
     if (flinkILoop != null) {
       flinkILoop.close()
     }
+
     if (cluster != null) {
       cluster match {
-        case Some(Left(miniCluster)) => miniCluster.close()
+        case Some(Left(Left(legacyMiniCluster))) =>
+          LOGGER.info("Shutdown LegacyMiniCluster")
+          legacyMiniCluster.close()
+        case Some(Left(Right(newMiniCluster))) =>
+          LOGGER.info("Shutdown NewMiniCluster")
+          newMiniCluster.close()
         case Some(Right(yarnCluster)) =>
+          LOGGER.info("Shutdown YarnCluster")
           yarnCluster.shutDownCluster()
           yarnCluster.shutdown()
         case e =>
           LOGGER.error("Unrecognized cluster type: " + e.getClass.getSimpleName)
       }
     }
+
   }
 
   def getExecutionEnvironment(): ExecutionEnvironment = this.benv
@@ -279,6 +304,73 @@ class FlinkScalaInterpreter(val properties: Properties) {
   def getStreamTableEnvionment(): StreamTableEnvironment = this.stEnv
 
   def getUserJars: Seq[String] = {
-    properties.getProperty("flink.execution.jars",".").split(":")
+    properties.getProperty("flink.execution.jars", ".").split(":")
+  }
+
+  /**
+    * This is a hack to call `loopPostInit` at `ILoop`. At higher version of Scala such
+    * as 2.11.12, `loopPostInit` became a nested function which is inaccessible. Here,
+    * we redefine `loopPostInit` at Scala's 2.11.8 side and ignore `loadInitFiles` being called at
+    * Scala 2.11.12 since here we do not have to load files.
+    *
+    * Both methods `loopPostInit` and `unleashAndSetPhase` are redefined, and `phaseCommand` and
+    * `asyncMessage` are being called via reflection since both exist in Scala 2.11.8 and 2.11.12.
+    *
+    * Please see the codes below:
+    * https://github.com/scala/scala/blob/v2.11.8/src/repl/scala/tools/nsc/interpreter/ILoop.scala
+    * https://github.com/scala/scala/blob/v2.11.12/src/repl/scala/tools/nsc/interpreter/ILoop.scala
+    *
+    * See also ZEPPELIN-3810.
+    */
+  private def loopPostInit(interpreter: FlinkScalaInterpreter): Unit = {
+    import StdReplTags._
+    import scala.reflect.classTag
+    import scala.reflect.io
+
+    val flinkILoop = interpreter.flinkILoop
+    val intp = flinkILoop.intp
+    val power = flinkILoop.power
+    val in = flinkILoop.in
+
+    def loopPostInit() {
+      // Bind intp somewhere out of the regular namespace where
+      // we can get at it in generated code.
+      intp.quietBind(NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
+      // Auto-run code via some setting.
+      (replProps.replAutorunCode.option
+        flatMap (f => io.File(f).safeSlurp())
+        foreach (intp quietRun _)
+        )
+      // classloader and power mode setup
+      intp.setContextClassLoader()
+      if (isReplPower) {
+        replProps.power setValue true
+        unleashAndSetPhase()
+        asyncMessage(power.banner)
+      }
+      // SI-7418 Now, and only now, can we enable TAB completion.
+      //      in.postInit()
+    }
+
+    def unleashAndSetPhase() = if (isReplPower) {
+      power.unleash()
+      intp beSilentDuring phaseCommand("typer") // Set the phase to "typer"
+    }
+
+    def phaseCommand(name: String): Results.Result = {
+      interpreter.callMethod(
+        flinkILoop,
+        "scala$tools$nsc$interpreter$ILoop$$phaseCommand",
+        Array(classOf[String]),
+        Array(name)).asInstanceOf[Results.Result]
+    }
+
+    def asyncMessage(msg: String): Unit = {
+      interpreter.callMethod(
+        flinkILoop, "asyncMessage", Array(classOf[String]), Array(msg))
+    }
+
+    loopPostInit()
   }
 }
+

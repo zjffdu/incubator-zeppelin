@@ -9,7 +9,7 @@ import org.apache.zeppelin.interpreter.util.InterpreterOutputStream
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
 import org.slf4j.{Logger, LoggerFactory}
 
-class SparkScalaBenchmarkInterpreter(spark: SparkSession, properties: Properties) {
+class SparkScalaBenchmarkInterpreter(spark: SparkSession, z: SparkZeppelinContext, properties: Properties) {
 
   val LOGGER: Logger = LoggerFactory.getLogger(classOf[SparkScalaBenchmarkInterpreter])
   var params: QueryBenchmark.Params = _
@@ -30,9 +30,42 @@ class SparkScalaBenchmarkInterpreter(spark: SparkSession, properties: Properties
       optimizedPlanCollect = properties.getProperty("spark.perf.optimizedPlanCollect", "false").toBoolean,
       dumpFileOfOptimizedPlan = properties.getProperty("spark.perf.dumpFileOfOptimizedPlan")
     )
+
+    try {
+      Console.withOut(interpreterOutput) {
+        System.setOut(Console.out)
+        val context = InterpreterContext.get()
+        interpreterOutput.setInterpreterOutput(context.out)
+        interpreterOutput.ignoreLeadingNewLinesFromScalaReporter()
+        context.out.clear()
+        QueryBenchmark.setupTables(spark, spark.sqlContext, params)
+        context.out.flush()
+      }
+    } catch {
+      case e: Exception =>
+        LOGGER.error("fail to setup table", e)
+        throw new RuntimeException("Fail to setup table", e)
+    }
   }
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
+    z.setGui(context.getGui)
+    z.setNoteGui(context.getNoteGui)
+    z.setInterpreterContext(context)
+    z.select("sql", (1 to 23).map(e => {
+      if (e < 10) {
+        ("0" + e + ".q", "0" + e + ".q")
+      } else {
+        (e + ".q", e + ".q")
+      }
+    }) :+ ("all", "all"))
+
+    if (!context.getGui.getParams.containsKey("sql")
+      && !context.getGui.getForms.containsKey("sql")) {
+      return new InterpreterResult(InterpreterResult.Code.SUCCESS, "Init form");
+    } else {
+      params.sqlQueries = context.getGui.getParams.get("sql").toString
+    }
     try {
       Console.withOut(interpreterOutput) {
         System.setOut(Console.out)

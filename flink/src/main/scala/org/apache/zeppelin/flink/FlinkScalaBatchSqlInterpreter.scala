@@ -18,6 +18,8 @@
 
 package org.apache.zeppelin.flink
 
+import org.apache.calcite.avatica.util.DateTimeUtils
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.flink.table.api.Table
 import org.apache.flink.table.api.scala.BatchTableEnvironment
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
@@ -30,13 +32,14 @@ class FlinkScalaBatchSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
     try {
-      val table: Table = this.btEnv.sqlQuery(code)
+      this.btEnv.getConfig.setTimeZone(DateTimeUtils.UTC_ZONE)
+      val table = this.btEnv.sqlQuery(code)
       val result = z.showData(table)
       return new InterpreterResult(InterpreterResult.Code.SUCCESS, result)
     } catch {
       case e: Exception =>
         return new InterpreterResult(InterpreterResult.Code.ERROR,
-          "Fail to fetch result: " + e.getMessage)
+          "Fail to fetch result:\n" + ExceptionUtils.getStackTrace(e))
     }
   }
 }

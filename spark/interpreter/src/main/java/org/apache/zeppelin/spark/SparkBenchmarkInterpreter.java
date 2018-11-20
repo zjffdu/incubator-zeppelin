@@ -21,7 +21,9 @@ public class SparkBenchmarkInterpreter extends Interpreter {
   public void open() throws InterpreterException {
     this.sparkInterpreter = getInterpreterInTheSameSessionByClassName(SparkInterpreter.class);
     this.scalaBenchmarkInterpreter = new SparkScalaBenchmarkInterpreter(
-            (SparkSession) this.sparkInterpreter.getSparkSession(), getProperties());
+            (SparkSession) this.sparkInterpreter.getSparkSession(),
+            sparkInterpreter.getZeppelinContext(),
+            getProperties());
     this.scalaBenchmarkInterpreter.open();
     // init table
   }

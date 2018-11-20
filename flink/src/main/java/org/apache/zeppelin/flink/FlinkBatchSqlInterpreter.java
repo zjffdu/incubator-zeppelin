@@ -22,11 +22,14 @@ import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResult;
+import org.apache.zeppelin.scheduler.Scheduler;
+import org.apache.zeppelin.scheduler.SchedulerFactory;
 
 import java.util.Properties;
 
 public class FlinkBatchSqlInterpreter extends Interpreter {
 
+  private FlinkInterpreter flinkInterpreter;
   private FlinkScalaBatchSqlInterpreter scalaBatchSqlInterpreter;
 
   public FlinkBatchSqlInterpreter(Properties properties) {
@@ -36,7 +39,7 @@ public class FlinkBatchSqlInterpreter extends Interpreter {
 
   @Override
   public void open() throws InterpreterException {
-    FlinkInterpreter flinkInterpreter =
+    flinkInterpreter =
         getInterpreterInTheSameSessionByClassName(FlinkInterpreter.class);
     FlinkZeppelinContext z = flinkInterpreter.getZeppelinContext();
     int maxRow = Integer.parseInt(getProperty("zeppelin.flink.maxResult", "1000"));
@@ -52,12 +55,15 @@ public class FlinkBatchSqlInterpreter extends Interpreter {
   @Override
   public InterpreterResult interpret(String st, InterpreterContext context)
       throws InterpreterException {
+    flinkInterpreter.getZeppelinContext().setInterpreterContext(context);
+    flinkInterpreter.getZeppelinContext().setNoteGui(context.getNoteGui());
+    flinkInterpreter.getZeppelinContext().setGui(context.getGui());
     return scalaBatchSqlInterpreter.interpret(st, context);
   }
 
   @Override
   public void cancel(InterpreterContext context) throws InterpreterException {
-
+    flinkInterpreter.getJobManager().cancelJob(context);
   }
 
   @Override
@@ -68,5 +74,13 @@ public class FlinkBatchSqlInterpreter extends Interpreter {
   @Override
   public int getProgress(InterpreterContext context) throws InterpreterException {
     return 0;
+  }
+
+  @Override
+  public Scheduler getScheduler() {
+    int maxConcurrency = Integer.parseInt(
+            getProperty("zeppelin.flink.concurrentBatchSql.max", "10"));
+    return SchedulerFactory.singleton().createOrGetParallelScheduler(
+            FlinkBatchSqlInterpreter.class.getName() + this.hashCode(), maxConcurrency);
   }
 }

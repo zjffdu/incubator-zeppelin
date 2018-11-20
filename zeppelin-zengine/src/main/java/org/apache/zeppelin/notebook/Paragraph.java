@@ -335,11 +335,11 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
   }
 
   public boolean execute(boolean blocking) {
-    if (isBlankParagraph()) {
-      LOGGER.info("Skip to run blank paragraph. {}", getId());
-      setStatus(Job.Status.FINISHED);
-      return true;
-    }
+    //    if (isBlankParagraph()) {
+    //      LOGGER.info("Skip to run blank paragraph. {}", getId());
+    //      setStatus(Job.Status.FINISHED);
+    //      return true;
+    //    }
 
     try {
       this.interpreter = getBindedInterpreter();

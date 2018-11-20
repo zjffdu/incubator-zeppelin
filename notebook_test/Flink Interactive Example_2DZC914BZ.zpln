@@ -1,0 +1,142 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /Users/jzhang/github/flink-ali/build-target\nflink.execution.mode local\nflink.execution.remote.host localhost\nflink.execution.remote.port 8081\n#flink.execution.jars /Users/jzhang/flink-connector-kafka-0.11_2.11-1.8.1-SNAPSHOT.jar:/Users/jzhang/flink-connector-kafka_2.11-1.8.1-SNAPSHOT.jar:/Users/jzhang/flink-connector-kafka-base_2.11-1.8.1-SNAPSHOT.jar\nflink.yarn.tm.num 1\nzeppelin.flink.printREPLOutput true",
+      "user": "anonymous",
+      "dateUpdated": "2018-11-29 22:52:48.667",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1543500433178_-405767085",
+      "id": "paragraph_1543500433178_-405767085",
+      "dateCreated": "2018-11-29 22:07:13.179",
+      "dateStarted": "2018-11-29 22:52:48.694",
+      "dateFinished": "2018-11-29 22:52:48.699",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\ncase class Model(th0: Double, th1: Double, th2: Double) {\n\n  def +(other: Model): Model \u003d\n    Model(th0 + other.th0, th1 + other.th1, th2 + other.th2)\n\n  def *(c: Double): Model \u003d\n    Model(c * th0, c * th1, c * th2)\n}\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-11-29 22:52:50.323",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "defined class Model\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1543500704574_498149869",
+      "id": "paragraph_1543500704574_498149869",
+      "dateCreated": "2018-11-29 22:11:44.574",
+      "dateStarted": "2018-11-29 22:52:50.329",
+      "dateFinished": "2018-11-29 22:53:02.486",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\n\nimport org.apache.flink.table.expressions.Expression\n\nbtEnv.getConfig.setSubsectionOptimization(true)\n\n\nvar model \u003d Model(100, 100, 100)\nval trainingData \u003d btEnv.fromCollection(Seq(\n(1.0, 1.0, 1.0, 3.0),\n(1.0, 2.0, 1.0, 4.0),\n(1.0, 1.0, 6.0, 13.0),\n(1.0, 3.0, 4.0, 11.0),\n(1.0, 5.0, 2.0, 9.0),\n(1.0, 7.0, 9.0, 25.0),\n(1.0, 8.0, 3.0, 14.0),\n(1.0, 1.5, 6.0, 13.5),\n(1.0, 10.0, 11.0, 32.0)\n)).as(\u0027x0, \u0027x1, \u0027x2, \u0027y)\n\nvar iterations \u003d 800\nval learningRate \u003d 0.003\n\nval filteredTrainingData \u003d trainingData.filter(\u0027x0 \u003c 100)\nfilteredTrainingData.persist()\n\n// first run\nval filteredDataSize \u003d filteredTrainingData.collect().size\n\n// decision\nif (filteredDataSize \u003c 20) {\n\nwhile (iterations \u003e 0) {\n\n  println(s\"do iteration round: #${iterations}\")\n\n  val expr: Expression \u003d \u0027y - (\u0027x0 * model.th0  + \u0027x1 * model.th1 + \u0027x2 * model.th2)\n\n  val delta \u003d filteredTrainingData\n    .select(\n      expr * \u0027x0 as \u0027x0,\n      expr * \u0027x1 as \u0027x1,\n      expr * \u0027x2 as \u0027x2\n    )\n    .select(\n      \u0027x0.sum as \u0027d0,\n      \u0027x1.sum as \u0027d1,\n      \u0027x2.sum as \u0027d2\n    ).collect().head\n\n  val deltaModel \u003d Model(\n    delta.getField(0).asInstanceOf[Double],\n    delta.getField(1).asInstanceOf[Double],\n    delta.getField(2).asInstanceOf[Double]\n  )\n\n  model \u003d model + (deltaModel * learningRate)\n  iterations -\u003d 1\n}\n} else {\n\nval res \u003d filteredTrainingData\n  .select(\u0027x0.avg as \u0027x0, \u0027x1.avg as \u0027x1, \u0027x2.avg as \u0027x2).collect().head\n\nval d0 \u003d res.getField(0).asInstanceOf[Double]\nval d1 \u003d res.getField(1).asInstanceOf[Double]\nval d2 \u003d res.getField(2).asInstanceOf[Double]\n\nmodel \u003d Model(d0, d1, d2)\n}\n\nprintln(s\"model is $model\")\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-11-29 22:54:24.446",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "java.lang.UnsupportedOperationException: Execution Environment is already defined for this shell.\n  at org.apache.flink.api.java.ScalaShellRemoteEnvironment$1.createExecutionEnvironment(ScalaShellRemoteEnvironment.java:92)\n  at org.apache.flink.api.java.ExecutionEnvironment.getExecutionEnvironment(ExecutionEnvironment.java:1060)\n  at org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.getExecutionEnvironment(StreamExecutionEnvironment.java:1900)\n  at org.apache.flink.table.api.TableEnvironment.startTableServiceJob(TableEnvironment.scala:1056)\n  at org.apache.flink.table.api.BatchTableEnvironment.execute(BatchTableEnvironment.scala:137)\n  at org.apache.flink.table.api.BatchTableEnvironment.collect(BatchTableEnvironment.scala:154)\n  at org.apache.flink.table.api.Table.collectSink(table.scala:135)\n  at org.apache.flink.table.api.Table.collect(table.scala:138)\n  ... 73 elided\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1543500721060_-1172359568",
+      "id": "paragraph_1543500721060_-1172359568",
+      "dateCreated": "2018-11-29 22:12:01.060",
+      "dateStarted": "2018-11-29 22:54:24.453",
+      "dateFinished": "2018-11-29 22:54:30.233",
+      "status": "ERROR"
+    },
+    {
+      "text": "%flink\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-11-29 22:26:52.459",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1543501612459_-816246991",
+      "id": "paragraph_1543501612459_-816246991",
+      "dateCreated": "2018-11-29 22:26:52.459",
+      "status": "READY"
+    }
+  ],
+  "name": "Flink Interactive Example",
+  "id": "2DZC914BZ",
+  "defaultInterpreterGroup": "flink",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

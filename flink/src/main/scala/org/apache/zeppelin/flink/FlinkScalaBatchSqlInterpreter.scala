@@ -26,11 +26,11 @@ class FlinkScalaBatchSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
                                     z: FlinkZeppelinContext,
                                     maxRow: Int) {
 
-  private var btEnv: BatchTableEnvironment = scalaInterpreter.getBatchTableEnvironment()
+  private var btenv: BatchTableEnvironment = scalaInterpreter.getBatchTableEnvironment()
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
     try {
-      val table: Table = this.btEnv.sqlQuery(code)
+      val table: Table = this.btenv.sqlQuery(code)
       val result = z.showData(table)
       return new InterpreterResult(InterpreterResult.Code.SUCCESS, result)
     } catch {

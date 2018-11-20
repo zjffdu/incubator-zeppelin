@@ -21,15 +21,13 @@ package org.apache.zeppelin.flink
 import java.util
 
 import org.apache.flink.api.scala.DataSet
-import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.Table
 import org.apache.flink.table.api.scala.BatchTableEnvironment
 import org.apache.flink.types.Row
 import org.apache.zeppelin.annotation.ZeppelinApi
 import org.apache.zeppelin.display.AngularObjectWatcher
 import org.apache.zeppelin.display.ui.OptionInput.ParamOption
-import org.apache.zeppelin.interpreter.{BaseZeppelinContext, InterpreterContext,
-  InterpreterHookRegistry}
+import org.apache.zeppelin.interpreter.{BaseZeppelinContext, InterpreterContext, InterpreterHookRegistry, ResultMessages}
 
 import scala.collection.{JavaConversions, Seq}
 
@@ -57,12 +55,11 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   override def showData(obj: Any): String = {
     def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getFieldNames
-      val dsRow: DataSet[Row] = btenv.toDataSet[Row](table)
+      val columnNames: Array[String] = table.getSchema.getColumnNames
+      val rows: Seq[Row] = table.collect()
       val builder = new StringBuilder("%table\n")
       builder.append(columnNames.mkString("\t"))
       builder.append("\n")
-      val rows = dsRow.first(maxResult).collect()
       for (row <- rows) {
         var i = 0;
         while (i < row.getArity) {
@@ -74,15 +71,18 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
         }
         builder.append("\n")
       }
+      if (rows.size > maxResult) {
+        builder.append("\n")
+        builder.append(ResultMessages.getExceedsLimitRowsMessage(maxResult,
+          "zeppelin.flink.maxResult"))
+      }
       // append %text at the end, otherwise the following output will be put in table as well.
       builder.append("\n%text ")
       builder.toString()
     }
 
     if (obj.isInstanceOf[DataSet[_]]) {
-      val ds = obj.asInstanceOf[DataSet[_]]
-      val table = btenv.fromDataSet(ds)
-      showTable(table)
+      throw new RuntimeException("DataSet is not supported")
     } else if (obj.isInstanceOf[Table]) {
       showTable(obj.asInstanceOf[Table])
     } else {

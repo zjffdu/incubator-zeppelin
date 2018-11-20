@@ -1,0 +1,439 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /Users/jzhang/github/flink-ali/build-target\nflink.execution.mode remote\nflink.execution.remote.host localhost\nflink.execution.remote.port 8081\n#flink.execution.jars /Users/jzhang/flink-connector-kafka-0.11_2.11-1.8.1-SNAPSHOT.jar:/Users/jzhang/flink-connector-kafka_2.11-1.8.1-SNAPSHOT.jar:/Users/jzhang/flink-connector-kafka-base_2.11-1.8.1-SNAPSHOT.jar\nflink.yarn.tm.num 1\nzeppelin.flink.printREPLOutput true\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-13 12:10:33.376",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1541748061631_1345891257",
+      "id": "paragraph_1541748061631_1345891257",
+      "dateCreated": "2018-11-09 15:21:01.631",
+      "dateStarted": "2018-12-13 12:10:33.423",
+      "dateFinished": "2018-12-13 12:10:33.457",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Job Cancel",
+      "text": "%flink\n\n\nval data \u003d benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\ndata.map(line \u003d\u003e {\n    // Thread.sleep(300)\n     line\n    })\n    .print()\n    \n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-13 10:45:01.537",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "hello world\nhello flink\nhello hadoop\ndata: org.apache.flink.api.scala.DataSet[String] \u003d org.apache.flink.api.scala.DataSet@55eaca6b\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542334232470_-1995224176",
+      "id": "paragraph_1542334232470_-1995224176",
+      "dateCreated": "2018-11-16 10:10:32.470",
+      "dateStarted": "2018-12-13 10:45:01.543",
+      "dateFinished": "2018-12-13 10:45:02.752",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Batch WordCount",
+      "text": "%flink\n\n//import org.apache.flink.table.descriptors.Kafka\n\nval data \u003d benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\"))\n  .map(w \u003d\u003e (w, 1))\n  .groupBy(0)\n  .sum(1)\n  .print()\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-11-29 17:56:32.192",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "(flink,1)\n(hadoop,1)\n(hello,3)\n(world,1)\ndata: org.apache.flink.api.scala.DataSet[String] \u003d org.apache.flink.api.scala.DataSet@3d49203c\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542180894088_-1597654667",
+      "id": "paragraph_1542180894088_-1597654667",
+      "dateCreated": "2018-11-14 15:34:54.089",
+      "dateStarted": "2018-11-29 17:56:32.201",
+      "dateFinished": "2018-11-29 17:57:10.449",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Stream WordCount",
+      "text": "%flink\n\nval data \u003d senv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\"))\n  .map(w \u003d\u003e (w, 1))\n  .keyBy(0)\n  .sum(1)\n  .print\n\nsenv.execute()\n\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-11-24 20:55:02.734",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "data: org.apache.flink.streaming.api.scala.DataStream[String] \u003d org.apache.flink.streaming.api.scala.DataStream@773e2df5\nres1: org.apache.flink.api.common.JobExecutionResult \u003d org.apache.flink.api.common.JobExecutionResult@257e78d0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1541748102781_201164988",
+      "id": "paragraph_1541748102781_201164988",
+      "dateCreated": "2018-11-09 15:21:42.781",
+      "dateStarted": "2018-11-24 20:55:02.744",
+      "dateFinished": "2018-11-24 20:55:11.625",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Batch Table WordCount",
+      "text": "%flink\n\nimport org.apache.flink.api.java.typeutils.RowTypeInfo\nimport org.apache.flink.api.common.typeinfo.BasicTypeInfo._\nimport org.apache.flink.api.common.typeinfo.BasicArrayTypeInfo._\n\ndef row(args: Any*): Row \u003d {\nval values \u003d args.toArray\nval row \u003d new Row(values.length)\nvar i \u003d 0\nwhile (i \u003c values.length) {\n  row.setField(i, values(i))\n  i +\u003d 1\n}\nrow\n}\n\nval data \u003d List(\n  row(1, 1L, Array(\"Hi\", \"w\")),\n  row(2, 2L, Array(\"Hello\", \"k\")),\n  row(3, 2L, Array(\"Hello world\", \"x\"))\n)\n\nbtEnv.registerCollection(\"T\", data,\n  new RowTypeInfo(INT_TYPE_INFO, LONG_TYPE_INFO, STRING_ARRAY_TYPE_INFO),\n  \u0027a, \u0027b, \u0027c)\n\n// btEnv.sqlQuery(\"select word, count(1) from wc group by word\")\n//   .toDataSet[Row].print()",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-13 13:52:42.158",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.flink.api.java.typeutils.RowTypeInfo\nimport org.apache.flink.api.common.typeinfo.BasicTypeInfo._\nimport org.apache.flink.api.common.typeinfo.BasicArrayTypeInfo._\nrow: (args: Any*)org.apache.flink.types.Row\ndata: List[org.apache.flink.types.Row] \u003d List(1,1,[Hi, w], 2,2,[Hello, k], 3,2,[Hello world, x])\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542181035170_-303897117",
+      "id": "paragraph_1542181035170_-303897117",
+      "dateCreated": "2018-11-14 15:37:15.171",
+      "dateStarted": "2018-12-13 13:52:42.163",
+      "dateFinished": "2018-12-13 13:52:43.538",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n\nselect * from T\n\n\n\n\n\n\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-13 13:53:02.711",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "a": "string",
+                      "b": "string",
+                      "c": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [],
+              "groups": [],
+              "values": []
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "a\tb\tc\n1\t1\t[Ljava.lang.String;@4cdceb1e\n2\t2\t[Ljava.lang.String;@2fd0aa0f\n3\t2\t[Ljava.lang.String;@1e6f2539\n"
+          },
+          {
+            "type": "TEXT",
+            "data": ""
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542247973555_-888691429",
+      "id": "paragraph_1542247973555_-888691429",
+      "dateCreated": "2018-11-15 10:12:53.556",
+      "dateStarted": "2018-12-13 13:52:55.415",
+      "dateFinished": "2018-12-13 13:53:00.269",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Flink Stream Table WordCount",
+      "text": "%flink\n\nimport org.apache.flink.streaming.api.datastream.DataStreamUtils\n\nval data \u003d senv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\n\nval table \u003d data.flatMap(line \u003d\u003e line.split(\"\\\\s\")).\n   map(w \u003d\u003e (w, 1)).\n   toTable(stEnv, \u0027word, \u0027number)\n\nstEnv.registerTable(\"wc\", table)\n\nval resultStream \u003d stEnv.sqlQuery(\"select word, number from wc\")\n  .toAppendStream[Row]\n\nval iter \u003d DataStreamUtils.collect(resultStream.javaStream)\nwhile (iter.hasNext) {\n  println(iter.next())\n}\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-13 12:02:30.577",
+      "config": {
+        "lineNumbers": true,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "title": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1541748111040_863452116",
+      "id": "paragraph_1541748111040_863452116",
+      "dateCreated": "2018-11-09 15:21:51.040",
+      "dateStarted": "2018-12-13 12:00:55.964",
+      "dateFinished": "2018-12-13 12:00:55.992",
+      "status": "ERROR",
+      "errorMessage": "java.net.SocketException: Broken pipe (Write failed)\n\tat java.net.SocketOutputStream.socketWrite0(Native Method)\n\tat java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:111)\n\tat java.net.SocketOutputStream.write(SocketOutputStream.java:155)\n\tat java.io.BufferedOutputStream.flushBuffer(BufferedOutputStream.java:82)\n\tat java.io.BufferedOutputStream.flush(BufferedOutputStream.java:140)\n\tat org.apache.thrift.transport.TIOStreamTransport.flush(TIOStreamTransport.java:159)\n\tat org.apache.thrift.TServiceClient.sendBase(TServiceClient.java:73)\n\tat org.apache.thrift.TServiceClient.sendBase(TServiceClient.java:62)\n\tat org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService$Client.send_interpret(RemoteInterpreterService.java:248)\n\tat org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService$Client.interpret(RemoteInterpreterService.java:237)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter$4.call(RemoteInterpreter.java:222)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter$4.call(RemoteInterpreter.java:218)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess.callRemoteFunction(RemoteInterpreterProcess.java:118)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreter.interpret(RemoteInterpreter.java:217)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:432)\n\tat org.apache.zeppelin.notebook.Paragraph.jobRun(Paragraph.java:75)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.RemoteScheduler$JobRunner.run(RemoteScheduler.java:187)\n\tat java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180)\n\tat java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n"
+    },
+    {
+      "text": "%flink.ssql\n\nselect * from wc\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-13 11:25:52.137",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "word": "string",
+                      "number": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "word",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "number",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Fail to fetch result: java.lang.ClassNotFoundException: $line16.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$anon$2$$anon$1\n\tat java.net.URLClassLoader.findClass(URLClassLoader.java:381)\n\tat java.lang.ClassLoader.loadClass(ClassLoader.java:424)\n\tat sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:349)\n\tat java.lang.ClassLoader.loadClass(ClassLoader.java:357)\n\tat java.lang.Class.forName0(Native Method)\n\tat java.lang.Class.forName(Class.java:348)\n\tat org.apache.flink.util.InstantiationUtil$ClassLoaderObjectInputStream.resolveClass(InstantiationUtil.java:76)\n\tat java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1868)\n\tat java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1751)\n\tat java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2042)\n\tat java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1573)\n\tat java.io.ObjectInputStream.defaultReadFields(ObjectInputStream.java:2287)\n\tat java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2211)\n\tat java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2069)\n\tat java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1573)\n\tat java.io.ObjectInputStream.defaultReadFields(ObjectInputStream.java:2287)\n\tat java.io.ObjectInputStream.readSerialData(ObjectInputStream.java:2211)\n\tat java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2069)\n\tat java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1573)\n\tat java.io.ObjectInputStream.readObject(ObjectInputStream.java:431)\n\tat org.apache.flink.util.InstantiationUtil.deserializeObject(InstantiationUtil.java:503)\n\tat org.apache.flink.util.InstantiationUtil.deserializeObject(InstantiationUtil.java:489)\n\tat org.apache.flink.util.InstantiationUtil.deserializeObject(InstantiationUtil.java:477)\n\tat org.apache.flink.table.codegen.CodeGeneratorContext.addReferenceObj(CodeGeneratorContext.scala:558)\n\tat org.apache.flink.table.runtime.conversion.InternalTypeConverters$.genConvertField(InternalTypeConverters.scala:587)\n\tat org.apache.flink.table.runtime.conversion.InternalTypeConverters$.genToInternal(InternalTypeConverters.scala:637)\n\tat org.apache.flink.table.plan.nodes.common.CommonScan$class.convertToInternalRow(CommonScan.scala:86)\n\tat org.apache.flink.table.plan.nodes.physical.stream.StreamExecDataStreamScan.convertToInternalRow(StreamExecDataStreamScan.scala:39)\n\tat org.apache.flink.table.plan.nodes.physical.stream.StreamExecScan$class.convertToInternalRow(StreamExecScan.scala:46)\n\tat org.apache.flink.table.plan.nodes.physical.stream.StreamExecDataStreamScan.convertToInternalRow(StreamExecDataStreamScan.scala:39)\n\tat org.apache.flink.table.plan.nodes.physical.stream.StreamExecDataStreamScan.translateToPlan(StreamExecDataStreamScan.scala:75)\n\tat org.apache.flink.table.plan.nodes.physical.stream.StreamExecSink.translate(StreamExecSink.scala:142)\n\tat org.apache.flink.table.plan.nodes.physical.stream.StreamExecSink.translateToPlan(StreamExecSink.scala:106)\n\tat org.apache.flink.table.api.StreamTableEnvironment.translateSink(StreamTableEnvironment.scala:892)\n\tat org.apache.flink.table.api.StreamTableEnvironment.translate(StreamTableEnvironment.scala:883)\n\tat org.apache.flink.table.api.scala.StreamTableEnvironment.toAppendStream(StreamTableEnvironment.scala:197)\n\tat org.apache.flink.table.api.scala.TableConversions.toAppendStream(TableConversions.scala:97)\n\tat org.apache.zeppelin.flink.FlinkScalaStreamSqlInterpreter.interpret(FlinkScalaStreamSqlInterpreter.scala:39)\n\tat org.apache.zeppelin.flink.FlinkStreamSqlInterpreter.interpret(FlinkStreamSqlInterpreter.java:37)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:103)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:594)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:487)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.FIFOScheduler.lambda$runJobInScheduler$0(FIFOScheduler.java:39)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542250692368_-231135284",
+      "id": "paragraph_1542250692368_-231135284",
+      "dateCreated": "2018-11-15 10:58:12.372",
+      "dateStarted": "2018-12-13 11:25:52.142",
+      "dateFinished": "2018-12-13 11:25:52.300",
+      "status": "ERROR"
+    },
+    {
+      "text": "%flink.ssql\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-11-15 11:41:27.025",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1542253287025_972234736",
+      "id": "paragraph_1542253287025_972234736",
+      "dateCreated": "2018-11-15 11:41:27.025",
+      "status": "READY"
+    }
+  ],
+  "name": "Flink_Tutorial",
+  "id": "2DXQMS9M8",
+  "defaultInterpreterGroup": "spark",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

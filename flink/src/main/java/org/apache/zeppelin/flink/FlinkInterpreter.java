@@ -17,7 +17,8 @@
 
 package org.apache.zeppelin.flink;
 
-import org.apache.flink.api.scala.ExecutionEnvironment;
+import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
+import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -72,7 +73,7 @@ public class FlinkInterpreter extends Interpreter {
 
   @Override
   public FormType getFormType() throws InterpreterException {
-    return FormType.NATIVE;
+    return FormType.SIMPLE;
   }
 
   @Override
@@ -92,8 +93,16 @@ public class FlinkInterpreter extends Interpreter {
     return this.innerIntp;
   }
 
-  ExecutionEnvironment getExecutionEnviroment() {
-    return this.innerIntp.getExecutionEnvironment();
+  StreamExecutionEnvironment getStreamExecutionEnvironment() {
+    return this.innerIntp.getStreamExecutionEnvironment();
+  }
+
+  StreamTableEnvironment getStreamTableEnvironment() {
+    return this.innerIntp.getStreamTableEnvionment();
+  }
+
+  JobManager getJobManager() {
+    return this.innerIntp.getJobManager();
   }
 
   FlinkZeppelinContext getZeppelinContext() {

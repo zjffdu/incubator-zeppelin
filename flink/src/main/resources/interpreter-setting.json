@@ -69,9 +69,22 @@
   },
 
   {
+  "group": "flink",
+  "name": "ssql",
+  "className": "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter",
+  "properties": {
+
+  },
+  "editor": {
+    "language": "sql",
+    "editOnDblClick": false
+  }
+  },
+
+  {
     "group": "flink",
-    "name": "ssql",
-    "className": "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter",
+    "name": "perf",
+    "className": "org.apache.zeppelin.flink.FlinkBenchmarkInterpreter",
     "properties": {
 
     },

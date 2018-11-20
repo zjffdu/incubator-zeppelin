@@ -1,6 +1,5 @@
-package org.apache.zeppelin.spark;
+package org.apache.zeppelin.flink;
 
-import org.apache.spark.sql.SparkSession;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -8,33 +7,33 @@ import org.apache.zeppelin.interpreter.InterpreterResult;
 
 import java.util.Properties;
 
-public class SparkBenchmarkInterpreter extends Interpreter {
+public class FlinkBenchmarkInterpreter extends Interpreter {
 
-  private SparkInterpreter sparkInterpreter;
-  private SparkScalaBenchmarkInterpreter scalaBenchmarkInterpreter;
+  private FlinkInterpreter flinkInterpreter;
+  private FlinkScalaBenchmarkInterpreter scalaBenchmarkInterpreter;
 
-  public SparkBenchmarkInterpreter(Properties properties) {
+  public FlinkBenchmarkInterpreter(Properties properties) {
     super(properties);
   }
 
   @Override
   public void open() throws InterpreterException {
-    this.sparkInterpreter = getInterpreterInTheSameSessionByClassName(SparkInterpreter.class);
-    this.scalaBenchmarkInterpreter = new SparkScalaBenchmarkInterpreter(
-            (SparkSession) this.sparkInterpreter.getSparkSession(),
-            sparkInterpreter.getZeppelinContext(),
+    this.flinkInterpreter = getInterpreterInTheSameSessionByClassName(FlinkInterpreter.class);
+    this.scalaBenchmarkInterpreter = new FlinkScalaBenchmarkInterpreter(
+            this.flinkInterpreter.getStreamExecutionEnvironment(),
+            flinkInterpreter.getZeppelinContext(),
             getProperties());
     this.scalaBenchmarkInterpreter.open();
-    // init table
   }
 
   @Override
   public void close() throws InterpreterException {
-    this.sparkInterpreter.close();
+
   }
 
   @Override
-  public InterpreterResult interpret(String st, InterpreterContext context) throws InterpreterException {
+  public InterpreterResult interpret(String st,
+                                     InterpreterContext context) throws InterpreterException {
     return this.scalaBenchmarkInterpreter.interpret(st, context);
   }
 

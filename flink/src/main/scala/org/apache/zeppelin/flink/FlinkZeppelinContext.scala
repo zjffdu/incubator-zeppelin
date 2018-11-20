@@ -22,6 +22,7 @@ import java.util
 
 import org.apache.flink.api.scala.DataSet
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.table.api.scala._
 import org.apache.flink.table.api.Table
 import org.apache.flink.table.api.scala.BatchTableEnvironment
 import org.apache.flink.types.Row
@@ -57,37 +58,41 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   override def showData(obj: Any): String = {
     def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getFieldNames
-      val dsRow: DataSet[Row] = btenv.toDataSet[Row](table)
-      val builder = new StringBuilder("%table\n")
-      builder.append(columnNames.mkString("\t"))
-      builder.append("\n")
-      val rows = dsRow.first(maxResult).collect()
-      for (row <- rows) {
-        var i = 0;
-        while (i < row.getArity) {
-          builder.append(row.getField(i))
-          i += 1
-          if (i != row.getArity) {
-            builder.append("\t");
-          }
-        }
-        builder.append("\n")
-      }
-      // append %text at the end, otherwise the following output will be put in table as well.
-      builder.append("\n%text ")
-      builder.toString()
+      //      val columnNames: Array[String] = table.getSchema.getColumnNames
+      //      val dsRow: DataSet[Row] = btenv.toBoundedStream[Row](table)
+      //      val builder = new StringBuilder("%table\n")
+      //      builder.append(columnNames.mkString("\t"))
+      //      builder.append("\n")
+      //      val rows = dsRow.first(maxResult).collect()
+      //      for (row <- rows) {
+      //        var i = 0;
+      //        while (i < row.getArity) {
+      //          builder.append(row.getField(i))
+      //          i += 1
+      //          if (i != row.getArity) {
+      //            builder.append("\t");
+      //          }
+      //        }
+      //        builder.append("\n")
+      //      }
+      //      // append %text at the end, otherwise the following output will be put in table as well.
+      //      builder.append("\n%text ")
+      //      builder.toString()
+      //    }
+      //
+      //    if (obj.isInstanceOf[DataSet[_]]) {
+      //      val ds = obj.asInstanceOf[DataSet[_]]
+      //      val table = btenv.fromBoundedStream(ds)
+      //      showTable(table)
+      //    } else if (obj.isInstanceOf[Table]) {
+      //      showTable(obj.asInstanceOf[Table])
+      //    } else {
+      //      obj.toString
+      //    }
+      ""
     }
 
-    if (obj.isInstanceOf[DataSet[_]]) {
-      val ds = obj.asInstanceOf[DataSet[_]]
-      val table = btenv.fromDataSet(ds)
-      showTable(table)
-    } else if (obj.isInstanceOf[Table]) {
-      showTable(obj.asInstanceOf[Table])
-    } else {
-      obj.toString
-    }
+    ""
   }
 
 

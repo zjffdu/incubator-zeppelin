@@ -36,37 +36,19 @@ public class SparkDownloadUtils {
       LOGGER.info("Skip to download spark as it is already downloaded.");
       return targetSparkHomeFolder.getAbsolutePath();
     }
-    // Try mirrors a few times until one succeeds
-    boolean downloaded = false;
-    for (int i = 0; i < 3; i++) {
-      try {
-        String preferredMirror = IOUtils.toString(new URL("https://www.apache.org/dyn/closer.lua?preferred=true"));
-        File downloadFile = new File(downloadFolder + "/spark-" + version + "-bin-hadoop2.6.tgz");
-        String downloadURL = preferredMirror + "/spark/spark-" + version + "/spark-" + version + "-bin-hadoop2.6.tgz";
-        runShellCommand(new String[] {"wget", downloadURL, "-P", downloadFolder});
-        runShellCommand(new String[]{"tar", "-xvf", downloadFile.getAbsolutePath(), "-C", downloadFolder});
-        downloaded = true;
-        break;
-      } catch (Exception e) {
-        LOGGER.warn("Failed to download Spark", e);
-      }
-    }
-    // fallback to use apache archive
-    if (!downloaded) {
-      File downloadFile = new File(downloadFolder + "/spark-" + version + "-bin-hadoop2.6.tgz");
-      String downloadURL =
-          "https://archive.apache.org/dist/spark/spark-"
-              + version
-              + "/spark-"
-              + version
-              + "-bin-hadoop2.6.tgz";
-      try {
-        runShellCommand(new String[] {"wget", downloadURL, "-P", downloadFolder});
-        runShellCommand(
-            new String[] {"tar", "-xvf", downloadFile.getAbsolutePath(), "-C", downloadFolder});
-      } catch (Exception e) {
-        throw new RuntimeException("Fail to download spark " + version, e);
-      }
+    File downloadFile = new File(downloadFolder + "/spark-" + version + "-bin-hadoop2.6.tgz");
+    String downloadURL =
+        "https://archive.apache.org/dist/spark/spark-"
+            + version
+            + "/spark-"
+            + version
+            + "-bin-hadoop2.6.tgz";
+    try {
+      runShellCommand(new String[] {"wget", downloadURL, "-P", downloadFolder});
+      runShellCommand(
+          new String[] {"tar", "-xvf", downloadFile.getAbsolutePath(), "-C", downloadFolder});
+    } catch (Exception e) {
+      throw new RuntimeException("Fail to download spark " + version, e);
     }
     return targetSparkHomeFolder.getAbsolutePath();
   }
@@ -77,39 +59,19 @@ public class SparkDownloadUtils {
       LOGGER.info("Skip to download flink as it is already downloaded.");
       return targetFlinkHomeFolder.getAbsolutePath();
     }
-    // Try mirrors a few times until one succeeds
-    boolean downloaded = false;
-    // Try mirrors a few times until one succeeds
-    for (int i = 0; i < 3; i++) {
-      try {
-        String preferredMirror = IOUtils.toString(new URL("https://www.apache.org/dyn/closer.lua?preferred=true"));
-        File downloadFile = new File(downloadFolder + "/flink-" + version + "-bin-hadoop27-scala_2.11.tgz");
-        String downloadURL = preferredMirror + "/flink/flink-" + version + "/flink-" + version + "-bin-hadoop27-scala_2.11.tgz";
-        runShellCommand(new String[] {"wget", downloadURL, "-P", downloadFolder});
-        runShellCommand(new String[]{"tar", "-xvf", downloadFile.getAbsolutePath(), "-C", downloadFolder});
-        downloaded = true;
-        break;
-      } catch (Exception e) {
-        LOGGER.warn("Failed to download Flink", e);
-      }
-    }
-
-    // fallback to use apache archive
-    if (!downloaded) {
-      File downloadFile = new File(downloadFolder + "/flink-" + version + "-bin-hadoop27-scala_2.11.tgz");
-      String downloadURL =
-          "https://archive.apache.org/dist/flink/flink-"
-              + version
-              + "/flink-"
-              + version
-              + "-bin-hadoop27-scala_2.11.tgz";
-      try {
-        runShellCommand(new String[] {"wget", downloadURL, "-P", downloadFolder});
-        runShellCommand(
-            new String[] {"tar", "-xvf", downloadFile.getAbsolutePath(), "-C", downloadFolder});
-      } catch (Exception e) {
-        throw new RuntimeException("Fail to download flink " + version, e);
-      }
+    File downloadFile = new File(downloadFolder + "/flink-" + version + "-bin-hadoop27-scala_2.11.tgz");
+    String downloadURL =
+        "https://archive.apache.org/dist/flink/flink-"
+            + version
+            + "/flink-"
+            + version
+            + "-bin-hadoop27-scala_2.11.tgz";
+    try {
+      runShellCommand(new String[] {"wget", downloadURL, "-P", downloadFolder});
+      runShellCommand(
+          new String[] {"tar", "-xvf", downloadFile.getAbsolutePath(), "-C", downloadFolder});
+    } catch (Exception e) {
+      throw new RuntimeException("Fail to download flink " + version, e);
     }
     return targetFlinkHomeFolder.getAbsolutePath();
   }

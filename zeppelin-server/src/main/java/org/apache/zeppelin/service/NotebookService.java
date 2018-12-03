@@ -342,16 +342,21 @@ public class NotebookService {
       callback.onFailure(new IOException("paragraph is disabled."), context);
       return false;
     }
-    p.setText(text);
-    p.setTitle(title);
+    // update text & title only when client specify it, otherwise keep unchanged.
+    if (text != null) {
+      p.setText(text);
+      p.setTitle(title);
+    }
     p.setAuthenticationInfo(context.getAutheInfo());
     p.settings.setParams(params);
     p.setConfig(config);
 
     if (note.isPersonalizedMode()) {
       p = note.getParagraph(paragraphId);
-      p.setText(text);
-      p.setTitle(title);
+      if (text != null) {
+        p.setText(text);
+        p.setTitle(title);
+      }
       p.setAuthenticationInfo(context.getAutheInfo());
       p.settings.setParams(params);
       p.setConfig(config);
@@ -372,7 +377,28 @@ public class NotebookService {
     }
   }
 
-  public void runAllParagraphs(String noteId,
+  public boolean runParagraph(String noteId,
+                              String paragraphId,
+                              Map<String, Object> params,
+                              Map<String, Object> config,
+                              boolean failIfDisabled,
+                              boolean blocking,
+                              ServiceContext context,
+                              ServiceCallback<Paragraph> callback) throws IOException {
+
+    return runParagraph(noteId,
+                        paragraphId,
+                        null,
+                        null,
+                        params,
+                        config,
+                        failIfDisabled,
+                        blocking,
+                        context,
+                        callback);
+    }
+
+    public void runAllParagraphs(String noteId,
                                List<Map<String, Object>> paragraphs,
                                ServiceContext context,
                                ServiceCallback<Paragraph> callback) throws IOException {

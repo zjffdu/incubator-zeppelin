@@ -457,6 +457,12 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
   }
 
   @Override
+  protected synchronized void completeWithError(Throwable error) {
+    super.completeWithError(error);
+    setResult(new InterpreterResult(Code.ERROR, error.getMessage()));
+  }
+
+  @Override
   protected boolean jobAbort() {
     if (interpreter == null) {
       return true;

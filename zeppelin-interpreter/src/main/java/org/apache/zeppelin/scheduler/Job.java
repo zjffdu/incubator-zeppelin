@@ -184,7 +184,7 @@ public abstract class Job<T> {
     errorMessage = null;
   }
 
-  private synchronized void completeWithError(Throwable error) {
+  protected synchronized void completeWithError(Throwable error) {
     setException(error);
     errorMessage = getJobExceptionStack(error);
   }

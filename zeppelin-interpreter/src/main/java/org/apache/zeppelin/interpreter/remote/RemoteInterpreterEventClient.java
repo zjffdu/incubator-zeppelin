@@ -329,4 +329,15 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
       LOGGER.warn("Fail to remove AngularObject", e);
     }
   }
+
+  public synchronized void updateParagraphConfig(String noteId,
+                                                 String paragraphId,
+                                                 Map<String, String> config) {
+    try {
+      intpEventServiceClient.updateParagraphConfig(noteId, paragraphId, config);
+    } catch (TException e) {
+      LOGGER.warn("Fail to updateParagraphConfig for noteId: " + noteId +
+              ", paragraphId: " + paragraphId + ", config: " + config, e);
+    }
+  }
 }

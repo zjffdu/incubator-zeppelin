@@ -18,6 +18,7 @@
 package org.apache.zeppelin.flink;
 
 import org.apache.zeppelin.display.AngularObjectRegistry;
+
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterGroup;
@@ -25,6 +26,7 @@ import org.apache.zeppelin.interpreter.InterpreterOutput;
 import org.apache.zeppelin.interpreter.InterpreterOutputListener;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.InterpreterResultMessageOutput;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FlinkBatchSqlInterpreterTest {
 
@@ -60,6 +63,11 @@ public class FlinkBatchSqlInterpreterTest {
     context = InterpreterContext.builder().build();
   }
 
+  @After
+  public void tearDown() throws InterpreterException {
+    interpreter.close();
+  }
+
   @Test
   public void testSQLInterpreter() throws InterpreterException {
     InterpreterResult result = interpreter.interpret(
@@ -76,6 +84,14 @@ public class FlinkBatchSqlInterpreterTest {
     assertEquals("_1\t_2\n" +
         "1\tjeff\n" +
         "2\tandy\n", result.message().get(0).getData());
+  }
+
+  @Test
+  public void testInvalidTable() throws InterpreterException {
+    InterpreterResult result = sqlInterpreter.interpret("select * from invalid_table",
+            getInterpreterContext());
+    assertEquals(InterpreterResult.Code.ERROR, result.code());
+    assertTrue(result.message().get(0).getData().contains("Object 'invalid_table' not found"));
   }
 
   private InterpreterContext getInterpreterContext() {

@@ -1,0 +1,134 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark.conf\n\nSPARK_HOME /Users/jzhang/Java/lib/spark-2.3.2-bin-hadoop2.7\nmaster yarn-client\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-12 17:54:03.085",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1544604809835_818874742",
+      "id": "paragraph_1544604809835_818874742",
+      "dateCreated": "2018-12-12 16:53:29.836",
+      "dateStarted": "2018-12-12 17:54:03.151",
+      "dateFinished": "2018-12-12 17:54:03.197",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nsc.version",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-12 17:54:04.994",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "res1: String \u003d 2.3.2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1544604835369_725067514",
+      "id": "paragraph_1544604835369_725067514",
+      "dateCreated": "2018-12-12 16:53:55.369",
+      "dateStarted": "2018-12-12 17:54:05.002",
+      "dateFinished": "2018-12-12 17:54:36.081",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\nhello world",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-12 17:51:29.098",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1544604841616_-1266444256",
+      "id": "paragraph_1544604841616_-1266444256",
+      "dateCreated": "2018-12-12 16:54:01.616",
+      "dateStarted": "2018-12-12 17:51:29.092",
+      "status": "ABORT"
+    },
+    {
+      "text": "%md\n",
+      "user": "anonymous",
+      "dateUpdated": "2018-12-12 17:51:29.091",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1544608289091_1696330366",
+      "id": "paragraph_1544608289091_1696330366",
+      "dateCreated": "2018-12-12 17:51:29.091",
+      "status": "READY"
+    }
+  ],
+  "name": "Untitled Note 1",
+  "id": "2DYPG1A98",
+  "defaultInterpreterGroup": "spark",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}

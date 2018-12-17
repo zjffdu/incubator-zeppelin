@@ -460,4 +460,15 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
     }
     return resourceSet;
   }
+
+  @Override
+  public void updateParagraphConfig(String noteId,
+                                    String paragraphId,
+                                    Map<String, String> config) throws TException {
+    try {
+      listener.onUpdateParagraphConfig(noteId, paragraphId, config);
+    } catch (IOException e) {
+      throw new TException(e);
+    }
+  }
 }

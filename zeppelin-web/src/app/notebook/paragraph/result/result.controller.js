@@ -804,32 +804,30 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
   };
 
   const commitVizConfigChange = function(config, vizId) {
-    if ([ParagraphStatus.RUNNING, ParagraphStatus.PENDING].indexOf(paragraph.status) < 0) {
-      let newConfig = angular.copy($scope.config);
-      if (!newConfig.graph) {
-        newConfig.graph = {};
-      }
-      // copy setting for vizId
-      if (!newConfig.graph.setting) {
-        newConfig.graph.setting = {};
-      }
-      newConfig.graph.setting[vizId] = angular.copy(config);
-      // copy common setting
-      if (newConfig.graph.setting[vizId]) {
-        newConfig.graph.commonSetting = newConfig.graph.setting[vizId].common;
-        delete newConfig.graph.setting[vizId].common;
-      }
-      // copy pivot setting
-      if (newConfig.graph.commonSetting && newConfig.graph.commonSetting.pivot) {
-        newConfig.graph.keys = newConfig.graph.commonSetting.pivot.keys;
-        newConfig.graph.groups = newConfig.graph.commonSetting.pivot.groups;
-        newConfig.graph.values = newConfig.graph.commonSetting.pivot.values;
-        delete newConfig.graph.commonSetting.pivot;
-      }
-      console.debug('committVizConfig', newConfig);
-      let newParams = angular.copy(paragraph.settings.params);
-      commitParagraphResult(paragraph.title, paragraph.text, newConfig, newParams);
+    let newConfig = angular.copy($scope.config);
+    if (!newConfig.graph) {
+      newConfig.graph = {};
     }
+    // copy setting for vizId
+    if (!newConfig.graph.setting) {
+      newConfig.graph.setting = {};
+    }
+    newConfig.graph.setting[vizId] = angular.copy(config);
+    // copy common setting
+    if (newConfig.graph.setting[vizId]) {
+      newConfig.graph.commonSetting = newConfig.graph.setting[vizId].common;
+      delete newConfig.graph.setting[vizId].common;
+    }
+    // copy pivot setting
+    if (newConfig.graph.commonSetting && newConfig.graph.commonSetting.pivot) {
+      newConfig.graph.keys = newConfig.graph.commonSetting.pivot.keys;
+      newConfig.graph.groups = newConfig.graph.commonSetting.pivot.groups;
+      newConfig.graph.values = newConfig.graph.commonSetting.pivot.values;
+      delete newConfig.graph.commonSetting.pivot;
+    }
+    console.debug('committVizConfig', newConfig);
+    let newParams = angular.copy(paragraph.settings.params);
+    commitParagraphResult(paragraph.title, paragraph.text, newConfig, newParams);
   };
 
   $scope.$on('paragraphResized', function(event, paragraphId) {

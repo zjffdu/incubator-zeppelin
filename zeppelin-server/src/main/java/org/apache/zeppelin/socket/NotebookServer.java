@@ -1579,6 +1579,16 @@ public class NotebookServer extends WebSocketServlet
     }
   }
 
+  @Override
+  public void onUpdateParagraphConfig(String noteId,
+                                      String paragraphId,
+                                      Map<String, String> config) throws IOException {
+    Notebook notebook = notebook();
+    Note note = notebook.getNote(noteId);
+    Paragraph p = note.getParagraph(paragraphId);
+    p.getConfig().putAll(config);
+    notebook.saveNote(note, AuthenticationInfo.ANONYMOUS);
+  }
 
   private class JobManagerServiceCallback
       extends SimpleServiceCallback<List<JobManagerService.NoteJobInfo>> {

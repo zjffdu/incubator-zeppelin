@@ -44,24 +44,35 @@ public class FlinkStreamSqlInterpreter extends Interpreter {
     this.flinkInterpreter.getZeppelinContext().setNoteGui(context.getNoteGui());
     this.flinkInterpreter.getZeppelinContext().setGui(context.getGui());
 
-    String streamType = context.getLocalProperties().getOrDefault("type", "retract");
-    if (streamType.equalsIgnoreCase("single")) {
-      SingleValueStreamSqlJob streamJob = new SingleValueStreamSqlJob(
-              flinkInterpreter.getStreamExecutionEnvironment(),
-              flinkInterpreter.getStreamTableEnvironment(), context,
-              flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
-      return streamJob.run(st);
-    } else {
-      RetractStreamSqlJob streamJob = new RetractStreamSqlJob(
-              flinkInterpreter.getStreamExecutionEnvironment(),
-              flinkInterpreter.getStreamTableEnvironment(), context,
-              flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
-      return streamJob.run(st);
+    // set ClassLoader of current Thread to be the ClassLoader of Flink scala-shell,
+    // otherwise codegen will fail to find classes defined in scala-shell
+    ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      Thread.currentThread().setContextClassLoader(flinkInterpreter.getFlinkScalaShellLoader());
+      String streamType = context.getLocalProperties().getOrDefault("type", "retract");
+      if (streamType.equalsIgnoreCase("single")) {
+        SingleValueStreamSqlJob streamJob = new SingleValueStreamSqlJob(
+                flinkInterpreter.getStreamExecutionEnvironment(),
+                flinkInterpreter.getStreamTableEnvironment(), context,
+                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
+        return streamJob.run(st);
+      } else {
+        RetractStreamSqlJob streamJob = new RetractStreamSqlJob(
+                flinkInterpreter.getStreamExecutionEnvironment(),
+                flinkInterpreter.getStreamTableEnvironment(), context,
+                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
+        return streamJob.run(st);
+      }
+    } finally {
+      Thread.currentThread().setContextClassLoader(originClassLoader);
     }
   }
 
   @Override
   public void cancel(InterpreterContext context) throws InterpreterException {
+    this.flinkInterpreter.getZeppelinContext().setInterpreterContext(context);
+    this.flinkInterpreter.getZeppelinContext().setNoteGui(context.getNoteGui());
+    this.flinkInterpreter.getZeppelinContext().setGui(context.getGui());
     this.flinkInterpreter.getJobManager().cancelJob(context);
   }
 

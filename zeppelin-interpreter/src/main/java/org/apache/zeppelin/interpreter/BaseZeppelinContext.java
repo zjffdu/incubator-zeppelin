@@ -225,7 +225,7 @@ public abstract class BaseZeppelinContext {
   public void setMaxResult(int maxResult) {
     this.maxResult = maxResult;
   }
-  
+
   /**
    * display special types of objects for interpreter.
    * Each interpreter can has its own supported classes.
@@ -845,5 +845,12 @@ public abstract class BaseZeppelinContext {
   public ResourceSet getAll() {
     ResourcePool resourcePool = interpreterContext.getResourcePool();
     return resourcePool.getAll();
+  }
+
+  public void updateParagraphConfig(String noteId,
+                                    String paragraphId,
+                                    Map<String, String> config) {
+    interpreterContext.getIntpEventClient()
+            .updateParagraphConfig(noteId, paragraphId, config);
   }
 }

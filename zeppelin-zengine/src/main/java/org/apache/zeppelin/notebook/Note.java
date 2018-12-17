@@ -307,14 +307,14 @@ public class Note implements JsonSerializable {
     Map<String, Input> form = srcParagraph.settings.getForms();
 
     logger.debug("srcParagraph user: " + srcParagraph.getUser());
-    
+
     newParagraph.setAuthenticationInfo(subject);
     newParagraph.setConfig(config);
     newParagraph.settings.setParams(param);
     newParagraph.settings.setForms(form);
     newParagraph.setText(srcParagraph.getText());
     newParagraph.setTitle(srcParagraph.getTitle());
-    
+
     logger.debug("newParagraph user: " + newParagraph.getUser());
 
     try {
@@ -415,7 +415,6 @@ public class Note implements JsonSerializable {
 
   public void clearParagraphOutputFields(Paragraph p) {
     p.setReturn(null, null);
-    p.cleanRuntimeInfos();
   }
 
   public Paragraph clearPersonalizedParagraphOutput(String paragraphId, String user) {
@@ -677,7 +676,7 @@ public class Note implements JsonSerializable {
     if (settings == null || settings.size() == 0) {
       return;
     }
-    
+
     for (InterpreterSetting setting : settings) {
       InterpreterGroup intpGroup = setting.getInterpreterGroup(user, id);
       if (intpGroup != null) {

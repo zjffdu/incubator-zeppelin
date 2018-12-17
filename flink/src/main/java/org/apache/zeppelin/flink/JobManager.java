@@ -54,7 +54,7 @@ public class JobManager {
     }
   }
 
-  public void remoteJob(String paragraphId) {
+  public void removeJob(String paragraphId) {
     this.jobs.remove(paragraphId);
   }
 
@@ -68,11 +68,11 @@ public class JobManager {
     if (Boolean.parseBoolean(
             context.getLocalProperties().getOrDefault("enableSavePoint", "false"))) {
       try {
-        //String savePointPath = this.senv.cancelWithSavepoint(jobId.toString(), null);
-        //this.savePointMap.put(context.getParagraphId(), savePointPath);
-        //Map<String, String> config = new HashMap<>();
-        //config.put("savepointPath", savePointPath);
-        //z.updateParagraphConfig(context.getNoteId(), context.getParagraphId(), config);
+        String savePointPath = this.senv.cancelWithSavepoint(jobId.toString(), null);
+        this.savePointMap.put(context.getParagraphId(), savePointPath);
+        Map<String, String> config = new HashMap<>();
+        config.put("savepointPath", savePointPath);
+        z.updateParagraphConfig(context.getNoteId(), context.getParagraphId(), config);
       } catch (Exception e) {
         LOGGER.warn(String.format("Fail to cancel job %s that is associated with paragraph %s",
                 jobId, context.getParagraphId()), e);

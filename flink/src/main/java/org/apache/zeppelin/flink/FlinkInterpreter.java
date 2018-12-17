@@ -25,7 +25,6 @@ import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -42,14 +41,7 @@ public class FlinkInterpreter extends Interpreter {
   @Override
   public void open() throws InterpreterException {
     this.innerIntp.open();
-
-    // bind ZeppelinContext
-    int maxRow = Integer.parseInt(getProperty("zeppelin.flink.maxResult", "1000"));
-    this.z = new FlinkZeppelinContext(innerIntp.getBatchTableEnvironment(),
-        getInterpreterGroup().getInterpreterHookRegistry(), maxRow);
-    List<String> modifiers = new ArrayList<>();
-    modifiers.add("@transient");
-    this.innerIntp.bind("z", z.getClass().getCanonicalName(), z, modifiers);
+    this.z = this.innerIntp.getZeppelinContext();
   }
 
   @Override
@@ -103,6 +95,10 @@ public class FlinkInterpreter extends Interpreter {
 
   JobManager getJobManager() {
     return this.innerIntp.getJobManager();
+  }
+
+  public ClassLoader getFlinkScalaShellLoader() {
+    return innerIntp.getFlinkScalaShellLoader();
   }
 
   FlinkZeppelinContext getZeppelinContext() {

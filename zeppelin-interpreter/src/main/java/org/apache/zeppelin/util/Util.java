@@ -39,10 +39,10 @@ public class Util {
     try {
       projectProperties.load(Util.class.getResourceAsStream("/project.properties"));
       gitProperties.load(Util.class.getResourceAsStream("/git.properties"));
-    } catch (Exception e) {
-      //Fail to read project.properties
     } catch (NullPointerException e) {
-      //Fail to read git.properties
+      // Fail to read git.properties
+    } catch (Exception e) {
+      // Fail to read project.properties
     }
   }
 

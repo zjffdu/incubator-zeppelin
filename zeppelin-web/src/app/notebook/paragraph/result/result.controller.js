@@ -678,7 +678,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
           transformation._createNewScope = createNewScope;
 
           // render
-          const transformed = transformation.transform(tableData);
+          const transformed = transformation.transform(tableData, $scope.type);
           transformation.renderSetting(transformationSettingTargetEl);
           builtInViz.instance.render(transformed);
           builtInViz.instance.renderSetting(visualizationSettingTargetEl);
@@ -711,7 +711,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
         loadedElem.height(height);
         const transformation = builtInViz.instance.getTransformation();
         transformation.setConfig(config);
-        const transformed = transformation.transform(tableData);
+        const transformed = transformation.transform(tableData, $scope.type);
         transformation.renderSetting(transformationSettingTargetEl);
         builtInViz.instance.setConfig(config);
         builtInViz.instance.render(transformed);

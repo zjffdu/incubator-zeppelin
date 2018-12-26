@@ -13,7 +13,7 @@
  */
 
 import Transformation from './transformation';
-import {DefaultDisplayType} from "../spell/spell-result";
+import {DefaultDisplayType} from '../spell/spell-result';
 
 /**
  * pivot table data and return d3 chart data
@@ -91,7 +91,7 @@ export default class PivotTransformation extends Transformation {
 
     // TODO Should be is flink table type
     if (type === DefaultDisplayType.TABLE) {
-      this.filterRowsByTimeLimit(tableData, 1000 * 60 * 30, 'start_time');
+      this.filterRowsByTimeLimit(tableData, 1000 * 60 * 1, 'start_time');
     }
 
     this.removeUnknown();

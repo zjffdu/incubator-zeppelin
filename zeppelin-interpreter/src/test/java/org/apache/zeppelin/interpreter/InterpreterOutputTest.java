@@ -21,6 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -160,6 +162,21 @@ public class InterpreterOutputTest implements InterpreterOutputListener {
     assertEquals(InterpreterResult.Type.TABLE, out.getOutputAt(0).getType());
     assertEquals("col1\tcol2\n", new String(out.getOutputAt(0).toByteArray()));
     out.flush();
+    assertEquals("val1\tval2\n", new String(out.getOutputAt(1).toByteArray()));
+  }
+
+  @Test
+  public void testDisplayConfig() throws IOException {
+    out.write("%table(k1=v1,k2=v2) col1\tcol2\n\n%html val1\tval2\n".getBytes());
+    assertEquals(InterpreterResult.Type.TABLE, out.getOutputAt(0).getType());
+    Map<String, String> expectedConfig = new HashMap();
+    expectedConfig.put("k1", "v1");
+    expectedConfig.put("k2", "v2");
+    assertEquals(expectedConfig, out.getOutputAt(0).getConfig());
+    assertEquals("col1\tcol2\n", new String(out.getOutputAt(0).toByteArray()));
+    out.flush();
+
+    assertTrue(out.getOutputAt(1).getConfig().isEmpty());
     assertEquals("val1\tval2\n", new String(out.getOutputAt(1).toByteArray()));
   }
 

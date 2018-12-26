@@ -28,7 +28,6 @@ import org.apache.flink.streaming.experimental.SocketStreamIterator;
 import org.apache.flink.table.api.StreamTableEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableSchema;
-import org.apache.flink.table.api.TableSchemaBuilder;
 import org.apache.flink.table.api.types.DataType;
 import org.apache.flink.table.api.types.DataTypes;
 import org.apache.flink.table.api.types.InternalType;
@@ -67,16 +66,16 @@ public abstract class AbstractStreamSqlJob {
   }
 
   static TableSchema removeTimeAttributes(TableSchema schema) {
-    final TableSchemaBuilder builder = TableSchema.builder();
+    final TableSchema.Builder builder = TableSchema.builder();
     for (int i = 0; i < schema.getColumns().length; i++) {
       final InternalType type = schema.getType(i);
-      final DataType convertedType;
+      final InternalType convertedType;
       if (FlinkTypeFactory.isTimeIndicatorType(type)) {
         convertedType = DataTypes.TIMESTAMP;
       } else {
         convertedType = type;
       }
-      builder.field(schema.getColumnName(i), convertedType);
+      builder.column(schema.getColumnName(i), convertedType);
     }
     return builder.build();
   }

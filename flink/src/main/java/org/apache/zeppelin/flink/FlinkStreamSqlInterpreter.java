@@ -2,6 +2,7 @@ package org.apache.zeppelin.flink;
 
 import org.apache.zeppelin.flink.sql.RetractStreamSqlJob;
 import org.apache.zeppelin.flink.sql.SingleValueStreamSqlJob;
+import org.apache.zeppelin.flink.sql.TimeSeriesStreamSqlJob;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -52,6 +53,12 @@ public class FlinkStreamSqlInterpreter extends Interpreter {
       String streamType = context.getLocalProperties().getOrDefault("type", "retract");
       if (streamType.equalsIgnoreCase("single")) {
         SingleValueStreamSqlJob streamJob = new SingleValueStreamSqlJob(
+                flinkInterpreter.getStreamExecutionEnvironment(),
+                flinkInterpreter.getStreamTableEnvironment(), context,
+                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
+        return streamJob.run(st);
+      } else if (streamType.equalsIgnoreCase("ts")) {
+        TimeSeriesStreamSqlJob streamJob = new TimeSeriesStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
                 flinkInterpreter.getStreamTableEnvironment(), context,
                 flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));

@@ -10698,15 +10698,15 @@ public class RemoteInterpreterEventService {
             case 3: // CONFIG
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map24 = iprot.readMapBegin();
-                  struct.config = new HashMap<String,String>(2*_map24.size);
-                  String _key25;
-                  String _val26;
-                  for (int _i27 = 0; _i27 < _map24.size; ++_i27)
+                  org.apache.thrift.protocol.TMap _map44 = iprot.readMapBegin();
+                  struct.config = new HashMap<String,String>(2*_map44.size);
+                  String _key45;
+                  String _val46;
+                  for (int _i47 = 0; _i47 < _map44.size; ++_i47)
                   {
-                    _key25 = iprot.readString();
-                    _val26 = iprot.readString();
-                    struct.config.put(_key25, _val26);
+                    _key45 = iprot.readString();
+                    _val46 = iprot.readString();
+                    struct.config.put(_key45, _val46);
                   }
                   iprot.readMapEnd();
                 }
@@ -10744,10 +10744,10 @@ public class RemoteInterpreterEventService {
           oprot.writeFieldBegin(CONFIG_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.config.size()));
-            for (Map.Entry<String, String> _iter28 : struct.config.entrySet())
+            for (Map.Entry<String, String> _iter48 : struct.config.entrySet())
             {
-              oprot.writeString(_iter28.getKey());
-              oprot.writeString(_iter28.getValue());
+              oprot.writeString(_iter48.getKey());
+              oprot.writeString(_iter48.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -10790,10 +10790,10 @@ public class RemoteInterpreterEventService {
         if (struct.isSetConfig()) {
           {
             oprot.writeI32(struct.config.size());
-            for (Map.Entry<String, String> _iter29 : struct.config.entrySet())
+            for (Map.Entry<String, String> _iter49 : struct.config.entrySet())
             {
-              oprot.writeString(_iter29.getKey());
-              oprot.writeString(_iter29.getValue());
+              oprot.writeString(_iter49.getKey());
+              oprot.writeString(_iter49.getValue());
             }
           }
         }
@@ -10813,15 +10813,15 @@ public class RemoteInterpreterEventService {
         }
         if (incoming.get(2)) {
           {
-            org.apache.thrift.protocol.TMap _map30 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.config = new HashMap<String,String>(2*_map30.size);
-            String _key31;
-            String _val32;
-            for (int _i33 = 0; _i33 < _map30.size; ++_i33)
+            org.apache.thrift.protocol.TMap _map50 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.config = new HashMap<String,String>(2*_map50.size);
+            String _key51;
+            String _val52;
+            for (int _i53 = 0; _i53 < _map50.size; ++_i53)
             {
-              _key31 = iprot.readString();
-              _val32 = iprot.readString();
-              struct.config.put(_key31, _val32);
+              _key51 = iprot.readString();
+              _val52 = iprot.readString();
+              struct.config.put(_key51, _val52);
             }
           }
           struct.setConfigIsSet(true);
@@ -11753,13 +11753,13 @@ public class RemoteInterpreterEventService {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list34 = iprot.readListBegin();
-                  struct.success = new ArrayList<String>(_list34.size);
-                  String _elem35;
-                  for (int _i36 = 0; _i36 < _list34.size; ++_i36)
+                  org.apache.thrift.protocol.TList _list54 = iprot.readListBegin();
+                  struct.success = new ArrayList<String>(_list54.size);
+                  String _elem55;
+                  for (int _i56 = 0; _i56 < _list54.size; ++_i56)
                   {
-                    _elem35 = iprot.readString();
-                    struct.success.add(_elem35);
+                    _elem55 = iprot.readString();
+                    struct.success.add(_elem55);
                   }
                   iprot.readListEnd();
                 }
@@ -11787,9 +11787,9 @@ public class RemoteInterpreterEventService {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.success.size()));
-            for (String _iter37 : struct.success)
+            for (String _iter57 : struct.success)
             {
-              oprot.writeString(_iter37);
+              oprot.writeString(_iter57);
             }
             oprot.writeListEnd();
           }
@@ -11820,9 +11820,9 @@ public class RemoteInterpreterEventService {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (String _iter38 : struct.success)
+            for (String _iter58 : struct.success)
             {
-              oprot.writeString(_iter38);
+              oprot.writeString(_iter58);
             }
           }
         }
@@ -11834,13 +11834,13 @@ public class RemoteInterpreterEventService {
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list39 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.success = new ArrayList<String>(_list39.size);
-            String _elem40;
-            for (int _i41 = 0; _i41 < _list39.size; ++_i41)
+            org.apache.thrift.protocol.TList _list59 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.success = new ArrayList<String>(_list59.size);
+            String _elem60;
+            for (int _i61 = 0; _i61 < _list59.size; ++_i61)
             {
-              _elem40 = iprot.readString();
-              struct.success.add(_elem40);
+              _elem60 = iprot.readString();
+              struct.success.add(_elem60);
             }
           }
           struct.setSuccessIsSet(true);

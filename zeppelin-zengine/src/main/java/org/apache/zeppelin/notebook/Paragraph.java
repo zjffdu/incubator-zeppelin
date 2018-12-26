@@ -675,6 +675,21 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
     return gui;
   }
 
+  public synchronized void updateResult(int index,
+                           InterpreterResult.Type type,
+                           Map<String, String> config,
+                           String output) {
+    if (results == null) {
+      results = new InterpreterResult(Code.SUCCESS);
+    }
+    if (index == results.message().size()) {
+      results.message().add(new InterpreterResultMessage(type, output));
+    } else {
+      LOGGER.warn("Update result of index: {}, but only has {} results", index,
+              results.message().size());
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -735,5 +750,4 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
   public static Paragraph fromJson(String json) {
     return Note.getGson().fromJson(json, Paragraph.class);
   }
-
 }

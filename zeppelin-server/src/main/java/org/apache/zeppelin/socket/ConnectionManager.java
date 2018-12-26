@@ -232,7 +232,9 @@ public class ConnectionManager {
       }
       socketsToBroadcast = new ArrayList<>(socketLists);
     }
-    LOGGER.debug("SEND >> " + m);
+    if (m.op != Message.OP.PROGRESS) {
+      LOGGER.debug("SEND >> " + m);
+    }
     for (NotebookSocket conn : socketsToBroadcast) {
       try {
         conn.send(serializeMessage(m));

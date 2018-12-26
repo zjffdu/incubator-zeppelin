@@ -216,10 +216,10 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
 
   public synchronized void onInterpreterOutputUpdate(
       String noteId, String paragraphId, int outputIndex,
-      InterpreterResult.Type type, String output) {
+      InterpreterResult.Type type, Map<String, String> config, String output) {
     try {
       intpEventServiceClient.updateOutput(
-          new OutputUpdateEvent(noteId, paragraphId, outputIndex, type.name(), output, null));
+          new OutputUpdateEvent(noteId, paragraphId, outputIndex, type.name(), config, output, null));
     } catch (TException e) {
       LOGGER.warn("Fail to updateOutput", e);
     }
@@ -274,9 +274,9 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
 
   public synchronized void onAppOutputUpdate(
       String noteId, String paragraphId, int index, String appId,
-      InterpreterResult.Type type, String output) {
+      InterpreterResult.Type type, Map<String, String> config, String output) {
     AppOutputUpdateEvent event =
-        new AppOutputUpdateEvent(noteId, paragraphId, appId, index, type.name(), output);
+        new AppOutputUpdateEvent(noteId, paragraphId, appId, index, type.name(), config, output);
     try {
       intpEventServiceClient.updateAppOutput(event);
     } catch (TException e) {

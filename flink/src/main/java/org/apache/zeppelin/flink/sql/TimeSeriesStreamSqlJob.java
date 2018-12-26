@@ -62,7 +62,10 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
     if (firstRefresh) {
       context.out().clear();
       try {
-        context.out.write("%table\n");
+        context.out.setIgnoreLimit(true);
+        context.out.write("%table");
+        context.out.write("(type=ts,threshold=" + tsWindowThreshold + ")");
+        context.out.write(" ");
         for (int i = 0; i < schema.getColumns().length; ++i) {
           String field = schema.getColumnName(i);
           context.out.write(field);

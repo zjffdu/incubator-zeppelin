@@ -21,6 +21,7 @@ import org.apache.flink.api.common.JobID;
 import org.apache.flink.api.scala.ExecutionEnvironment;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.zeppelin.interpreter.InterpreterContext;
+import org.apache.zeppelin.interpreter.InterpreterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +59,7 @@ public class JobManager {
     this.jobs.remove(paragraphId);
   }
 
-  public void cancelJob(InterpreterContext context) {
+  public void cancelJob(InterpreterContext context) throws InterpreterException {
     JobID jobId = this.jobs.remove(context.getParagraphId());
     if (jobId == null) {
       LOGGER.warn("Unable to remove Job from paragraph {}", context.getParagraphId());
@@ -74,15 +75,19 @@ public class JobManager {
         config.put("savepointPath", savePointPath);
         z.updateParagraphConfig(context.getNoteId(), context.getParagraphId(), config);
       } catch (Exception e) {
-        LOGGER.warn(String.format("Fail to cancel job %s that is associated with paragraph %s",
-                jobId, context.getParagraphId()), e);
+        String errorMessage = String.format("Fail to cancel job %s that is associated " +
+                "with paragraph %s", jobId, context.getParagraphId());
+        LOGGER.warn(errorMessage, e);
+        throw new InterpreterException(errorMessage, e);
       }
     } else {
       try {
         this.env.cancel(jobId);
       } catch (Exception e) {
-        LOGGER.warn(String.format("Fail to cancel job %s that is associated with paragraph %s",
-                jobId, context.getParagraphId()), e);
+        String errorMessage = String.format("Fail to cancel job %s that is associated " +
+                        "with paragraph %s", jobId, context.getParagraphId());
+        LOGGER.warn(errorMessage, e);
+        throw new InterpreterException(errorMessage, e);
       }
     }
   }

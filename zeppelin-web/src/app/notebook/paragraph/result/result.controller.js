@@ -565,18 +565,20 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
           }
         }
       }
-      if (!tableData
-        || !builtInVisualizations[$scope.graphMode].instance.append) {
-        $scope.$parent.result.data[data.index] = $scope.$parent.result.data[data.index].concat(
-          data.data);
-        $rootScope.$broadcast(
-          'updateResult',
-          {'data': $scope.$parent.result.data[data.index], 'type': 'TABLE'},
-          $scope.config,
-          paragraph,
-          data.index);
-        let elemId = `p${$scope.id}_` + $scope.graphMode;
-        renderGraph(elemId, $scope.graphMode, true);
+      if (Array.isArray($scope.$parent.result.data)) {
+        if (!tableData
+          || !builtInVisualizations[$scope.graphMode].instance.append) {
+          $scope.$parent.result.data[data.index] = $scope.$parent.result.data[data.index].concat(
+            data.data);
+          $rootScope.$broadcast(
+            'updateResult',
+            {'data': $scope.$parent.result.data[data.index], 'type': 'TABLE'},
+            $scope.config,
+            paragraph,
+            data.index);
+          let elemId = `p${$scope.id}_` + $scope.graphMode;
+          renderGraph(elemId, $scope.graphMode, true);
+        }
       }
     }
   }

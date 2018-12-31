@@ -18,6 +18,7 @@
 
 package org.apache.zeppelin.flink
 
+import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.flink.table.api.Table
 import org.apache.flink.table.api.scala.BatchTableEnvironment
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
@@ -36,7 +37,7 @@ class FlinkScalaBatchSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
     } catch {
       case e: Exception =>
         return new InterpreterResult(InterpreterResult.Code.ERROR,
-          "Fail to fetch result: " + e.getMessage)
+          "Fail to fetch result: " + ExceptionUtils.getStackTrace(e))
     }
   }
 }

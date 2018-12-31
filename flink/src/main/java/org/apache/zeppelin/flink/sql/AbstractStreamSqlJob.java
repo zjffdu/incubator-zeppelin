@@ -19,8 +19,6 @@
 package org.apache.zeppelin.flink.sql;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.runtime.client.JobCancellationException;
@@ -30,6 +28,9 @@ import org.apache.flink.streaming.experimental.SocketStreamIterator;
 import org.apache.flink.table.api.StreamTableEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.api.types.DataType;
+import org.apache.flink.table.api.types.DataTypes;
+import org.apache.flink.table.api.types.InternalType;
 import org.apache.flink.table.calcite.FlinkTypeFactory;
 import org.apache.flink.types.Row;
 import org.apache.zeppelin.interpreter.InterpreterContext;
@@ -55,9 +56,9 @@ public abstract class AbstractStreamSqlJob {
   protected Object resultLock = new Object();
 
   public AbstractStreamSqlJob(StreamExecutionEnvironment senv,
-                             StreamTableEnvironment stEnv,
-                             InterpreterContext context,
-                             String savePointPath) {
+                              StreamTableEnvironment stEnv,
+                              InterpreterContext context,
+                              String savePointPath) {
     this.senv = senv;
     this.stEnv = stEnv;
     this.context = context;
@@ -66,15 +67,15 @@ public abstract class AbstractStreamSqlJob {
 
   static TableSchema removeTimeAttributes(TableSchema schema) {
     final TableSchema.Builder builder = TableSchema.builder();
-    for (int i = 0; i < schema.getFieldCount(); i++) {
-      final TypeInformation<?> type = schema.getFieldTypes()[i];
-      final TypeInformation<?> convertedType;
+    for (int i = 0; i < schema.getColumns().length; i++) {
+      final InternalType type = schema.getType(i);
+      final InternalType convertedType;
       if (FlinkTypeFactory.isTimeIndicatorType(type)) {
-        convertedType = Types.SQL_TIMESTAMP;
+        convertedType = DataTypes.TIMESTAMP;
       } else {
         convertedType = type;
       }
-      builder.field(schema.getFieldNames()[i], convertedType);
+      builder.column(schema.getColumnName(i), convertedType);
     }
     return builder.build();
   }
@@ -83,14 +84,12 @@ public abstract class AbstractStreamSqlJob {
     try {
       Table table = stEnv.sqlQuery(st);
       this.schema = removeTimeAttributes(table.getSchema());
-      LOGGER.debug("TableSchema: " + schema.toString());
-      TypeInformation<Row> outputType =
-              Types.ROW_NAMED(schema.getFieldNames(), schema.getFieldTypes());
+      final DataType outputType = DataTypes.createRowType(schema.getTypes(),
+              schema.getColumnNames());
       // create socket stream iterator
-      final TypeInformation<Tuple2<Boolean, Row>> socketType =
-              Types.TUPLE(Types.BOOLEAN, outputType);
+      final DataType socketType = DataTypes.createTupleType(DataTypes.BOOLEAN, outputType);
       final TypeSerializer<Tuple2<Boolean, Row>> serializer =
-              socketType.createSerializer(senv.getConfig());
+              DataTypes.toTypeInfo(socketType).createSerializer(senv.getConfig());
 
       // pass gateway port and address such that iterator knows where to bind to
       try {
@@ -116,7 +115,6 @@ public abstract class AbstractStreamSqlJob {
 
       ResultRetrievalThread retrievalThread = new ResultRetrievalThread(timer);
       retrievalThread.start();
-
 
       if (this.savePointPath == null) {
         if (this.context.getConfig().containsKey("savepointPath")) {
@@ -206,9 +204,7 @@ public abstract class AbstractStreamSqlJob {
 
     @Override
     public void run() {
-      synchronized (resultLock) {
-        refresh(context);
-      }
+      refresh(context);
     }
   }
 }

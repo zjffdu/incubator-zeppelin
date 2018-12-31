@@ -1,71 +1,36 @@
 [
   {
     "group": "flink",
-    "name": "scala",
+    "name": "flink",
     "className": "org.apache.zeppelin.flink.FlinkInterpreter",
     "properties": {
       "flink.execution.mode": {
         "envName": null,
         "propertyName": null,
         "defaultValue": "local",
-        "description": "execution mode, it could be local, yarn or remote",
+        "description": "execution mode, it could be local or yarn",
         "type": "string"
       },
-      "flink.execution.remote.host": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "local",
-        "description": "host name of JobManager, used in remote mode",
-        "type": "string"
-      },
-      "flink.execution.remote.port": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "local",
-        "description": "rest port of JobManager, used in remote mode",
-        "type": "number"
-      },
-      "flink.yarn.appName": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "Zeppelin Flink Session",
-        "description": "Yarn app name",
-        "type": "string"
-      },
-      "flink.yarn.queue": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "default",
-        "description": "Queue name of yarn app",
-        "type": "string"
-      },
-      "flink.yarn.tm.num": {
+      "flink.yarn.num_container": {
         "envName": null,
         "propertyName": null,
         "defaultValue": "1",
-        "description": "number of task manager for this flink app",
+        "description": "number of yarn contains for this flink app",
         "type": "number"
       },
-      "flink.yarn.tm.slot": {
-        "envName": null,
+      "host": {
+        "envName": "host",
         "propertyName": null,
-        "defaultValue": "1",
-        "description": "number of slot per task manager",
+        "defaultValue": "local",
+        "description": "host name of running JobManager. 'local' runs flink in local mode.",
+        "type": "string"
+      },
+      "port": {
+        "envName": "port",
+        "propertyName": null,
+        "defaultValue": "6123",
+        "description": "port of running JobManager.",
         "type": "number"
-      },
-      "flink.yarn.tm.memory": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "1g",
-        "description": "memory of TaskManager",
-        "type": "string"
-      },
-      "flink.yarn.jm.memory": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "1g",
-        "description": "memory of JobManager",
-        "type": "string"
       },
       "zeppelin.flink.printREPLOutput": {
         "envName": null,
@@ -95,13 +60,7 @@
     "name": "bsql",
     "className": "org.apache.zeppelin.flink.FlinkBatchSqlInterpreter",
     "properties": {
-      "zeppelin.flink.concurrentBatchSql": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "10",
-        "description": "max number of batch sql executed concurrently.",
-        "type": "number"
-      }
+
     },
     "editor": {
       "language": "sql",
@@ -110,21 +69,15 @@
   },
 
   {
-    "group": "flink",
-    "name": "ssql",
-    "className": "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter",
-    "properties": {
-      "zeppelin.flink.concurrentStreamSql": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "10",
-        "description": "max number of stream sql executed concurrently.",
-        "type": "number"
-      }
-    },
-    "editor": {
-      "language": "sql",
-      "editOnDblClick": false
-    }
+  "group": "flink",
+  "name": "ssql",
+  "className": "org.apache.zeppelin.flink.FlinkStreamSqlInterpreter",
+  "properties": {
+
+  },
+  "editor": {
+    "language": "sql",
+    "editOnDblClick": false
+  }
   }
 ]

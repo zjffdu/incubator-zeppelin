@@ -97,6 +97,10 @@ public class FlinkInterpreter extends Interpreter {
     return this.innerIntp.getJobManager();
   }
 
+  public ClassLoader getFlinkScalaShellLoader() {
+    return innerIntp.getFlinkScalaShellLoader();
+  }
+
   FlinkZeppelinContext getZeppelinContext() {
     return this.z;
   }

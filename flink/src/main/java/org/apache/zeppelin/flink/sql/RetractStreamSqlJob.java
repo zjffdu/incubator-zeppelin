@@ -64,10 +64,10 @@ public class RetractStreamSqlJob extends AbstractStreamSqlJob {
     synchronized (resultLock) {
       try {
         context.out.write("%table\n");
-        for (int i = 0; i < schema.getFieldCount(); ++i) {
-          String field = schema.getFieldNames()[i];
+        for (int i = 0; i < schema.getColumns().length; ++i) {
+          String field = schema.getColumnName(i);
           context.out.write(field);
-          if (i != (schema.getFieldCount() - 1)) {
+          if (i != (schema.getColumns().length - 1)) {
             context.out.write("\t");
           }
         }

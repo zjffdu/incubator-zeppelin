@@ -58,7 +58,16 @@ public class FlinkBatchSqlInterpreter extends Interpreter {
     flinkInterpreter.getZeppelinContext().setInterpreterContext(context);
     flinkInterpreter.getZeppelinContext().setNoteGui(context.getNoteGui());
     flinkInterpreter.getZeppelinContext().setGui(context.getGui());
-    return scalaBatchSqlInterpreter.interpret(st, context);
+
+    // set ClassLoader of current Thread to be the ClassLoader of Flink scala-shell,
+    // otherwise codegen will fail to find classes defined in scala-shell
+    ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
+    try {
+      Thread.currentThread().setContextClassLoader(flinkInterpreter.getFlinkScalaShellLoader());
+      return scalaBatchSqlInterpreter.interpret(st, context);
+    } finally {
+      Thread.currentThread().setContextClassLoader(originClassLoader);
+    }
   }
 
   @Override

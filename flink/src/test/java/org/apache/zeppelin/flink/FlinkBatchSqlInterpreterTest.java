@@ -18,6 +18,7 @@
 package org.apache.zeppelin.flink;
 
 import org.apache.zeppelin.display.AngularObjectRegistry;
+
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterGroup;

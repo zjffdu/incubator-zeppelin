@@ -102,6 +102,17 @@ public class InterpreterResultMessageOutput extends OutputStream {
     }
   }
 
+  // only clear data, but keep the type, so only append will happens after this method
+  public void clearData() {
+    synchronized (outList) {
+      buffer.reset();
+      outList.clear();
+      if (watcher != null) {
+        watcher.clear();
+      }
+    }
+  }
+
   @Override
   public void write(int b) throws IOException {
     synchronized (outList) {

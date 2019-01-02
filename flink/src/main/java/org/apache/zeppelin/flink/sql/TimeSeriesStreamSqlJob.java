@@ -100,6 +100,7 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
         firstRefresh = false;
       }
     } else {
+      context.out.getOutputAt(0).clearData();
       // append it to origin output
       // sort it by the first column
       materializedTable.sort((r1, r2) -> {

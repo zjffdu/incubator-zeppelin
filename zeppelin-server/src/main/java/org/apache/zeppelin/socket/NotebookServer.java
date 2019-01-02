@@ -1396,9 +1396,11 @@ public class NotebookServer extends WebSocketServlet
    */
   @Override
   public void onOutputUpdated(String noteId, String paragraphId, int index,
-                              InterpreterResult.Type type, String output) {
+                              InterpreterResult.Type type, Map<String, String> config, String output) {
     Message msg = new Message(OP.PARAGRAPH_UPDATE_OUTPUT).put("noteId", noteId)
-        .put("paragraphId", paragraphId).put("index", index).put("type", type).put("data", output);
+        .put("paragraphId", paragraphId).put("index", index).put("type", type)
+            .put("resultConfig", config)
+            .put("data", output);
     Note note = getNotebook().getNote(noteId);
 
     if (note.isPersonalizedMode()) {

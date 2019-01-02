@@ -78,7 +78,7 @@ export default class PivotTransformation extends Transformation {
   /**
    * Method will be invoked when tableData or config changes
    */
-  transform(tableData, type) {
+  transform(tableData, type, resultConfig) {
     this.tableDataColumns = tableData.columns;
     this.config.common = this.config.common || {};
     this.config.common.pivot = this.config.common.pivot || {};
@@ -90,8 +90,9 @@ export default class PivotTransformation extends Transformation {
     config.values = config.values || [];
 
     // TODO Should be is flink table type
-    if (type === DefaultDisplayType.TABLE) {
-      this.filterRowsByTimeLimit(tableData, 1000 * 1 * 30, 'start_time');
+    if (type === DefaultDisplayType.TABLE && resultConfig.type === 'ts') {
+      let threshold = resultConfig.threshold ? parseInt(resultConfig.threshold) : (1000 * 60 * 30);
+      this.filterRowsByTimeLimit(tableData, threshold, tableData.columns[0].name);
     }
 
     this.removeUnknown();

@@ -126,6 +126,8 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
   // type
   $scope.type = null;
 
+  $scope.resultConfig = null;
+
   // Data of the result
   let data;
 
@@ -195,6 +197,11 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
       });
     });
 
+    console.log('****************init, result', result);
+    console.log('****************init, resultConfig', result.resultConfig);
+    console.log('****************init, result.type', result.type);
+    console.log('****************init, config', config);
+    $scope.resultConfig = result.resultConfig;
     updateData(result, config, paragraph, index);
     renderResult($scope.type);
   };
@@ -269,6 +276,13 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
 
     $scope.id = paragraph.id + '_' + index;
     $scope.type = result.type;
+    $scope.resultConfig = result.resultConfig;
+
+    console.log('****************type', $scope.type);
+    console.log('****************data', result.data);
+    console.log('****************resultConfig', $scope.resultConfig);
+
+    // $scope.resultConfig = $scope.resultConfig ? $scope.resultConfig : result.resultConfig;
     config = config ? config : {};
 
     // initialize default config values
@@ -571,7 +585,9 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
           data.data);
         $rootScope.$broadcast(
           'updateResult',
-          {'data': $scope.$parent.result.data[data.index], 'type': 'TABLE'},
+          {'data': $scope.$parent.result.data[data.index],
+            'resultConfig': $scope.resultConfig,
+            'type': 'TABLE'},
           $scope.config,
           paragraph,
           data.index);
@@ -678,7 +694,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
           transformation._createNewScope = createNewScope;
 
           // render
-          const transformed = transformation.transform(tableData, $scope.type);
+          const transformed = transformation.transform(tableData, $scope.type, $scope.resultConfig);
           transformation.renderSetting(transformationSettingTargetEl);
           builtInViz.instance.render(transformed);
           builtInViz.instance.renderSetting(visualizationSettingTargetEl);
@@ -711,7 +727,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
         loadedElem.height(height);
         const transformation = builtInViz.instance.getTransformation();
         transformation.setConfig(config);
-        const transformed = transformation.transform(tableData, $scope.type);
+        const transformed = transformation.transform(tableData, $scope.type, $scope.resultConfig);
         transformation.renderSetting(transformationSettingTargetEl);
         builtInViz.instance.setConfig(config);
         builtInViz.instance.render(transformed);

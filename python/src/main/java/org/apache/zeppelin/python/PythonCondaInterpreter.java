@@ -244,7 +244,7 @@ public class PythonCondaInterpreter extends Interpreter {
 
   private void runCondaHelp(InterpreterOutput out) {
     try {
-      out.setType(InterpreterResult.Type.HTML);
+      out.setTypeAndConfig(InterpreterResult.Type.HTML);
       out.writeResource("output_templates/conda_usage.html");
     } catch (IOException e) {
       logger.error("Can't print usage", e);

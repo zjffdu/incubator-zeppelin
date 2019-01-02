@@ -758,7 +758,7 @@ public class RemoteInterpreterServer extends Thread
           output = new String(out.toByteArray());
           logger.debug("Output Update for index {}: {}", index, output);
           intpEventClient.onInterpreterOutputUpdate(
-              noteId, paragraphId, index, out.getType(), output);
+              noteId, paragraphId, index, out.getType(), out.getConfig(), output);
         } catch (IOException e) {
           logger.error(e.getMessage(), e);
         }
@@ -1132,7 +1132,7 @@ public class RemoteInterpreterServer extends Thread
       ApplicationContext context = runningApp.app.context();
       try {
         context.out.clear();
-        context.out.setType(InterpreterResult.Type.ANGULAR);
+        context.out.setTypeAndConfig(InterpreterResult.Type.ANGULAR);
         ResourceSet resource = appLoader.findRequiredResourceSet(
             runningApp.pkg.getResources(),
             context.getNoteId(),

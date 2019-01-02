@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * InterpreterMessageOutputStream
@@ -44,12 +46,21 @@ public class InterpreterResultMessageOutput extends OutputStream {
   private final InterpreterResultMessageOutputListener flushListener;
   private InterpreterResult.Type type = InterpreterResult.Type.TEXT;
   private boolean firstWrite = true;
+  private Map<String, String> config = new HashMap<>();
 
   public InterpreterResultMessageOutput(
-      InterpreterResult.Type type,
-      InterpreterResultMessageOutputListener listener) {
+          InterpreterResult.Type type,
+          Map<String, String> config,
+          InterpreterResultMessageOutputListener listener) {
     this.type = type;
+    this.config = config;
     this.flushListener = listener;
+  }
+
+  public InterpreterResultMessageOutput(
+          InterpreterResult.Type type,
+          InterpreterResultMessageOutputListener listener) {
+    this(type, new HashMap<>(), listener);
   }
 
   public InterpreterResultMessageOutput(
@@ -64,6 +75,10 @@ public class InterpreterResultMessageOutput extends OutputStream {
 
   public InterpreterResult.Type getType() {
     return type;
+  }
+
+  public Map<String, String> getConfig() {
+    return config;
   }
 
   public void setType(InterpreterResult.Type type) {

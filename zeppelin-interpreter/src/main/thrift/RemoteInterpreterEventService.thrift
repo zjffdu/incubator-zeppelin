@@ -39,8 +39,9 @@ struct OutputUpdateEvent {
   2: string paragraphId,
   3: i32 index,
   4: string type,
-  5: string data,
-  6: string appId
+  5: map<string, string> config,
+  6: string data,
+  7: string appId
 }
 
 struct OutputUpdateAllEvent {

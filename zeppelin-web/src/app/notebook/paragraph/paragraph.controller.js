@@ -216,6 +216,7 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
 
       $scope.paragraph.results.msg[data.index] = {
         data: data.data,
+        resultConfig: data.resultConfig,
         type: data.type,
       };
 

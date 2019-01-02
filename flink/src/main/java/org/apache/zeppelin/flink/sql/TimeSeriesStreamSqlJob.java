@@ -43,7 +43,7 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
                                 String savePointPath) {
     super(senv, stEnv, context, savePointPath);
     this.tsWindowThreshold = Long.parseLong(context.getLocalProperties()
-            .getOrDefault("zeppelin.flink.tsWindowThreshold", 1000 * 60 * 60 + ""));
+            .getOrDefault("threshold", 1000 * 60 * 60 + ""));
   }
 
   @Override
@@ -62,7 +62,9 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
     if (firstRefresh) {
       context.out().clear();
       try {
-        context.out.write("%table\n");
+        context.out.write("%table(");
+        context.out.write("type=ts,threshold=" + tsWindowThreshold);
+        context.out.write(")\n");
         for (int i = 0; i < schema.getFieldCount(); ++i) {
           String field = schema.getFieldNames()[i];
           context.out.write(field);

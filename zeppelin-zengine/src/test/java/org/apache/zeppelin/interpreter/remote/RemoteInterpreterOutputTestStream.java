@@ -122,7 +122,7 @@ public class RemoteInterpreterOutputTestStream extends AbstractInterpreterTest
   }
 
   @Override
-  public void onOutputUpdated(String noteId, String paragraphId, int index, InterpreterResult.Type type, String output) {
+  public void onOutputUpdated(String noteId, String paragraphId, int index, InterpreterResult.Type type, Map<String, String> config, String output) {
 
   }
 

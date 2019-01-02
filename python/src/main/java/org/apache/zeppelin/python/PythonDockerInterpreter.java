@@ -119,7 +119,7 @@ public class PythonDockerInterpreter extends Interpreter {
 
   private void printUsage(InterpreterOutput out) {
     try {
-      out.setType(InterpreterResult.Type.HTML);
+      out.setTypeAndConfig(InterpreterResult.Type.HTML);
       out.writeResource("output_templates/docker_usage.html");
     } catch (IOException e) {
       logger.error("Can't print usage", e);

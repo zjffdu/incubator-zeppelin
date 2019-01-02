@@ -19,6 +19,7 @@
 package org.apache.zeppelin.flink.sql;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.runtime.client.JobCancellationException;
@@ -123,16 +124,19 @@ public abstract class AbstractStreamSqlJob {
         }
       }
 
+      JobExecutionResult jobExecutionResult = null;
       if (this.savePointPath != null && Boolean.parseBoolean(
               context.getLocalProperties().getOrDefault("runWithSavePoint", "true"))) {
         LOGGER.info("Run job from savePointPath: " + savePointPath);
-        senv.execute(st, SavepointRestoreSettings.forPath(savePointPath));
+        jobExecutionResult = senv.execute(st, SavepointRestoreSettings.forPath(savePointPath));
       } else {
         LOGGER.info("Run job without savePointPath");
-        senv.execute(st);
+        jobExecutionResult = senv.execute(st);
       }
+      LOGGER.info("Flink Job is finished");
       return new InterpreterResult(InterpreterResult.Code.SUCCESS);
     } catch (Exception e) {
+      LOGGER.error("Fail to run stream sql job", e);
       if (e.getCause() instanceof JobCancellationException) {
         return new InterpreterResult(InterpreterResult.Code.ERROR,
                 ExceptionUtils.getStackTrace(e.getCause()));

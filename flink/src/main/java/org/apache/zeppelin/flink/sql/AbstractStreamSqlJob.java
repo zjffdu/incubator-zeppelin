@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -83,6 +85,7 @@ public abstract class AbstractStreamSqlJob {
 
   public InterpreterResult run(String st) {
     try {
+      checkLocalProperties(context.getLocalProperties());
       Table table = stEnv.sqlQuery(st);
       this.schema = removeTimeAttributes(table.getSchema());
       final DataType outputType = DataTypes.createRowType(schema.getTypes(),
@@ -144,6 +147,18 @@ public abstract class AbstractStreamSqlJob {
       return new InterpreterResult(InterpreterResult.Code.ERROR, ExceptionUtils.getStackTrace(e));
     }
   }
+
+  protected void checkLocalProperties(Map<String, String> localProperties) throws Exception {
+    List<String> validLocalProperties = getValidLocalProperties();
+    for (String key : localProperties.keySet()) {
+      if (!validLocalProperties.contains(key)) {
+        throw new Exception("Invalid property: " + key + ", Only the following properties " +
+                "are valid: " + validLocalProperties);
+      }
+    }
+  };
+
+  protected abstract List<String> getValidLocalProperties();
 
   protected void processRecord(Tuple2<Boolean, Row> change) {
     synchronized (resultLock) {

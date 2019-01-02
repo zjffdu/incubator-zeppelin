@@ -18,6 +18,7 @@
 
 package org.apache.zeppelin.flink.sql;
 
+import avro.shaded.com.google.common.collect.Lists;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.table.api.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -41,6 +42,12 @@ public class RetractStreamSqlJob extends AbstractStreamSqlJob {
                              InterpreterContext context,
                              String savePointPath) {
     super(senv, stEnv, context, savePointPath);
+  }
+
+  @Override
+  protected List<String> getValidLocalProperties() {
+    return Lists.newArrayList("type",
+            "refreshInterval", "enableSavePoint", "runWithSavePoint");
   }
 
   protected void processInsert(Row row) {

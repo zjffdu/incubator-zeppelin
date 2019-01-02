@@ -18,6 +18,7 @@
 
 package org.apache.zeppelin.flink.sql;
 
+import avro.shaded.com.google.common.collect.Lists;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.table.api.StreamTableEnvironment;
@@ -27,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SingleValueStreamSqlJob extends AbstractStreamSqlJob {
 
@@ -39,6 +41,12 @@ public class SingleValueStreamSqlJob extends AbstractStreamSqlJob {
                                  InterpreterContext context,
                                  String savePointPath) {
     super(senv, stEnv, context, savePointPath);
+  }
+
+  @Override
+  protected List<String> getValidLocalProperties() {
+    return Lists.newArrayList("type",
+            "refreshInterval", "template", "enableSavePoint", "runWithSavePoint");
   }
 
   protected void processRecord(Tuple2<Boolean, Row> change) {

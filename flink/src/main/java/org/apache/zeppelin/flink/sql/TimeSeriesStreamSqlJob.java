@@ -18,6 +18,7 @@
 
 package org.apache.zeppelin.flink.sql;
 
+import avro.shaded.com.google.common.collect.Lists;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.table.api.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -47,6 +48,12 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
   }
 
   @Override
+  protected List<String> getValidLocalProperties() {
+    return Lists.newArrayList("type",
+            "refreshInterval", "enableSavePoint", "runWithSavePoint", "threshold");
+  }
+
+  @Override
   protected void processInsert(Row row) {
     LOGGER.debug("processInsert: " + row.toString());
     materializedTable.add(row);
@@ -64,7 +71,16 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
       try {
         context.out.write("%table(");
         context.out.write("type=ts,threshold=" + tsWindowThreshold);
+        context.out.write(",columns=");
+        for (int i = 0; i < schema.getFieldCount(); ++i) {
+          String field = schema.getFieldNames()[i];
+          context.out.write(field);
+          if (i != (schema.getFieldCount() - 1)) {
+            context.out.write(":");
+          }
+        }
         context.out.write(")\n");
+
         for (int i = 0; i < schema.getFieldCount(); ++i) {
           String field = schema.getFieldNames()[i];
           context.out.write(field);

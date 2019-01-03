@@ -21,6 +21,8 @@ package org.apache.zeppelin.flink.sql;
 import avro.shaded.com.google.common.collect.Lists;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.table.api.StreamTableEnvironment;
+import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.api.types.TimestampType;
 import org.apache.flink.types.Row;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
 
@@ -54,6 +57,14 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
   }
 
   @Override
+  protected void checkTableSchema(TableSchema schema) throws Exception {
+    if (!(schema.getColumn(0).internalType() instanceof TimestampType)) {
+      throw new Exception("The first column must be TimestampType, but is " +
+              schema.getColumn(0).internalType());
+    }
+  }
+
+  @Override
   protected void processInsert(Row row) {
     LOGGER.debug("processInsert: " + row.toString());
     materializedTable.add(row);
@@ -66,83 +77,60 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
 
   @Override
   protected void refresh(InterpreterContext context) {
-    if (firstRefresh) {
-      context.out().clear();
-      try {
-        context.out.write("%table(");
-        context.out.write("type=ts,threshold=" + tsWindowThreshold);
-        context.out.write(",columns=");
-        for (int i = 0; i < schema.getFieldCount(); ++i) {
-          String field = schema.getFieldNames()[i];
-          context.out.write(field);
-          if (i != (schema.getFieldCount() - 1)) {
-            context.out.write(":");
-          }
+    context.out().clear();
+    try {
+      context.out.write("%table(");
+      context.out.write("type=ts,threshold=" + tsWindowThreshold);
+      context.out.write(",columns=");
+      for (int i = 0; i < schema.getFieldCount(); ++i) {
+        String field = schema.getFieldNames()[i];
+        context.out.write(field);
+        if (i != (schema.getFieldCount() - 1)) {
+          context.out.write(":");
         }
-        context.out.write(")\n");
-
-        for (int i = 0; i < schema.getFieldCount(); ++i) {
-          String field = schema.getFieldNames()[i];
-          context.out.write(field);
-          if (i != (schema.getFieldCount() - 1)) {
-            context.out.write("\t");
-          }
-        }
-        context.out.write("\n");
-        LOGGER.debug("*****************Row size: " + materializedTable.size());
-        // sort it by the first column
-        materializedTable.sort((r1, r2) -> {
-          String f1 = r1.getField(0).toString();
-          String f2 = r2.getField(0).toString();
-          return f1.compareTo(f2);
-        });
-        for (Row row : materializedTable) {
-          for (int i = 0; i < row.getArity(); ++i) {
-            Object field = row.getField(i);
-            context.out.write(field.toString());
-            if (i != (row.getArity() - 1)) {
-              context.out.write("\t");
-            }
-          }
-          LOGGER.debug("Row:" + row);
-          context.out.write("\n");
-        }
-        context.out.flush();
-      } catch (IOException e) {
-        e.printStackTrace();
-        LOGGER.error("Fail to refresh data", e);
-      } finally {
-        materializedTable.clear();
-        firstRefresh = false;
       }
-    } else {
-      context.out.getOutputAt(0).clearData();
-      // append it to origin output
+      context.out.write(")\n");
+
+      for (int i = 0; i < schema.getFieldCount(); ++i) {
+        String field = schema.getFieldNames()[i];
+        context.out.write(field);
+        if (i != (schema.getFieldCount() - 1)) {
+          context.out.write("\t");
+        }
+      }
+      context.out.write("\n");
+
       // sort it by the first column
       materializedTable.sort((r1, r2) -> {
         String f1 = r1.getField(0).toString();
         String f2 = r2.getField(0).toString();
         return f1.compareTo(f2);
       });
-      try {
-        for (Row row : materializedTable) {
-          for (int i = 0; i < row.getArity(); ++i) {
-            Object field = row.getField(i);
-            context.out.write(field.toString());
-            if (i != (row.getArity() - 1)) {
-              context.out.write("\t");
-            }
+      long maxTimestamp = ((java.sql.Timestamp) materializedTable.get(materializedTable.size() - 1)
+              .getField(0)).getTime();
+      materializedTable = materializedTable.stream()
+              .filter(row -> ((java.sql.Timestamp) row.getField(0)).getTime() >
+                      maxTimestamp - tsWindowThreshold)
+              .collect(Collectors.toList());
+
+      LOGGER.debug("*****************Row size: " + materializedTable.size());
+
+      for (Row row : materializedTable) {
+        for (int i = 0; i < row.getArity(); ++i) {
+          Object field = row.getField(i);
+          context.out.write(field.toString());
+          if (i != (row.getArity() - 1)) {
+            context.out.write("\t");
           }
-          LOGGER.debug("Row:" + row);
-          context.out.write("\n");
         }
-        context.out.flush();
-      } catch (IOException e) {
-        e.printStackTrace();
-        LOGGER.error("Fail to refresh data", e);
-      } finally {
-        materializedTable.clear();
+        LOGGER.debug("Row:" + row);
+        context.out.write("\n");
       }
+
+      context.out.flush();
+    } catch (IOException e) {
+      e.printStackTrace();
+      LOGGER.error("Fail to refresh data", e);
     }
   }
 }

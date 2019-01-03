@@ -88,6 +88,8 @@ public abstract class AbstractStreamSqlJob {
       checkLocalProperties(context.getLocalProperties());
       Table table = stEnv.sqlQuery(st);
       this.schema = removeTimeAttributes(table.getSchema());
+      checkTableSchema(schema);
+      LOGGER.info("ResultTable Schema: " + this.schema);
       final DataType outputType = DataTypes.createRowType(schema.getTypes(),
               schema.getColumnNames());
       // create socket stream iterator
@@ -146,6 +148,9 @@ public abstract class AbstractStreamSqlJob {
       }
       return new InterpreterResult(InterpreterResult.Code.ERROR, ExceptionUtils.getStackTrace(e));
     }
+  }
+
+  protected void checkTableSchema(TableSchema schema) throws Exception {
   }
 
   protected void checkLocalProperties(Map<String, String> localProperties) throws Exception {
@@ -223,7 +228,11 @@ public abstract class AbstractStreamSqlJob {
 
     @Override
     public void run() {
-      refresh(context);
+      try {
+        refresh(context);
+      } catch (Exception e) {
+        LOGGER.error("Fail to refresh task", e);
+      }
     }
   }
 }

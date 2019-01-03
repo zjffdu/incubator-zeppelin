@@ -90,7 +90,7 @@ export default class PivotTransformation extends Transformation {
     config.values = config.values || [];
 
     // TODO Should be is flink table type
-    if (type === DefaultDisplayType.TABLE && resultConfig.type === 'ts') {
+    if (type === DefaultDisplayType.TABLE && resultConfig && resultConfig.type === 'ts') {
       let threshold = resultConfig.threshold ? parseInt(resultConfig.threshold) : (1000 * 60 * 30);
       this.filterRowsByTimeLimit(tableData, threshold, tableData.columns[0].name);
     }

@@ -45,7 +45,7 @@ public class SingleValueStreamSqlJob extends AbstractStreamSqlJob {
 
   @Override
   protected List<String> getValidLocalProperties() {
-    return Lists.newArrayList("type",
+    return Lists.newArrayList("type", "parallelism",
             "refreshInterval", "template", "enableSavePoint", "runWithSavePoint");
   }
 

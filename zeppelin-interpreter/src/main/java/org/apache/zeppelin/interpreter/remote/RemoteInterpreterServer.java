@@ -20,6 +20,7 @@ package org.apache.zeppelin.interpreter.remote;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -618,6 +619,8 @@ public class RemoteInterpreterServer extends Thread
           }
         }
         return new InterpreterResult(result.code(), resultMessages);
+      } catch (Exception e) {
+        return new InterpreterResult(Code.ERROR, ExceptionUtils.getStackTrace(e));
       } finally {
         Thread.currentThread().setContextClassLoader(currentThreadContextClassloader);
         InterpreterContext.remove();

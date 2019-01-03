@@ -60,12 +60,12 @@ At the "Interpreters" menu, you have to create a new Flink interpreter and provi
   </tr>
   <tr>
     <td>flink.yarn.jm.memory</td>
-    <td>1g</td>
+    <td>1024</td>
     <td>Memory of Job Manager</td>
   </tr>
   <tr>
     <td>flink.yarn.tm.memory</td>
-    <td>1g</td>
+    <td>1024</td>
     <td>Memory of Task Manager</td>
   </tr>
   <tr>
@@ -107,6 +107,31 @@ At the "Interpreters" menu, you have to create a new Flink interpreter and provi
 </table>
 
 For more information about Flink configuration, you can find it [here](https://ci.apache.org/projects/flink/flink-docs-release-1.7/ops/config.html).
+
+## Run Flink in local mode
+
+By default, Flink interpreter will run in local mode as the default value of `flink.execution.mode` is `local`.
+In local mode, Flink will launch one MiniCluster which include JobManager and TaskManagers in one JVM. And you can still customize the MiniCluster via the following properties
+* `local.number-taskmanage` This property specify how many TaskManagers in MiniCluster.  By default it is 1, if you want to set it larger than 1, you have to also set `query.proxy.ports` and `query.server.ports`, otherwise you will get prot conflicts when launching multiple TaskManagers in one machine.
+* `taskmanager.numberOfTaskSlot` This property specify how many slots for each TaskManager. By default it is the number of cores of your machine.
+
+## Run Flink in yarn mode
+If you want to run Flink in yarn mode, you have to set the following properties:
+* `flink.execution.mode` to be `yarn`
+* `HADOOP_CONF_DIR` must be specified either in `zeppelin-env.sh` or in interpreter properties.
+
+You can also customize the yarn mode via the following properties:
+* `flink.yarn.jm.memory` Memory of JobManager
+* `flink.yarn.tm.memory` Memory of TaskManager
+* `flink.yarn.tm.num` Number of TaskManager
+* `flink.yarn.tm.slot` Slot number per TaskManager
+* `flink.yarn.queue` Queue name of yarn app
+
+## Run Flink in standalone mode
+If you want to run Flink in standalone mode, you have to set the following properties:
+* `flink.execution.mode` to be `remote`
+* `flink.execution.remote.host` to be the host name of JobManager
+* `flink.execution.remote.port` to be the port of rest server of JobManager
 
 ## What can Flink Interpreter do
 

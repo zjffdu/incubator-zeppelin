@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
 import org.apache.flink.api.common.{JobExecutionResult, JobID}
 import org.apache.flink.api.java.JobListener
 import org.apache.flink.runtime.minicluster.StandaloneMiniCluster
-import org.apache.flink.table.api.TableEnvironment
+import org.apache.flink.table.api.{TableConfig, TableEnvironment}
 import org.apache.zeppelin.interpreter.{InterpreterException, InterpreterHookRegistry}
 import org.apache.flink.api.scala.FlinkShell._
 import org.apache.flink.api.scala.{ExecutionEnvironment, FlinkILoop}
@@ -201,8 +201,10 @@ class FlinkScalaInterpreter(val properties: Properties) {
     this.benv.setSessionTimeout(300 * 1000)
     this.senv = flinkILoop.scalaSenv
     this.senv.getJavaEnv.setMultiHeadChainMode(true)
-    this.btenv = TableEnvironment.getBatchTableEnvironment(this.senv)
-    this.stenv = TableEnvironment.getTableEnvironment(this.senv)
+    val tableConfig = new TableConfig
+    tableConfig.setConf(configuration)
+    this.btenv = TableEnvironment.getBatchTableEnvironment(this.senv, tableConfig)
+    this.stenv = TableEnvironment.getTableEnvironment(this.senv, tableConfig)
     bind("btenv", btenv.getClass.getCanonicalName, btenv, List("@transient"))
     bind("stenv", stenv.getClass.getCanonicalName, stenv, List("@transient"))
 

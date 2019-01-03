@@ -372,87 +372,91 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
 
   @Override
   protected InterpreterResult jobRun() throws Throwable {
-    this.runtimeInfos.clear();
-    this.interpreter = getBindedInterpreter();
-    if (this.interpreter == null) {
-      LOGGER.error("Can not find interpreter name " + intpText);
-      throw new RuntimeException("Can not find interpreter for " + intpText);
-    }
-    LOGGER.info("Run paragraph [paragraph_id: {}, interpreter: {}, note_id: {}, user: {}]",
-        getId(), this.interpreter.getClassName(), note.getId(), subject.getUser());
-    InterpreterSetting interpreterSetting = ((ManagedInterpreterGroup)
-        interpreter.getInterpreterGroup()).getInterpreterSetting();
-    if (interpreterSetting != null) {
-      interpreterSetting.waitForReady();
-    }
-    if (this.user != null) {
-      if (subject != null && !interpreterSetting.isUserAuthorized(subject.getUsersAndRoles())) {
-        String msg = String.format("%s has no permission for %s", subject.getUser(), intpText);
-        LOGGER.error(msg);
-        return new InterpreterResult(Code.ERROR, msg);
+    try {
+      this.runtimeInfos.clear();
+      this.interpreter = getBindedInterpreter();
+      if (this.interpreter == null) {
+        LOGGER.error("Can not find interpreter name " + intpText);
+        throw new RuntimeException("Can not find interpreter for " + intpText);
       }
-    }
-
-    for (Paragraph p : userParagraphMap.values()) {
-      p.setText(getText());
-    }
-
-    // inject form
-    String script = this.scriptText;
-    if (interpreter.getFormType() == FormType.NATIVE) {
-      settings.clear();
-    } else if (interpreter.getFormType() == FormType.SIMPLE) {
-      // inputs will be built from script body
-      LinkedHashMap<String, Input> inputs = Input.extractSimpleQueryForm(script, false);
-      LinkedHashMap<String, Input> noteInputs = Input.extractSimpleQueryForm(script, true);
-      final AngularObjectRegistry angularRegistry =
-          interpreter.getInterpreterGroup().getAngularObjectRegistry();
-      String scriptBody = extractVariablesFromAngularRegistry(script, inputs, angularRegistry);
-
-      settings.setForms(inputs);
-      if (!noteInputs.isEmpty()) {
-        if (!note.getNoteForms().isEmpty()) {
-          Map<String, Input> currentNoteForms =  note.getNoteForms();
-          for (String s : noteInputs.keySet()) {
-            if (!currentNoteForms.containsKey(s)) {
-              currentNoteForms.put(s, noteInputs.get(s));
-            }
-          }
-        } else {
-          note.setNoteForms(noteInputs);
+      LOGGER.info("Run paragraph [paragraph_id: {}, interpreter: {}, note_id: {}, user: {}]",
+              getId(), this.interpreter.getClassName(), note.getId(), subject.getUser());
+      InterpreterSetting interpreterSetting = ((ManagedInterpreterGroup)
+              interpreter.getInterpreterGroup()).getInterpreterSetting();
+      if (interpreterSetting != null) {
+        interpreterSetting.waitForReady();
+      }
+      if (this.user != null) {
+        if (subject != null && !interpreterSetting.isUserAuthorized(subject.getUsersAndRoles())) {
+          String msg = String.format("%s has no permission for %s", subject.getUser(), intpText);
+          LOGGER.error(msg);
+          return new InterpreterResult(Code.ERROR, msg);
         }
       }
-      script = Input.getSimpleQuery(note.getNoteParams(), scriptBody, true);
-      script = Input.getSimpleQuery(settings.getParams(), script, false);
-    }
-    LOGGER.debug("RUN : " + script);
-    try {
-      InterpreterContext context = getInterpreterContext();
-      InterpreterContext.set(context);
-      InterpreterResult ret = interpreter.interpret(script, context);
 
+      for (Paragraph p : userParagraphMap.values()) {
+        p.setText(getText());
+      }
+
+      // inject form
+      String script = this.scriptText;
       if (interpreter.getFormType() == FormType.NATIVE) {
-        note.setNoteParams(context.getNoteGui().getParams());
-        note.setNoteForms(context.getNoteGui().getForms());
-      }
+        settings.clear();
+      } else if (interpreter.getFormType() == FormType.SIMPLE) {
+        // inputs will be built from script body
+        LinkedHashMap<String, Input> inputs = Input.extractSimpleQueryForm(script, false);
+        LinkedHashMap<String, Input> noteInputs = Input.extractSimpleQueryForm(script, true);
+        final AngularObjectRegistry angularRegistry =
+                interpreter.getInterpreterGroup().getAngularObjectRegistry();
+        String scriptBody = extractVariablesFromAngularRegistry(script, inputs, angularRegistry);
 
-      if (Code.KEEP_PREVIOUS_RESULT == ret.code()) {
-        return getReturn();
+        settings.setForms(inputs);
+        if (!noteInputs.isEmpty()) {
+          if (!note.getNoteForms().isEmpty()) {
+            Map<String, Input> currentNoteForms = note.getNoteForms();
+            for (String s : noteInputs.keySet()) {
+              if (!currentNoteForms.containsKey(s)) {
+                currentNoteForms.put(s, noteInputs.get(s));
+              }
+            }
+          } else {
+            note.setNoteForms(noteInputs);
+          }
+        }
+        script = Input.getSimpleQuery(note.getNoteParams(), scriptBody, true);
+        script = Input.getSimpleQuery(settings.getParams(), script, false);
       }
+      LOGGER.debug("RUN : " + script);
+      try {
+        InterpreterContext context = getInterpreterContext();
+        InterpreterContext.set(context);
+        InterpreterResult ret = interpreter.interpret(script, context);
 
-      context.out.flush();
-      List<InterpreterResultMessage> resultMessages = context.out.toInterpreterResultMessage();
-      resultMessages.addAll(ret.message());
-      InterpreterResult res = new InterpreterResult(ret.code(), resultMessages);
-      Paragraph p = getUserParagraph(getUser());
-      if (null != p) {
-        p.setResult(res);
-        p.settings.setParams(settings.getParams());
+        if (interpreter.getFormType() == FormType.NATIVE) {
+          note.setNoteParams(context.getNoteGui().getParams());
+          note.setNoteForms(context.getNoteGui().getForms());
+        }
+
+        if (Code.KEEP_PREVIOUS_RESULT == ret.code()) {
+          return getReturn();
+        }
+
+        context.out.flush();
+        List<InterpreterResultMessage> resultMessages = context.out.toInterpreterResultMessage();
+        resultMessages.addAll(ret.message());
+        InterpreterResult res = new InterpreterResult(ret.code(), resultMessages);
+        Paragraph p = getUserParagraph(getUser());
+        if (null != p) {
+          p.setResult(res);
+          p.settings.setParams(settings.getParams());
+        }
+
+        return res;
+      } finally {
+        InterpreterContext.remove();
       }
-
-      return res;
-    } finally {
-      InterpreterContext.remove();
+    } catch (Exception e) {
+      return new InterpreterResult(Code.ERROR, e.getMessage());
     }
   }
 

@@ -19,7 +19,6 @@
 package org.apache.zeppelin.flink.sql;
 
 import avro.shaded.com.google.common.collect.Lists;
-import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.table.api.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -27,7 +26,6 @@ import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 public class SingleValueStreamSqlJob extends AbstractStreamSqlJob {
@@ -35,27 +33,20 @@ public class SingleValueStreamSqlJob extends AbstractStreamSqlJob {
   private static Logger LOGGER = LoggerFactory.getLogger(SingleValueStreamSqlJob.class);
 
   private Row latestRow;
+  private String template;
 
   public SingleValueStreamSqlJob(StreamExecutionEnvironment senv,
                                  StreamTableEnvironment stEnv,
                                  InterpreterContext context,
                                  String savePointPath) {
     super(senv, stEnv, context, savePointPath);
+    this.template = context.getLocalProperties().getOrDefault("template", "{}");
   }
 
   @Override
   protected List<String> getValidLocalProperties() {
     return Lists.newArrayList("type",
             "refreshInterval", "template", "enableSavePoint", "runWithSavePoint");
-  }
-
-  protected void processRecord(Tuple2<Boolean, Row> change) {
-    synchronized (resultLock) {
-      // insert
-      if (change.f0) {
-        processInsert(change.f1);
-      }
-    }
   }
 
   protected void processInsert(Row row) {
@@ -69,22 +60,18 @@ public class SingleValueStreamSqlJob extends AbstractStreamSqlJob {
   }
 
   @Override
-  protected void refresh(InterpreterContext context) {
+  protected void refresh(InterpreterContext context) throws Exception {
     if (latestRow == null) {
       LOGGER.warn("Skip RefreshTask as no data available");
       return;
     }
     context.out().clear();
-    synchronized (resultLock) {
-      try {
-        context.out.write("%html\n");
-        String template = context.getLocalProperties().getOrDefault("template", "{}");
-        String outputText = template.replace("{}", latestRow.getField(0).toString());
-        context.out.write(outputText);
-        context.out.flush();
-      } catch (IOException e) {
-        LOGGER.error("Fail to refresh output", e);
-      }
+    context.out.write("%html\n");
+    String outputText = template;
+    for (int i = 0; i < latestRow.getArity(); ++i) {
+      outputText = outputText.replace("{" + i + "}", latestRow.getField(i).toString());
     }
+    context.out.write(outputText);
+    context.out.flush();
   }
 }

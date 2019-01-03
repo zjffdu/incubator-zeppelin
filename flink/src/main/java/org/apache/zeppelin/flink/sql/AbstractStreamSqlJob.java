@@ -215,7 +215,7 @@ public abstract class AbstractStreamSqlJob {
     }
   }
 
-  protected abstract void refresh(InterpreterContext context);
+  protected abstract void refresh(InterpreterContext context) throws Exception;
 
 
   private class RefreshTask extends TimerTask {
@@ -229,7 +229,9 @@ public abstract class AbstractStreamSqlJob {
     @Override
     public void run() {
       try {
-        refresh(context);
+        synchronized (resultLock) {
+          refresh(context);
+        }
       } catch (Exception e) {
         LOGGER.error("Fail to refresh task", e);
       }

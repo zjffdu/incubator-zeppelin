@@ -68,43 +68,40 @@ public class RetractStreamSqlJob extends AbstractStreamSqlJob {
   @Override
   protected void refresh(InterpreterContext context) {
     context.out().clear();
-    synchronized (resultLock) {
-      try {
-        context.out.write("%table\n");
-        for (int i = 0; i < schema.getColumns().length; ++i) {
-          String field = schema.getColumnName(i);
-          context.out.write(field);
-          if (i != (schema.getColumns().length - 1)) {
+    try {
+      context.out.write("%table\n");
+      for (int i = 0; i < schema.getColumns().length; ++i) {
+        String field = schema.getColumnName(i);
+        context.out.write(field);
+        if (i != (schema.getColumns().length - 1)) {
+          context.out.write("\t");
+        }
+      }
+      context.out.write("\n");
+      LOGGER.debug("*****************Row size: " + materializedTable.size());
+      // sort it by the first column
+      materializedTable.sort((r1, r2) -> {
+        String f1 = r1.getField(0).toString();
+        String f2 = r2.getField(0).toString();
+        return f1.compareTo(f2);
+      });
+      for (Row row : materializedTable) {
+        for (int i = 0; i < row.getArity(); ++i) {
+          Object field = row.getField(i);
+          context.out.write(field.toString());
+          if (i != (row.getArity() - 1)) {
             context.out.write("\t");
           }
         }
+        LOGGER.debug("Row:" + row);
         context.out.write("\n");
-        LOGGER.debug("*****************Row size: " + materializedTable.size());
-        // sort it by the first column
-        materializedTable.sort((r1, r2) -> {
-          String f1 = r1.getField(0).toString();
-          String f2 = r2.getField(0).toString();
-          return f1.compareTo(f2);
-        });
-        for (Row row : materializedTable) {
-          for (int i = 0; i < row.getArity(); ++i) {
-            Object field = row.getField(i);
-            context.out.write(field.toString());
-            if (i != (row.getArity() - 1)) {
-              context.out.write("\t");
-            }
-          }
-          LOGGER.debug("Row:" + row);
-          context.out.write("\n");
-        }
-
-        context.out.write("\n%text ");
-        context.out.flush();
-      } catch (IOException e) {
-        e.printStackTrace();
-        LOGGER.error("Fail to refresh data", e);
       }
+
+      context.out.write("\n%text ");
+      context.out.flush();
+    } catch (IOException e) {
+      e.printStackTrace();
+      LOGGER.error("Fail to refresh data", e);
     }
   }
-
 }

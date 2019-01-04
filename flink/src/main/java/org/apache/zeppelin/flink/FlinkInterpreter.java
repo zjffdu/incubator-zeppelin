@@ -97,6 +97,10 @@ public class FlinkInterpreter extends Interpreter {
     return this.innerIntp.getJobManager();
   }
 
+  int getDefaultParallelism() {
+    return this.innerIntp.getDefaultParallelism();
+  }
+
   public ClassLoader getFlinkScalaShellLoader() {
     return innerIntp.getFlinkScalaShellLoader();
   }

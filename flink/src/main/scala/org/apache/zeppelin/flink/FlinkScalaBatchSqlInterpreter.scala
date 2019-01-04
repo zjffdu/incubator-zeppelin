@@ -19,25 +19,38 @@
 package org.apache.zeppelin.flink
 
 import org.apache.commons.lang3.exception.ExceptionUtils
-import org.apache.flink.table.api.Table
+import org.apache.flink.api.scala.ExecutionEnvironment
+import org.apache.flink.configuration.CoreOptions
+import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.table.api.TableEnvironment
 import org.apache.flink.table.api.scala.BatchTableEnvironment
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
+import org.slf4j.{Logger, LoggerFactory}
 
 class FlinkScalaBatchSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
                                     z: FlinkZeppelinContext,
                                     maxRow: Int) {
+  lazy val LOGGER: Logger = LoggerFactory.getLogger(getClass)
 
-  private var btenv: BatchTableEnvironment = scalaInterpreter.getBatchTableEnvironment()
+  private val btenv: BatchTableEnvironment = scalaInterpreter.getBatchTableEnvironment()
+  private val senv: StreamExecutionEnvironment = scalaInterpreter.getStreamExecutionEnvironment()
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
     try {
-      val table: Table = this.btenv.sqlQuery(code)
+      val parallelism = context.getLocalProperties.getOrDefault("parallelism",
+        scalaInterpreter.getDefaultParallelism + "").toInt
+      this.senv.setParallelism(parallelism)
+      scalaInterpreter.getExecutionEnvironment().setParallelism(parallelism)
+      //      this.btenv.getConfig.getConf.setInteger(CoreOptions.DEFAULT_PARALLELISM, parallelism)
+
+      LOGGER.info("Run Flink batch sql job with parallelism: " + parallelism)
+      val table = this.btenv.sqlQuery(code)
       val result = z.showData(table)
       return new InterpreterResult(InterpreterResult.Code.SUCCESS, result)
     } catch {
       case e: Exception =>
         return new InterpreterResult(InterpreterResult.Code.ERROR,
-          "Fail to fetch result: " + ExceptionUtils.getStackTrace(e))
+          "Fail to run Flink batch sql job: " + ExceptionUtils.getStackTrace(e))
     }
   }
 }

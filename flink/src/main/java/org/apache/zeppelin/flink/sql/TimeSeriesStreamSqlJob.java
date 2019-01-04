@@ -44,15 +44,16 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
   public TimeSeriesStreamSqlJob(StreamExecutionEnvironment senv,
                                 StreamTableEnvironment stEnv,
                                 InterpreterContext context,
-                                String savePointPath) {
-    super(senv, stEnv, context, savePointPath);
+                                String savePointPath,
+                                int defaultParallelism) {
+    super(senv, stEnv, context, savePointPath, defaultParallelism);
     this.tsWindowThreshold = Long.parseLong(context.getLocalProperties()
             .getOrDefault("threshold", 1000 * 60 * 60 + ""));
   }
 
   @Override
   protected List<String> getValidLocalProperties() {
-    return Lists.newArrayList("type",
+    return Lists.newArrayList("type", "parallelism",
             "refreshInterval", "enableSavePoint", "runWithSavePoint", "threshold");
   }
 

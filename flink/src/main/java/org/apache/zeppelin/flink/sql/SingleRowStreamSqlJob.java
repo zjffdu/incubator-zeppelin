@@ -28,18 +28,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class SingleValueStreamSqlJob extends AbstractStreamSqlJob {
+public class SingleRowStreamSqlJob extends AbstractStreamSqlJob {
 
-  private static Logger LOGGER = LoggerFactory.getLogger(SingleValueStreamSqlJob.class);
+  private static Logger LOGGER = LoggerFactory.getLogger(SingleRowStreamSqlJob.class);
 
   private Row latestRow;
   private String template;
 
-  public SingleValueStreamSqlJob(StreamExecutionEnvironment senv,
-                                 StreamTableEnvironment stEnv,
-                                 InterpreterContext context,
-                                 String savePointPath) {
-    super(senv, stEnv, context, savePointPath);
+  public SingleRowStreamSqlJob(StreamExecutionEnvironment senv,
+                               StreamTableEnvironment stEnv,
+                               InterpreterContext context,
+                               String savePointPath,
+                               int defaultParallelism) {
+    super(senv, stEnv, context, savePointPath, defaultParallelism);
     this.template = context.getLocalProperties().getOrDefault("template", "{}");
   }
 

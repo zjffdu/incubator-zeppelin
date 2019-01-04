@@ -58,6 +58,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
   private var scalaCompleter: ScalaCompleter = _
   private val interpreterOutput = new InterpreterOutputStream(LOGGER)
+  private var configuration: GlobalConfiguration = _;
 
   private var benv: ExecutionEnvironment = _
   private var senv: StreamExecutionEnvironment = _
@@ -66,6 +67,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
   private var z: FlinkZeppelinContext = _
   private var jmWebUrl: String = _
   private var jobManager: JobManager = _
+  private var defaultParallelism = 1;
 
   def open(): Unit = {
     var config = Config(executionMode = ExecutionMode.withName(
@@ -115,6 +117,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
     // load other configuration from interpreter properties
     properties.asScala.foreach(entry => configuration.setString(entry._1, entry._2))
+    this.defaultParallelism = configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM)
 
     if (config.executionMode == ExecutionMode.REMOTE) {
       val host = properties.getProperty("flink.execution.remote.host")
@@ -323,7 +326,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
   }
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
-
+    this.benv.setParallelism(defaultParallelism)
+    this.senv.setParallelism(defaultParallelism)
     val originalOut = System.out
 
     def _interpret(code: String): scala.tools.nsc.interpreter.Results.Result = {
@@ -395,6 +399,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
   def getBatchTableEnvironment(): BatchTableEnvironment = this.btenv
 
   def getStreamTableEnvionment(): StreamTableEnvironment = this.stenv
+
+  def getDefaultParallelism = this.defaultParallelism
 
   def getUserJars: Seq[String] = {
     // FLINK_HOME is not necessary in unit test

@@ -1,7 +1,7 @@
 package org.apache.zeppelin.flink;
 
 import org.apache.zeppelin.flink.sql.RetractStreamSqlJob;
-import org.apache.zeppelin.flink.sql.SingleValueStreamSqlJob;
+import org.apache.zeppelin.flink.sql.SingleRowStreamSqlJob;
 import org.apache.zeppelin.flink.sql.TimeSeriesStreamSqlJob;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
@@ -52,22 +52,25 @@ public class FlinkStreamSqlInterpreter extends Interpreter {
       Thread.currentThread().setContextClassLoader(flinkInterpreter.getFlinkScalaShellLoader());
       String streamType = context.getLocalProperties().getOrDefault("type", "retract");
       if (streamType.equalsIgnoreCase("single")) {
-        SingleValueStreamSqlJob streamJob = new SingleValueStreamSqlJob(
+        SingleRowStreamSqlJob streamJob = new SingleRowStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
                 flinkInterpreter.getStreamTableEnvironment(), context,
-                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
+                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()),
+                flinkInterpreter.getDefaultParallelism());
         return streamJob.run(st);
       } else if (streamType.equalsIgnoreCase("ts")) {
         TimeSeriesStreamSqlJob streamJob = new TimeSeriesStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
                 flinkInterpreter.getStreamTableEnvironment(), context,
-                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
+                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()),
+                flinkInterpreter.getDefaultParallelism());
         return streamJob.run(st);
       } else {
         RetractStreamSqlJob streamJob = new RetractStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
                 flinkInterpreter.getStreamTableEnvironment(), context,
-                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()));
+                flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()),
+                flinkInterpreter.getDefaultParallelism());
         return streamJob.run(st);
       }
     } finally {

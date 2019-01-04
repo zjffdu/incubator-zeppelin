@@ -18,6 +18,7 @@
 package org.apache.zeppelin.flink;
 
 
+import avro.shaded.com.google.common.collect.Lists;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -25,6 +26,8 @@ import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.scheduler.SchedulerFactory;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class FlinkBatchSqlInterpreter extends Interpreter {
@@ -40,11 +43,11 @@ public class FlinkBatchSqlInterpreter extends Interpreter {
   @Override
   public void open() throws InterpreterException {
     flinkInterpreter =
-        getInterpreterInTheSameSessionByClassName(FlinkInterpreter.class);
+            getInterpreterInTheSameSessionByClassName(FlinkInterpreter.class);
     FlinkZeppelinContext z = flinkInterpreter.getZeppelinContext();
     int maxRow = Integer.parseInt(getProperty("zeppelin.flink.maxResult", "1000"));
     this.scalaBatchSqlInterpreter = new FlinkScalaBatchSqlInterpreter(
-        flinkInterpreter.getInnerScalaInterpreter(), z, maxRow);
+            flinkInterpreter.getInnerScalaInterpreter(), z, maxRow);
   }
 
   @Override
@@ -54,10 +57,12 @@ public class FlinkBatchSqlInterpreter extends Interpreter {
 
   @Override
   public InterpreterResult interpret(String st, InterpreterContext context)
-      throws InterpreterException {
+          throws InterpreterException {
     flinkInterpreter.getZeppelinContext().setInterpreterContext(context);
     flinkInterpreter.getZeppelinContext().setNoteGui(context.getNoteGui());
     flinkInterpreter.getZeppelinContext().setGui(context.getGui());
+
+    checkLocalProperties(context.getLocalProperties());
 
     // set ClassLoader of current Thread to be the ClassLoader of Flink scala-shell,
     // otherwise codegen will fail to find classes defined in scala-shell
@@ -67,6 +72,17 @@ public class FlinkBatchSqlInterpreter extends Interpreter {
       return scalaBatchSqlInterpreter.interpret(st, context);
     } finally {
       Thread.currentThread().setContextClassLoader(originClassLoader);
+    }
+  }
+
+  private void checkLocalProperties(Map<String, String> localProperties)
+          throws InterpreterException {
+    List<String> validLocalProperties = Lists.newArrayList("parallelism");
+    for (String key : localProperties.keySet()) {
+      if (!validLocalProperties.contains(key)) {
+        throw new InterpreterException("Invalid property: " + key + ", Only the following " +
+                "properties are valid: " + validLocalProperties);
+      }
     }
   }
 

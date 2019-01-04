@@ -22,6 +22,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.runtime.client.JobCancellationException;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
@@ -57,15 +58,18 @@ public abstract class AbstractStreamSqlJob {
   protected SocketStreamIterator<Tuple2<Boolean, Row>> iterator;
   protected String savePointPath;
   protected Object resultLock = new Object();
+  protected int defaultParallelism;
 
   public AbstractStreamSqlJob(StreamExecutionEnvironment senv,
                               StreamTableEnvironment stEnv,
                               InterpreterContext context,
-                              String savePointPath) {
+                              String savePointPath,
+                              int defaultParallelism) {
     this.senv = senv;
     this.stEnv = stEnv;
     this.context = context;
     this.savePointPath = savePointPath;
+    this.defaultParallelism = defaultParallelism;
   }
 
   static TableSchema removeTimeAttributes(TableSchema schema) {
@@ -86,6 +90,12 @@ public abstract class AbstractStreamSqlJob {
   public InterpreterResult run(String st) {
     try {
       checkLocalProperties(context.getLocalProperties());
+
+      int parallelism = Integer.parseInt(context.getLocalProperties()
+              .getOrDefault("parallelism", defaultParallelism + ""));
+      this.senv.setParallelism(parallelism);
+      this.stEnv.getConfig().getConf().setInteger(CoreOptions.DEFAULT_PARALLELISM, parallelism);
+
       Table table = stEnv.sqlQuery(st);
       this.schema = removeTimeAttributes(table.getSchema());
       checkTableSchema(schema);
@@ -132,10 +142,11 @@ public abstract class AbstractStreamSqlJob {
       JobExecutionResult jobExecutionResult = null;
       if (this.savePointPath != null && Boolean.parseBoolean(
               context.getLocalProperties().getOrDefault("runWithSavePoint", "true"))) {
-        LOGGER.info("Run job from savePointPath: " + savePointPath);
+        LOGGER.info("Run job from savePointPath: " + savePointPath +
+                ", parallelism: " + parallelism);
         jobExecutionResult = senv.execute(st, SavepointRestoreSettings.forPath(savePointPath));
       } else {
-        LOGGER.info("Run job without savePointPath");
+        LOGGER.info("Run job without savePointPath, " + ", parallelism: " + parallelism);
         jobExecutionResult = senv.execute(st);
       }
       LOGGER.info("Flink Job is finished");

@@ -108,14 +108,14 @@ At the "Interpreters" menu, you have to create a new Flink interpreter and provi
 
 For more information about Flink configuration, you can find it [here](https://ci.apache.org/projects/flink/flink-docs-release-1.7/ops/config.html).
 
-## Run Flink in local mode
+### Run Flink in local mode
 
 By default, Flink interpreter will run in local mode as the default value of `flink.execution.mode` is `local`.
 In local mode, Flink will launch one MiniCluster which include JobManager and TaskManagers in one JVM. And you can still customize the MiniCluster via the following properties
 * `local.number-taskmanage` This property specify how many TaskManagers in MiniCluster.  By default it is 1, if you want to set it larger than 1, you have to also set `query.proxy.ports` and `query.server.ports`, otherwise you will get prot conflicts when launching multiple TaskManagers in one machine.
 * `taskmanager.numberOfTaskSlot` This property specify how many slots for each TaskManager. By default it is the number of cores of your machine.
 
-## Run Flink in yarn mode
+### Run Flink in yarn mode
 If you want to run Flink in yarn mode, you have to set the following properties:
 * `flink.execution.mode` to be `yarn`
 * `HADOOP_CONF_DIR` must be specified either in `zeppelin-env.sh` or in interpreter properties.
@@ -127,7 +127,7 @@ You can also customize the yarn mode via the following properties:
 * `flink.yarn.tm.slot` Slot number per TaskManager
 * `flink.yarn.queue` Queue name of yarn app
 
-## Run Flink in standalone mode
+### Run Flink in standalone mode
 If you want to run Flink in standalone mode, you have to set the following properties:
 * `flink.execution.mode` to be `remote`
 * `flink.execution.remote.host` to be the host name of JobManager
@@ -211,7 +211,61 @@ select word, count(1) as c from wc group by word
 {% endhighlight %}
 ```
 
-### FlinkStreamSqlInterpreter (not mature yet)
+### FlinkStreamSqlInterpreter
+
+Flink Interpreter also support stream sql via FlinkStreamSqlInterpreter(`%flink.ssql`) and also visualize the streaming data.
+
+Totally there're 3 kinds of streaming sql supported by `%flink.ssql`
+1. SingleRow
+2. Retract
+3. TimeSeries
+
+#### SingleRow
+This kind of sql will return only one row of data, but this row will be updated continually. Usually this is used for tracking the aggregation result of some metrics. e.g.
+total clicks, total transactions and etc. Regarding this kind of sql, you can visualize it via html. Here's one example which calculate the the total clicks.
+
+```
+{% highlight sql %}
+
+%flink.ssql(type=single, parallelism = 1, refreshInterval=3000, template=<h1>{1}</h1> until <h2>{0}</h2>, enableSavePoint=true, runWithSavePoint=false)
+
+select max(rowtime), count(1) from log
+{% endhighlight %}
+```
+
+
+#### Retract
+This kind of sql will return fixed number of rows, but will updated continually. Usually this is used for tracking the aggregation result of some metrics by some dimensions.
+e.g. total clicks per page, total transaction per country and etc. Regarding this kind of sql, you can visualize it via the built-in visualization charts of Zeppelin, such as barchart, linechart and etc.
+Here's one example which calculate the total clicks per page and visualize it via barchart.
+
+```
+{% highlight sql %}
+%flink.ssql(refreshInterval=2000, parallelism=2, enableSavePoint=true,  runWithSavePoint=false)
+
+select 
+    url, 
+    count(1) as pv
+from log 
+    group by url
+{% endhighlight %}
+```
+
+#### TimeSeries
+
+This kind of sql will return fixed number of rows regularly, but will updated continually. e.g. Usually this is 
+
+```
+%flink.ssql
+
+select
+    url,
+    TUMBLE_START(rowtime, INTERVAL '2' SECOND) as start_time,
+ 
+    count(1) as pv
+from log 
+    group by TUMBLE(rowtime, INTERVAL '2' SECOND), url
+```
 
 
 ### Other Features
@@ -223,3 +277,4 @@ select word, count(1) as c from wc group by word
 * Code completion
     - As other interpreters, user can use `tab` for code completion
    
+## FAQ

@@ -23,6 +23,7 @@ import java.util
 import org.apache.flink.api.scala.DataSet
 import org.apache.flink.table.api.Table
 import org.apache.flink.table.api.scala.BatchTableEnvironment
+import org.apache.flink.table.sinks.CollectRowTableSink
 import org.apache.flink.types.Row
 import org.apache.zeppelin.annotation.ZeppelinApi
 import org.apache.zeppelin.display.AngularObjectWatcher
@@ -54,40 +55,40 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
     JavaConversions.mapAsJavaMap(interpreterClassMap)
 
   override def showData(obj: Any): String = {
-    def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getColumnNames
-      val rows: Seq[Row] = table.collect()
-      val builder = new StringBuilder("%table\n")
-      builder.append(columnNames.mkString("\t"))
-      builder.append("\n")
-      for (row <- rows) {
-        var i = 0;
-        while (i < row.getArity) {
-          builder.append(row.getField(i))
-          i += 1
-          if (i != row.getArity) {
-            builder.append("\t");
-          }
-        }
-        builder.append("\n")
-      }
-      if (rows.size > maxResult) {
-        builder.append("\n")
-        builder.append(ResultMessages.getExceedsLimitRowsMessage(maxResult,
-          "zeppelin.flink.maxResult"))
-      }
-      // append %text at the end, otherwise the following output will be put in table as well.
-      builder.append("\n%text ")
-      builder.toString()
-    }
-
     if (obj.isInstanceOf[DataSet[_]]) {
       throw new RuntimeException("DataSet is not supported")
     } else if (obj.isInstanceOf[Table]) {
-      showTable(obj.asInstanceOf[Table])
+      showTable(obj.asInstanceOf[Table], "Flink ShowTable Job")
     } else {
       obj.toString
     }
+  }
+
+  def showTable(table: Table, jobName: String): String = {
+    val columnNames: Array[String] = table.getSchema.getColumnNames
+    val rows: Seq[Row] = table.collectSink(new CollectRowTableSink, Some(jobName))
+    val builder = new StringBuilder("%table\n")
+    builder.append(columnNames.mkString("\t"))
+    builder.append("\n")
+    for (row <- rows) {
+      var i = 0;
+      while (i < row.getArity) {
+        builder.append(row.getField(i))
+        i += 1
+        if (i != row.getArity) {
+          builder.append("\t");
+        }
+      }
+      builder.append("\n")
+    }
+    if (rows.size > maxResult) {
+      builder.append("\n")
+      builder.append(ResultMessages.getExceedsLimitRowsMessage(maxResult,
+        "zeppelin.flink.maxResult"))
+    }
+    // append %text at the end, otherwise the following output will be put in table as well.
+    builder.append("\n%text ")
+    builder.toString()
   }
 
 

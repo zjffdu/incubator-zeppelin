@@ -41,11 +41,9 @@ class FlinkScalaBatchSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
         scalaInterpreter.getDefaultParallelism + "").toInt
       this.senv.setParallelism(parallelism)
       scalaInterpreter.getExecutionEnvironment().setParallelism(parallelism)
-      //      this.btenv.getConfig.getConf.setInteger(CoreOptions.DEFAULT_PARALLELISM, parallelism)
-
       LOGGER.info("Run Flink batch sql job with parallelism: " + parallelism)
       val table = this.btenv.sqlQuery(code)
-      val result = z.showData(table)
+      val result = z.showTable(table, code)
       return new InterpreterResult(InterpreterResult.Code.SUCCESS, result)
     } catch {
       case e: Exception =>

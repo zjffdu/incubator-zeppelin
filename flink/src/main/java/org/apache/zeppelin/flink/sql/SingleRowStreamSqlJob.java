@@ -41,7 +41,12 @@ public class SingleRowStreamSqlJob extends AbstractStreamSqlJob {
                                String savePointPath,
                                int defaultParallelism) {
     super(senv, stEnv, context, savePointPath, defaultParallelism);
-    this.template = context.getLocalProperties().getOrDefault("template", "{}");
+    this.template = context.getLocalProperties().getOrDefault("template", "{0}");
+  }
+
+  @Override
+  protected String getType() {
+    return "single";
   }
 
   @Override

@@ -29,7 +29,7 @@ limitations under the License.
 
 ## How to configure Flink interpreter
 
-Here's a list of common properties that could be configured to customize Flink interpreter.
+Here's a list of properties that could be configured to customize Flink interpreter.
 
 <table class="table-configuration">
   <tr>
@@ -113,7 +113,7 @@ For more information about Flink configuration, you can find it [here](https://c
 By default, Flink interpreter run in local mode as the default value of `flink.execution.mode` is `local`.
 In local mode, Flink will launch one MiniCluster which include JobManager and TaskManagers in one JVM. But you can still customize the MiniCluster via the following properties:
 
-* `local.number-taskmanage` This property specify how many TaskManagers in MiniCluster. By default it is 1, if you want to set it larger than 1, you have to also set `query.proxy.ports` and `query.server.ports`, otherwise you will get port conflicts when launching multiple TaskManagers in one machine.
+* `local.number-taskmanage` This property specify how many TaskManagers in MiniCluster.
 * `taskmanager.numberOfTaskSlot` This property specify how many slots for each TaskManager. By default it is 1.
 
 ### Run Flink in yarn mode
@@ -131,7 +131,7 @@ You can also customize the yarn mode via the following properties:
 * `flink.yarn.tm.slot` Slot number per TaskManager
 * `flink.yarn.queue` Queue name of yarn app
 
-Again you have to set `query.proxy.ports` and `query.server.ports` to be a port range because it is possible to launch multiple TaskManager in one machine.
+You have to set `query.proxy.ports` and `query.server.ports` to be a port range because it is possible to launch multiple TaskManager in one machine.
 
 ### Run Flink in standalone mode
 
@@ -264,19 +264,65 @@ This kind of sql will return fixed number of rows regularly, but will updated co
 e.g. Here's one example which calculate the page view for each 5 seconds window.
 
 ```sql
-%flink.ssql
+%flink.ssql(type=ts, refreshInterval=2000, enableSavePoint=false, runWithSavePoint=false, threshold=60000)
 
 select
     url,
-    TUMBLE_START(rowtime, INTERVAL '2' SECOND) as start_time,
+    TUMBLE_START(rowtime, INTERVAL '5' SECOND) as start_time,
  
     count(1) as pv
 from log 
-    group by TUMBLE(rowtime, INTERVAL '2' SECOND), url
+    group by TUMBLE(rowtime, INTERVAL '5' SECOND), url
 ```
 <img src="{{BASE_PATH}}/assets/themes/zeppelin/img/screenshots/flink_pv_ts.png" />
 
-#### Local Properties to customize Flink stream sql behavior
+
+#### Local Properties to customize Flink stream sql
+
+Here's a list of properties that you can use to customize Flink stream sql
+
+<table class="table-configuration">
+  <tr>
+    <th>Property</th>
+    <th>Default value</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>type</td>
+    <td></td>
+    <td>single | retract | ts</td>
+  </tr>
+  <tr>
+    <td>refreshInterval</td>
+    <td>3000</td>
+    <td>How oftern to refresh the result, it is in milliseconds.</td>
+  </tr>
+    <tr>
+      <td>template</td>
+      <td>{0}</td>
+      <td>This is used for display the result of type singlerow. `{i}` represent the placehold of the ith field. You can also use html in the template, such as &lt;h1&gt;{0}&lt;/h1&gt;</td>
+    </tr>
+  <tr>
+    <td>parallelism</td>
+    <td></td>
+    <td>The parallelism of this stream sql job</td>
+  </tr>
+  <tr>
+    <td>enableSavePoint</td>
+    <td>false</td>
+    <td>Whether do savepoint when canceling job</td>
+  </tr>
+  <tr>
+    <td>runWithSavePoint</td>
+    <td>false</td>
+    <td>Whether to run job from savepoint</td>
+  </tr>
+  <tr>
+    <td>threshold</td>
+    <td>3600000</td>
+    <td>How much history data to keep for TimeSeries StreamJob, 1 hour by default</td>
+  </tr>           
+</table>
 
 
 ### Other Features
@@ -289,3 +335,6 @@ from log
     - As other interpreters, user can use `tab` for code completion
    
 ## FAQ
+
+* Most of time, you will get clear error message when some unexpected happens. But you can still check the interpreter in case the error message in frontend is not clear to you.
+  The flink interpreter log is located in `ZEPPELIN_HOME/logs`

@@ -50,7 +50,11 @@ public class FlinkStreamSqlInterpreter extends Interpreter {
     ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
     try {
       Thread.currentThread().setContextClassLoader(flinkInterpreter.getFlinkScalaShellLoader());
-      String streamType = context.getLocalProperties().getOrDefault("type", "retract");
+      String streamType = context.getLocalProperties().get("type");
+      if (streamType == null) {
+        return new InterpreterResult(InterpreterResult.Code.ERROR,
+                "type must be specified for stream sql");
+      }
       if (streamType.equalsIgnoreCase("single")) {
         SingleRowStreamSqlJob streamJob = new SingleRowStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
@@ -65,13 +69,16 @@ public class FlinkStreamSqlInterpreter extends Interpreter {
                 flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()),
                 flinkInterpreter.getDefaultParallelism());
         return streamJob.run(st);
-      } else {
+      } else if (streamType.equalsIgnoreCase("retract")) {
         RetractStreamSqlJob streamJob = new RetractStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
                 flinkInterpreter.getStreamTableEnvironment(), context,
                 flinkInterpreter.getJobManager().getSavePointPath(context.getParagraphId()),
                 flinkInterpreter.getDefaultParallelism());
         return streamJob.run(st);
+      } else {
+        return new InterpreterResult(InterpreterResult.Code.ERROR,
+                "Unrecognized type: " + streamType);
       }
     } finally {
       Thread.currentThread().setContextClassLoader(originClassLoader);
@@ -103,5 +110,4 @@ public class FlinkStreamSqlInterpreter extends Interpreter {
     return SchedulerFactory.singleton().createOrGetParallelScheduler(
             FlinkStreamSqlInterpreter.class.getName() + this.hashCode(), maxConcurrency);
   }
-
 }

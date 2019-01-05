@@ -46,6 +46,11 @@ public class RetractStreamSqlJob extends AbstractStreamSqlJob {
   }
 
   @Override
+  protected String getType() {
+    return "retract";
+  }
+
+  @Override
   protected List<String> getValidLocalProperties() {
     return Lists.newArrayList("type", "parallelism",
             "refreshInterval", "enableSavePoint", "runWithSavePoint");

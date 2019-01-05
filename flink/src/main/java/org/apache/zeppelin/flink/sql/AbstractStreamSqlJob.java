@@ -87,6 +87,8 @@ public abstract class AbstractStreamSqlJob {
     return builder.build();
   }
 
+  protected abstract String getType();
+
   public InterpreterResult run(String st) {
     try {
       checkLocalProperties(context.getLocalProperties());
@@ -169,7 +171,7 @@ public abstract class AbstractStreamSqlJob {
     for (String key : localProperties.keySet()) {
       if (!validLocalProperties.contains(key)) {
         throw new Exception("Invalid property: " + key + ", Only the following properties " +
-                "are valid: " + validLocalProperties);
+                "are valid for stream type '" + getType() + "': " + validLocalProperties);
       }
     }
   };

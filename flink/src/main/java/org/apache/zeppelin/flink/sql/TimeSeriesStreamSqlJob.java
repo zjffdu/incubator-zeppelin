@@ -52,6 +52,11 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
   }
 
   @Override
+  protected String getType() {
+    return "ts";
+  }
+
+  @Override
   protected List<String> getValidLocalProperties() {
     return Lists.newArrayList("type", "parallelism",
             "refreshInterval", "enableSavePoint", "runWithSavePoint", "threshold");

@@ -19,29 +19,28 @@ limitations under the License.
 -->
 {% include JB/setup %}
 
-# Flink interpreter for Apache Zeppelin
+# Flink Interpreter for Apache Zeppelin
 
 <div id="toc"></div>
 
 ## Overview
 [Apache Flink](https://flink.apache.org) is an open source platform for distributed stream and batch data processing. Flink’s core is a streaming dataflow engine that provides data distribution, communication, and fault tolerance for distributed computations over data streams. Flink also builds batch processing on top of the streaming engine, overlaying native iteration support, managed memory, and program optimization.
 
-## How to start local Flink cluster, to test the interpreter
-Zeppelin comes with pre-configured flink-local interpreter, which starts Flink in a local mode on your machine, so you do not need to install anything.
 
-## How to configure interpreter to point to Flink cluster
-At the "Interpreters" menu, you have to create a new Flink interpreter and provide next properties:
+## How to configure Flink interpreter
+
+Here's a list of common properties that could be configured to customize Flink interpreter.
 
 <table class="table-configuration">
   <tr>
-    <th>property</th>
-    <th>value</th>
+    <th>Property</th>
+    <th>Default value</th>
     <th>Description</th>
   </tr>
   <tr>
     <td>flink.execution.mode</td>
-    <td>local|remote|yarn</td>
-    <td>execution mode flink.</td>
+    <td>local</td>
+    <td>execution mode flink. It could be local, yarn or remote</td>
   </tr>
   <tr>
     <td>flink.execution.remote.host</td>
@@ -61,22 +60,22 @@ At the "Interpreters" menu, you have to create a new Flink interpreter and provi
   <tr>
     <td>flink.yarn.jm.memory</td>
     <td>1024</td>
-    <td>Memory of Job Manager</td>
+    <td>Memory(mb) of JobManager</td>
   </tr>
   <tr>
     <td>flink.yarn.tm.memory</td>
     <td>1024</td>
-    <td>Memory of Task Manager</td>
+    <td>Memory(mb) of TaskManager</td>
   </tr>
   <tr>
     <td>flink.yarn.tm.num</td>
     <td>2</td>
-    <td>Number of Task Manager</td>
+    <td>Number of TaskManager</td>
   </tr>
   <tr>
     <td>flink.yarn.tm.slot</td>
     <td>1</td>
-    <td>Slot number per Task Manager</td>
+    <td>Slot number per TaskManager</td>
   </tr>
   <tr>
     <td>flink.yarn.queue</td>
@@ -106,29 +105,38 @@ At the "Interpreters" menu, you have to create a new Flink interpreter and provi
                       
 </table>
 
+Besides these properties, you can also configure any flink properties that will override the value in `flink-conf.yaml`.
 For more information about Flink configuration, you can find it [here](https://ci.apache.org/projects/flink/flink-docs-release-1.7/ops/config.html).
 
 ### Run Flink in local mode
 
-By default, Flink interpreter will run in local mode as the default value of `flink.execution.mode` is `local`.
-In local mode, Flink will launch one MiniCluster which include JobManager and TaskManagers in one JVM. And you can still customize the MiniCluster via the following properties
-* `local.number-taskmanage` This property specify how many TaskManagers in MiniCluster.  By default it is 1, if you want to set it larger than 1, you have to also set `query.proxy.ports` and `query.server.ports`, otherwise you will get prot conflicts when launching multiple TaskManagers in one machine.
-* `taskmanager.numberOfTaskSlot` This property specify how many slots for each TaskManager. By default it is the number of cores of your machine.
+By default, Flink interpreter run in local mode as the default value of `flink.execution.mode` is `local`.
+In local mode, Flink will launch one MiniCluster which include JobManager and TaskManagers in one JVM. But you can still customize the MiniCluster via the following properties:
+
+* `local.number-taskmanage` This property specify how many TaskManagers in MiniCluster. By default it is 1, if you want to set it larger than 1, you have to also set `query.proxy.ports` and `query.server.ports`, otherwise you will get port conflicts when launching multiple TaskManagers in one machine.
+* `taskmanager.numberOfTaskSlot` This property specify how many slots for each TaskManager. By default it is 1.
 
 ### Run Flink in yarn mode
+
 If you want to run Flink in yarn mode, you have to set the following properties:
+
 * `flink.execution.mode` to be `yarn`
 * `HADOOP_CONF_DIR` must be specified either in `zeppelin-env.sh` or in interpreter properties.
 
 You can also customize the yarn mode via the following properties:
+
 * `flink.yarn.jm.memory` Memory of JobManager
 * `flink.yarn.tm.memory` Memory of TaskManager
 * `flink.yarn.tm.num` Number of TaskManager
 * `flink.yarn.tm.slot` Slot number per TaskManager
 * `flink.yarn.queue` Queue name of yarn app
 
+Again you have to set `query.proxy.ports` and `query.server.ports` to be a port range because it is possible to launch multiple TaskManager in one machine.
+
 ### Run Flink in standalone mode
+
 If you want to run Flink in standalone mode, you have to set the following properties:
+
 * `flink.execution.mode` to be `remote`
 * `flink.execution.remote.host` to be the host name of JobManager
 * `flink.execution.remote.port` to be the port of rest server of JobManager
@@ -136,23 +144,25 @@ If you want to run Flink in standalone mode, you have to set the following prope
 ## What can Flink Interpreter do
 
 Zeppelin's Flink interpreter support 3 kinds of interpreter:
-* %flink.scala (FlinkScalaInterpreter)
-* %flink.bsql (FlinkBatchSqlInterpreter)
-* %flink.ssql (FlinkStreamSqlInterpreter)
 
-### FlinkScalaInterpreter
+* %flink (FlinkScalaInterpreter, Run scala code)
+* %flink.bsql (FlinkBatchSqlInterpreter, Run flink batch sql)
+* %flink.ssql (FlinkStreamSqlInterpreter, Run flink stream sql)
+
+### FlinkScalaInterpreter(`%flink`)
+
 FlinkScalaInterpreter allow user to run scala code in zeppelin. 4 variables are created for users:
-* senv   (StreamExecutionEnvironment)
+
+* senv  (StreamExecutionEnvironment)
 * benv  (ExecutionEnvironment)
 * stenv (StreamTableEnvironment)
 * btenv (BatchTableEnvironment)
 
 Users can use these variables to run DataSet/DataStream/BatchTable/StreamTable related job.
 
-e.g. The following is to use benv to run a batch style WordCount
+e.g. The following code snippet use `benv` to run a batch style WordCount
 
-```
-{% highlight scala %}
+```scala
 %flink
 
 val data = benv.fromElements("hello world", "hello flink", "hello hadoop")
@@ -161,13 +171,11 @@ data.flatMap(line => line.split("\\s"))
   .groupBy(0)
   .sum(1)
   .print()
-{% endhighlight %}
 ```
 
-The following is to use senv to run a stream style WordCount
+The following use `senv` to run a stream style WordCount
 
-```
-{% highlight scala %}
+```scala
 %flink
 
 val data = senv.fromElements("hello world", "hello flink", "hello hadoop")
@@ -178,84 +186,84 @@ data.flatMap(line => line.split("\\s"))
   .print
 
 senv.execute()
-{% endhighlight %}
 ```
 
-### FlinkBatchSqlInterpreter
+### FlinkBatchSqlInterpreter(`%flink.bsql`)
 
-FlinkBatchSqlInterpreter support to run sql to query tables registered in BatchTableEnvironment.
+`FlinkBatchSqlInterpreter` support to run sql to query tables registered in `BatchTableEnvironment`(btenv).
 
-e.g. We can query the `wc` table which is registered in FlinkScalaInterpreter
+e.g. We can query the `wc` table which is registered in scala code.
 
-```
-{% highlight scala %}
+```scala
 %flink
 
-val data = benv.fromElements("hello world", "hello flink", "hello hadoop")
-val table = data.flatMap(line=>line.split("\\s")).
-   map(w => (w, 1)).
-   toTable(btenv, 'word, 'number)
-btenv.registerOrReplaceTable("wc", table)
+val data = senv.fromElements("hello world", "hello flink", "hello hadoop").
+    flatMap(line => line.split("\\s")).
+    map(w => (w, 1))
 
-{% endhighlight %}
-```
-
+btenv.registerOrReplaceBoundedStream("wc", 
+    data, 
+    'word,'number)
 
 ```
-{% highlight scala %}
+
+```sql
 
 %flink.bsql
 
-select word, count(1) as c from wc group by word
+select word, sum(number) as c from wc group by word 
 
-{% endhighlight %}
 ```
 
-### FlinkStreamSqlInterpreter
+### FlinkStreamSqlInterpreter(`%flink.ssql`)
 
 Flink Interpreter also support stream sql via FlinkStreamSqlInterpreter(`%flink.ssql`) and also visualize the streaming data.
 
-Totally there're 3 kinds of streaming sql supported by `%flink.ssql`
-1. SingleRow
-2. Retract
-3. TimeSeries
+Overall there're 3 kinds of streaming sql supported by `%flink.ssql`:
 
+* SingleRow
+* Retract
+* TimeSeries
+
+And not only user can run 
 #### SingleRow
-This kind of sql will return only one row of data, but this row will be updated continually. Usually this is used for tracking the aggregation result of some metrics. e.g.
-total clicks, total transactions and etc. Regarding this kind of sql, you can visualize it via html. Here's one example which calculate the the total clicks.
 
-```
-{% highlight sql %}
+This kind of sql only return one row of data, but this row will be updated continually. Usually this is used for tracking the aggregation result of some metrics. e.g.
+total page view, total transactions and etc. Regarding this kind of sql, you can visualize it via html. Here's one example which calculate the total page view.
 
-%flink.ssql(type=single, parallelism = 1, refreshInterval=3000, template=<h1>{1}</h1> until <h2>{0}</h2>, enableSavePoint=true, runWithSavePoint=false)
+```sql
+
+%flink.ssql(type=single, parallelism=1, refreshInterval=3000, template=<h1>{1}</h1> until <h2>{0}</h2>, enableSavePoint=true, runWithSavePoint=true)
 
 select max(rowtime), count(1) from log
-{% endhighlight %}
 ```
 
+<img src="{{BASE_PATH}}/assets/themes/zeppelin/img/screenshots/flink_total_pv.png" width="700"/>
 
 #### Retract
-This kind of sql will return fixed number of rows, but will updated continually. Usually this is used for tracking the aggregation result of some metrics by some dimensions.
-e.g. total clicks per page, total transaction per country and etc. Regarding this kind of sql, you can visualize it via the built-in visualization charts of Zeppelin, such as barchart, linechart and etc.
-Here's one example which calculate the total clicks per page and visualize it via barchart.
 
-```
-{% highlight sql %}
-%flink.ssql(refreshInterval=2000, parallelism=2, enableSavePoint=true,  runWithSavePoint=false)
+This kind of sql will return fixed number of rows, but will updated continually. Usually this is used for tracking the aggregation result of some metrics by some dimensions.
+e.g. total page view per page, total transaction per country and etc. Regarding this kind of sql, you can visualize it via the built-in visualization charts of Zeppelin, such as barchart, linechart and etc.
+Here's one example which calculate the total page view per page and visualize it via barchart.
+
+```sql
+%flink.ssql(refreshInterval=2000, parallelism=2, enableSavePoint=true, runWithSavePoint=true)
 
 select 
     url, 
     count(1) as pv
 from log 
     group by url
-{% endhighlight %}
 ```
+
+<img src="{{BASE_PATH}}/assets/themes/zeppelin/img/screenshots/flink_pv_per_page.png" width="700"/>
 
 #### TimeSeries
 
-This kind of sql will return fixed number of rows regularly, but will updated continually. e.g. Usually this is 
+This kind of sql will return fixed number of rows regularly, but will updated continually. This is usually used for tracking metrics by window.
+e.g. Here's one example which calculate the page view for each 5 seconds window.
 
-```
+```sql
 %flink.ssql
 
 select
@@ -266,6 +274,9 @@ select
 from log 
     group by TUMBLE(rowtime, INTERVAL '2' SECOND), url
 ```
+<img src="{{BASE_PATH}}/assets/themes/zeppelin/img/screenshots/flink_pv_ts.png" />
+
+#### Local Properties to customize Flink stream sql behavior
 
 
 ### Other Features
@@ -273,7 +284,7 @@ from log
 * Job Canceling
     - User can cancel job via the job cancel button
 * Flink Job url association
-    - User can link to the flink job url in JM dashboard 
+    - User can link to the Flink job url in JM dashboard 
 * Code completion
     - As other interpreters, user can use `tab` for code completion
    

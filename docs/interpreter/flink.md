@@ -102,7 +102,11 @@ Here's a list of properties that could be configured to customize Flink interpre
     <td>10</td>
     <td>Max number of stream sql executed concurrently</td>
   </tr> 
-                      
+  <tr>
+    <td>zeppelin.flink.scala.color</td>
+    <td>true</td>
+    <td>Whether to enable color output of scala repl</td>
+  </tr>                     
 </table>
 
 Besides these properties, you can also configure any flink properties that will override the value in `flink-conf.yaml`.
@@ -277,7 +281,7 @@ from log
 <img src="{{BASE_PATH}}/assets/themes/zeppelin/img/screenshots/flink_pv_ts.png" />
 
 
-#### Local Properties to customize Flink stream sql
+#### Local Properties to customize Flink Stream Sql
 
 Here's a list of properties that you can use to customize Flink stream sql
 
@@ -333,6 +337,8 @@ Here's a list of properties that you can use to customize Flink stream sql
     - User can link to the Flink job url in JM dashboard 
 * Code completion
     - As other interpreters, user can use `tab` for code completion
+* ZeppelinContext
+    - Flink interpreter also integrate ZeppelinContext. For how to use ZeppelinContext, please refer this [link](../usage/other_features/zeppelin_context.html).
    
 ## FAQ
 

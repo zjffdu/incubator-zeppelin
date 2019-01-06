@@ -119,6 +119,11 @@ class FlinkScalaInterpreter(val properties: Properties) {
     properties.asScala.foreach(entry => configuration.setString(entry._1, entry._2))
     this.defaultParallelism = configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM)
 
+    // set scala.color
+    if (properties.getProperty("zeppelin.flink.scala.color", "true").toBoolean) {
+      System.setProperty("scala.color", "true")
+    }
+
     if (config.executionMode == ExecutionMode.REMOTE) {
       val host = properties.getProperty("flink.execution.remote.host")
       val port = properties.getProperty("flink.execution.remote.port")
@@ -179,7 +184,6 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
     val outputDir = Files.createTempDirectory("flink-repl");
     val interpArguments = List(
-      "-Yrepl-class-based",
       "-Yrepl-outdir", s"${outputDir.toFile.getAbsolutePath}"
     )
     settings.processArguments(interpArguments, true)

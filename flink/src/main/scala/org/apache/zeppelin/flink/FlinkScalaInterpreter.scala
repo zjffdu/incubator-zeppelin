@@ -184,6 +184,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
     val outputDir = Files.createTempDirectory("flink-repl");
     val interpArguments = List(
+      "-Yrepl-class-based",
       "-Yrepl-outdir", s"${outputDir.toFile.getAbsolutePath}"
     )
     settings.processArguments(interpArguments, true)

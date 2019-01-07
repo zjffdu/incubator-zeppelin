@@ -47,8 +47,7 @@ class FlinkScalaBatchSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
       return new InterpreterResult(InterpreterResult.Code.SUCCESS, result)
     } catch {
       case e: Exception =>
-        return new InterpreterResult(InterpreterResult.Code.ERROR,
-          "Fail to run Flink batch sql job: " + ExceptionUtils.getStackTrace(e))
+        return new InterpreterResult(InterpreterResult.Code.ERROR, ExceptionUtils.getStackTrace(e))
     }
   }
 }

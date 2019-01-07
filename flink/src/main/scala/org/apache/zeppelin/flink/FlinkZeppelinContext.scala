@@ -65,32 +65,33 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
   }
 
   def showTable(table: Table, jobName: String): String = {
-    val columnNames: Array[String] = table.getSchema.getColumnNames
-    val rows: Seq[Row] = table.collectSink(new CollectRowTableSink, Some(jobName))
+    val columnNames: Array[String] = table.getSchema.getFieldNames
+    val rows: Seq[Row] = table.fetch(maxResult + 1).collectSink(new CollectRowTableSink, Some(jobName))
     val builder = new StringBuilder("%table\n")
     builder.append(columnNames.mkString("\t"))
     builder.append("\n")
-    for (row <- rows) {
-      var i = 0;
-      while (i < row.getArity) {
-        builder.append(row.getField(i))
-        i += 1
-        if (i != row.getArity) {
-          builder.append("\t");
-        }
-      }
-      builder.append("\n")
-    }
+
+    builder.append(rows.map(r => rowString(r)).mkString("\n"))
     if (rows.size > maxResult) {
       builder.append("\n")
       builder.append(ResultMessages.getExceedsLimitRowsMessage(maxResult,
         "zeppelin.flink.maxResult"))
     }
-    // append %text at the end, otherwise the following output will be put in table as well.
-    builder.append("\n%text ")
     builder.toString()
   }
 
+  private def rowString(r: Row): String = {
+    val rowStringBuilder = new StringBuilder
+    var i = 0
+    while (i < r.getArity) {
+      rowStringBuilder.append(r.getField(i))
+      i += 1
+      if (i != r.getArity) {
+        rowStringBuilder.append("\t");
+      }
+    }
+    rowStringBuilder.toString()
+  }
 
   @ZeppelinApi
   def select(name: String, options: Seq[(Any, String)]): Any = select(name, null, options)

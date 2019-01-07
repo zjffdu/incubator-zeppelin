@@ -151,12 +151,12 @@ class FlinkScalaInterpreter(val properties: Properties) {
       val conf = cluster match {
         case Some(Left(Left(miniCluster))) =>
           // new local mode
-          LOGGER.info("Starting MiniCluster in new mode")
+          LOGGER.info("Starting MiniCluster in legacy mode")
           this.jmWebUrl = "http://localhost:" + port
           miniCluster.getConfiguration
         case Some(Left(Right(_))) =>
           // legacy local mode
-          LOGGER.info("Starting MiniCluster in legacy mode")
+          LOGGER.info("Starting MiniCluster in new mode")
           this.jmWebUrl = "http://localhost:" + port
           configuration
         case Some(Right(yarnCluster)) =>

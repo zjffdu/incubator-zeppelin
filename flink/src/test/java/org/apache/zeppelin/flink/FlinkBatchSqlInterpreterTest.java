@@ -26,6 +26,7 @@ import org.apache.zeppelin.interpreter.InterpreterOutput;
 import org.apache.zeppelin.interpreter.InterpreterOutputListener;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.InterpreterResultMessageOutput;
+import org.apache.zeppelin.interpreter.remote.RemoteInterpreterEventClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class FlinkBatchSqlInterpreterTest {
 
@@ -71,19 +73,19 @@ public class FlinkBatchSqlInterpreterTest {
   @Test
   public void testSQLInterpreter() throws InterpreterException {
     InterpreterResult result = interpreter.interpret(
-        "val ds = benv.fromElements((1, \"jeff\"), (2, \"andy\"))", getInterpreterContext());
+        "val ds = senv.fromElements((1, \"jeff\"), (2, \"andy\"))", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
-    result = interpreter.interpret("btenv.registerDataSet(\"table_1\", ds)",
+    result = interpreter.interpret("btenv.registerOrReplaceBoundedStream(\"table_1\", ds, 'f1, 'f2)",
         getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     result = sqlInterpreter.interpret("select * from table_1", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
     assertEquals(InterpreterResult.Type.TABLE, result.message().get(0).getType());
-    assertEquals("_1\t_2\n" +
+    assertEquals("f1\tf2\n" +
         "1\tjeff\n" +
-        "2\tandy\n", result.message().get(0).getData());
+        "2\tandy", result.message().get(0).getData());
   }
 
   @Test
@@ -97,9 +99,10 @@ public class FlinkBatchSqlInterpreterTest {
   private InterpreterContext getInterpreterContext() {
     output = "";
     InterpreterContext context = InterpreterContext.builder()
-        .setInterpreterOut(new InterpreterOutput(null))
-        .setAngularObjectRegistry(new AngularObjectRegistry("flink", null))
-        .build();
+            .setInterpreterOut(new InterpreterOutput(null))
+            .setAngularObjectRegistry(new AngularObjectRegistry("flink", null))
+            .setIntpEventClient(mock(RemoteInterpreterEventClient.class))
+            .build();
     context.out = new InterpreterOutput(
         new InterpreterOutputListener() {
           @Override

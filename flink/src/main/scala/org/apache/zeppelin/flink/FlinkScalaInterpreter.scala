@@ -150,18 +150,23 @@ class FlinkScalaInterpreter(val properties: Properties) {
       val (host, port, cluster) = fetchConnectionInfo(configuration, config)
       val conf = cluster match {
         case Some(Left(Left(miniCluster))) =>
-          // local mode
+          // new local mode
+          LOGGER.info("Starting MiniCluster in new mode")
           this.jmWebUrl = "http://localhost:" + port
           miniCluster.getConfiguration
         case Some(Left(Right(_))) =>
-          // remote mode
-          this.jmWebUrl = "http://" + host + ":" + port
+          // legacy local mode
+          LOGGER.info("Starting MiniCluster in legacy mode")
+          this.jmWebUrl = "http://localhost:" + port
           configuration
         case Some(Right(yarnCluster)) =>
           // yarn mode
           this.jmWebUrl = yarnCluster.getWebInterfaceURL
           yarnCluster.getFlinkConfiguration
-        case None => configuration
+        case None =>
+          // remote mode
+          this.jmWebUrl = "http://" + host + ":" + port
+          configuration
       }
       LOGGER.info(s"\nConnecting to Flink cluster (host: $host, port: $port).\n")
       LOGGER.info("externalJars: " +
@@ -249,6 +254,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
           jobManager.addJob(InterpreterContext.get().getParagraphId, jobId)
           if (jmWebUrl != null) {
             buildFlinkJobUrl(jobId, InterpreterContext.get())
+          } else {
+            LOGGER.error("Unable to link JobURL, because JobManager weburl is null")
           }
         }
       }

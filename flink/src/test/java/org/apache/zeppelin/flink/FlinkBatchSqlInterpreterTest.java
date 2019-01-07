@@ -76,7 +76,8 @@ public class FlinkBatchSqlInterpreterTest {
         "val ds = senv.fromElements((1, \"jeff\"), (2, \"andy\"))", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
-    result = interpreter.interpret("btenv.registerOrReplaceBoundedStream(\"table_1\", ds, 'f1, 'f2)",
+    result = interpreter
+            .interpret("btenv.registerOrReplaceBoundedStream(\"table_1\", ds, 'f1, 'f2)",
         getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 

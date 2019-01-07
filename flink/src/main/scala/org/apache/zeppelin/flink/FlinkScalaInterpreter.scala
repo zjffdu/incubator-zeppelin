@@ -213,7 +213,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
     this.benv = flinkILoop.scalaBenv
     this.benv.setSessionTimeout(300 * 1000)
     this.senv = flinkILoop.scalaSenv
-    LOGGER.info("Default Parallelism for flink: " + this.senv.getParallelism)
+    LOGGER.info("Default Parallelism for flink: " +
+      configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
     this.benv.setParallelism(configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
     this.senv.setParallelism(configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
 
@@ -338,8 +339,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
   }
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
-    this.benv.setParallelism(defaultParallelism)
-    this.senv.setParallelism(defaultParallelism)
+//    this.benv.setParallelism(defaultParallelism)
+//    this.senv.setParallelism(defaultParallelism)
     val originalOut = System.out
 
     def _interpret(code: String): scala.tools.nsc.interpreter.Results.Result = {

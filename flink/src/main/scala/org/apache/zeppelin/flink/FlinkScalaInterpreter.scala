@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
 import org.apache.flink.api.common.{JobExecutionResult, JobID}
 import org.apache.flink.api.java.JobListener
 import org.apache.flink.runtime.minicluster.StandaloneMiniCluster
-import org.apache.flink.table.api.{TableConfig, TableEnvironment}
+import org.apache.flink.table.api.{TableConfig, TableConfigOptions, TableEnvironment}
 import org.apache.zeppelin.interpreter.{InterpreterException, InterpreterHookRegistry}
 import org.apache.flink.api.scala.FlinkShell._
 import org.apache.flink.api.scala.{ExecutionEnvironment, FlinkILoop}
@@ -217,11 +217,13 @@ class FlinkScalaInterpreter(val properties: Properties) {
       configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
     this.benv.setParallelism(configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
     this.senv.setParallelism(configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
+    this.senv.disableOperatorChaining()
 
     val tableConfig = new TableConfig
     tableConfig.setConf(configuration)
-    this.btenv = TableEnvironment.getBatchTableEnvironment(this.senv, tableConfig)
-    this.stenv = TableEnvironment.getTableEnvironment(this.senv, tableConfig)
+    this.btenv = TableEnvironment.getBatchTableEnvironment(this.senv)
+    //    this.btenv.getConfig.getConf.setInteger(TableConfigOptions.SQL_RESOURCE_DEFAULT_PARALLELISM,1)
+    this.stenv = TableEnvironment.getTableEnvironment(this.senv)
     bind("btenv", btenv.getClass.getCanonicalName, btenv, List("@transient"))
     bind("stenv", stenv.getClass.getCanonicalName, stenv, List("@transient"))
 
@@ -416,23 +418,10 @@ class FlinkScalaInterpreter(val properties: Properties) {
   def getDefaultParallelism = this.defaultParallelism
 
   def getUserJars: Seq[String] = {
-    // FLINK_HOME is not necessary in unit test
-    if (System.getenv("FLINK_HOME") != null) {
-      val flinkLibJars = new File(System.getenv("FLINK_HOME") + "/lib")
-        .listFiles().map(e => e.getAbsolutePath).filter(e => e.endsWith(".jar"))
-      val flinkOptJars = new File(System.getenv("FLINK_HOME") + "/opt")
-        .listFiles().map(e => e.getAbsolutePath()).filter(e => e.endsWith(".jar"))
-      if (properties.containsKey("flink.execution.jars")) {
-        flinkLibJars ++ flinkOptJars ++ properties.getProperty("flink.execution.jars").split(":")
-      } else {
-        flinkLibJars ++ flinkOptJars
-      }
+    if (properties.containsKey("flink.execution.jars")) {
+      properties.getProperty("flink.execution.jars").split(":")
     } else {
-      if (properties.containsKey("flink.execution.jars")) {
-        properties.getProperty("flink.execution.jars").split(":")
-      } else {
-        Seq.empty[String]
-      }
+      Seq.empty[String]
     }
   }
 

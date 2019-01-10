@@ -224,9 +224,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
     val tableConfig = new TableConfig
     tableConfig.setConf(configuration)
-    this.btenv = TableEnvironment.getBatchTableEnvironment(this.senv)
-    //    this.btenv.getConfig.getConf.setInteger(TableConfigOptions.SQL_RESOURCE_DEFAULT_PARALLELISM,1)
-    this.stenv = TableEnvironment.getTableEnvironment(this.senv)
+    this.btenv = TableEnvironment.getBatchTableEnvironment(this.senv, tableConfig)
+    this.stenv = TableEnvironment.getTableEnvironment(this.senv, tableConfig)
     bind("btenv", btenv.getClass.getCanonicalName, btenv, List("@transient"))
     bind("stenv", stenv.getClass.getCanonicalName, stenv, List("@transient"))
 

@@ -113,6 +113,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     val configuration = GlobalConfiguration.loadConfiguration(System.getenv("FLINK_CONF_DIR"))
     val userJars = getUserJars
     config = config.copy(externalJars = Some(userJars.toArray))
+    LOGGER.info("Config: " + config)
     configuration.setString("flink.yarn.jars", userJars.mkString(":"))
 
     // load other configuration from interpreter properties
@@ -161,10 +162,12 @@ class FlinkScalaInterpreter(val properties: Properties) {
           configuration
         case Some(Right(yarnCluster)) =>
           // yarn mode
+          LOGGER.info("Starting FlinkCluster in yarn mode")
           this.jmWebUrl = yarnCluster.getWebInterfaceURL
           yarnCluster.getFlinkConfiguration
         case None =>
           // remote mode
+          LOGGER.info("Starting FlinkCluster in remote mode")
           this.jmWebUrl = "http://" + host + ":" + port
           configuration
       }

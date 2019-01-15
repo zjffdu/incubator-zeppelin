@@ -102,12 +102,12 @@ public abstract class AbstractStreamSqlJob {
       this.schema = removeTimeAttributes(table.getSchema());
       checkTableSchema(schema);
       LOGGER.info("ResultTable Schema: " + this.schema);
-      final DataType outputType = DataTypes.createRowType(schema.getTypes(),
-              schema.getColumnNames());
+      final DataType outputType = DataTypes.createRowType(schema.getFieldTypes(),
+              schema.getFieldNames());
       // create socket stream iterator
       final DataType socketType = DataTypes.createTupleType(DataTypes.BOOLEAN, outputType);
       final TypeSerializer<Tuple2<Boolean, Row>> serializer =
-              DataTypes.toTypeInfo(socketType).createSerializer(senv.getConfig());
+              DataTypes.createExternalSerializer(socketType);
 
       // pass gateway port and address such that iterator knows where to bind to
       try {

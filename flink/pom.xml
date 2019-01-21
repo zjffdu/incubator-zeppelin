@@ -36,7 +36,7 @@
   <properties>
     <!--library versions-->
     <interpreter.name>flink</interpreter.name>
-    <flink.version>blink-3.1-SNAPSHOT</flink.version>
+    <flink.version>1.5.1-blink-r0-SNAPSHOT</flink.version>
     <flink.akka.version>2.4.20</flink.akka.version>
     <scala.macros.version>2.0.1</scala.macros.version>
     <scala.binary.version>2.11</scala.binary.version>

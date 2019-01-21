@@ -37,6 +37,7 @@ import org.apache.flink.configuration.{ConfigOption, ConfigOptions, CoreOptions,
 import org.apache.flink.runtime.minicluster.MiniCluster
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.table.api.scala.{BatchTableEnvironment, StreamTableEnvironment}
+import org.apache.zeppelin.flink.util.DependencyUtils
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion
 import org.apache.zeppelin.interpreter.util.InterpreterOutputStream
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
@@ -220,7 +221,6 @@ class FlinkScalaInterpreter(val properties: Properties) {
       configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
     this.benv.setParallelism(configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
     this.senv.setParallelism(configuration.getInteger(CoreOptions.DEFAULT_PARALLELISM))
-    this.senv.disableOperatorChaining()
 
     val tableConfig = new TableConfig
     tableConfig.setConf(configuration)
@@ -267,7 +267,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
       private def buildFlinkJobUrl(jobId: JobID, context: InterpreterContext) {
         var jobUrl: String = jmWebUrl + "#/jobs/" + jobId
-        val infos: util.Map[String, String] = new util.HashMap[String, String]
+        val infos: java.util.Map[String, String] = new java.util.HashMap[String, String]
         infos.put("jobUrl", jobUrl)
         infos.put("label", "FLINK JOB")
         infos.put("tooltip", "View in Flink web UI")
@@ -420,11 +420,22 @@ class FlinkScalaInterpreter(val properties: Properties) {
   def getDefaultParallelism = this.defaultParallelism
 
   def getUserJars: Seq[String] = {
+    val flinkJars =
     if (properties.containsKey("flink.execution.jars")) {
-      properties.getProperty("flink.execution.jars").split(":")
+      properties.getProperty("flink.execution.jars").split(":").toSeq
     } else {
       Seq.empty[String]
     }
+
+    val flinkPackageJars =
+      if (properties.containsKey("flink.execution.packages")) {
+        val packages = properties.getProperty("flink.execution.packages")
+        DependencyUtils.resolveMavenDependencies(null, packages, null, null, None).split(":").toSeq
+      } else {
+        Seq.empty[String]
+      }
+
+    flinkJars ++ flinkPackageJars
   }
 
   def getJobManager = this.jobManager

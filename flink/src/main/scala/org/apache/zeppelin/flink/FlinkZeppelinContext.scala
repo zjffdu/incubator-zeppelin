@@ -48,10 +48,10 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   private val supportedClasses = Seq(classOf[DataSet[_]])
 
-  override def getSupportedClasses: util.List[Class[_]] =
+  override def getSupportedClasses: java.util.List[Class[_]] =
     JavaConversions.seqAsJavaList(supportedClasses)
 
-  override def getInterpreterClassMap: util.Map[String, String] =
+  override def getInterpreterClassMap: java.util.Map[String, String] =
     JavaConversions.mapAsJavaMap(interpreterClassMap)
 
   override def showData(obj: Any): String = {

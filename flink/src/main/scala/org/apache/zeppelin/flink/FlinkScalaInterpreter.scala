@@ -343,8 +343,6 @@ class FlinkScalaInterpreter(val properties: Properties) {
   }
 
   def interpret(code: String, context: InterpreterContext): InterpreterResult = {
-//    this.benv.setParallelism(defaultParallelism)
-//    this.senv.setParallelism(defaultParallelism)
     val originalOut = System.out
 
     def _interpret(code: String): scala.tools.nsc.interpreter.Results.Result = {

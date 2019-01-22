@@ -37,11 +37,11 @@ import org.apache.ivy.plugins.resolver.{ChainResolver, FileSystemResolver, IBibl
 object DependencyUtils {
 
   def resolveMavenDependencies(
-      packagesExclusions: String,
-      packages: String,
-      repositories: String,
-      ivyRepoPath: String,
-      ivySettingsPath: Option[String]): String = {
+                                packagesExclusions: String,
+                                packages: String,
+                                repositories: String,
+                                ivyRepoPath: String,
+                                ivySettingsPath: Option[String]): String = {
     val exclusions: Seq[String] =
       if (!StringUtils.isBlank(packagesExclusions)) {
         packagesExclusions.split(",")
@@ -51,178 +51,24 @@ object DependencyUtils {
     // Create the IvySettings, either load from file or build defaults
     val ivySettings = ivySettingsPath match {
       case Some(path) =>
-        SparkSubmitUtils.loadIvySettings(path, Option(repositories), Option(ivyRepoPath))
+        loadIvySettings(path, Option(repositories), Option(ivyRepoPath))
 
       case None =>
-        SparkSubmitUtils.buildIvySettings(Option(repositories), Option(ivyRepoPath))
+        buildIvySettings(Option(repositories), Option(ivyRepoPath))
     }
 
-    SparkSubmitUtils.resolveMavenCoordinates(packages, ivySettings, exclusions = exclusions)
+    resolveMavenCoordinates(packages, ivySettings, exclusions = exclusions)
   }
-
-//  def resolveAndDownloadJars(
-//      jars: String,
-//      userJar: String,
-//      sparkConf: SparkConf,
-//      hadoopConf: Configuration,
-//      secMgr: SecurityManager): String = {
-//    val targetDir = Utils.createTempDir()
-//    Option(jars)
-//      .map {
-//        resolveGlobPaths(_, hadoopConf)
-//          .split(",")
-//          .filterNot(_.contains(userJar.split("/").last))
-//          .mkString(",")
-//      }
-//      .filterNot(_ == "")
-//      .map(downloadFileList(_, targetDir, sparkConf, hadoopConf, secMgr))
-//      .orNull
-//  }
-//
-//  def addJarsToClassPath(jars: String, loader: MutableURLClassLoader): Unit = {
-//    if (jars != null) {
-//      for (jar <- jars.split(",")) {
-//        addJarToClasspath(jar, loader)
-//      }
-//    }
-//  }
-
-//  /**
-//   * Download a list of remote files to temp local files. If the file is local, the original file
-//   * will be returned.
-//   *
-//   * @param fileList A comma separated file list.
-//   * @param targetDir A temporary directory for which downloaded files.
-//   * @param sparkConf Spark configuration.
-//   * @param hadoopConf Hadoop configuration.
-//   * @param secMgr Spark security manager.
-//   * @return A comma separated local files list.
-//   */
-//  def downloadFileList(
-//      fileList: String,
-//      targetDir: File,
-//      sparkConf: SparkConf,
-//      hadoopConf: Configuration,
-//      secMgr: SecurityManager): String = {
-//    require(fileList != null, "fileList cannot be null.")
-//    Utils.stringToSeq(fileList)
-//      .map(downloadFile(_, targetDir, sparkConf, hadoopConf, secMgr))
-//      .mkString(",")
-//  }
-
-  /**
-   * Download a file from the remote to a local temporary directory. If the input path points to
-   * a local path, returns it with no operation.
-   *
-   * @param path A file path from where the files will be downloaded.
-   * @param targetDir A temporary directory for which downloaded files.
-   * @param sparkConf Spark configuration.
-   * @param hadoopConf Hadoop configuration.
-   * @param secMgr Spark security manager.
-   * @return Path to the local file.
-   */
-//  def downloadFile(
-//      path: String,
-//      targetDir: File,
-//      sparkConf: SparkConf,
-//      hadoopConf: Configuration,
-//      secMgr: SecurityManager): String = {
-//    require(path != null, "path cannot be null.")
-//    val uri = Utils.resolveURI(path)
-//
-//    uri.getScheme match {
-//      case "file" | "local" => path
-//      case "http" | "https" | "ftp" if Utils.isTesting =>
-//        // This is only used for SparkSubmitSuite unit test. Instead of downloading file remotely,
-//        // return a dummy local path instead.
-//        val file = new File(uri.getPath)
-//        new File(targetDir, file.getName).toURI.toString
-//      case _ =>
-//        val fname = new Path(uri).getName()
-//        val localFile = Utils.doFetchFile(uri.toString(), targetDir, fname, sparkConf, secMgr,
-//          hadoopConf)
-//        localFile.toURI().toString()
-//    }
-//  }
-//
-//  def resolveGlobPaths(paths: String, hadoopConf: Configuration): String = {
-//    require(paths != null, "paths cannot be null.")
-//    Utils.stringToSeq(paths).flatMap { path =>
-//      val (base, fragment) = splitOnFragment(path)
-//      (resolveGlobPath(base, hadoopConf), fragment) match {
-//        case (resolved, Some(_)) if resolved.length > 1 => throw new SparkException(
-//            s"${base.toString} resolves ambiguously to multiple files: ${resolved.mkString(",")}")
-//        case (resolved, Some(namedAs)) => resolved.map(_ + "#" + namedAs)
-//        case (resolved, _) => resolved
-//      }
-//    }.mkString(",")
-//  }
-//
-//  def addJarToClasspath(localJar: String, loader: MutableURLClassLoader): Unit = {
-//    val uri = Utils.resolveURI(localJar)
-//    uri.getScheme match {
-//      case "file" | "local" =>
-//        val file = new File(uri.getPath)
-//        if (file.exists()) {
-//          loader.addURL(file.toURI.toURL)
-//        } else {
-//          logWarning(s"Local jar $file does not exist, skipping.")
-//        }
-//      case _ =>
-//        logWarning(s"Skip remote jar $uri.")
-//    }
-//  }
-//
-//  /**
-//   * Merge a sequence of comma-separated file lists, some of which may be null to indicate
-//   * no files, into a single comma-separated string.
-//   */
-//  def mergeFileLists(lists: String*): String = {
-//    val merged = lists.filterNot(StringUtils.isBlank)
-//      .flatMap(Utils.stringToSeq)
-//    if (merged.nonEmpty) merged.mkString(",") else null
-//  }
-//
-//  private def splitOnFragment(path: String): (URI, Option[String]) = {
-//    val uri = Utils.resolveURI(path)
-//    val withoutFragment = new URI(uri.getScheme, uri.getSchemeSpecificPart, null)
-//    (withoutFragment, Option(uri.getFragment))
-//  }
-//
-//  private def resolveGlobPath(uri: URI, hadoopConf: Configuration): Array[String] = {
-//    uri.getScheme match {
-//      case "local" | "http" | "https" | "ftp" => Array(uri.toString)
-//      case _ =>
-//        val fs = FileSystem.get(uri, hadoopConf)
-//        Option(fs.globStatus(new Path(uri))).map { status =>
-//          status.filter(_.isFile).map(_.getPath.toUri.toString)
-//        }.getOrElse(Array(uri.toString))
-//    }
-//  }
-
-}
-
-
-/** Provides utility functions to be used inside SparkSubmit. */
-private object SparkSubmitUtils {
 
   // Exposed for testing
   var printStream = Console.out
 
-  // Exposed for testing.
-  // These components are used to make the default exclusion rules for Spark dependencies.
-  // We need to specify each component explicitly, otherwise we miss
-  // spark-streaming utility components. Underscore is there to differentiate between
-  // spark-streaming_2.1x and spark-streaming-kafka-0-10-assembly_2.1x
-  val IVY_DEFAULT_EXCLUDES = Seq("catalyst_", "core_", "graphx_", "kvstore_", "launcher_", "mllib_",
-    "mllib-local_", "network-common_", "network-shuffle_", "repl_", "sketch_", "sql_", "streaming_",
-    "tags_", "unsafe_")
-
   /**
     * Represents a Maven Coordinate
-    * @param groupId the groupId of the coordinate
+    *
+    * @param groupId    the groupId of the coordinate
     * @param artifactId the artifactId of the coordinate
-    * @param version the version of the coordinate
+    * @param version    the version of the coordinate
     */
   case class MavenCoordinate(groupId: String, artifactId: String, version: String) {
     override def toString: String = s"$groupId:$artifactId:$version"
@@ -231,6 +77,7 @@ private object SparkSubmitUtils {
   /**
     * Extracts maven coordinates from a comma-delimited string. Coordinates should be provided
     * in the format `groupId:artifactId:version` or `groupId/artifactId:version`.
+    *
     * @param coordinates Comma-delimited string of maven coordinates
     * @return Sequence of Maven coordinates
     */
@@ -251,23 +98,19 @@ private object SparkSubmitUtils {
 
   /** Path of the local Maven cache. */
   private def m2Path: File = {
-//    if (Utils.isTesting) {
-//      // test builds delete the maven cache, and this can cause flakiness
-//      new File("dummy", ".m2" + File.separator + "repository")
-//    } else {
     new File(System.getProperty("user.home"), ".m2" + File.separator + "repository")
-//    }
   }
 
   /**
     * Extracts maven coordinates from a comma-delimited string
+    *
     * @param defaultIvyUserDir The default user path for Ivy
     * @return A ChainResolver used by Ivy to search for and resolve dependencies.
     */
   def createRepoResolvers(defaultIvyUserDir: File): ChainResolver = {
     // We need a chain resolver if we want to check multiple repositories
     val cr = new ChainResolver
-    cr.setName("spark-list")
+    cr.setName("flink-list")
 
     val localM2 = new IBiblioResolver
     localM2.setM2compatible(true)
@@ -296,19 +139,13 @@ private object SparkSubmitUtils {
     br.setName("central")
     cr.add(br)
 
-    val sp: IBiblioResolver = new IBiblioResolver
-    sp.setM2compatible(true)
-    sp.setUsepoms(true)
-    sp.setRoot("http://dl.bintray.com/spark-packages/maven")
-    sp.setName("spark-packages")
-    cr.add(sp)
     cr
   }
 
   /**
     * Output a comma-delimited list of paths for the downloaded jars to be added to the classpath
-    * (will append to jars in SparkSubmit).
-    * @param artifacts Sequence of dependencies that were resolved and retrieved
+    *
+    * @param artifacts      Sequence of dependencies that were resolved and retrieved
     * @param cacheDirectory directory where jars are cached
     * @return a comma-delimited list of paths for the dependencies
     */
@@ -338,24 +175,20 @@ private object SparkSubmitUtils {
     }
   }
 
-  /** Add exclusion rules for dependencies already included in the spark-assembly */
+  /** Add exclusion rules for dependencies already included in the flink-dist */
   def addExclusionRules(
                          ivySettings: IvySettings,
                          ivyConfName: String,
                          md: DefaultModuleDescriptor): Unit = {
     // Add scala exclusion rule
     md.addExcludeRule(createExclusion("*:scala-library:*", ivySettings, ivyConfName))
-
-    IVY_DEFAULT_EXCLUDES.foreach { comp =>
-      md.addExcludeRule(createExclusion(s"org.apache.spark:spark-$comp*:*", ivySettings,
-        ivyConfName))
-    }
   }
 
   /**
     * Build Ivy Settings using options with default resolvers
+    *
     * @param remoteRepos Comma-delimited string of remote repositories other than maven central
-    * @param ivyPath The path to the local ivy repository
+    * @param ivyPath     The path to the local ivy repository
     * @return An IvySettings object
     */
   def buildIvySettings(remoteRepos: Option[String], ivyPath: Option[String]): IvySettings = {
@@ -374,9 +207,10 @@ private object SparkSubmitUtils {
 
   /**
     * Load Ivy settings from a given filename, using supplied resolvers
+    *
     * @param settingsFile Path to Ivy settings file
-    * @param remoteRepos Comma-delimited string of remote repositories other than maven central
-    * @param ivyPath The path to the local ivy repository
+    * @param remoteRepos  Comma-delimited string of remote repositories other than maven central
+    * @param ivyPath      The path to the local ivy repository
     * @return An IvySettings object
     */
   def loadIvySettings(
@@ -390,7 +224,7 @@ private object SparkSubmitUtils {
     try {
       ivySettings.load(file)
     } catch {
-      case e @ (_: IOException | _: ParseException) =>
+      case e@(_: IOException | _: ParseException) =>
         throw new RuntimeException(s"Failed when loading Ivy settings from $settingsFile", e)
     }
     processIvyPathArg(ivySettings, ivyPath)
@@ -437,18 +271,10 @@ private object SparkSubmitUtils {
   def getModuleDescriptor: DefaultModuleDescriptor = DefaultModuleDescriptor.newDefaultInstance(
     // Include UUID in module name, so multiple clients resolving maven coordinate at the same time
     // do not modify the same resolution file concurrently.
-    ModuleRevisionId.newInstance("org.apache.spark",
-      s"spark-submit-parent-${UUID.randomUUID.toString}",
+    ModuleRevisionId.newInstance("org.apache.flink",
+      s"flink-parent-${UUID.randomUUID.toString}",
       "1.0"))
 
-  /**
-    * Clear ivy resolution from current launch. The resolution file is usually at
-    * ~/.ivy2/org.apache.spark-spark-submit-parent-$UUID-default.xml,
-    * ~/.ivy2/resolved-org.apache.spark-spark-submit-parent-$UUID-1.0.xml, and
-    * ~/.ivy2/resolved-org.apache.spark-spark-submit-parent-$UUID-1.0.properties.
-    * Since each launch will have its own resolution files created, delete them after
-    * each resolution to prevent accumulation of these files in the ivy cache dir.
-    */
   private def clearIvyResolutionFiles(
                                        mdId: ModuleRevisionId,
                                        ivySettings: IvySettings,
@@ -465,9 +291,10 @@ private object SparkSubmitUtils {
 
   /**
     * Resolves any dependencies that were supplied through maven coordinates
+    *
     * @param coordinates Comma-delimited string of maven coordinates
     * @param ivySettings An IvySettings containing resolvers to use
-    * @param exclusions Exclusions to apply when resolving transitive dependencies
+    * @param exclusions  Exclusions to apply when resolving transitive dependencies
     * @return The comma-delimited path to the jars of the given maven artifacts including their
     *         transitive dependencies
     */
@@ -484,8 +311,6 @@ private object SparkSubmitUtils {
         // To prevent ivy from logging to system out
         System.setOut(printStream)
         val artifacts = extractMavenCoordinates(coordinates)
-        // Directories for caching downloads through ivy and storing the jars when maven coordinates
-        // are supplied to spark-submit
         val packagesDirectory: File = new File(ivySettings.getDefaultIvyUserDir, "jars")
         // scalastyle:off println
         printStream.println(
@@ -515,7 +340,7 @@ private object SparkSubmitUtils {
 
         md.setDefaultConf(ivyConfName)
 
-        // Add exclusion rules for Spark and Scala Library
+        // Add exclusion rules for Flink and Scala Library
         addExclusionRules(ivySettings, ivyConfName, md)
         // add all supplied maven artifacts as dependencies
         addDependenciesToIvy(md, artifacts, ivyConfName)
@@ -543,21 +368,14 @@ private object SparkSubmitUtils {
   }
 
   private def createExclusion(
-                                       coords: String,
-                                       ivySettings: IvySettings,
-                                       ivyConfName: String): ExcludeRule = {
+                               coords: String,
+                               ivySettings: IvySettings,
+                               ivyConfName: String): ExcludeRule = {
     val c = extractMavenCoordinates(coords)(0)
     val id = new ArtifactId(new ModuleId(c.groupId, c.artifactId), "*", "*", "*")
     val rule = new DefaultExcludeRule(id, ivySettings.getMatcher("glob"), null)
     rule.addConfiguration(ivyConfName)
     rule
-  }
-
-  def parseSparkConfProperty(pair: String): (String, String) = {
-    pair.split("=", 2).toSeq match {
-      case Seq(k, v) => (k, v)
-      case _ => throw new RuntimeException(s"Spark config without '=': $pair")
-    }
   }
 
 }

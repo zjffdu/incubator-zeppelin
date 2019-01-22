@@ -112,27 +112,31 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
         String f2 = r2.getField(0).toString();
         return f1.compareTo(f2);
       });
-      long maxTimestamp = ((java.sql.Timestamp) materializedTable.get(materializedTable.size() - 1)
-              .getField(0)).getTime();
-      materializedTable = materializedTable.stream()
-              .filter(row -> ((java.sql.Timestamp) row.getField(0)).getTime() >
-                      maxTimestamp - tsWindowThreshold)
-              .collect(Collectors.toList());
 
-      LOGGER.debug("*****************Row size: " + materializedTable.size());
+      if (materializedTable.size() != 0) {
+        long maxTimestamp =
+                ((java.sql.Timestamp) materializedTable.get(materializedTable.size() - 1)
+                .getField(0)).getTime();
 
-      for (Row row : materializedTable) {
-        for (int i = 0; i < row.getArity(); ++i) {
-          Object field = row.getField(i);
-          context.out.write(field.toString());
-          if (i != (row.getArity() - 1)) {
-            context.out.write("\t");
+        materializedTable = materializedTable.stream()
+                .filter(row -> ((java.sql.Timestamp) row.getField(0)).getTime() >
+                        maxTimestamp - tsWindowThreshold)
+                .collect(Collectors.toList());
+
+        LOGGER.debug("*****************Row size: " + materializedTable.size());
+
+        for (Row row : materializedTable) {
+          for (int i = 0; i < row.getArity(); ++i) {
+            Object field = row.getField(i);
+            context.out.write(field.toString());
+            if (i != (row.getArity() - 1)) {
+              context.out.write("\t");
+            }
           }
+          LOGGER.debug("Row:" + row);
+          context.out.write("\n");
         }
-        LOGGER.debug("Row:" + row);
-        context.out.write("\n");
       }
-
       context.out.flush();
     } catch (IOException e) {
       e.printStackTrace();

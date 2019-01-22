@@ -22,13 +22,13 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.runtime.client.JobCancellationException;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.streaming.experimental.SocketStreamIterator;
 import org.apache.flink.table.api.StreamTableEnvironment;
 import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableConfigOptions;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.api.types.DataType;
 import org.apache.flink.table.api.types.DataTypes;
@@ -95,8 +95,8 @@ public abstract class AbstractStreamSqlJob {
 
       int parallelism = Integer.parseInt(context.getLocalProperties()
               .getOrDefault("parallelism", defaultParallelism + ""));
-      this.senv.setParallelism(parallelism);
-      this.stEnv.getConfig().getConf().setInteger(CoreOptions.DEFAULT_PARALLELISM, parallelism);
+      this.stEnv.getConfig().getConf()
+              .setInteger(TableConfigOptions.SQL_RESOURCE_DEFAULT_PARALLELISM, parallelism);
 
       Table table = stEnv.sqlQuery(st);
       this.schema = removeTimeAttributes(table.getSchema());

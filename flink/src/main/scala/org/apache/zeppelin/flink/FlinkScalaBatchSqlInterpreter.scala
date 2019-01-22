@@ -22,8 +22,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.flink.api.scala.ExecutionEnvironment
 import org.apache.flink.configuration.CoreOptions
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
-import org.apache.flink.table.api.TableEnvironment
+import org.apache.flink.table.api.{TableConfigOptions, TableEnvironment}
 import org.apache.flink.table.api.scala.BatchTableEnvironment
+import org.apache.hadoop.tracing.TraceAdminPB.ConfigPairOrBuilder
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterResult}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -39,8 +40,7 @@ class FlinkScalaBatchSqlInterpreter(scalaInterpreter: FlinkScalaInterpreter,
     try {
       val parallelism = context.getLocalProperties.getOrDefault("parallelism",
         scalaInterpreter.getDefaultParallelism + "").toInt
-      this.senv.setParallelism(parallelism)
-      scalaInterpreter.getExecutionEnvironment().setParallelism(parallelism)
+      this.btenv.getConfig.getConf.setInteger(TableConfigOptions.SQL_RESOURCE_DEFAULT_PARALLELISM, parallelism)
       LOGGER.info("Run Flink batch sql job with parallelism: " + parallelism)
       val table = this.btenv.sqlQuery(code)
       val result = z.showTable(table, code)

@@ -168,9 +168,6 @@ public class ZeppelinServer extends ResourceConfig {
                 .to(ClusterManager.class)
                 .to(ClusterManagerService.Iface.class)
                 .in(Singleton.class);
-            InterpreterFactory interpreterFactory
-                = sharedServiceLocator.getService(InterpreterFactory.class);
-            sharedServiceLocator.getService(ClusterManagerServer.class).start(interpreterFactory);
           }
         });
 
@@ -192,6 +189,9 @@ public class ZeppelinServer extends ResourceConfig {
 
     // Notebook server
     setupNotebookServer(webApp, conf, sharedServiceLocator);
+
+    // Cluster Manager Server
+    setupClusterManagerServer(sharedServiceLocator);
 
     // JMX Enable
     Stream.of("ZEPPELIN_JMX_ENABLE")
@@ -346,6 +346,12 @@ public class ZeppelinServer extends ResourceConfig {
     final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
     webapp.addServlet(servletHolder, "/ws/*");
+  }
+
+  private static void setupClusterManagerServer(ServiceLocator serviceLocator) {
+    InterpreterFactory interpreterFactory
+        = sharedServiceLocator.getService(InterpreterFactory.class);
+    sharedServiceLocator.getService(ClusterManagerServer.class).start(interpreterFactory);
   }
 
   private static SslContextFactory getSslContextFactory(ZeppelinConfiguration conf) {

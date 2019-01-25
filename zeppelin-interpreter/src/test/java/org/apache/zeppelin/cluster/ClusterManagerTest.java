@@ -65,7 +65,9 @@ public class ClusterManagerTest {
     // Waiting for cluster startup
     int wait = 0;
     while(wait++ < 100) {
-      if (clusterManagerServer.isClusterLeader()) {
+      if (clusterManagerServer.isClusterLeader()
+          && clusterManagerServer.raftInitialized()
+          && clusterManagerClient.raftInitialized()) {
         LOGGER.info("wait {}(ms) found cluster leader", wait*3000);
         break;
       }

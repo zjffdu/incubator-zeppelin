@@ -40,9 +40,9 @@
         <gcs.storage.version>1.14.0</gcs.storage.version>
         <google.testing.nio.version>0.32.0-alpha</google.testing.nio.version>
         <google.truth.version>0.27</google.truth.version>
+        <guava.version>20.0</guava.version>
         <plugin.name>NotebookRepo/GCSNotebookRepo</plugin.name>
     </properties>
-
 
     <dependencies>
         <dependency>
@@ -137,6 +137,12 @@
                     <artifactId>jsr305</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 

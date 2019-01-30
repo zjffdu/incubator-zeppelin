@@ -38,6 +38,7 @@
 
     <properties>
         <google.truth.version>0.27</google.truth.version>
+        <guava.version>20.0</guava.version>
         <plugin.name>NotebookRepo/ZeppelinHubRepo</plugin.name>
     </properties>
 
@@ -75,6 +76,12 @@
                     <artifactId>guava</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 

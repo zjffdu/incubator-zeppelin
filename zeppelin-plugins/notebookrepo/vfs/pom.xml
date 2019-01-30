@@ -38,6 +38,7 @@
 
     <properties>
         <commons.vfs2.version>2.2</commons.vfs2.version>
+        <guava.version>20.0</guava.version>
         <plugin.name>NotebookRepo/VFSNotebookRepo</plugin.name>
     </properties>
 
@@ -52,6 +53,12 @@
                     <artifactId>plexus-utils</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 

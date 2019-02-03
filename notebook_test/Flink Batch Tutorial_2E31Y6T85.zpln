@@ -45,9 +45,9 @@
     },
     {
       "title": "Configure Flink Interpreter",
-      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages org.apache.flink:flink-connector-kafka-0.11_2.11:1.5.1-blink-r0-SNAPSHOT,org.apache.flink:flink-connector-filesystem_2.11:1.5.1-blink-r0-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\nstate.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 4\nlocal.number-taskmanager 4\ntaskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1\n\n\n",
+      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages com.alibaba.blink:flink-connector-kafka-0.11_2.11:1.5.1-SNAPSHOT,com.alibaba.blink:flink-connector-filesystem_2.11:1.5.1-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\nstate.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 4\nlocal.number-taskmanager 4\ntaskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1\n\n\n",
       "user": "anonymous",
-      "dateUpdated": "2019-02-02 13:21:32.729",
+      "dateUpdated": "2019-02-03 11:29:38.445",
       "config": {
         "editorSetting": {
           "language": "text",
@@ -76,15 +76,15 @@
       "jobName": "paragraph_1546565092490_1952685806",
       "id": "paragraph_1546565092490_1952685806",
       "dateCreated": "2019-01-04 09:24:52.490",
-      "dateStarted": "2019-02-02 13:20:11.690",
-      "dateFinished": "2019-02-02 13:20:11.701",
+      "dateStarted": "2019-02-03 11:27:59.064",
+      "dateFinished": "2019-02-03 11:27:59.068",
       "status": "FINISHED"
     },
     {
       "title": "DataSet WordCount",
       "text": "%flink\n\nval data \u003d benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\n\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\")).\n    map(w \u003d\u003e (w, 1)).\n    groupBy(0).\n    sum(1)\n    .print()\n\n\n\n\n",
       "user": "anonymous",
-      "dateUpdated": "2019-02-02 13:20:11.789",
+      "dateUpdated": "2019-02-03 11:28:01.495",
       "config": {
         "editorSetting": {
           "language": "scala",
@@ -103,13 +103,22 @@
         "params": {},
         "forms": {}
       },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "(flink,1)\n(hadoop,1)\n(hello,3)\n(world,1)\n\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.api.scala.DataSet[String]\u001b[0m \u003d org.apache.flink.api.scala.DataSet@7765487\n"
+          }
+        ]
+      },
       "apps": [],
       "progressUpdateIntervalMs": 500,
       "jobName": "paragraph_1546565742006_1771097539",
       "id": "paragraph_1546565742006_1771097539",
       "dateCreated": "2019-01-04 09:35:42.007",
-      "dateStarted": "2019-02-02 13:20:11.795",
-      "dateFinished": "2019-02-02 13:20:14.907",
+      "dateStarted": "2019-02-03 11:28:01.501",
+      "dateFinished": "2019-02-03 11:28:28.772",
       "status": "FINISHED"
     },
     {
@@ -715,7 +724,5 @@
   "config": {
     "isZeppelinNotebookCronEnable": false
   },
-  "info": {
-    "isRunning": false
-  }
+  "info": {}
 }

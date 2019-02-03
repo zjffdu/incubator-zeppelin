@@ -45,9 +45,9 @@
     },
     {
       "title": "Configure Flink Interpreter",
-      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages org.apache.flink:flink-connector-kafka-0.11_2.11:1.5.1-blink-r0-SNAPSHOT,org.apache.flink:flink-connector-filesystem_2.11:1.5.1-blink-r0-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\nstate.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 4\nlocal.number-taskmanager 4\ntaskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1",
+      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages com.alibaba.blink:flink-connector-kafka-0.11_2.11:1.5.1-SNAPSHOT,com.alibaba.blink:flink-connector-filesystem_2.11:1.5.1-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\nstate.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 4\nlocal.number-taskmanager 4\ntaskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1",
       "user": "anonymous",
-      "dateUpdated": "2019-02-02 10:57:01.821",
+      "dateUpdated": "2019-02-03 11:30:04.287",
       "config": {
         "editorSetting": {
           "language": "text",
@@ -75,8 +75,8 @@
       "jobName": "paragraph_1547717383660_2082509195",
       "id": "paragraph_1547717383660_2082509195",
       "dateCreated": "2019-01-17 17:29:43.660",
-      "dateStarted": "2019-01-22 14:40:53.433",
-      "dateFinished": "2019-01-22 14:40:53.442",
+      "dateStarted": "2019-02-03 11:30:04.293",
+      "dateFinished": "2019-02-03 11:30:04.300",
       "status": "FINISHED"
     },
     {
@@ -202,7 +202,7 @@
       "title": "Monitor the number of events by status and direction",
       "text": "%flink.ssql(type\u003dretract)\n\nselect status, direction, count(1) from table_1 group by status, direction\n\n",
       "user": "anonymous",
-      "dateUpdated": "2019-02-02 13:21:34.530",
+      "dateUpdated": "2019-02-03 11:30:02.512",
       "config": {
         "editorSetting": {
           "language": "sql",

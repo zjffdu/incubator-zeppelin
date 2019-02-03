@@ -45,9 +45,9 @@
     },
     {
       "title": "Configure Flink Interpreter",
-      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages org.apache.flink:flink-connector-kafka-0.11_2.11:1.5.1-blink-r0-SNAPSHOT,org.apache.flink:flink-connector-filesystem_2.11:1.5.1-blink-r0-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\nstate.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 4\nlocal.number-taskmanager 4\ntaskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1\n",
+      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode local\nrest.port 8091\n#flink.execution.packages com.alibaba.blink:flink-connector-kafka-0.11_2.11:1.5.1-SNAPSHOT,com.alibaba.blink:flink-connector-filesystem_2.11:1.5.1-SNAPSHOT\n\nquery.proxy.ports 9289-9989\nquery.server.ports 9287-9987\n\nstate.savepoints.dir: file:///blink/save_point\ntaskmanager.numberOfTaskSlots 4\nlocal.number-taskmanager 4\ntaskmanager.managed.memory.size 512\n\nparallelism.default 1\nsql.resource.default.parallelism 1\n",
       "user": "anonymous",
-      "dateUpdated": "2019-02-02 13:17:58.352",
+      "dateUpdated": "2019-02-03 11:29:58.767",
       "config": {
         "editorSetting": {
           "language": "text",
@@ -75,8 +75,8 @@
       "jobName": "paragraph_1546571299955_275296580",
       "id": "paragraph_1546571299955_275296580",
       "dateCreated": "2019-01-04 11:08:19.955",
-      "dateStarted": "2019-02-02 13:17:58.357",
-      "dateFinished": "2019-02-02 13:17:58.363",
+      "dateStarted": "2019-02-03 11:29:58.773",
+      "dateFinished": "2019-02-03 11:29:58.782",
       "status": "FINISHED"
     },
     {

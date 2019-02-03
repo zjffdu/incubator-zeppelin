@@ -36,7 +36,7 @@
   <properties>
     <!--library versions-->
     <interpreter.name>flink</interpreter.name>
-    <flink.version>1.5.1-blink-r0-SNAPSHOT</flink.version>
+    <flink.version>1.5.1-SNAPSHOT</flink.version>
     <flink.akka.version>2.4.20</flink.akka.version>
     <scala.macros.version>2.0.1</scala.macros.version>
     <scala.binary.version>2.11</scala.binary.version>
@@ -53,31 +53,31 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-core</artifactId>
       <version>${flink.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-clients_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-runtime_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-yarn_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-table_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <exclusions>
@@ -89,13 +89,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-scala_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-scala-shell_${scala.binary.version}</artifactId>
       <version>${flink.version}</version>
     </dependency>
@@ -113,17 +113,17 @@
     <!--</dependency>-->
 
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-streaming-java_2.11</artifactId>
       <version>${flink.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-streaming-scala_2.11</artifactId>
       <version>${flink.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.flink</groupId>
+      <groupId>com.alibaba.blink</groupId>
       <artifactId>flink-java</artifactId>
       <version>${flink.version}</version>
     </dependency>
@@ -385,7 +385,7 @@
               <exclude>org.scala-lang:scala-library</exclude>
               <exclude>org.scala-lang:scala-compiler</exclude>
               <exclude>org.scala-lang:scala-reflect</exclude>
-              <exclude>org.apache.flink:*</exclude>
+              <exclude>com.alibaba.flink:*</exclude>
             </excludes>
           </artifactSet>
 

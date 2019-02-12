@@ -30,6 +30,8 @@ import org.apache.zeppelin.user.AuthenticationInfo;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -37,6 +39,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class JdbcIntegrationTest {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(JdbcIntegrationTest.class);
 
   private static MiniZeppelin zeppelin;
   private static InterpreterFactory interpreterFactory;
@@ -66,7 +70,7 @@ public class JdbcIntegrationTest {
     interpreterSetting.setProperty("default.user", "root");
     Dependency dependency = new Dependency("mysql:mysql-connector-java:5.1.46");
     interpreterSetting.setDependencies(Lists.newArrayList(dependency));
-    interpreterSettingManager.restart("jdbc");
+    interpreterSettingManager.restart(interpreterSetting.getId());
     interpreterSetting.waitForReady(60 * 1000);
     Interpreter jdbcInterpreter = interpreterFactory.getInterpreter("user1", "note1", "jdbc", "test");
     assertNotNull("JdbcInterpreter is null", jdbcInterpreter);
@@ -77,6 +81,7 @@ public class JdbcIntegrationTest {
             .setAuthenticationInfo(AuthenticationInfo.ANONYMOUS)
             .build();
     InterpreterResult interpreterResult = jdbcInterpreter.interpret("show databases;", context);
+    LOGGER.info("Result: " + interpreterResult);
     assertEquals(InterpreterResult.Code.SUCCESS, interpreterResult.code());
   }
 }

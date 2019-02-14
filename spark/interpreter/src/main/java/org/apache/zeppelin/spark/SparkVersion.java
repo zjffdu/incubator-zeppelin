@@ -112,7 +112,11 @@ public class SparkVersion {
   }
 
   public boolean isSecretSocketSupported() {
-    return this.newerThanEquals(SPARK_2_3_1);
+    return this.newerThanEquals(SPARK_2_3_1) ||
+            (this.newerThanEquals(SparkVersion.fromVersionString("2.2.2")) &&
+                    this.olderThan(SparkVersion.fromVersionString("2.3.0"))) ||
+            (this.newerThanEquals(SparkVersion.fromVersionString("2.1.3")) &&
+                    this.olderThan(SparkVersion.fromVersionString("2.2.0")));
   }
   public boolean equals(Object versionToCompare) {
     return version == ((SparkVersion) versionToCompare).version;

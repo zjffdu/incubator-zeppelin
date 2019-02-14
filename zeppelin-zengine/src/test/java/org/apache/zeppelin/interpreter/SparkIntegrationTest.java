@@ -44,8 +44,8 @@ public class SparkIntegrationTest {
     return Arrays.asList(new Object[][]{
             {"2.4.0"},
             {"2.3.2"},
-            {"2.2.1"},
-            {"2.1.2"},
+            {"2.2.2"},
+            {"2.1.3"},
             {"2.0.2"},
             {"1.6.3"}
     });

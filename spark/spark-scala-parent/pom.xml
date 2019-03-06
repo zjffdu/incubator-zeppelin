@@ -34,6 +34,11 @@
     <packaging>pom</packaging>
     <name>Zeppelin: Spark Scala Parent</name>
 
+    <properties>
+        <!-- -->
+        <spark.runtime.version>2.2.0</spark.runtime.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -45,21 +50,21 @@
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-repl_${scala.binary.version}</artifactId>
-            <version>${spark.version}</version>
+            <version>${spark.runtime.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.binary.version}</artifactId>
-            <version>${spark.version}</version>
+            <version>${spark.runtime.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-hive_${scala.binary.version}</artifactId>
-            <version>${spark.version}</version>
+            <version>${spark.runtime.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -145,13 +150,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
 
             <plugin>

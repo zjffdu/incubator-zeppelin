@@ -49,6 +49,8 @@ public class NewSparkSqlInterpreterTest {
     p.setProperty("zeppelin.spark.concurrentSQL", "false");
     p.setProperty("zeppelin.spark.sqlInterpreter.stacktrace", "false");
     p.setProperty("zeppelin.spark.useNew", "true");
+    p.setProperty("zeppelin.spark.useHiveContext", "true");
+
     intpGroup = new InterpreterGroup();
     sparkInterpreter = new SparkInterpreter(p);
     sparkInterpreter.setInterpreterGroup(intpGroup);
@@ -102,6 +104,21 @@ public class NewSparkSqlInterpreterTest {
     assertTrue(ret.message().get(0).getData().length() > 0);
 
     assertEquals(InterpreterResult.Code.SUCCESS, sqlInterpreter.interpret("select case when name='aa' then name else name end from test", context).code());
+  }
+
+  @Test
+  public void testInvalidSql() throws InterpreterException {
+    InterpreterResult result = sqlInterpreter.interpret("selet * from table_1", context);
+    assertEquals(InterpreterResult.Code.ERROR, result.code());
+    assertTrue(result.message().get(0).getData().contains("mismatched input 'selet' expecting "));
+
+    result = sqlInterpreter.interpret("select * from table_1", context);
+    assertEquals(InterpreterResult.Code.ERROR, result.code());
+    assertTrue(result.message().get(0).getData().contains("Table or view not found: table_1"));
+
+    result = sqlInterpreter.interpret("create temporary function udf1 as 'org.apache.zeppelin.UDF'", context);
+    assertEquals(InterpreterResult.Code.ERROR, result.code());
+    assertTrue(result.message().get(0).getData().contains("Use sqlContext.udf.register"));
   }
 
   @Test

@@ -230,15 +230,20 @@ public class HeliumApplicationFactory implements ApplicationEventListener, NoteE
           throw new ApplicationException("Target interpreter process is not running");
         }
 
-        RemoteApplicationResult ret = intpProcess.callRemoteFunction(
-            new RemoteInterpreterProcess.RemoteFunction<RemoteApplicationResult>() {
-              @Override
-              public RemoteApplicationResult call(RemoteInterpreterService.Client client)
-                  throws Exception {
-                return client.unloadApplication(appsToUnload.getId());
+        RemoteApplicationResult ret = null;
+        try {
+          ret = intpProcess.callRemoteFunction(
+              new RemoteInterpreterProcess.RemoteFunction<RemoteApplicationResult>() {
+                @Override
+                public RemoteApplicationResult call(RemoteInterpreterService.Client client)
+                    throws Exception {
+                  return client.unloadApplication(appsToUnload.getId());
+                }
               }
-            }
-        );
+          );
+        } catch (IOException e) {
+          throw new ApplicationException(e);
+        }
         if (ret.isSuccess()) {
           appStatusChange(paragraph, appsToUnload.getId(), ApplicationState.Status.UNLOADED);
         } else {
@@ -311,15 +316,20 @@ public class HeliumApplicationFactory implements ApplicationEventListener, NoteE
         if (intpProcess == null) {
           throw new ApplicationException("Target interpreter process is not running");
         }
-        RemoteApplicationResult ret = intpProcess.callRemoteFunction(
-            new RemoteInterpreterProcess.RemoteFunction<RemoteApplicationResult>() {
-              @Override
-              public RemoteApplicationResult call(RemoteInterpreterService.Client client)
-                  throws Exception {
-                return client.runApplication(app.getId());
+        RemoteApplicationResult ret = null;
+        try {
+          ret = intpProcess.callRemoteFunction(
+              new RemoteInterpreterProcess.RemoteFunction<RemoteApplicationResult>() {
+                @Override
+                public RemoteApplicationResult call(RemoteInterpreterService.Client client)
+                    throws Exception {
+                  return client.runApplication(app.getId());
+                }
               }
-            }
-        );
+          );
+        } catch (IOException e) {
+          throw new ApplicationException(e);
+        }
         if (ret.isSuccess()) {
           // success
         } else {

@@ -27,6 +27,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -145,7 +147,7 @@ public class DistributedResourcePoolTest extends AbstractInterpreterTest {
   }
 
   @Test
-  public void testResourcePoolUtils() throws InterpreterException {
+  public void testResourcePoolUtils() throws InterpreterException, IOException {
     Gson gson = new Gson();
     InterpreterResult ret;
 

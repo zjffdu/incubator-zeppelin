@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.zeppelin.common.JsonSerializable;
 import org.apache.zeppelin.display.AngularObject;
 import org.apache.zeppelin.display.AngularObjectRegistry;
@@ -482,6 +483,8 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
       }
 
       return res;
+    } catch (InterpreterException e) {
+      return new InterpreterResult(Code.ERROR, ExceptionUtils.getStackTrace(e));
     } finally {
       InterpreterContext.remove();
     }

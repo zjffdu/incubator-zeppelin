@@ -524,11 +524,11 @@ public class InterpreterSettingManager implements NoteEventListener {
   }
 
   //TODO(zjffdu) move Resource related api to ResourceManager
-  public ResourceSet getAllResources() {
+  public ResourceSet getAllResources() throws IOException {
     return getAllResourcesExcept(null);
   }
 
-  private ResourceSet getAllResourcesExcept(String interpreterGroupExcludsion) {
+  private ResourceSet getAllResourcesExcept(String interpreterGroupExcludsion) throws IOException {
     ResourceSet resourceSet = new ResourceSet();
     for (ManagedInterpreterGroup intpGroup : getAllInterpreterGroup()) {
       if (interpreterGroupExcludsion != null &&
@@ -544,12 +544,12 @@ public class InterpreterSettingManager implements NoteEventListener {
         }
       } else if (remoteInterpreterProcess.isRunning()) {
         List<String> resourceList = remoteInterpreterProcess.callRemoteFunction(
-            new RemoteInterpreterProcess.RemoteFunction<List<String>>() {
-              @Override
-              public List<String> call(RemoteInterpreterService.Client client) throws Exception {
-                return client.resourcePoolGetAll();
-              }
-            });
+          new RemoteInterpreterProcess.RemoteFunction<List<String>>() {
+            @Override
+            public List<String> call(RemoteInterpreterService.Client client) throws Exception {
+              return client.resourcePoolGetAll();
+            }
+          });
         if (resourceList != null) {
           for (String res : resourceList) {
             resourceSet.add(Resource.fromJson(res));
@@ -564,7 +564,7 @@ public class InterpreterSettingManager implements NoteEventListener {
     return recoveryStorage;
   }
 
-  public void removeResourcesBelongsToParagraph(String noteId, String paragraphId) {
+  public void removeResourcesBelongsToParagraph(String noteId, String paragraphId) throws IOException {
     for (ManagedInterpreterGroup intpGroup : getAllInterpreterGroup()) {
       ResourceSet resourceSet = new ResourceSet();
       RemoteInterpreterProcess remoteInterpreterProcess = intpGroup.getRemoteInterpreterProcess();
@@ -623,7 +623,7 @@ public class InterpreterSettingManager implements NoteEventListener {
     }
   }
 
-  public void removeResourcesBelongsToNote(String noteId) {
+  public void removeResourcesBelongsToNote(String noteId) throws IOException {
     removeResourcesBelongsToParagraph(noteId, null);
   }
 

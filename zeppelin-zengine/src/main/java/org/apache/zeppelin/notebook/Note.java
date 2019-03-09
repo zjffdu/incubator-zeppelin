@@ -487,7 +487,11 @@ public class Note implements JsonSerializable {
    */
   public Paragraph removeParagraph(String user, String paragraphId) {
     removeAllAngularObjectInParagraph(user, paragraphId);
-    interpreterSettingManager.removeResourcesBelongsToParagraph(getId(), paragraphId);
+    try {
+      interpreterSettingManager.removeResourcesBelongsToParagraph(getId(), paragraphId);
+    } catch (IOException e) {
+      logger.warn("Fail to remove resources of paragraph: " + paragraphId, e);
+    }
     synchronized (paragraphs) {
       Iterator<Paragraph> i = paragraphs.iterator();
       while (i.hasNext()) {

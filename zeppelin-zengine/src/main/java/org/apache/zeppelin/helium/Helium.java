@@ -395,7 +395,12 @@ public class Helium {
         allResources = resourcePool.getAll();
       }
     } else {
-      allResources = interpreterSettingManager.getAllResources();
+      try {
+        allResources = interpreterSettingManager.getAllResources();
+      } catch (IOException e) {
+        logger.warn("Fail to get resources", e);
+        return suggestion;
+      }
     }
 
     for (List<HeliumPackageSearchResult> pkgs : allPackages.values()) {
@@ -524,11 +529,11 @@ public class Helium {
     return mixed;
   }
 
-  public ResourceSet getAllResources() {
+  public ResourceSet getAllResources() throws IOException {
     return getAllResourcesExcept(null);
   }
 
-  private ResourceSet getAllResourcesExcept(String interpreterGroupExcludsion) {
+  private ResourceSet getAllResourcesExcept(String interpreterGroupExcludsion) throws IOException {
     ResourceSet resourceSet = new ResourceSet();
     for (ManagedInterpreterGroup intpGroup : interpreterSettingManager.getAllInterpreterGroup()) {
       if (interpreterGroupExcludsion != null &&

@@ -22,6 +22,7 @@ import org.apache.zeppelin.scheduler.Job.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -149,7 +150,13 @@ public class RemoteScheduler extends AbstractScheduler {
       if (!remoteInterpreter.isOpened()) {
         return getLastStatus();
       }
-      Status status = Status.valueOf(remoteInterpreter.getStatus(job.getId()));
+      Status status = null;
+      try {
+        status = Status.valueOf(remoteInterpreter.getStatus(job.getId()));
+      } catch (IOException e) {
+        LOGGER.warn("Fail to get job status, so fallback to its last status", e);
+        return getLastStatus();
+      }
       if (status == Status.UNKNOWN) {
         // not found this job in the remote schedulers.
         // maybe not submitted, maybe already finished

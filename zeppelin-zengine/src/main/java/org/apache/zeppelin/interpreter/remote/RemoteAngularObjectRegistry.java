@@ -28,6 +28,7 @@ import org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -66,16 +67,20 @@ public class RemoteAngularObjectRegistry extends AngularObjectRegistry {
       return super.add(name, o, noteId, paragraphId, true);
     }
 
-    remoteInterpreterProcess.callRemoteFunction(
-        new RemoteInterpreterProcess.RemoteFunction<Void>() {
-          @Override
-          public Void call(Client client) throws Exception {
-            Gson gson = new Gson();
-            client.angularObjectAdd(name, noteId, paragraphId, gson.toJson(o));
-            return null;
+    try {
+      remoteInterpreterProcess.callRemoteFunction(
+          new RemoteInterpreterProcess.RemoteFunction<Void>() {
+            @Override
+            public Void call(Client client) throws Exception {
+              Gson gson = new Gson();
+              client.angularObjectAdd(name, noteId, paragraphId, gson.toJson(o));
+              return null;
+            }
           }
-        }
-    );
+      );
+    } catch (IOException e) {
+      logger.warn("Fail to add angular object", e);
+    }
 
     return super.add(name, o, noteId, paragraphId, true);
 
@@ -96,15 +101,19 @@ public class RemoteAngularObjectRegistry extends AngularObjectRegistry {
     if (remoteInterpreterProcess == null || !remoteInterpreterProcess.isRunning()) {
       return super.remove(name, noteId, paragraphId);
     }
-    remoteInterpreterProcess.callRemoteFunction(
-      new RemoteInterpreterProcess.RemoteFunction<Void>() {
-        @Override
-        public Void call(Client client) throws Exception {
-          client.angularObjectRemove(name, noteId, paragraphId);
-          return null;
+    try {
+      remoteInterpreterProcess.callRemoteFunction(
+        new RemoteInterpreterProcess.RemoteFunction<Void>() {
+          @Override
+          public Void call(Client client) throws Exception {
+            client.angularObjectRemove(name, noteId, paragraphId);
+            return null;
+          }
         }
-      }
-    );
+      );
+    } catch (IOException e) {
+      logger.warn("Fail to remove angular object", e);
+    }
 
     return super.remove(name, noteId, paragraphId);
   }

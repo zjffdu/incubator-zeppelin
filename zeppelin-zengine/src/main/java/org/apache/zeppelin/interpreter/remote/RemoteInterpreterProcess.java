@@ -24,6 +24,8 @@ import org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 /**
  * Abstract class for interpreter process
  */
@@ -109,7 +111,7 @@ public abstract class RemoteInterpreterProcess implements InterpreterClient {
     }
   }
 
-  public <T> T callRemoteFunction(RemoteFunction<T> func) {
+  public <T> T callRemoteFunction(RemoteFunction<T> func) throws IOException {
     Client client = null;
     boolean broken = false;
     try {
@@ -119,9 +121,9 @@ public abstract class RemoteInterpreterProcess implements InterpreterClient {
       }
     } catch (TException e) {
       broken = true;
-      throw new RuntimeException(e);
+      throw new IOException(e.getMessage(), e);
     } catch (Exception e1) {
-      throw new RuntimeException(e1);
+      throw new IOException(e1);
     } finally {
       if (client != null) {
         releaseClient(client, broken);

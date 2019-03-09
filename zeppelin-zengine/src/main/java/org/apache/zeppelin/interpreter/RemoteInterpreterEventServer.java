@@ -396,21 +396,20 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
       }
     } else if (interpreterSettingManager.getInterpreterGroupById(intpGroupId)
         .getInterpreterProcess().isRunning()) {
-      ByteBuffer res = interpreterSettingManager.getInterpreterGroupById(intpGroupId)
-          .getInterpreterProcess().callRemoteFunction(
-          new RemoteInterpreterProcess.RemoteFunction<ByteBuffer>() {
-            @Override
-            public ByteBuffer call(RemoteInterpreterService.Client client) throws Exception {
-              return client.resourceInvokeMethod(
-                  resourceId.getNoteId(),
-                  resourceId.getParagraphId(),
-                  resourceId.getName(),
-                  message.toJson());
-            }
-          }
-      );
-
       try {
+        ByteBuffer res = interpreterSettingManager.getInterpreterGroupById(intpGroupId)
+            .getInterpreterProcess().callRemoteFunction(
+            new RemoteInterpreterProcess.RemoteFunction<ByteBuffer>() {
+              @Override
+              public ByteBuffer call(RemoteInterpreterService.Client client) throws Exception {
+                return client.resourceInvokeMethod(
+                    resourceId.getNoteId(),
+                    resourceId.getParagraphId(),
+                    resourceId.getName(),
+                    message.toJson());
+              }
+            }
+        );
         return Resource.deserializeObject(res);
       } catch (Exception e) {
         LOGGER.error(e.getMessage(), e);
@@ -427,19 +426,18 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
       return null;
     }
     RemoteInterpreterProcess remoteInterpreterProcess = intpGroup.getRemoteInterpreterProcess();
-    ByteBuffer buffer = remoteInterpreterProcess.callRemoteFunction(
-        new RemoteInterpreterProcess.RemoteFunction<ByteBuffer>() {
-          @Override
-          public ByteBuffer call(RemoteInterpreterService.Client client) throws Exception {
-            return  client.resourceGet(
-                resourceId.getNoteId(),
-                resourceId.getParagraphId(),
-                resourceId.getName());
-          }
-        }
-    );
-
     try {
+      ByteBuffer buffer = remoteInterpreterProcess.callRemoteFunction(
+          new RemoteInterpreterProcess.RemoteFunction<ByteBuffer>() {
+            @Override
+            public ByteBuffer call(RemoteInterpreterService.Client client) throws Exception {
+              return  client.resourceGet(
+                  resourceId.getNoteId(),
+                  resourceId.getParagraphId(),
+                  resourceId.getName());
+            }
+          }
+      );
       Object o = Resource.deserializeObject(buffer);
       return o;
     } catch (Exception e) {
@@ -462,16 +460,20 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
           resourceSet.addAll(localPool.getAll());
         }
       } else if (remoteInterpreterProcess.isRunning()) {
-        List<String> resourceList = remoteInterpreterProcess.callRemoteFunction(
-            new RemoteInterpreterProcess.RemoteFunction<List<String>>() {
-              @Override
-              public List<String> call(RemoteInterpreterService.Client client) throws Exception {
-                return client.resourcePoolGetAll();
-              }
-            }
-        );
-        for (String res : resourceList) {
-          resourceSet.add(RemoteResource.fromJson(res));
+        try {
+          List<String> resourceList = remoteInterpreterProcess.callRemoteFunction(
+                  new RemoteInterpreterProcess.RemoteFunction<List<String>>() {
+                    @Override
+                    public List<String> call(RemoteInterpreterService.Client client) throws Exception {
+                      return client.resourcePoolGetAll();
+                    }
+                  }
+          );
+          for (String res : resourceList) {
+            resourceSet.add(RemoteResource.fromJson(res));
+          }
+        } catch (IOException e) {
+          LOGGER.error(e.getMessage(), e);
         }
       }
     }

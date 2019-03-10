@@ -27,19 +27,71 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Event from remoteInterpreterProcess
+ * Event from RemoteInterpreterProcess
  */
 public interface RemoteInterpreterProcessListener {
-  public void onOutputAppend(String noteId, String paragraphId, int index, String output);
-  public void onOutputUpdated(
+  /**
+   * Called when output is appended from RemoteInterpreterProcess. This is used for streaming output.
+   *
+   * @param noteId
+   * @param paragraphId
+   * @param index
+   * @param output
+   */
+  void onOutputAppend(String noteId, String paragraphId, int index, String output);
+
+  /**
+   *
+   * @param noteId
+   * @param paragraphId
+   * @param index
+   * @param type
+   * @param output
+   */
+  void onOutputUpdated(
       String noteId, String paragraphId, int index, InterpreterResult.Type type, String output);
-  public void onOutputClear(String noteId, String paragraphId);
+
+  /**
+   * Clear paragraph output of frontend
+   * @param noteId
+   * @param paragraphId
+   */
+  void onOutputClear(String noteId, String paragraphId);
+
+  /**
+   * It is used by ZeppelinContext to run paragraphs pragmatically. Either paragraphIndices
+   * or paragraphIds is empty.
+   *
+   * @param noteId
+   * @param paragraphIndices
+   * @param paragraphIds
+   * @param curParagraphId
+   * @throws IOException
+   */
   void runParagraphs(String noteId, List<Integer> paragraphIndices, List<String> paragraphIds,
                      String curParagraphId)
       throws IOException;
 
-  public void onParaInfosReceived(String noteId, String paragraphId,
+  /**
+   * This is called by interpreter implementation to send meta info to frontend, such as spark job url
+   * for spark interpreter.
+   *
+   * @param noteId
+   * @param paragraphId
+   * @param interpreterSettingId
+   * @param metaInfos
+   */
+  void onParaInfosReceived(String noteId, String paragraphId,
                                   String interpreterSettingId, Map<String, String> metaInfos);
 
+  /**
+   * This is called by interpreter implementation to get paragraph info.
+   *
+   * @param user
+   * @param noteId
+   * @return
+   * @throws TException
+   * @throws ServiceException
+   */
   List<ParagraphInfo> getParagraphList(String user, String noteId) throws TException, ServiceException;
 }

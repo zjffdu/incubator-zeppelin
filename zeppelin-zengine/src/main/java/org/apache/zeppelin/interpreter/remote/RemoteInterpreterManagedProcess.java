@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -41,7 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
     implements ExecuteResultHandler {
-  private static final Logger logger = LoggerFactory.getLogger(
+  private static final Logger LOGGER = LoggerFactory.getLogger(
       RemoteInterpreterManagedProcess.class);
 
   private final String interpreterRunner;
@@ -99,7 +100,25 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
   @Override
   public void start(String userName) throws IOException {
     // start server process
-    CommandLine cmdLine = CommandLine.parse(interpreterRunner);
+    Map<String, String> procEnv = EnvironmentUtils.getProcEnvironment();
+    procEnv.putAll(env);
+    String command = interpreterRunner;
+    if (isUserImpersonated && !userName.equals("anonymous")) {
+      command = "bin/execute-as-user " + userName + " " + interpreterRunner;
+      procEnv.put("USER", userName);
+      procEnv.put("LOGNAME", userName);
+      String home = procEnv.get("HOME");
+      if (home != null) {
+        int lastSeparatorPos = home.lastIndexOf(File.separatorChar);
+        if (lastSeparatorPos != -1) {
+          procEnv.put("HOME", home.substring(0, lastSeparatorPos + 1) + userName);
+        } else {
+          LOGGER.warn("Invalid home directory: " + home);
+          procEnv.put("HOME", userName);
+        }
+      }
+    }
+    CommandLine cmdLine = CommandLine.parse(command);
     cmdLine.addArgument("-d", false);
     cmdLine.addArgument(interpreterDir, false);
     cmdLine.addArgument("-c", false);
@@ -110,10 +129,6 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
     cmdLine.addArgument(interpreterPortRange, false);
     cmdLine.addArgument("-i", false);
     cmdLine.addArgument(interpreterGroupId, false);
-    if (isUserImpersonated && !userName.equals("anonymous")) {
-      cmdLine.addArgument("-u", false);
-      cmdLine.addArgument(userName, false);
-    }
     cmdLine.addArgument("-l", false);
     cmdLine.addArgument(localRepoDir, false);
     cmdLine.addArgument("-g", false);
@@ -122,7 +137,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
     executor = new DefaultExecutor();
 
     ByteArrayOutputStream cmdOut = new ByteArrayOutputStream();
-    ProcessLogOutputStream processOutput = new ProcessLogOutputStream(logger);
+    ProcessLogOutputStream processOutput = new ProcessLogOutputStream(LOGGER);
     processOutput.setOutputStream(cmdOut);
 
     executor.setStreamHandler(new PumpStreamHandler(processOutput));
@@ -130,10 +145,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
     executor.setWatchdog(watchdog);
 
     try {
-      Map procEnv = EnvironmentUtils.getProcEnvironment();
-      procEnv.putAll(env);
-
-      logger.info("Run interpreter process {}", cmdLine);
+      LOGGER.info("Run interpreter process {}", cmdLine);
       executor.execute(cmdLine, procEnv, this);
     } catch (IOException e) {
       running.set(false);
@@ -147,21 +159,21 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
         }
       }
       if (!running.get()) {
-        throw new IOException(new String(
-            String.format("Interpreter Process creation is time out in %d seconds",
+        throw new IOException(
+                String.format("Interpreter Process creation is time out in %d seconds",
                 getConnectTimeout()/1000) + "\n" + "You can increase timeout threshold via " +
                 "setting zeppelin.interpreter.connect.timeout of this interpreter.\n" +
-                cmdOut.toString()));
+                cmdOut.toString());
       }
     } catch (InterruptedException e) {
-      logger.error("Remote interpreter is not accessible");
+      LOGGER.error("Remote interpreter is not accessible");
     }
     processOutput.setOutputStream(null);
   }
 
   public void stop() {
     if (isRunning()) {
-      logger.info("Kill interpreter process");
+      LOGGER.info("Kill interpreter process");
       try {
         callRemoteFunction(new RemoteFunction<Void>() {
           @Override
@@ -171,7 +183,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
           }
         });
       } catch (Exception e) {
-        logger.warn("ignore the exception when shutting down");
+        LOGGER.warn("ignore the exception when shutting down");
       }
       watchdog.destroyProcess();
     }
@@ -179,12 +191,12 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
     executor = null;
     watchdog = null;
     running.set(false);
-    logger.info("Remote process terminated");
+    LOGGER.info("Remote process terminated");
   }
 
   @Override
   public void onProcessComplete(int exitValue) {
-    logger.info("Interpreter process exited {}", exitValue);
+    LOGGER.info("Interpreter process exited {}", exitValue);
     running.set(false);
 
   }
@@ -201,7 +213,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess
 
   @Override
   public void onProcessFailed(ExecuteException e) {
-    logger.info("Interpreter process failed {}", e);
+    LOGGER.info("Interpreter process failed {}", e);
     running.set(false);
   }
 

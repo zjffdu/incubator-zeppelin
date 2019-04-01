@@ -47,10 +47,9 @@ export ZEPPELIN_IMPERSONATE_CMD='sudo -H -u ${ZEPPELIN_IMPERSONATE_USER} bash -c
 
 #### 3. Build execute-as-user
 
-* run: gcc execute-as-user.c -o execute-as-user
-* run: chown root execute-as-user (you might need root privilege)
-* run: chmod 6050 execute-as-user (you might need root privilege)
-* copy execute-as-user to ZEPPELIN_HOME/bin folder
+* mvn compile -Pnative ...
+* run: chown root ZEPPELIN_HOME/bin/execute-as-user (you might need root privilege)
+* run: chmod 6050 ZEPPELIN_HOME/bin/execute-as-user (you might need root privilege)
 
 #### 4. Restart zeppelin server.
 

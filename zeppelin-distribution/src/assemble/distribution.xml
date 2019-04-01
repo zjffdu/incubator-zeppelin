@@ -71,6 +71,13 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
+      <outputDirectory>../bin</outputDirectory>
+      <directory>../zeppelin-plugins/native/user-impersonation/target/bin</directory>
+      <includes>
+        <include>execute-as-user</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>../licenses</directory>
     </fileSet>
     <fileSet>

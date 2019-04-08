@@ -61,10 +61,7 @@ public abstract class FlinkSqlInterpreterTest {
 
   @Parameterized.Parameters
   public static List<Object[]> data() {
-    return Arrays.asList(new Object[][]{
-          //            {"hive"},
-                        {"flink"}
-    });
+    return Arrays.asList(new Object[][]{ {"hive"}, {"flink"} });
   }
 
   public FlinkSqlInterpreterTest(String catalog) {
@@ -98,14 +95,6 @@ public abstract class FlinkSqlInterpreterTest {
 
   @Test
   public void testCSV() throws InterpreterException, IOException {
-//    InterpreterResult result = sqlInterpreter.interpret("use catalog " + catalog,
-//            getInterpreterContext());
-//    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-
-//    InterpreterResult result = sqlInterpreter.interpret("use database `default`",
-//            getInterpreterContext());
-//    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-
     String inputData = "1\n2\n";
     File inputFile = createInputFile(inputData);
     InterpreterResult result = sqlInterpreter.interpret(
@@ -156,7 +145,7 @@ public abstract class FlinkSqlInterpreterTest {
     result = sqlInterpreter.interpret("show tables", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
     assertEquals(InterpreterResult.Type.TABLE, outputType);
-    assertEquals("table\nsource\ndest\n", output);
+    assertEquals("table\ndest\nsource\n", output);
 
     result = sqlInterpreter.interpret("INSERT INTO dest SELECT * FROM source",
             getInterpreterContext());
@@ -221,7 +210,8 @@ public abstract class FlinkSqlInterpreterTest {
                     "}", getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
-    result = flinkInterpreter.interpret("stenv.registerFunction(\"addOne\", new AddOne())", getInterpreterContext());
+    result = flinkInterpreter.interpret("stenv.registerFunction(\"addOne\", new AddOne())",
+            getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     result = sqlInterpreter.interpret("INSERT INTO dest SELECT addOne(msg) FROM source",

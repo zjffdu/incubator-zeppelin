@@ -18,8 +18,6 @@
 
 package org.apache.zeppelin.flink
 
-import java.util
-
 import org.apache.flink.api.scala.DataSet
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.Table
@@ -48,15 +46,15 @@ class FlinkZeppelinContext(val btenv: BatchTableEnvironment,
 
   private val supportedClasses = Seq(classOf[DataSet[_]])
 
-  override def getSupportedClasses: util.List[Class[_]] =
+  override def getSupportedClasses: _root_.java.util.List[Class[_]] =
     JavaConversions.seqAsJavaList(supportedClasses)
 
-  override def getInterpreterClassMap: util.Map[String, String] =
+  override def getInterpreterClassMap: _root_.java.util.Map[String, String] =
     JavaConversions.mapAsJavaMap(interpreterClassMap)
 
   override def showData(obj: Any, maxResult: Int): String = {
     def showTable(table: Table): String = {
-      val columnNames: Array[String] = table.getSchema.getColumnNames
+      val columnNames: Array[String] = table.getSchema.getFieldNames
       val dsRow: DataSet[Row] = btenv.toDataSet[Row](table)
       val builder: StringBuilder = new StringBuilder("%table ")
       builder.append(columnNames.mkString("\t"))

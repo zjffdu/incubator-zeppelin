@@ -398,6 +398,7 @@ public class NotebookRestApiTest extends AbstractTestRestApi {
       Paragraph p2 = note1.addNewParagraph(AuthenticationInfo.ANONYMOUS);
       p1.setText("%python import time\ntime.sleep(1)\nuser='abc'");
       p2.setText("%python from __future__ import print_function\nprint(user)");
+      TestUtils.getInstance(Notebook.class).saveNote(note1, AuthenticationInfo.ANONYMOUS);
 
       PostMethod post1 = httpPost("/notebook/job/" + note1.getId(), "");
       assertThat(post1, isAllowed());

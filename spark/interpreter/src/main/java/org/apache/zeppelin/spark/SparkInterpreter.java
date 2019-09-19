@@ -50,8 +50,10 @@ public class SparkInterpreter extends AbstractInterpreter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SparkInterpreter.class);
 
+  // track session number, it is used for scoped mode
   private static AtomicInteger SESSION_NUM = new AtomicInteger(0);
   private AbstractSparkScalaInterpreter innerInterpreter;
+  // scala_version -> Interpreter class name
   private Map<String, String> innerInterpreterClassMap = new HashMap<>();
   private SparkContext sc;
   private JavaSparkContext jsc;
@@ -69,7 +71,7 @@ public class SparkInterpreter extends AbstractInterpreter {
     if (Boolean.parseBoolean(properties.getProperty("zeppelin.spark.scala.color", "true"))) {
       System.setProperty("scala.color", "true");
     }
-    this.enableSupportedVersionCheck = java.lang.Boolean.parseBoolean(
+    this.enableSupportedVersionCheck = Boolean.parseBoolean(
         properties.getProperty("zeppelin.spark.enableSupportedVersionCheck", "true"));
     innerInterpreterClassMap.put("2.10", "org.apache.zeppelin.spark.SparkScala210Interpreter");
     innerInterpreterClassMap.put("2.11", "org.apache.zeppelin.spark.SparkScala211Interpreter");
@@ -78,6 +80,7 @@ public class SparkInterpreter extends AbstractInterpreter {
 
   @Override
   public void open() throws InterpreterException {
+    LOGGER.info("Opening SparkInterpreter...");
     try {
       SparkConf conf = new SparkConf();
       for (Map.Entry<Object, Object> entry : getProperties().entrySet()) {
@@ -116,6 +119,7 @@ public class SparkInterpreter extends AbstractInterpreter {
       }
 
       SESSION_NUM.incrementAndGet();
+      LOGGER.info("SparkInterpreter is opened");
     } catch (Exception e) {
       LOGGER.error("Fail to open SparkInterpreter", e);
       throw new InterpreterException("Fail to open SparkInterpreter", e);
@@ -142,7 +146,6 @@ public class SparkInterpreter extends AbstractInterpreter {
     if (zeppelinHome != null) {
       // ZEPPELIN_HOME is null in yarn-cluster mode, load it directly via current ClassLoader.
       // otherwise, load from the specific folder ZEPPELIN_HOME/interpreter/spark/scala-<version>
-
       File scalaJarFolder = new File(zeppelinHome + "/interpreter/spark/scala-" + scalaVersion);
       List<URL> urls = new ArrayList<>();
       for (File file : scalaJarFolder.listFiles()) {

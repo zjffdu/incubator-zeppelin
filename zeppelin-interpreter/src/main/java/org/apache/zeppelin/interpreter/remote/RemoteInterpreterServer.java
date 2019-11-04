@@ -875,20 +875,16 @@ public class RemoteInterpreterServer extends Thread
     synchronized (interpreterGroup) {
       List<Interpreter> interpreters = interpreterGroup.get(sessionId);
       if (interpreters == null) {
-        logger.info("getStatus:" + Status.UNKNOWN.name());
         return Status.UNKNOWN.name();
       }
 
       for (Interpreter intp : interpreters) {
         Job job = intp.getScheduler().getJob(jobId);
-        logger.info("job:" + job);
         if (job != null) {
-          logger.info("getStatus: " + job.getStatus().name());
           return job.getStatus().name();
         }
       }
     }
-    logger.info("getStatus:" + Status.UNKNOWN.name());
     return Status.UNKNOWN.name();
   }
 

@@ -23,7 +23,7 @@ limitations under the License.
 
 <div id="toc"></div>
 
-#### 0. Requirements
+### 0. Requirements
 
 If you want to build from source, you must first install the following dependencies:
 
@@ -33,30 +33,39 @@ If you want to build from source, you must first install the following dependenc
     <th>Value</th>
   </tr>
   <tr>
+    <td>OS</td>
+    <td>*nix</td>
+  </tr>
+  <tr>
     <td>Git</td>
     <td>(Any Version)</td>
   </tr>
   <tr>
     <td>Maven</td>
-    <td>3.1.x or higher</td>
+    <td>3.5.4 or higher</td>
   </tr>
   <tr>
     <td>JDK</td>
-    <td>1.7</td>
+    <td>1.8</td>
+  </tr>
+  <tr>
+    <td>bzip2</td>
+    <td>Install bzip2 which is needed by zeppelin-web</td>
   </tr>
 </table>
 
 
 If you haven't installed Git and Maven yet, check the [Build requirements](#build-requirements) section and follow the step by step instructions from there.
 
-#### 1. Clone the Apache Zeppelin repository
+* Don't use `root` user to build Zeppelin
+
+### 1. Clone the Apache Zeppelin repository
 
 ```bash
 git clone https://github.com/apache/zeppelin.git
 ```
 
-#### 2. Build source
-
+### 2. Build source
 
 You can build Zeppelin with following maven command:
 
@@ -67,14 +76,12 @@ mvn clean package -DskipTests [Options]
 If you're unsure about the options, use the same commands that creates official binary package.
 
 ```bash
-# update all pom.xml to use scala 2.11
-./dev/change_scala_version.sh 2.11
 # build zeppelin with all interpreters and include latest version of Apache spark support for local mode.
-mvn clean package -DskipTests -Pspark-2.3 -Phadoop-2.6 -Pscala-2.11
+mvn clean package -DskipTests -Pspark-2.4
 ```
 
-#### 3. Done
-You can directly start Zeppelin by running after successful build:
+### 3. Done
+You can directly start Zeppelin by running the following command after successful build:
 
 ```bash
 ./bin/zeppelin-daemon.sh start
@@ -89,7 +96,7 @@ If you're interested in contribution, please check [Contributing to Apache Zeppe
 
 #### Spark Interpreter
 
-To build with a specific Spark version, Hadoop version or specific features, define one or more of the following profiles and options:
+To build with a specific Spark version or specific features, define one or more of the following profiles and options:
 
 ##### `-Pspark-[version]`
 
@@ -228,21 +235,18 @@ sudo apt-get install r-base-dev
 sudo apt-get install r-cran-evaluate
 ```
 
-
-
 ### Install maven
 
 ```bash
-wget http://www.eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-sudo tar -zxf apache-maven-3.3.9-bin.tar.gz -C /usr/local/
-sudo ln -s /usr/local/apache-maven-3.3.9/bin/mvn /usr/local/bin/mvn
+wget http://www.eu.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
+sudo tar -zxf apache-maven-3.5.4-bin.tar.gz -C /usr/local/
+sudo ln -s /usr/local/apache-maven-3.5.4/bin/mvn /usr/local/bin/mvn
 ```
 
 _Notes:_
  - Ensure node is installed by running `node --version`  
- - Ensure maven is running version 3.1.x or higher with `mvn -version`
+ - Ensure maven is running version 3.5.x or higher with `mvn -version`
  - Configure maven to use more memory than usual by `export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=1024m"`
-
 
 
 ## Proxy setting (optional)
@@ -320,10 +324,10 @@ mvn clean package -Pbuild-distr
 To build a distribution with specific profiles, run:
 
 ```sh
-mvn clean package -Pbuild-distr -Pspark-2.3 -Phadoop-2.4
+mvn clean package -Pbuild-distr -Pspark-2.3
 ```
 
-The profiles `-Pspark-2.3 -Phadoop-2.4` can be adjusted if you wish to build to a specific spark versions.  
+The profiles `-Pspark-2.3` can be adjusted if you wish to build to a specific spark versions.  
 
 The archive is generated under _`zeppelin-distribution/target`_ directory
 

@@ -662,12 +662,12 @@ public class JDBCInterpreter extends KerberosInterpreter {
     return queries;
   }
 
-  public InterpreterResult executePrecode(InterpreterContext interpreterContext) {
+  public InterpreterResult executePrecode(InterpreterContext context) {
     InterpreterResult interpreterResult = null;
     for (String propertyKey : basePropretiesMap.keySet()) {
       String precode = getProperty(String.format("%s.precode", propertyKey));
       if (StringUtils.isNotBlank(precode)) {
-        interpreterResult = executeSql(propertyKey, precode, interpreterContext);
+        interpreterResult = executeSql(propertyKey, precode, context);
         if (interpreterResult.code() != Code.SUCCESS) {
           break;
         }

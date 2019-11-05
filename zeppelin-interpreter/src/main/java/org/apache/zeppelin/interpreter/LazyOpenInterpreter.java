@@ -73,9 +73,9 @@ public class LazyOpenInterpreter
   }
 
   @Override
-  public InterpreterResult executePrecode(InterpreterContext interpreterContext)
+  public InterpreterResult executePrecode(InterpreterContext context)
       throws InterpreterException {
-    return intp.executePrecode(interpreterContext);
+    return intp.executePrecode(context);
   }
 
   @Override

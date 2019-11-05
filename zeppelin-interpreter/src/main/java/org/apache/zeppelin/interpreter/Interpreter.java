@@ -56,6 +56,8 @@ public abstract class Interpreter {
   /**
    * Opens interpreter. You may want to place your initialize routine here.
    * open() is called only once
+   *
+   * @throws InterpreterException when open fails
    */
   @ZeppelinApi
   public abstract void open() throws InterpreterException;
@@ -63,20 +65,26 @@ public abstract class Interpreter {
   /**
    * Closes interpreter. You may want to free your resources up here.
    * close() is called only once
+   *
+   * @throws InterpreterException when close fails
    */
   @ZeppelinApi
   public abstract void close() throws InterpreterException;
 
   /**
    * Run precode if exists.
+   *
+   * @param context interpreter context
+   * @return InterpreterResult
+   * @throws InterpreterException when fail to run executePrecode
    */
   @ZeppelinApi
-  public InterpreterResult executePrecode(InterpreterContext interpreterContext)
+  public InterpreterResult executePrecode(InterpreterContext context)
       throws InterpreterException {
     String simpleName = this.getClass().getSimpleName();
     String precode = getProperty(String.format("zeppelin.%s.precode", simpleName));
     if (StringUtils.isNotBlank(precode)) {
-      return interpret(precode, interpreterContext);
+      return interpret(precode, context);
     }
     return null;
   }
@@ -114,6 +122,9 @@ public abstract class Interpreter {
    * Run code and return result, in synchronous way.
    *
    * @param st statements to run
+   * @param context interpreter context
+   * @return InterpreterResult
+   * @throws InterpreterException when fail to run interpret
    */
   @ZeppelinApi
   public abstract InterpreterResult interpret(String st,
@@ -122,6 +133,9 @@ public abstract class Interpreter {
 
   /**
    * Optionally implement the canceling routine to abort interpret() method
+   *
+   * @param context interpreter context
+   * @throws InterpreterException when fail to cancel
    */
   @ZeppelinApi
   public abstract void cancel(InterpreterContext context) throws InterpreterException;
@@ -132,6 +146,7 @@ public abstract class Interpreter {
    *
    * @return FormType.SIMPLE enables simple pattern replacement (eg. Hello ${name=world}),
    * FormType.NATIVE handles form in API
+   * @throws InterpreterException when fail to getFormType
    */
   @ZeppelinApi
   public abstract FormType getFormType() throws InterpreterException;
@@ -139,7 +154,9 @@ public abstract class Interpreter {
   /**
    * get interpret() method running process in percentage.
    *
+   * @param context interpreter context
    * @return number between 0-100
+   * @throws InterpreterException when fail to getProgress
    */
   @ZeppelinApi
   public abstract int getProgress(InterpreterContext context) throws InterpreterException;
@@ -150,12 +167,13 @@ public abstract class Interpreter {
    *
    * @param buf statements
    * @param cursor cursor position in statements
-   * @param interpreterContext
+   * @param context interpreter context
    * @return list of possible completion. Return empty list if there're nothing to return.
+   * @throws InterpreterException when fail to run completion
    */
   @ZeppelinApi
   public List<InterpreterCompletion> completion(String buf, int cursor,
-      InterpreterContext interpreterContext) throws InterpreterException {
+      InterpreterContext context) throws InterpreterException {
     return null;
   }
 
@@ -253,6 +271,8 @@ public abstract class Interpreter {
    * @param noteId - Note to bind hook to
    * @param event The type of event to hook to (pre_exec, post_exec)
    * @param cmd The code to be executed by the interpreter on given event
+   *
+   * @throws InvalidHookException when fail to registerHook.
    */
   @Experimental
   public void registerHook(String noteId, String event, String cmd) throws InvalidHookException {
@@ -266,6 +286,8 @@ public abstract class Interpreter {
    *
    * @param event The type of event to hook to (pre_exec, post_exec)
    * @param cmd The code to be executed by the interpreter on given event
+   *
+   * @throws InvalidHookException when fail to registerHook.
    */
   @Experimental
   public void registerHook(String event, String cmd) throws InvalidHookException {
@@ -277,6 +299,7 @@ public abstract class Interpreter {
    *
    * @param noteId - Note to bind hook to
    * @param event The type of event to hook to (pre_exec, post_exec)
+   * @return String
    */
   @Experimental
   public String getHook(String noteId, String event) {
@@ -289,6 +312,7 @@ public abstract class Interpreter {
    * getHook() wrapper for global scope
    *
    * @param event The type of event to hook to (pre_exec, post_exec)
+   * @return String
    */
   @Experimental
   public String getHook(String event) {

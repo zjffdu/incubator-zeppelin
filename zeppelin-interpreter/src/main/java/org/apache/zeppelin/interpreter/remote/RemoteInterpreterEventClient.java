@@ -29,6 +29,7 @@ import org.apache.zeppelin.interpreter.thrift.OutputAppendEvent;
 import org.apache.zeppelin.interpreter.thrift.OutputUpdateAllEvent;
 import org.apache.zeppelin.interpreter.thrift.OutputUpdateEvent;
 import org.apache.zeppelin.interpreter.thrift.ParagraphInfo;
+import org.apache.zeppelin.interpreter.thrift.RegisterInfo;
 import org.apache.zeppelin.interpreter.thrift.RemoteInterpreterEventService;
 import org.apache.zeppelin.interpreter.thrift.RunParagraphsEvent;
 import org.apache.zeppelin.interpreter.thrift.ServiceException;
@@ -65,6 +66,14 @@ public class RemoteInterpreterEventClient implements ResourcePoolConnector,
 
   public void setIntpGroupId(String intpGroupId) {
     this.intpGroupId = intpGroupId;
+  }
+
+  public synchronized void registerInterpreterProcess(RegisterInfo registerInfo) throws TException {
+    intpEventServiceClient.registerInterpreterProcess(registerInfo);
+  }
+
+  public synchronized void unRegisterInterpreterProcess(RegisterInfo registerInfo) throws TException {
+    intpEventServiceClient.unRegisterInterpreterProcess(registerInfo);
   }
 
   /**

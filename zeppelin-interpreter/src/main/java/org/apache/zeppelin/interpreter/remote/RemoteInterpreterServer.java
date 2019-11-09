@@ -99,6 +99,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.apache.zeppelin.cluster.meta.ClusterMetaType.INTP_PROCESS_META;
 
@@ -123,6 +124,8 @@ public class RemoteInterpreterServer extends Thread
   private String host;
   private int port;
   private TThreadPoolServer server;
+  private AtomicBoolean inShuttingDown = new AtomicBoolean(false);
+
   RemoteInterpreterEventService.Client intpEventServiceClient;
 
   RemoteInterpreterEventClient intpEventClient;
@@ -220,7 +223,8 @@ public class RemoteInterpreterServer extends Thread
             if (!interrupted) {
               RegisterInfo registerInfo = new RegisterInfo(host, port, interpreterGroupId);
               try {
-                intpEventServiceClient.registerInterpreterProcess(registerInfo);
+                intpEventClient.registerInterpreterProcess(registerInfo);
+                logger.info("Interpreter process registered: " + registerInfo);
               } catch (TException e) {
                 logger.error("Error while registering interpreter: {}", registerInfo, e);
                 try {
@@ -239,7 +243,20 @@ public class RemoteInterpreterServer extends Thread
 
   @Override
   public void shutdown() throws TException {
+    if (inShuttingDown.getAndSet(true)) {
+      return;
+    }
+
     logger.info("Shutting down...");
+    RegisterInfo registerInfo = new RegisterInfo(host, port, interpreterGroupId);
+    try {
+      logger.info("Unregistering interpreter process: " + registerInfo);
+      intpEventClient.unRegisterInterpreterProcess(registerInfo);
+      logger.info("Interpreter process unregistered: " + registerInfo);
+    } catch (Exception e) {
+      logger.error("Error while unregistering interpreter: {}", registerInfo, e);
+    }
+
     // delete interpreter cluster meta
     deleteClusterMeta();
 
@@ -280,7 +297,7 @@ public class RemoteInterpreterServer extends Thread
       System.exit(0);
     }
 
-    logger.info("Shutting down");
+    logger.info("Shut down");
   }
 
   public int getPort() {
@@ -315,9 +332,9 @@ public class RemoteInterpreterServer extends Thread
     remoteInterpreterServer.start();
 
     // add signal handler
-    Signal.handle(new Signal("TERM"), new SignalHandler() {
+    Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
-      public void handle(Signal signal) {
+      public void run() {
         try {
           remoteInterpreterServer.shutdown();
         } catch (TException e) {

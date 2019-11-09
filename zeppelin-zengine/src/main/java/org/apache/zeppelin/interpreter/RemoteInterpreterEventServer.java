@@ -172,6 +172,18 @@ public class RemoteInterpreterEventServer implements RemoteInterpreterEventServi
   }
 
   @Override
+  public void unRegisterInterpreterProcess(RegisterInfo registerInfo) throws TException {
+    ManagedInterpreterGroup interpreterGroup =
+            interpreterSettingManager.getInterpreterGroupById(registerInfo.getInterpreterGroupId());
+    if (interpreterGroup == null) {
+      LOGGER.warn("No such interpreterGroup: " + registerInfo.getInterpreterGroupId());
+      return;
+    }
+    interpreterGroup.close();
+    LOGGER.info("Interpreter process unregistered: " + registerInfo);
+  }
+
+  @Override
   public void appendOutput(OutputAppendEvent event) throws TException {
     if (event.getAppId() == null) {
       runner.appendBuffer(

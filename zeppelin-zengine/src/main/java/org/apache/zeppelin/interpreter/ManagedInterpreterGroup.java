@@ -101,7 +101,7 @@ public class ManagedInterpreterGroup extends InterpreterGroup {
     if (sessions.isEmpty() && interpreterSetting != null) {
       LOGGER.info("Remove this InterpreterGroup: {} as all the sessions are closed", id);
       interpreterSetting.removeInterpreterGroup(id);
-      if (remoteInterpreterProcess != null) {
+      if (remoteInterpreterProcess != null && remoteInterpreterProcess.isRunning()) {
         LOGGER.info("Kill RemoteInterpreterProcess");
         remoteInterpreterProcess.stop();
         try {

@@ -18,7 +18,6 @@
 
 package org.apache.zeppelin.flink.sql;
 
-import com.google.common.collect.Lists;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -35,7 +34,7 @@ public class RetractStreamSqlJob extends AbstractStreamSqlJob {
   private static Logger LOGGER = LoggerFactory.getLogger(RetractStreamSqlJob.class);
 
   private List<Row> materializedTable = new ArrayList<>();
-
+  private List<Row> lastSnapshot = new ArrayList<>();
 
   public RetractStreamSqlJob(StreamExecutionEnvironment senv,
                              StreamTableEnvironment stEnv,
@@ -49,18 +48,15 @@ public class RetractStreamSqlJob extends AbstractStreamSqlJob {
     return "retract";
   }
 
-  @Override
-  protected List<String> getValidLocalProperties() {
-    return Lists.newArrayList("type", "parallelism",
-            "refreshInterval", "enableSavePoint", "runWithSavePoint");
-  }
-
   protected void processInsert(Row row) {
+    enableToRefresh = true;
+    resultLock.notify();
     LOGGER.debug("processInsert: " + row.toString());
     materializedTable.add(row);
   }
 
   protected void processDelete(Row row) {
+    enableToRefresh = false;
     LOGGER.debug("processDelete: " + row.toString());
     for (int i = 0; i < materializedTable.size(); i++) {
       if (materializedTable.get(i).equals(row)) {
@@ -71,36 +67,48 @@ public class RetractStreamSqlJob extends AbstractStreamSqlJob {
   }
 
   @Override
+  protected String buildResult() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("%table\n");
+    for (int i = 0; i < schema.getFieldCount(); ++i) {
+      String field = schema.getFieldName(i).get();
+      builder.append(field);
+      if (i != (schema.getFieldCount() - 1)) {
+        builder.append("\t");
+      }
+    }
+    builder.append("\n");
+    // sort it by the first column
+    materializedTable.sort((r1, r2) -> {
+      String f1 = r1.getField(0).toString();
+      String f2 = r2.getField(0).toString();
+      return f1.compareTo(f2);
+    });
+    for (Row row : materializedTable) {
+      for (int i = 0; i < row.getArity(); ++i) {
+        Object field = row.getField(i);
+        builder.append(field.toString());
+        if (i != (row.getArity() - 1)) {
+          builder.append("\t");
+        }
+      }
+      builder.append("\n");
+    }
+    return builder.toString();
+  }
+
+  @Override
   protected void refresh(InterpreterContext context) {
     context.out().clear();
     try {
-      context.out.write("%table\n");
-      for (int i = 0; i < schema.getFieldCount(); ++i) {
-        String field = schema.getFieldName(i).get();
-        context.out.write(field);
-        if (i != (schema.getFieldCount() - 1)) {
-          context.out.write("\t");
-        }
-      }
-      context.out.write("\n");
-      LOGGER.debug("*****************Row size: " + materializedTable.size());
-      // sort it by the first column
-      materializedTable.sort((r1, r2) -> {
-        String f1 = r1.getField(0).toString();
-        String f2 = r2.getField(0).toString();
-        return f1.compareTo(f2);
-      });
-      for (Row row : materializedTable) {
-        for (int i = 0; i < row.getArity(); ++i) {
-          Object field = row.getField(i);
-          context.out.write(field.toString());
-          if (i != (row.getArity() - 1)) {
-            context.out.write("\t");
-          }
-        }
-        context.out.write("\n");
-      }
+      String result = buildResult();
+      LOGGER.debug(("Refresh with data: " + result));
+      context.out.write(result);
       context.out.flush();
+      this.lastSnapshot.clear();
+      for (Row row : materializedTable) {
+        this.lastSnapshot.add(row);
+      }
     } catch (IOException e) {
       LOGGER.error("Fail to refresh data", e);
     }

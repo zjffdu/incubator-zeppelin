@@ -3,6 +3,7 @@
     "group": "flink",
     "name": "flink",
     "className": "org.apache.zeppelin.flink.FlinkInterpreter",
+    "defaultInterpreter": true,
     "properties": {
       "flink.execution.mode": {
         "envName": null,
@@ -37,13 +38,6 @@
         "propertyName": null,
         "defaultValue": "1024",
         "description": "Memory for TaskManager (mb)",
-        "type": "number"
-      },
-      "flink.tm.num": {
-        "envName": null,
-        "propertyName": null,
-        "defaultValue": "2",
-        "description": "Number of TaskManager",
         "type": "number"
       },
       "flink.tm.slot": {
@@ -160,7 +154,9 @@
     },
     "editor": {
       "language": "python",
-      "editOnDblClick": false
+      "editOnDblClick": false,
+      "completionKey": "TAB",
+      "completionSupport": true
     }
   },
 
@@ -173,7 +169,9 @@
     },
     "editor": {
       "language": "python",
-      "editOnDblClick": false
+      "editOnDblClick": false,
+      "completionKey": "TAB",
+      "completionSupport": true
     }
   }
 ]

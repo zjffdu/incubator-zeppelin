@@ -22,6 +22,7 @@ from pyflink.table import *
 from pyflink.table.catalog import *
 from pyflink.table.descriptors import *
 from pyflink.table.window import *
+from pyflink.table.udf import *
 
 import pyflink
 
@@ -34,9 +35,9 @@ pyflink.java_gateway.import_flink_view(gateway)
 pyflink.java_gateway.install_exception_handler()
 
 b_env = pyflink.dataset.ExecutionEnvironment(intp.getJavaExecutionEnvironment())
-bt_env = BatchTableEnvironment.create(b_env)
+bt_env = BatchTableEnvironment(intp.getJavaBatchTableEnvironment(), intp.isBlinkPlanner())
 s_env = StreamExecutionEnvironment(intp.getJavaStreamExecutionEnvironment())
-st_env = StreamTableEnvironment.create(s_env)
+st_env = StreamTableEnvironment(intp.getJavaStreamTableEnvironment(), intp.isBlinkPlanner())
 
 from zeppelin_context import PyZeppelinContext
 

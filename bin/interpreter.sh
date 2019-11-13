@@ -204,10 +204,13 @@ elif [[ "${INTERPRETER_ID}" == "pig" ]]; then
   fi
 elif [[ "${INTERPRETER_ID}" == "flink" ]]; then
   addJarInDirForIntp "${FLINK_HOME}/lib"
-  addJarInDirForIntp "${FLINK_HOME}/opt"
+
+  FLINK_PYTHON_JAR=$(find "${FLINK_HOME}/opt" -name 'flink-python_*.jar')
+  ZEPPELIN_INTP_CLASSPATH+=":${FLINK_PYTHON_JAR}"
 
   if [[ -n "${HADOOP_CONF_DIR}" ]] && [[ -d "${HADOOP_CONF_DIR}" ]]; then
-    ZEPPELIN_INTP_CLASSPATH+=`hadoop classpath`
+    ZEPPELIN_INTP_CLASSPATH+=":`hadoop classpath`"
+    ZEPPELIN_INTP_CLASSPATH+=":${HADOOP_CONF_DIR}"
     export HADOOP_CONF_DIR=${HADOOP_CONF_DIR}
   else
     # autodetect HADOOP_CONF_HOME by heuristic

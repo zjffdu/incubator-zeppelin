@@ -26,6 +26,7 @@ limitations under the License.
 ## Overview
 [Apache Flink](https://flink.apache.org) is an open source platform for distributed stream and batch data processing. Flink’s core is a streaming dataflow engine that provides data distribution, communication, and fault tolerance for distributed computations over data streams. Flink also builds batch processing on top of the streaming engine, overlaying native iteration support, managed memory, and program optimization.
 
+In Zeppelin 0.9, we refactor the Flink interpreter in Zeppelin to support the latest version of Flink. Only Flink 1.10+ is supported, old version of flink may not work.
 Apache Flink is supported in Zeppelin with Flink interpreter group which consists of below five interpreters.
 
 <table class="table-configuration">
@@ -71,9 +72,19 @@ You can also set other flink properties which are not listed in the table. For a
     <th>Description</th>
   </tr>
   <tr>
-    <td>FLINK_HOME</td>
+    <td>`FLINK_HOME`</td>
     <td></td>
-    <td>Location of flink installation. It is must be specified, otherwise you can not use flink in zeppelin</td>
+    <td>Location of flink installation. It is must be specified, otherwise you can not use flink in Zeppelin</td>
+  </tr>
+  <tr>
+    <td>`HADOOP_CONF_DIR`</td>
+    <td></td>
+    <td>location of hadoop conf, this is must be set if running in yarn mode</td>
+  </tr>
+  <tr>
+    <td>`HIVE_CONF_DIR`</td>
+    <td></td>
+    <td>location of hive conf, this is must be set if you want to connect to hive metastore</td>
   </tr>
   <tr>
     <td>flink.execution.mode</td>
@@ -99,16 +110,6 @@ You can also set other flink properties which are not listed in the table. For a
     <td>flink.tm.memory</td>
     <td>1024</td>
     <td>Total number of memory(mb) of TaskManager</td>
-  </tr>
-  <tr>
-    <td>flink.tm.num</td>
-    <td>2</td>
-    <td>Number of TaskManager</td>
-  </tr>
-  <tr>
-    <td>flink.tm.slot</td>
-    <td>1</td>
-    <td>Number of slot per TaskManager</td>
   </tr>
   <tr>
     <td>flink.yarn.appName</td>
@@ -155,31 +156,29 @@ You can also set other flink properties which are not listed in the table. For a
     <td>python</td>
     <td>python executable for pyflink</td>
   </tr>
-  <tr>
-    <td>HADOOP_CONF_DIR</td>
-    <td></td>
-    <td>location of hadoop conf, this is must be set if running in yarn mode</td>
-  </tr>
 </table>
 
 
 ## StreamExecutionEnvironment, ExecutionEnvironment, StreamTableEnvironment, BatchTableEnvironment
 
 Zeppelin will create 4 variables to represent flink's entrypoint:
+
 * `senv`    (StreamExecutionEnvironment), 
-* `env`     (ExecutionEnvironment)
+* `benv`     (ExecutionEnvironment)
 * `stenv`   (StreamTableEnvironment) 
 * `btenv`   (BatchTableEnvironment)
 
 ## Flink Planner
 
-Starting from Flink 1.9, there're 2 planners supported by Flink's table api: `flink` & `blink`.
+There're 2 planners supported by Flink's table api: `flink` & `blink`.
+
 * If you want to use DataSet api, then please use flink planner (specify `zeppelin.flink.planner` to `flink`).
 * In other cases, we would always recommend you to use `blink` planner which is also the default value of `zeppelin.flink.planner`.
 
 ## How to use Hive
 
 In order to use Hive in Flink, you have to do several setting.
+
 * Set `zeppelin.flink.enableHive` to `true`
 * Copy necessary dependencies to flink's lib folder, check this [link](https://ci.apache.org/projects/flink/flink-docs-release-1.9/dev/table/hive/#depedencies) for more details 
   * flink-connector-hive_{scala_version}-{flink.version}.jar

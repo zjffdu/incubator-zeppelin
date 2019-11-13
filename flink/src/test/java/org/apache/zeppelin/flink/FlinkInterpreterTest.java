@@ -253,7 +253,7 @@ public class FlinkInterpreterTest {
     }
   }
 
-  //@Test
+  @Test
   public void testStreamUDF() throws InterpreterException {
     InterpreterResult result = interpreter.interpret(
             "class MyUpper extends ScalarFunction {\n" +
@@ -265,7 +265,7 @@ public class FlinkInterpreterTest {
     result = interpreter.interpret(
             "val data = Seq(\"Hello\", \"Flink\")\n" +
             "val source = senv.fromCollection(data).toTable(stenv, 'word)\n" +
-            "source.select(\"myupper(word)\").print()",
+            "source.select(\"myupper(word)\")",
             getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
   }

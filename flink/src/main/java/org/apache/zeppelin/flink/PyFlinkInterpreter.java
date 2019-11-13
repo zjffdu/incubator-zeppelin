@@ -17,6 +17,8 @@
 
 package org.apache.zeppelin.flink;
 
+import org.apache.flink.python.util.ResourceUtil;
+import org.apache.flink.table.api.TableEnvironment;
 import org.apache.zeppelin.interpreter.BaseZeppelinContext;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -104,17 +107,18 @@ public class PyFlinkInterpreter extends PythonInterpreter {
 
   public static String getPyFlinkPythonPath(Properties properties) throws IOException {
     String flinkHome = System.getenv("FLINK_HOME");
-    boolean isTest = Boolean.parseBoolean(properties.getProperty("zeppelin.flink.test", "false"));
-    if (isTest) {
-      return "";
-    }
     if (flinkHome != null) {
-      File pythonFolder = new File(flinkHome + "/opt/python");
+      File tmpDir = Files.createTempDirectory("zeppelin").toFile();
+      List<File> depFiles = null;
+      try {
+        depFiles = ResourceUtil.extractBuiltInDependencies(tmpDir.getAbsolutePath(), "pyflink", true);
+      } catch (InterruptedException e) {
+        throw new IOException(e);
+      }
       StringBuilder builder = new StringBuilder();
-      for (File file : pythonFolder.listFiles()) {
-        if (file.getName().endsWith(".zip")) {
-          builder.append(file.getAbsolutePath() + ":");
-        }
+      for (File file : depFiles) {
+        LOGGER.info("Adding extracted file to PYTHONPATH: " + file.getAbsolutePath());
+        builder.append(file.getAbsolutePath() + ":");
       }
       return builder.toString();
     } else {
@@ -142,7 +146,7 @@ public class PyFlinkInterpreter extends PythonInterpreter {
 
   @Override
   public int getProgress(InterpreterContext context) throws InterpreterException {
-    return 0;
+    return flinkInterpreter.getProgress(context);
   }
 
   public org.apache.flink.api.java.ExecutionEnvironment getJavaExecutionEnvironment() {
@@ -154,4 +158,15 @@ public class PyFlinkInterpreter extends PythonInterpreter {
     return flinkInterpreter.getStreamExecutionEnvironment().getJavaEnv();
   }
 
+  public TableEnvironment getJavaBatchTableEnvironment() {
+    return flinkInterpreter.getJavaBatchTableEnvironment();
+  }
+
+  public org.apache.flink.table.api.java.StreamTableEnvironment getJavaStreamTableEnvironment() {
+    return flinkInterpreter.getJavaStreamTableEnvironment();
+  }
+
+  public boolean isBlinkPlanner() {
+    return flinkInterpreter.isBlinkPlanner();
+  }
 }

@@ -19,8 +19,10 @@ package org.apache.zeppelin.flink;
 
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.api.scala.ExecutionEnvironment;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -38,8 +40,7 @@ public class JobManager {
 
   private static Logger LOGGER = LoggerFactory.getLogger(JobManager.class);
 
-  private Map<String, JobID> jobs = new HashMap<>();
-  private Map<String, String> savePointMap = new HashMap<>();
+  private Map<String, JobClient> jobs = new HashMap<>();
   private ConcurrentHashMap<JobID, FlinkJobProgressPoller> jobProgressPollerMap =
           new ConcurrentHashMap<>();
   private ExecutionEnvironment env;
@@ -57,61 +58,73 @@ public class JobManager {
     this.flinkWebUI = flinkWebUI;
   }
 
-  public void addJob(String paragraphId, JobID jobId) {
-    JobID previousJobId = this.jobs.put(paragraphId, jobId);
-    FlinkJobProgressPoller thread = new FlinkJobProgressPoller(flinkWebUI, jobId);
+  public void addJob(InterpreterContext context, JobClient jobClient) {
+    String paragraphId = context.getParagraphId();
+    JobClient previousJobClient = this.jobs.put(paragraphId, jobClient);
+    FlinkJobProgressPoller thread = new FlinkJobProgressPoller(flinkWebUI, jobClient.getJobID(), context);
     thread.start();
-    this.jobProgressPollerMap.put(jobId, thread);
-    if (previousJobId != null) {
+    this.jobProgressPollerMap.put(jobClient.getJobID(), thread);
+    if (previousJobClient != null) {
       LOGGER.warn("There's another Job {} that is associated with paragraph {}",
-              jobId, paragraphId);
+              jobClient.getJobID(), paragraphId);
     }
   }
 
   public void removeJob(String paragraphId) {
-    JobID jobID = this.jobs.remove(paragraphId);
-    if (jobID == null) {
+    JobClient jobClient = this.jobs.remove(paragraphId);
+    if (jobClient == null) {
       LOGGER.warn("Unable to remove job, because no job is associated with paragraph: "
               + paragraphId);
       return;
     }
-    FlinkJobProgressPoller jobProgressPoller = this.jobProgressPollerMap.remove(jobID);
+    FlinkJobProgressPoller jobProgressPoller =
+            this.jobProgressPollerMap.remove(jobClient.getJobID());
     jobProgressPoller.cancel();
   }
 
   public int getJobProgress(String paragraphId) {
-    JobID jobId = this.jobs.get(paragraphId);
-    if (jobId == null) {
+    JobClient jobClient = this.jobs.get(paragraphId);
+    if (jobClient == null) {
       LOGGER.warn("Unable to get job progress for paragraph: " + paragraphId +
               ", because no job is associated with this paragraph");
       return 0;
     }
-    FlinkJobProgressPoller jobProgressPoller = this.jobProgressPollerMap.get(jobId);
+    FlinkJobProgressPoller jobProgressPoller = this.jobProgressPollerMap.get(jobClient.getJobID());
     if (jobProgressPoller == null) {
       LOGGER.warn("Unable to get job progress for paragraph: " + paragraphId +
-              ", because no job progress is associated with this jobId: " + jobId);
+              ", because no job progress is associated with this jobId: " + jobClient.getJobID());
       return 0;
     }
     return jobProgressPoller.getProgress();
   }
 
   public void cancelJob(InterpreterContext context) throws InterpreterException {
-    JobID jobId = this.jobs.remove(context.getParagraphId());
-    if (jobId == null) {
-      LOGGER.warn("Unable to remove Job from paragraph {}", context.getParagraphId());
+    JobClient jobClient = this.jobs.remove(context.getParagraphId());
+    if (jobClient == null) {
+      LOGGER.warn("Unable to remove Job from paragraph {} as no job associated to this paragraph",
+              context.getParagraphId());
       return;
     }
 
     try {
-      //this.env.cancel(jobId);
+      String savepointDir = context.getLocalProperties().get("savepointDir");
+      if (StringUtils.isBlank(savepointDir)) {
+        LOGGER.info("Trying to cancel job of paragraph {}", context.getParagraphId());
+        jobClient.cancel();
+      } else {
+        LOGGER.info("Trying to stop job of paragraph {} with save point dir: {}",
+                context.getParagraphId(), savepointDir);
+        String savePointPath = jobClient.stopWithSavepoint(false, savepointDir).get();
+        z.angularBind(context.getParagraphId() + "_savepointpath", savePointPath);
+      }
     } catch (Exception e) {
       String errorMessage = String.format("Fail to cancel job %s that is associated " +
-              "with paragraph %s", jobId, context.getParagraphId());
+              "with paragraph %s", jobClient.getJobID(), context.getParagraphId());
       LOGGER.warn(errorMessage, e);
       throw new InterpreterException(errorMessage, e);
     }
 
-    FlinkJobProgressPoller jobProgressPoller = jobProgressPollerMap.remove(jobId);
+    FlinkJobProgressPoller jobProgressPoller = jobProgressPollerMap.remove(jobClient.getJobID());
     jobProgressPoller.interrupt();
   }
 
@@ -119,12 +132,16 @@ public class JobManager {
 
     private String flinkWebUI;
     private JobID jobId;
+    private InterpreterContext context;
+    private boolean isStreamingInsertInto;
     private int progress;
     private AtomicBoolean running = new AtomicBoolean(true);
 
-    FlinkJobProgressPoller(String flinkWebUI, JobID jobId) {
+    FlinkJobProgressPoller(String flinkWebUI, JobID jobId, InterpreterContext context) {
       this.flinkWebUI = flinkWebUI;
       this.jobId = jobId;
+      this.context = context;
+      this.isStreamingInsertInto = context.getLocalProperties().containsKey("flink.streaming.insert_into");
     }
 
     @Override
@@ -145,6 +162,7 @@ public class JobManager {
           LOGGER.debug("Finished tasks:" + finishedTasks);
           if (finishedTasks != 0) {
             this.progress = finishedTasks * 100 / totalTasks;
+            LOGGER.debug("Progress: " + this.progress);
           }
           String jobState = rootNode.getObject().getString("state");
           if (jobState.equalsIgnoreCase("finished")) {
@@ -152,6 +170,15 @@ public class JobManager {
           }
           synchronized (running) {
             running.wait(1000);
+          }
+          if (isStreamingInsertInto) {
+            StringBuilder builder = new StringBuilder("%html ");
+            builder.append("<h1>Duration: " +
+                    Integer.parseInt(rootNode.getObject().getString("duration")) / 1000 +
+                    " seconds");
+            context.out.clear();
+            context.out.write(builder.toString());
+            context.out.flush();
           }
         }
       } catch (Exception e) {

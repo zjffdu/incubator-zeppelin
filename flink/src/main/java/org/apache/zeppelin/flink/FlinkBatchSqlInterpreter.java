@@ -17,17 +17,14 @@
 
 package org.apache.zeppelin.flink;
 
-
-import com.google.common.collect.Lists;
 import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.config.ExecutionConfigOptions;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.scheduler.SchedulerFactory;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
@@ -38,11 +35,15 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
     super(properties);
   }
 
+  @Override
+  protected boolean isBatch() {
+    return true;
+  }
 
   @Override
   public void open() throws InterpreterException {
     super.open();
-    this.tbenv = flinkInterpreter.getBatchTableEnvironment();
+    this.tbenv = flinkInterpreter.getJavaBatchTableEnvironment();
     this.z = flinkInterpreter.getZeppelinContext();
   }
 
@@ -53,20 +54,22 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
 
   @Override
   public void callSelect(String sql, InterpreterContext context) throws IOException {
-    Table table = this.tbenv.sqlQuery(sql);
-    z.setCurrentSql(sql);
-    String result = z.showData(table);
-    context.out.write(result);
-  }
-
-  protected void checkLocalProperties(Map<String, String> localProperties)
-          throws InterpreterException {
-    List<String> validLocalProperties = Lists.newArrayList("parallelism");
-    for (String key : localProperties.keySet()) {
-      if (!validLocalProperties.contains(key)) {
-        throw new InterpreterException("Invalid property: " + key + ", Only the following " +
-                "properties are valid: " + validLocalProperties);
+    int defaultSqlParallelism = this.tbenv.getConfig().getConfiguration()
+            .getInteger(ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM);
+    try {
+      if (context.getLocalProperties().containsKey("parallelism")) {
+        this.tbenv.getConfig().getConfiguration()
+                .set(ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM,
+                        Integer.parseInt(context.getLocalProperties().get("parallelism")));
       }
+      Table table = this.tbenv.sqlQuery(sql);
+      z.setCurrentSql(sql);
+      String result = z.showData(table);
+      context.out.write(result);
+    } finally {
+      this.tbenv.getConfig().getConfiguration()
+              .set(ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM,
+                      defaultSqlParallelism);
     }
   }
 
@@ -82,7 +85,7 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
 
   @Override
   public int getProgress(InterpreterContext context) throws InterpreterException {
-    return 0;
+    return flinkInterpreter.getProgress(context);
   }
 
   @Override

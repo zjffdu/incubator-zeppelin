@@ -18,10 +18,10 @@
 package org.apache.zeppelin.flink;
 
 import com.google.common.io.Files;
-//import com.klarna.hiverunner.HiveShell;
-//import com.klarna.hiverunner.annotations.HiveSQL;
+import com.klarna.hiverunner.HiveShell;
+import com.klarna.hiverunner.annotations.HiveSQL;
 import org.apache.commons.io.IOUtils;
-//import org.apache.flink.connectors.hive.FlinkStandaloneHiveRunner;
+import org.apache.flink.connectors.hive.FlinkStandaloneHiveRunner;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
@@ -44,30 +44,34 @@ import org.apache.zeppelin.interpreter.InterpreterGroup;
 import org.apache.zeppelin.interpreter.InterpreterOutput;
 import org.apache.zeppelin.interpreter.InterpreterOutputListener;
 import org.apache.zeppelin.interpreter.InterpreterResult;
+import org.apache.zeppelin.interpreter.InterpreterResultMessage;
 import org.apache.zeppelin.interpreter.InterpreterResultMessageOutput;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterEventClient;
 import org.junit.After;
 import org.junit.Before;
-//import org.junit.runner.RunWith;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
-//import java.io.FileWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Properties;
 
+import static org.apache.zeppelin.interpreter.InterpreterResult.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 
-//@RunWith(FlinkStandaloneHiveRunner.class)
-public abstract class FlinkSqlInterpreterTest {
+@RunWith(FlinkStandaloneHiveRunner.class)
+public abstract class SqlInterpreterTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(FlinkSqlInterpreterTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SqlInterpreterTest.class);
   protected static final String[][] INPUT_DATA = {
           {"1", "1.1", "hello world", "true"},
           {"2", "2.3", "hello flink", "true"},
@@ -76,27 +80,22 @@ public abstract class FlinkSqlInterpreterTest {
 
 
   protected FlinkInterpreter flinkInterpreter;
+  protected IPyFlinkInterpreter iPyFlinkInterpreter;
+  protected PyFlinkInterpreter pyFlinkInterpreter;
   protected FlinkSqlInterrpeter sqlInterpreter;
 
-  // catch the streaming appendOutput in onAppend
-  protected volatile String appendOutput = "";
-  protected volatile InterpreterResult.Type appendOutputType;
-
-  // catch the flinkInterpreter appendOutput in onUpdate
-  protected InterpreterResultMessageOutput updatedOutput;
-
-  //  @HiveSQL(files = {})
-  //  protected static HiveShell hiveShell;
+  @HiveSQL(files = {})
+  protected static HiveShell hiveShell;
 
 
   protected Properties getFlinkProperties() throws IOException {
     Properties p = new Properties();
-    p.setProperty("zeppelin.flink.enableHive", "false");
+    p.setProperty("zeppelin.flink.enableHive", "true");
     p.setProperty("zeppelin.flink.planner", "blink");
     p.setProperty("taskmanager.managed.memory.size", "32");
     p.setProperty("zeppelin.flink.hive.version", "2.3.4");
     File hiveConfDir = Files.createTempDir();
-    //    hiveShell.getHiveConf().writeXml(new FileWriter(new File(hiveConfDir, "hive-site.xml")));
+    hiveShell.getHiveConf().writeXml(new FileWriter(new File(hiveConfDir, "hive-site.xml")));
     p.setProperty("HIVE_CONF_DIR", hiveConfDir.getAbsolutePath());
     return p;
   }
@@ -105,168 +104,183 @@ public abstract class FlinkSqlInterpreterTest {
   public void setUp() throws InterpreterException, IOException {
     Properties p = getFlinkProperties();
     flinkInterpreter = new FlinkInterpreter(p);
+    iPyFlinkInterpreter = new IPyFlinkInterpreter(p);
+    pyFlinkInterpreter = new PyFlinkInterpreter(p);
     sqlInterpreter = createFlinkSqlInterpreter(p);
     InterpreterGroup intpGroup = new InterpreterGroup();
     flinkInterpreter.setInterpreterGroup(intpGroup);
     sqlInterpreter.setInterpreterGroup(intpGroup);
+    iPyFlinkInterpreter.setInterpreterGroup(intpGroup);
+    pyFlinkInterpreter.setInterpreterGroup(intpGroup);
     intpGroup.addInterpreterToSession(flinkInterpreter, "session_1");
     intpGroup.addInterpreterToSession(sqlInterpreter, "session_1");
+    intpGroup.addInterpreterToSession(iPyFlinkInterpreter, "session_1");
+    intpGroup.addInterpreterToSession(pyFlinkInterpreter, "session_1");
 
     flinkInterpreter.open();
     sqlInterpreter.open();
+    iPyFlinkInterpreter.open();
+    pyFlinkInterpreter.open();
 
-    //    hiveShell.execute("drop database if exists test_db CASCADE");
-    //    hiveShell.execute("create database test_db");
-    //    hiveShell.execute("use test_db");
+    hiveShell.execute("drop database if exists test_db CASCADE");
+    hiveShell.execute("create database test_db");
+    hiveShell.execute("use test_db");
 
-    //    InterpreterResult result = sqlInterpreter.interpret("use database test_db",
-    //            getInterpreterContext());
-    //    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+    InterpreterResult result = sqlInterpreter.interpret("use test_db",
+            getInterpreterContext());
+    assertEquals(Code.SUCCESS, result.code());
   }
 
   @After
   public void tearDown() throws InterpreterException {
-    flinkInterpreter.close();
+    if (flinkInterpreter != null) {
+      flinkInterpreter.close();
+    }
+    if (sqlInterpreter != null) {
+      sqlInterpreter.close();
+    }
+    if (iPyFlinkInterpreter != null) {
+      iPyFlinkInterpreter.close();
+    }
+    if (pyFlinkInterpreter != null) {
+      pyFlinkInterpreter.close();
+    }
   }
 
   protected abstract FlinkSqlInterrpeter createFlinkSqlInterpreter(Properties properties);
 
-  //@Test
-  public void testDatabases() throws InterpreterException {
-    InterpreterResult result = sqlInterpreter.interpret("show databases",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TABLE, appendOutputType);
-    assertEquals("database\ndefault\ntest_db\n", appendOutput);
+  @Test
+  public void testDatabases() throws InterpreterException, IOException {
+    // show databases
+    InterpreterContext context = getInterpreterContext();
+    InterpreterResult result = sqlInterpreter.interpret("show databases", context);
+    assertEquals(Code.SUCCESS, result.code());
+    List<InterpreterResultMessage> resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(1, resultMessages.size());
+    assertEquals(Type.TABLE, resultMessages.get(0).getType());
+    assertEquals("database\ndefault\ntest_db\n", resultMessages.get(0).getData());
 
-    result = sqlInterpreter.interpret("create database db1",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TEXT, appendOutputType);
-    assertEquals("Database has been created.\n", appendOutput);
+    // create database
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("create database db1", context);
+    assertEquals(Code.SUCCESS, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(Type.TEXT, resultMessages.get(0).getType());
+    assertEquals("Database has been created.\n", resultMessages.get(0).getData());
 
-    result = sqlInterpreter.interpret("use db1",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+    // use database
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("use db1", context);
+    assertEquals(Code.SUCCESS, result.code());
 
-    result = sqlInterpreter.interpret("show tables",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TABLE, appendOutputType);
-    assertEquals("table\n", appendOutput);
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("show tables", context);
+    assertEquals(Code.SUCCESS, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(Type.TABLE, resultMessages.get(0).getType());
+    assertEquals("table\n", resultMessages.get(0).getData());
 
-    result = sqlInterpreter.interpret(
-            "CREATE TABLE source (msg INT) with (type='csv', path='/tmp')",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("CREATE TABLE source (msg INT)", context);
+    assertEquals(Code.SUCCESS, result.code());
 
-    result = sqlInterpreter.interpret("show tables",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TABLE, appendOutputType);
-    assertEquals("table\nsource\n", appendOutput);
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("show tables", context);
+    assertEquals(Code.SUCCESS, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(Type.TABLE, resultMessages.get(0).getType());
+    assertEquals("table\nsource\n", resultMessages.get(0).getData());
 
-    result = sqlInterpreter.interpret("use `default`",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("use default", context);
+    assertEquals(Code.SUCCESS, result.code());
 
-    result = sqlInterpreter.interpret("show tables",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TABLE, appendOutputType);
-    assertEquals("table\n", appendOutput);
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("show tables", context);
+    assertEquals(Code.SUCCESS, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(Type.TABLE, resultMessages.get(0).getType());
+    assertEquals("table\n", resultMessages.get(0).getData());
 
-    result = sqlInterpreter.interpret("drop database db1",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.ERROR, result.code());
-    assertTrue(result.message().get(0).getData(),
-            result.message().get(0).getData().contains("Database db1 is not empty"));
+    // fail to drop database if there's tables under this database
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("drop database db1", context);
+    assertEquals(Code.ERROR, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertTrue(resultMessages.get(0).getData(),
+            resultMessages.get(0).getData().contains("is not empty"));
 
+    // drop table first then drop db
     result = sqlInterpreter.interpret("drop table db1.source",
             getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+    assertEquals(Code.SUCCESS, result.code());
 
     result = sqlInterpreter.interpret("drop database db1",
             getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+    assertEquals(Code.SUCCESS, result.code());
 
-    result = sqlInterpreter.interpret("show databases",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TABLE, appendOutputType);
-    assertEquals("database\ndefault\ntest_db\n", appendOutput);
+    // verify database is dropped
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("show databases", context);
+    assertEquals(Code.SUCCESS, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(Type.TABLE, resultMessages.get(0).getType());
+    assertEquals("database\ndefault\ntest_db\n", resultMessages.get(0).getData());
   }
 
-  //@Test
-  public void testDescribe() throws InterpreterException {
-    InterpreterResult result = sqlInterpreter.interpret("create database hive.db1",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TEXT, appendOutputType);
-    assertEquals("Database has been created.\n", appendOutput);
+  @Test
+  public void testTable() throws InterpreterException, IOException {
+    // create table
+    InterpreterContext context = getInterpreterContext();
+    InterpreterResult result = sqlInterpreter.interpret(
+            "CREATE TABLE source_table (int_col INT, double_col double, " +
+                    "varchar_col varchar, bool_col boolean)",
+            context);
+    assertEquals(Code.SUCCESS, result.code());
+    List<InterpreterResultMessage> resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(1, resultMessages.size());
+    assertEquals(Type.TEXT, resultMessages.get(0).getType());
+    assertEquals("Table has been created.\n", resultMessages.get(0).getData());
 
-    result = sqlInterpreter.interpret("describe database hive.db1", getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TEXT, appendOutputType);
-    assertTrue(appendOutput, appendOutput.contains("db1"));
+    // describe table
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("describe source_table", context);
+    assertEquals(Code.SUCCESS, result.code());
+    assertEquals(1, resultMessages.size());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(Type.TABLE, resultMessages.get(0).getType());
+    assertEquals("Column\tType\n" +
+            "int_col\tINT\n" +
+            "double_col\tDOUBLE\n" +
+            "varchar_col\tSTRING\n" +
+            "bool_col\tBOOLEAN\n"
+            , resultMessages.get(0).getData());
 
-    //TODO(zjffdu) hive and flink share the same namespace for db.
-    //    result = sqlInterpreter.interpret("create database flink.db1",
-    //            getInterpreterContext());
-    //    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    //    assertEquals(InterpreterResult.Type.TEXT, outputType);
-    //    assertEquals("Database has been created.\n", output);
-    //
-    //    result = sqlInterpreter.interpret("describe database flink.db1",
-    // getInterpreterContext());
-    //    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    //    assertEquals(InterpreterResult.Type.TEXT, outputType);
-    //    assertTrue(output, output.contains("db1"));
+    // describe unknown table
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("describe unknown_table", context);
+    assertEquals(Code.ERROR, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(1, resultMessages.size());
+    assertTrue(resultMessages.toString(),
+            resultMessages.get(0).getData().contains("Table `unknown_table` was not found."));
 
-    result = sqlInterpreter.interpret(
-            "CREATE TABLE source (int_col INT, double_col double, varchar_col varchar, " +
-                    "bool_col boolean) with (type='csv', path='/tmp')",
-            getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-
-    // TODO(zjffdu) this is bug of calcite, that table name should be
-    // quoted with single quote if it is keyword
-    result = sqlInterpreter.interpret("describe `source`", getInterpreterContext());
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
-    assertEquals(InterpreterResult.Type.TEXT, appendOutputType);
-    assertTrue(appendOutput, appendOutput.contains("name: int_col"));
+    // drop unknown table
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("drop unknown_table", context);
+    assertEquals(Code.ERROR, result.code());
+    assertEquals(1, resultMessages.size());
+    assertTrue(resultMessages.toString(),
+            resultMessages.get(0).getData().contains("Table `unknown_table` was not found."));
   }
 
   protected InterpreterContext getInterpreterContext() {
-    appendOutput = "";
-    InterpreterContext context = InterpreterContext.builder()
+    return InterpreterContext.builder()
             .setInterpreterOut(new InterpreterOutput(null))
             .setAngularObjectRegistry(new AngularObjectRegistry("flink", null))
             .setIntpEventClient(mock(RemoteInterpreterEventClient.class))
+            .setInterpreterOut(new InterpreterOutput(null))
             .build();
-    context.out = new InterpreterOutput(
-        new InterpreterOutputListener() {
-          @Override
-          public void onUpdateAll(InterpreterOutput out) {
-            System.out.println();
-          }
-
-          @Override
-          public void onAppend(int index, InterpreterResultMessageOutput out, byte[] line) {
-            try {
-              appendOutputType = out.toInterpreterResultMessage().getType();
-              appendOutput = out.toInterpreterResultMessage().getData();
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
-
-          @Override
-          public void onUpdate(int index, InterpreterResultMessageOutput out) {
-              updatedOutput = out;
-            }
-        });
-    return context;
   }
 
   public static File createInputFile(String data) throws IOException {

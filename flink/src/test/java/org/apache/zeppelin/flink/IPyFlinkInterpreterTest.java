@@ -27,6 +27,7 @@ import org.apache.zeppelin.interpreter.InterpreterOutput;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.LazyOpenInterpreter;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterEventClient;
+import org.apache.zeppelin.python.IPythonInterpreterTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +38,8 @@ import java.util.Properties;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class IPyFlinkInterpreterTest {
+public class IPyFlinkInterpreterTest extends IPythonInterpreterTest {
 
-  private InterpreterGroup intpGroup;
-  private Interpreter interpreter;
   private RemoteInterpreterEventClient mockIntpEventClient =
           mock(RemoteInterpreterEventClient.class);
 
@@ -54,6 +53,7 @@ public class IPyFlinkInterpreterTest {
     return p;
   }
 
+  @Override
   protected void startInterpreter(Properties properties) throws InterpreterException {
     InterpreterContext context = getInterpreterContext();
     context.setIntpEventClient(mockIntpEventClient);
@@ -90,8 +90,12 @@ public class IPyFlinkInterpreterTest {
   }
 
   @Test
-  public void testIPyFlink() throws InterpreterException {
+  public void testBatchIPyFlink() throws InterpreterException {
     testBatchPyFlink(interpreter);
+  }
+
+  @Test
+  public void testStreamIPyFlink() throws InterpreterException {
     testStreamPyFlink(interpreter);
   }
 

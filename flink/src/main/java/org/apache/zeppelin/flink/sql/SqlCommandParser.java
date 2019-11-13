@@ -60,10 +60,10 @@ public final class SqlCommandParser {
   // --------------------------------------------------------------------------------------------
 
   private static final Function<String[], Optional<String[]>> NO_OPERANDS =
-      (operands) -> Optional.of(new String[0]);
+          (operands) -> Optional.of(new String[0]);
 
   private static final Function<String[], Optional<String[]>> SINGLE_OPERAND =
-      (operands) -> Optional.of(new String[]{operands[0]});
+          (operands) -> Optional.of(new String[]{operands[0]});
 
   private static final int DEFAULT_PATTERN_FLAGS = Pattern.CASE_INSENSITIVE | Pattern.DOTALL;
 
@@ -99,12 +99,16 @@ public final class SqlCommandParser {
             "SHOW\\s+FUNCTIONS",
             NO_OPERANDS),
 
+    SHOW_MODULES(
+            "SHOW\\s+MODULES",
+            NO_OPERANDS),
+
     USE_CATALOG(
             "USE\\s+CATALOG\\s+(.*)",
             SINGLE_OPERAND),
 
-    USE_DATABASE(
-            "USE\\s+DATABASE\\s+(.*)",
+    USE(
+            "USE\\s+(?!CATALOG)(.*)",
             SINGLE_OPERAND),
 
     DESCRIBE(
@@ -123,26 +127,53 @@ public final class SqlCommandParser {
             "(INSERT\\s+INTO.*)",
             SINGLE_OPERAND),
 
-    CREATE_VIEW("CREATE\\s+VIEW\\s+(\\S+)\\s+AS\\s+(.*)",
-        (operands) -> {
-          if (operands.length < 2) {
-            return Optional.empty();
-          }
-          return Optional.of(new String[]{operands[0], operands[1]});
-        }),
-
-    DROP_VIEW("DROP\\s+VIEW\\s+(.*)",
+    INSERT_OVERWRITE(
+            "(INSERT\\s+OVERWRITE.*)",
             SINGLE_OPERAND),
 
-    SET("SET(\\s+(\\S+)\\s*=(.*))?", // whitespace is only ignored on the left side of '='
-        (operands) -> {
-          if (operands.length < 3) {
-            return Optional.empty();
-          } else if (operands[0] == null) {
-            return Optional.of(new String[0]);
-          }
-          return Optional.of(new String[]{operands[1], operands[2]});
-        }),
+    CREATE_TABLE("(CREATE\\s+TABLE\\s+.*)", SINGLE_OPERAND),
+
+    DROP_TABLE("(DROP\\s+TABLE\\s+.*)", SINGLE_OPERAND),
+
+    CREATE_VIEW(
+            "CREATE\\s+VIEW\\s+(\\S+)\\s+AS\\s+(.*)",
+            (operands) -> {
+              if (operands.length < 2) {
+                return Optional.empty();
+              }
+              return Optional.of(new String[]{operands[0], operands[1]});
+            }),
+
+    CREATE_DATABASE(
+            "(CREATE\\s+DATABASE\\s+.*)",
+            SINGLE_OPERAND),
+
+    DROP_DATABASE(
+            "(DROP\\s+DATABASE\\s+.*)",
+            SINGLE_OPERAND),
+
+    DROP_VIEW(
+            "DROP\\s+VIEW\\s+(.*)",
+            SINGLE_OPERAND),
+
+    ALTER_DATABASE(
+            "(ALTER\\s+DATABASE\\s+.*)",
+            SINGLE_OPERAND),
+
+    ALTER_TABLE(
+            "(ALTER\\s+TABLE\\s+.*)",
+            SINGLE_OPERAND),
+
+    SET(
+            "SET(\\s+(\\S+)\\s*=(.*))?", // whitespace is only ignored on the left side of '='
+            (operands) -> {
+              if (operands.length < 3) {
+                return Optional.empty();
+              } else if (operands[0] == null) {
+                return Optional.of(new String[0]);
+              }
+              return Optional.of(new String[]{operands[1], operands[2]});
+            }),
 
     RESET(
             "RESET",

@@ -17,6 +17,7 @@
 
 package org.apache.zeppelin.flink;
 
+import org.apache.flink.table.api.TableEnvironment;
 import org.apache.zeppelin.interpreter.BaseZeppelinContext;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -93,5 +94,17 @@ public class IPyFlinkInterpreter extends IPythonInterpreter {
   public org.apache.flink.streaming.api.environment.StreamExecutionEnvironment
       getJavaStreamExecutionEnvironment() {
     return flinkInterpreter.getStreamExecutionEnvironment().getJavaEnv();
+  }
+
+  public TableEnvironment getJavaBatchTableEnvironment() {
+    return flinkInterpreter.getJavaBatchTableEnvironment();
+  }
+
+  public org.apache.flink.table.api.java.StreamTableEnvironment  getJavaStreamTableEnvironment() {
+    return flinkInterpreter.getJavaStreamTableEnvironment();
+  }
+
+  public boolean isBlinkPlanner() {
+    return flinkInterpreter.isBlinkPlanner();
   }
 }

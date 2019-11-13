@@ -17,6 +17,7 @@
 
 package org.apache.zeppelin.flink;
 
+import org.apache.calcite.sql.fun.SqlStdOperatorTable;
 import org.apache.flink.api.scala.ExecutionEnvironment;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
@@ -30,6 +31,7 @@ import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
@@ -47,6 +49,9 @@ public class FlinkInterpreter extends Interpreter {
 
   @Override
   public void open() throws InterpreterException {
+    Class klass = SqlStdOperatorTable.class;
+    URL location = klass.getResource('/' + klass.getName().replace('.', '/') + ".class");
+    LOGGER.info("Localtion:" + location);
     this.innerIntp.open();
     this.z = this.innerIntp.getZeppelinContext();
   }
@@ -78,7 +83,8 @@ public class FlinkInterpreter extends Interpreter {
 
   @Override
   public int getProgress(InterpreterContext context) throws InterpreterException {
-    return this.innerIntp.getProgress(context);
+    int progress = this.innerIntp.getProgress(context);
+    return progress;
   }
 
   @Override
@@ -129,4 +135,7 @@ public class FlinkInterpreter extends Interpreter {
     return this.innerIntp;
   }
 
+  public boolean isBlinkPlanner() {
+    return this.innerIntp.isBlinkPlanner();
+  }
 }

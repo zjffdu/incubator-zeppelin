@@ -18,7 +18,6 @@
 
 package org.apache.zeppelin.flink.sql;
 
-import com.google.common.collect.Lists;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.flink.types.Row;
@@ -26,7 +25,6 @@ import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 
 public class SingleRowStreamSqlJob extends AbstractStreamSqlJob {
 
@@ -48,20 +46,26 @@ public class SingleRowStreamSqlJob extends AbstractStreamSqlJob {
     return "single";
   }
 
-  @Override
-  protected List<String> getValidLocalProperties() {
-    return Lists.newArrayList("type", "parallelism",
-            "refreshInterval", "template", "enableSavePoint", "runWithSavePoint");
-  }
-
   protected void processInsert(Row row) {
-    LOGGER.debug("processInsert: " + row.toString());
+    //LOGGER.debug("processInsert: " + row.toString());
     latestRow = row;
   }
 
   @Override
   protected void processDelete(Row row) {
-    LOGGER.debug("Ignore delete");
+    //LOGGER.debug("Ignore delete");
+  }
+
+  @Override
+  protected String buildResult() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("%html\n");
+    String outputText = template;
+    for (int i = 0; i < latestRow.getArity(); ++i) {
+      outputText = outputText.replace("{" + i + "}", latestRow.getField(i).toString());
+    }
+    builder.append(outputText);
+    return builder.toString();
   }
 
   @Override
@@ -71,13 +75,9 @@ public class SingleRowStreamSqlJob extends AbstractStreamSqlJob {
       return;
     }
     context.out().clear();
-    context.out.write("%html\n");
-    String outputText = template;
-    for (int i = 0; i < latestRow.getArity(); ++i) {
-      outputText = outputText.replace("{" + i + "}", latestRow.getField(i).toString());
-    }
-    LOGGER.debug("SingleRow Output: " + outputText);
-    context.out.write(outputText);
+    String output = buildResult();
+    context.out.write(output);
+    LOGGER.debug("Refresh Output: " + output);
     context.out.flush();
   }
 }

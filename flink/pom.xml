@@ -37,7 +37,7 @@
   <properties>
     <!--library versions-->
     <interpreter.name>flink</interpreter.name>
-    <flink.version>1.9.0</flink.version>
+    <flink.version>1.10-SNAPSHOT</flink.version>
     <hadoop.version>2.6.5</hadoop.version>
     <hive.version>2.3.4</hive.version>
     <hiverunner.version>4.0.0</hiverunner.version>
@@ -604,6 +604,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
+              <skip>true</skip>
               <readTimeOut>60000</readTimeOut>
               <retries>5</retries>
               <unpack>true</unpack>
@@ -618,6 +619,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <skip>true</skip>
           <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
           <environmentVariables>

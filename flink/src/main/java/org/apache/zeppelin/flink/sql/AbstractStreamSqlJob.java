@@ -40,10 +40,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -54,12 +53,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public abstract class AbstractStreamSqlJob {
   private static Logger LOGGER = LoggerFactory.getLogger(AbstractStreamSqlJob.class);
 
+  private static AtomicInteger SQL_INDEX = new AtomicInteger(0);
   protected StreamExecutionEnvironment senv;
   protected StreamTableEnvironment stenv;
   protected InterpreterContext context;
   protected TableSchema schema;
   protected SocketStreamIterator<Tuple2<Boolean, Row>> iterator;
   protected Object resultLock = new Object();
+  protected volatile boolean enableToRefresh = true;
   protected int defaultParallelism;
 
   public AbstractStreamSqlJob(StreamExecutionEnvironment senv,
@@ -91,8 +92,6 @@ public abstract class AbstractStreamSqlJob {
 
   public InterpreterResult run(String st) throws IOException {
     try {
-      checkLocalProperties(context.getLocalProperties());
-
       int parallelism = Integer.parseInt(context.getLocalProperties()
               .getOrDefault("parallelism", defaultParallelism + ""));
 
@@ -128,8 +127,9 @@ public abstract class AbstractStreamSqlJob {
       try {
         stenv.useCatalog("default_catalog");
         stenv.useDatabase("default_database");
-        stenv.registerTableSink(st, collectTableSink);
-        table.insertInto(new StreamQueryConfig(), st);
+        String tableName = st + "_" + SQL_INDEX.getAndIncrement();
+        stenv.registerTableSink(tableName, collectTableSink);
+        table.insertInto(new StreamQueryConfig(), tableName);
       } finally {
         stenv.useCatalog(originalCatalog);
         stenv.useDatabase(originalDatabase);
@@ -147,7 +147,13 @@ public abstract class AbstractStreamSqlJob {
       LOGGER.info("Run job without savePointPath, " + ", parallelism: " + parallelism);
       JobExecutionResult jobExecutionResult = stenv.execute(st);
       LOGGER.info("Flink Job is finished");
-      return new InterpreterResult(InterpreterResult.Code.SUCCESS);
+      // wait for retrieve thread consume all data
+      LOGGER.info("Waiting for retrieve thread to be done");
+      retrievalThread.join();
+      refresh(context);
+      String finalResult = buildResult();
+      LOGGER.info("Final Result: " + finalResult);
+      return new InterpreterResult(InterpreterResult.Code.SUCCESS, finalResult);
     } catch (Exception e) {
       LOGGER.error("Fail to run stream sql job", e);
       throw new IOException("Fail to run stream sql job", e);
@@ -156,18 +162,6 @@ public abstract class AbstractStreamSqlJob {
 
   protected void checkTableSchema(TableSchema schema) throws Exception {
   }
-
-  protected void checkLocalProperties(Map<String, String> localProperties) throws Exception {
-    List<String> validLocalProperties = getValidLocalProperties();
-    for (String key : localProperties.keySet()) {
-      if (!validLocalProperties.contains(key)) {
-        throw new Exception("Invalid property: " + key + ", Only the following properties " +
-                "are valid for stream type '" + getType() + "': " + validLocalProperties);
-      }
-    }
-  };
-
-  protected abstract List<String> getValidLocalProperties();
 
   protected void processRecord(Tuple2<Boolean, Row> change) {
     synchronized (resultLock) {
@@ -185,6 +179,8 @@ public abstract class AbstractStreamSqlJob {
   protected abstract void processInsert(Row row);
 
   protected abstract void processDelete(Row row);
+
+  protected abstract String buildResult();
 
   private class ResultRetrievalThread extends Thread {
 
@@ -211,7 +207,8 @@ public abstract class AbstractStreamSqlJob {
       // either the job is done or an error occurred
       isRunning = false;
       LOGGER.info("ResultRetrieval Thread is done");
-      refreshExecutorService.shutdown();
+      LOGGER.info("Final Result: " + buildResult());
+      refreshExecutorService.shutdownNow();
     }
 
     public void cancel() {
@@ -220,7 +217,6 @@ public abstract class AbstractStreamSqlJob {
   }
 
   protected abstract void refresh(InterpreterContext context) throws Exception;
-
 
   private class RefreshTask implements Runnable {
 
@@ -234,6 +230,9 @@ public abstract class AbstractStreamSqlJob {
     public void run() {
       try {
         synchronized (resultLock) {
+          if (!enableToRefresh) {
+            resultLock.wait();
+          }
           refresh(context);
         }
       } catch (Exception e) {

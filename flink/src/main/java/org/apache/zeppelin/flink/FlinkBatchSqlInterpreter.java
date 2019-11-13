@@ -18,7 +18,6 @@
 package org.apache.zeppelin.flink;
 
 
-import com.google.common.collect.Lists;
 import org.apache.flink.table.api.Table;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -26,8 +25,6 @@ import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.scheduler.SchedulerFactory;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
@@ -59,17 +56,6 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
     context.out.write(result);
   }
 
-  protected void checkLocalProperties(Map<String, String> localProperties)
-          throws InterpreterException {
-    List<String> validLocalProperties = Lists.newArrayList("parallelism");
-    for (String key : localProperties.keySet()) {
-      if (!validLocalProperties.contains(key)) {
-        throw new InterpreterException("Invalid property: " + key + ", Only the following " +
-                "properties are valid: " + validLocalProperties);
-      }
-    }
-  }
-
   @Override
   public void cancel(InterpreterContext context) throws InterpreterException {
     flinkInterpreter.getJobManager().cancelJob(context);
@@ -82,7 +68,7 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
 
   @Override
   public int getProgress(InterpreterContext context) throws InterpreterException {
-    return 0;
+    return flinkInterpreter.getProgress(context);
   }
 
   @Override

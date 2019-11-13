@@ -32,7 +32,7 @@ class SqlJobRunner(cluster: types.ClusterType,
       case Some(Left(miniCluster)) =>
         miniCluster.submitJob(jobGraph)
       case Some(Right(yarnCluster)) =>
-        yarnCluster.submitJob(jobGraph, Thread.currentThread().getContextClassLoader)
+        yarnCluster.submitJob(jobGraph)
       case None =>
         LOGGER.error("Unable to run SqlJobRunner")
     }

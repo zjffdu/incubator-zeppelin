@@ -99,6 +99,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import static org.apache.zeppelin.cluster.meta.ClusterMetaType.INTP_PROCESS_META;
 
@@ -680,6 +681,9 @@ public class RemoteInterpreterServer extends Thread
         context.out.flush();
         List<InterpreterResultMessage> resultMessages = context.out.toInterpreterResultMessage();
 
+        // filter out empty result
+        resultMessages = resultMessages.stream().filter(e -> !StringUtils.isBlank(e.getData()))
+                .collect(Collectors.toList());
         for (InterpreterResultMessage resultMessage : result.message()) {
           // only add non-empty InterpreterResultMessage
           if (!StringUtils.isBlank(resultMessage.getData())) {

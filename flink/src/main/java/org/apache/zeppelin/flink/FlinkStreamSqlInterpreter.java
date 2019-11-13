@@ -28,7 +28,6 @@ import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.scheduler.SchedulerFactory;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Properties;
 
 public class FlinkStreamSqlInterpreter extends FlinkSqlInterrpeter {
@@ -47,12 +46,6 @@ public class FlinkStreamSqlInterpreter extends FlinkSqlInterrpeter {
 
   @Override
   public void close() throws InterpreterException {
-
-  }
-
-  @Override
-  protected void checkLocalProperties(Map<String, String> localProperties)
-          throws InterpreterException {
 
   }
 

@@ -20,26 +20,14 @@ package org.apache.zeppelin.flink;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.flink.api.common.Plan;
-import org.apache.flink.client.program.ClusterClient;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.Path;
-import org.apache.flink.optimizer.DataStatistics;
-import org.apache.flink.optimizer.Optimizer;
-import org.apache.flink.optimizer.costs.DefaultCostEstimator;
-import org.apache.flink.optimizer.plan.FlinkPlan;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.TableSchema;
-import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.flink.table.delegation.Executor;
 import org.apache.flink.table.delegation.ExecutorFactory;
 import org.apache.flink.table.factories.ComponentFactoryService;
-import org.apache.flink.table.planner.delegation.ExecutorBase;
 import org.apache.zeppelin.flink.sql.SqlCommandParser;
 import org.apache.zeppelin.flink.sql.SqlInfo;
 import org.apache.zeppelin.flink.sql.SqlLists;
@@ -84,8 +72,6 @@ public abstract class FlinkSqlInterrpeter extends Interpreter {
     flinkInterpreter.getZeppelinContext().setNoteGui(context.getNoteGui());
     flinkInterpreter.getZeppelinContext().setGui(context.getGui());
 
-    checkLocalProperties(context.getLocalProperties());
-
     // set ClassLoader of current Thread to be the ClassLoader of Flink scala-shell,
     // otherwise codegen will fail to find classes defined in scala-shell
     ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
@@ -96,10 +82,6 @@ public abstract class FlinkSqlInterrpeter extends Interpreter {
       Thread.currentThread().setContextClassLoader(originClassLoader);
     }
   }
-
-
-  protected abstract void checkLocalProperties(Map<String, String> localProperties)
-          throws InterpreterException;
 
   private Optional<SqlCommandParser.SqlCommandCall> parse(String stmt) {
     // normalize
@@ -230,52 +212,52 @@ public abstract class FlinkSqlInterrpeter extends Interpreter {
 
   private void callInsertInto(String sql,
                               InterpreterContext context) throws IOException {
-
-    this.tbenv.sqlUpdate(sql);
-
-    JobGraph jobGraph = createJobGraph(sql);
-    jobGraph.addJar(new Path(flinkInterpreter.getInnerIntp().getFlinkILoop()
-            .writeFilesToDisk().getAbsoluteFile().toURI()));
-    SqlJobRunner jobRunner =
-            new SqlJobRunner(flinkInterpreter.getInnerIntp().getCluster(), jobGraph, sql,
-                    flinkInterpreter.getFlinkScalaShellLoader());
-    jobRunner.run();
-    context.out.write("Insert Succeeded.\n");
+    throw new IOException("Insert is not supported");
+    //    this.tbenv.sqlUpdate(sql);
+    //
+    //    JobGraph jobGraph = createJobGraph(sql);
+    //    jobGraph.addJar(new Path(flinkInterpreter.getInnerIntp().getFlinkILoop()
+    //            .writeFilesToDisk().getAbsoluteFile().toURI()));
+    //    SqlJobRunner jobRunner =
+    //            new SqlJobRunner(flinkInterpreter.getInnerIntp().getCluster(), jobGraph, sql,
+    //                    flinkInterpreter.getFlinkScalaShellLoader());
+    //    jobRunner.run();
+    //    context.out.write("Insert Succeeded.\n");
   }
 
-  private FlinkPlan createPlan(String name, Configuration flinkConfig) {
-    if (this.tbenv instanceof StreamTableEnvironment) {
-      if (flinkInterpreter.getInnerIntp().getPlanner() == "blink") {
-        Executor executor = lookupExecutor(
-                flinkInterpreter.getInnerIntp().getStEnvSetting().toExecutorProperties(),
-                flinkInterpreter.getStreamExecutionEnvironment().getJavaEnv());
-        // special case for Blink planner to apply batch optimizations
-        // note: it also modifies the ExecutionConfig!
-        if (executor instanceof ExecutorBase) {
-          return ((ExecutorBase) executor).generateStreamGraph(name);
-        }
-      }
-      return flinkInterpreter.getStreamExecutionEnvironment().getStreamGraph();
-    } else {
-      final int parallelism = flinkInterpreter.getExecutionEnvironment().getParallelism();
-      final Plan unoptimizedPlan =
-              flinkInterpreter.getExecutionEnvironment().createProgramPlan(name);
-      unoptimizedPlan.setJobName(name);
-      final Optimizer compiler =
-              new Optimizer(new DataStatistics(), new DefaultCostEstimator(), flinkConfig);
-      return ClusterClient.getOptimizedPlan(compiler, unoptimizedPlan, parallelism);
-    }
-  }
-
-  public JobGraph createJobGraph(String name) {
-    final FlinkPlan plan = createPlan(name, flinkInterpreter.getFlinkConfiguration());
-    return ClusterClient.getJobGraph(
-            flinkInterpreter.getFlinkConfiguration(),
-            plan,
-            new ArrayList<>(),
-            new ArrayList<>(),
-            SavepointRestoreSettings.none());
-  }
+  //  private FlinkPlan createPlan(String name, Configuration flinkConfig) {
+  //    if (this.tbenv instanceof StreamTableEnvironment) {
+  //      if (flinkInterpreter.getInnerIntp().getPlanner() == "blink") {
+  //        Executor executor = lookupExecutor(
+  //                flinkInterpreter.getInnerIntp().getStEnvSetting().toExecutorProperties(),
+  //                flinkInterpreter.getStreamExecutionEnvironment().getJavaEnv());
+  //        // special case for Blink planner to apply batch optimizations
+  //        // note: it also modifies the ExecutionConfig!
+  //        if (executor instanceof ExecutorBase) {
+  //          return ((ExecutorBase) executor).generateStreamGraph(name);
+  //        }
+  //      }
+  //      return flinkInterpreter.getStreamExecutionEnvironment().getStreamGraph();
+  //    } else {
+  //      final int parallelism = flinkInterpreter.getExecutionEnvironment().getParallelism();
+  //      final Plan unoptimizedPlan =
+  //              flinkInterpreter.getExecutionEnvironment().createProgramPlan(name);
+  //      unoptimizedPlan.setJobName(name);
+  //      final Optimizer compiler =
+  //              new Optimizer(new DataStatistics(), new DefaultCostEstimator(), flinkConfig);
+  //      return ClusterClient.getOptimizedPlan(compiler, unoptimizedPlan, parallelism);
+  //    }
+  //  }
+  //
+  //  public JobGraph createJobGraph(String name) {
+  //    final FlinkPlan plan = createPlan(name, flinkInterpreter.getFlinkConfiguration());
+  //    return ClusterClient.getJobGraph(
+  //            flinkInterpreter.getFlinkConfiguration(),
+  //            plan,
+  //            new ArrayList<>(),
+  //            new ArrayList<>(),
+  //            SavepointRestoreSettings.none());
+  //  }
 
   private static Executor lookupExecutor(
           Map<String, String> executorProperties,

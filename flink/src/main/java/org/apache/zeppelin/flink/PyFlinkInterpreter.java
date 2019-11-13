@@ -17,6 +17,7 @@
 
 package org.apache.zeppelin.flink;
 
+import org.apache.flink.table.api.TableEnvironment;
 import org.apache.zeppelin.interpreter.BaseZeppelinContext;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -142,7 +143,7 @@ public class PyFlinkInterpreter extends PythonInterpreter {
 
   @Override
   public int getProgress(InterpreterContext context) throws InterpreterException {
-    return 0;
+    return flinkInterpreter.getProgress(context);
   }
 
   public org.apache.flink.api.java.ExecutionEnvironment getJavaExecutionEnvironment() {
@@ -154,4 +155,15 @@ public class PyFlinkInterpreter extends PythonInterpreter {
     return flinkInterpreter.getStreamExecutionEnvironment().getJavaEnv();
   }
 
+  public TableEnvironment getBatchTableEnvironment() {
+    return flinkInterpreter.getBatchTableEnvironment();
+  }
+
+  public org.apache.flink.table.api.scala.StreamTableEnvironment getStreamTableEnvironment() {
+    return flinkInterpreter.getStreamTableEnvironment();
+  }
+
+  public boolean isBlinkPlanner() {
+    return flinkInterpreter.isBlinkPlanner();
+  }
 }

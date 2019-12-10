@@ -1,0 +1,152 @@
+{
+  "paragraphs": [
+    {
+      "text": "%python.ipython\n\nfrom __future__ import print_function\nfrom ipywidgets import interact, interactive, fixed, interact_manual\nimport ipywidgets as widgets",
+      "user": "anonymous",
+      "dateUpdated": "2019-07-31 10:38:04.317",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1564540664139_422234564",
+      "id": "paragraph_1564540664139_422234564",
+      "dateCreated": "2019-07-31 10:37:44.139",
+      "dateStarted": "2019-07-31 10:38:04.330",
+      "dateFinished": "2019-07-31 10:38:09.677",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%python.ipython\n\ndef f(x):\n    return x",
+      "user": "anonymous",
+      "dateUpdated": "2019-07-31 10:38:24.315",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1564540684328_1962752999",
+      "id": "paragraph_1564540684328_1962752999",
+      "dateCreated": "2019-07-31 10:38:04.328",
+      "dateStarted": "2019-07-31 10:38:24.319",
+      "dateFinished": "2019-07-31 10:38:24.342",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%python.ipython\n\ninteract(f, x\u003d10);",
+      "user": "anonymous",
+      "dateUpdated": "2019-07-31 10:38:31.827",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/python",
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "interactive(children\u003d(IntSlider(value\u003d10, description\u003d\u0027x\u0027, max\u003d30, min\u003d-10), Output()), _dom_classes\u003d(\u0027widget-…\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "10\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1564540704318_1009205938",
+      "id": "paragraph_1564540704318_1009205938",
+      "dateCreated": "2019-07-31 10:38:24.318",
+      "dateStarted": "2019-07-31 10:38:31.830",
+      "dateFinished": "2019-07-31 10:38:32.037",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%python.ipython\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-07-31 10:38:31.830",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1564540711830_-1148197886",
+      "id": "paragraph_1564540711830_-1148197886",
+      "dateCreated": "2019-07-31 10:38:31.830",
+      "status": "READY"
+    }
+  ],
+  "name": "IPyWidget Tutorial",
+  "id": "2EG8GDMMX",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {},
+  "path": "/IPyWidget Tutorial"
+}

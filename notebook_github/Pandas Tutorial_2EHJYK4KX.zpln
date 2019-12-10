@@ -1,0 +1,75 @@
+{
+  "paragraphs": [
+    {
+      "text": "%python.ipython\n\nimport pandas as pd\n\ndf \u003d pd.read_json(\"https://data.smcgov.org/resource/mb6a-xn89.json\")\n\ndf.head(5)\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-07-31 11:12:35.256",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv\u003e\n\u003cstyle scoped\u003e\n    .dataframe tbody tr th:only-of-type {\n        vertical-align: middle;\n    }\n\n    .dataframe tbody tr th {\n        vertical-align: top;\n    }\n\n    .dataframe thead th {\n        text-align: right;\n    }\n\u003c/style\u003e\n\u003ctable border\u003d\"1\" class\u003d\"dataframe\"\u003e\n  \u003cthead\u003e\n    \u003ctr style\u003d\"text-align: right;\"\u003e\n      \u003cth\u003e\u003c/th\u003e\n      \u003cth\u003e:@computed_region_i2t2_cryp\u003c/th\u003e\n      \u003cth\u003e:@computed_region_uph5_8hpn\u003c/th\u003e\n      \u003cth\u003ebachelor_s_degree_or_higher\u003c/th\u003e\n      \u003cth\u003egeography\u003c/th\u003e\n      \u003cth\u003egeography_type\u003c/th\u003e\n      \u003cth\u003ehigh_school_graduate\u003c/th\u003e\n      \u003cth\u003eless_than_high_school_graduate\u003c/th\u003e\n      \u003cth\u003elocation_1\u003c/th\u003e\n      \u003cth\u003esome_college_or_associate_s_degree\u003c/th\u003e\n      \u003cth\u003eyear\u003c/th\u003e\n    \u003c/tr\u003e\n  \u003c/thead\u003e\n  \u003ctbody\u003e\n    \u003ctr\u003e\n      \u003cth\u003e0\u003c/th\u003e\n      \u003ctd\u003e28596\u003c/td\u003e\n      \u003ctd\u003e2.0\u003c/td\u003e\n      \u003ctd\u003e3.5\u003c/td\u003e\n      \u003ctd\u003eAtherton\u003c/td\u003e\n      \u003ctd\u003eTown\u003c/td\u003e\n      \u003ctd\u003e12.3\u003c/td\u003e\n      \u003ctd\u003e13.6\u003c/td\u003e\n      \u003ctd\u003e{\u0027type\u0027: \u0027Point\u0027, \u0027coordinates\u0027: [-122.2, 37.4...\u003c/td\u003e\n      \u003ctd\u003e2.7\u003c/td\u003e\n      \u003ctd\u003e2014-01-01T00:00:00.000\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003cth\u003e1\u003c/th\u003e\n      \u003ctd\u003e28588\u003c/td\u003e\n      \u003ctd\u003e4.0\u003c/td\u003e\n      \u003ctd\u003e2.4\u003c/td\u003e\n      \u003ctd\u003eColma\u003c/td\u003e\n      \u003ctd\u003eTown\u003c/td\u003e\n      \u003ctd\u003e6.4\u003c/td\u003e\n      \u003ctd\u003e6.3\u003c/td\u003e\n      \u003ctd\u003e{\u0027type\u0027: \u0027Point\u0027, \u0027coordinates\u0027: [-122.455556,...\u003c/td\u003e\n      \u003ctd\u003e10.4\u003c/td\u003e\n      \u003ctd\u003e2014-01-01T00:00:00.000\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003cth\u003e2\u003c/th\u003e\n      \u003ctd\u003e319\u003c/td\u003e\n      \u003ctd\u003e6.0\u003c/td\u003e\n      \u003ctd\u003e2.9\u003c/td\u003e\n      \u003ctd\u003eFoster City\u003c/td\u003e\n      \u003ctd\u003eCity\u003c/td\u003e\n      \u003ctd\u003e9.7\u003c/td\u003e\n      \u003ctd\u003e11.9\u003c/td\u003e\n      \u003ctd\u003e{\u0027type\u0027: \u0027Point\u0027, \u0027coordinates\u0027: [-122.266389,...\u003c/td\u003e\n      \u003ctd\u003e2.0\u003c/td\u003e\n      \u003ctd\u003e2014-01-01T00:00:00.000\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003cth\u003e3\u003c/th\u003e\n      \u003ctd\u003e28597\u003c/td\u003e\n      \u003ctd\u003e14.0\u003c/td\u003e\n      \u003ctd\u003e1.8\u003c/td\u003e\n      \u003ctd\u003ePortola Valley\u003c/td\u003e\n      \u003ctd\u003eTown\u003c/td\u003e\n      \u003ctd\u003e0.0\u003c/td\u003e\n      \u003ctd\u003e48.1\u003c/td\u003e\n      \u003ctd\u003e{\u0027type\u0027: \u0027Point\u0027, \u0027coordinates\u0027: [-122.218611,...\u003c/td\u003e\n      \u003ctd\u003e0.0\u003c/td\u003e\n      \u003ctd\u003e2014-01-01T00:00:00.000\u003c/td\u003e\n    \u003c/tr\u003e\n    \u003ctr\u003e\n      \u003cth\u003e4\u003c/th\u003e\n      \u003ctd\u003e28607\u003c/td\u003e\n      \u003ctd\u003e21.0\u003c/td\u003e\n      \u003ctd\u003e3.0\u003c/td\u003e\n      \u003ctd\u003eRedwood City\u003c/td\u003e\n      \u003ctd\u003eCity\u003c/td\u003e\n      \u003ctd\u003e10.6\u003c/td\u003e\n      \u003ctd\u003e16.4\u003c/td\u003e\n      \u003ctd\u003e{\u0027type\u0027: \u0027Point\u0027, \u0027coordinates\u0027: [-122.236111,...\u003c/td\u003e\n      \u003ctd\u003e6.6\u003c/td\u003e\n      \u003ctd\u003e2014-01-01T00:00:00.000\u003c/td\u003e\n    \u003c/tr\u003e\n  \u003c/tbody\u003e\n\u003c/table\u003e\n\u003c/div\u003e\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1564542518307_1916581456",
+      "id": "paragraph_1564542518307_1916581456",
+      "dateCreated": "2019-07-31 11:08:38.307",
+      "dateStarted": "2019-07-31 11:12:35.262",
+      "dateFinished": "2019-07-31 11:12:37.254",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%python.ipython\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-07-31 11:11:38.824",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1564542698824_567370605",
+      "id": "paragraph_1564542698824_567370605",
+      "dateCreated": "2019-07-31 11:11:38.824",
+      "status": "READY"
+    }
+  ],
+  "name": "Pandas Tutorial",
+  "id": "2EHJYK4KX",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {},
+  "path": "/Pandas Tutorial"
+}

@@ -1,0 +1,284 @@
+{
+  "paragraphs": [
+    {
+      "text": "%mysql\n\nuse hive;",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-04 15:17:35.491",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "Database": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Query executed successfully. Affected rows : 0"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572851261629_-1852410972",
+      "id": "paragraph_1572851261629_-1852410972",
+      "dateCreated": "2019-11-04 15:07:41.629",
+      "dateStarted": "2019-11-04 15:17:35.529",
+      "dateFinished": "2019-11-04 15:17:37.557",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%mysql\n\nshow tables;",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-04 15:17:39.466",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "Tables_in_hive": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "Tables_in_hive\nAUX_TABLE\nBUCKETING_COLS\nCDS\nCOLUMNS_V2\nCOMPACTION_QUEUE\nCOMPLETED_COMPACTIONS\nCOMPLETED_TXN_COMPONENTS\nDATABASE_PARAMS\nDBS\nDB_PRIVS\nDELEGATION_TOKENS\nFUNCS\nFUNC_RU\nGLOBAL_PRIVS\nHIVE_LOCKS\nIDXS\nINDEX_PARAMS\nKEY_CONSTRAINTS\nMASTER_KEYS\nNEXT_COMPACTION_QUEUE_ID\nNEXT_LOCK_ID\nNEXT_TXN_ID\nNOTIFICATION_LOG\nNOTIFICATION_SEQUENCE\nNUCLEUS_TABLES\nPARTITIONS\nPARTITION_EVENTS\nPARTITION_KEYS\nPARTITION_KEY_VALS\nPARTITION_PARAMS\nPART_COL_PRIVS\nPART_COL_STATS\nPART_PRIVS\nROLES\nROLE_MAP\nSDS\nSD_PARAMS\nSEQUENCE_TABLE\nSERDES\nSERDE_PARAMS\nSKEWED_COL_NAMES\nSKEWED_COL_VALUE_LOC_MAP\nSKEWED_STRING_LIST\nSKEWED_STRING_LIST_VALUES\nSKEWED_VALUES\nSORT_COLS\nTABLE_PARAMS\nTAB_COL_STATS\nTBLS\nTBL_COL_PRIVS\nTBL_PRIVS\nTXNS\nTXN_COMPONENTS\nTYPES\nTYPE_FIELDS\nVERSION\nWRITE_SET\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572851268431_-393890609",
+      "id": "paragraph_1572851268431_-393890609",
+      "dateCreated": "2019-11-04 15:07:48.431",
+      "dateStarted": "2019-11-04 15:17:39.473",
+      "dateFinished": "2019-11-04 15:17:39.511",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nz.put(\"name\", \"default\")\nz.run(\"paragraph_1572851389461_-481475753\")",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-04 15:22:24.014",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572851426272_-606497785",
+      "id": "paragraph_1572851426272_-606497785",
+      "dateCreated": "2019-11-04 15:10:26.272",
+      "dateStarted": "2019-11-04 15:22:24.019",
+      "dateFinished": "2019-11-04 15:22:24.171",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%mysql(interpolate\u003dtrue)\n\nselect * from DBS where name\u003d\u0027{name}\u0027;",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-04 15:18:24.000",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "DB_ID": "string",
+                      "DESC": "string",
+                      "DB_LOCATION_URI": "string",
+                      "NAME": "string",
+                      "OWNER_NAME": "string",
+                      "OWNER_TYPE": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "DB_ID\tDESC\tDB_LOCATION_URI\tNAME\tOWNER_NAME\tOWNER_TYPE\n1\tDefault Hive database\thdfs://localhost:9090/user/hive/warehouse\tdefault\tpublic\tROLE\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572851389461_-481475753",
+      "id": "paragraph_1572851389461_-481475753",
+      "dateCreated": "2019-11-04 15:09:49.461",
+      "dateStarted": "2019-11-04 15:22:24.174",
+      "dateFinished": "2019-11-04 15:22:24.239",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%mysql\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-04 15:09:57.437",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572851397437_-1661948918",
+      "id": "paragraph_1572851397437_-1661948918",
+      "dateCreated": "2019-11-04 15:09:57.437",
+      "status": "READY"
+    }
+  ],
+  "name": "MySql Tutorial",
+  "id": "2EQVQ7292",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {},
+  "path": "/MySql Tutorial"
+}

@@ -1,0 +1,1406 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark.conf\n\nSPARK_HOME /Users/jzhang/Java/lib/spark-2.4.3-bin-hadoop2.7\nmaster local\nspark.driver.memory 512m\n\n#zeppelin.R.cmd /invalid_r\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-09 21:19:44.222",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1571988918513_-531026734",
+      "id": "paragraph_1571988918513_-531026734",
+      "dateCreated": "2019-10-25 15:35:18.513",
+      "dateStarted": "2019-12-09 21:19:44.270",
+      "dateFinished": "2019-12-09 21:19:44.313",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nsc.version",
+      "user": "admin",
+      "dateUpdated": "2019-12-09 21:19:47.403",
+      "config": {
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres1\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m \u003d 2.4.3\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575883859310_1287180553",
+      "id": "paragraph_1575883859310_1287180553",
+      "dateCreated": "2019-12-09 17:30:59.313",
+      "dateStarted": "2019-12-09 21:19:47.414",
+      "dateFinished": "2019-12-09 21:20:00.281",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nsc.range(1, 10, 1, 10).map(e\u003d\u003e{Thread.sleep(1000); e}).sum()",
+      "user": "admin",
+      "dateUpdated": "2019-12-09 21:21:02.771",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres6\u001b[0m: \u001b[1m\u001b[32mDouble\u001b[0m \u003d 45.0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575625597336_712923324",
+      "id": "paragraph_1575625597336_712923324",
+      "dateCreated": "2019-12-06 17:46:37.337",
+      "dateStarted": "2019-12-09 21:21:02.777",
+      "dateFinished": "2019-12-09 21:21:12.150",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark \n\n// val options \u003d Seq((\"han\",\"Han\"), (\"leia\",\"Leia\"),(\"luke\",\"Luke\"))\n// println(\"Greetings \"+ z.checkbox(\"skywalkers\",options).mkString(\" and \"))\n\n\nprintln(a",
+      "user": "admin",
+      "dateUpdated": "2019-11-25 10:45:44.978",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {
+          "skywalkers": [
+            "han",
+            "leia",
+            "luke"
+          ]
+        },
+        "forms": {}
+      },
+      "results": {
+        "code": "INCOMPLETE",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Incomplete expression"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573627036569_-233509667",
+      "id": "paragraph_1573627036569_-233509667",
+      "dateCreated": "2019-11-13 14:37:16.575",
+      "dateStarted": "2019-11-25 10:45:44.989",
+      "dateFinished": "2019-11-25 10:49:39.060",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\ncase class People(name: String, age: Int)\n\nvar df \u003d spark.createDataFrame(List(People(\"jeff\", 23), People(\"andy\", 20)))\ndf.createOrReplaceTempView(\"people\")\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 12:02:35.199",
+      "config": {
+        "editorSetting": {
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "language": "scala",
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "defined class People\n\u001b[1m\u001b[34mdf\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m \u003d [name: string, age: int]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573132717756_-1906149131",
+      "id": "paragraph_1573132717756_-1906149131",
+      "dateCreated": "2019-11-07 21:18:37.756",
+      "dateStarted": "2019-11-13 12:02:35.224",
+      "dateFinished": "2019-11-13 12:02:52.527",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n\nsetwd(\"/\")\ngetwd()\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 15:10:35.772",
+      "config": {
+        "editorSetting": {
+          "language": "r",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/r",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\n[1] “/”\n[1] “/”\n\n\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573617775546_975124761",
+      "id": "paragraph_1573617775546_975124761",
+      "dateCreated": "2019-11-13 12:02:55.546",
+      "dateStarted": "2019-11-13 15:10:32.521",
+      "dateFinished": "2019-11-13 15:10:32.615",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n\ngetwd()\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 15:10:37.586",
+      "config": {
+        "editorSetting": {
+          "language": "r",
+          "editOnDblClick": false,
+          "completionSupport": false
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/r",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\n[1] “/Users/jzhang/github/zeppelin”\n\n\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573629015376_-128760012",
+      "id": "paragraph_1573629015376_-128760012",
+      "dateCreated": "2019-11-13 15:10:15.383",
+      "dateStarted": "2019-11-13 15:10:37.592",
+      "dateFinished": "2019-11-13 15:10:37.725",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n\ngetwd()",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 15:10:44.056",
+      "config": {
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "r",
+          "editOnDblClick": false,
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/r"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\n[1] “/Users/jzhang/github/zeppelin”\n\n\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573629041553_1366591845",
+      "id": "paragraph_1573629041553_1366591845",
+      "dateCreated": "2019-11-13 15:10:41.553",
+      "dateStarted": "2019-11-13 15:10:44.061",
+      "dateFinished": "2019-11-13 15:10:44.178",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nz.noteTextbox(\"name\", \"jeff222\")",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-11 17:36:26.771",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres11\u001b[0m: \u001b[1m\u001b[32mObject\u001b[0m \u003d jeff222\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573464448393_1881597367",
+      "id": "paragraph_1573464448393_1881597367",
+      "dateCreated": "2019-11-11 17:27:28.393",
+      "dateStarted": "2019-11-11 17:36:26.780",
+      "dateFinished": "2019-11-11 17:36:26.965",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nz.textbox(\"name2\", \"etextbox(\"name2\", \"etextbox(\"name2\", \"eff\")",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-11 17:33:32.487",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {
+          "name": "jeff",
+          "name2": "eff"
+        },
+        "forms": {
+          "name2": {
+            "type": "TextBox",
+            "name": "name2",
+            "displayName": "name2",
+            "defaultValue": "eff",
+            "hidden": false
+          }
+        }
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres10\u001b[0m: \u001b[1m\u001b[32mObject\u001b[0m \u003d eff\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573464553225_319809695",
+      "id": "paragraph_1573464553225_319809695",
+      "dateCreated": "2019-11-11 17:29:13.225",
+      "dateStarted": "2019-11-11 17:33:21.908",
+      "dateFinished": "2019-11-11 17:33:22.083",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.sql\n\nselect * from people",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-10 14:31:14.669",
+      "config": {
+        "editorSetting": {
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "language": "sql",
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "name": "string",
+                      "age": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "name\tage\njeff\t23\nandy\t20\n"
+          },
+          {
+            "type": "TEXT",
+            "data": ""
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573133081935_-1608401896",
+      "id": "paragraph_1573133081935_-1608401896",
+      "dateCreated": "2019-11-07 21:24:41.935",
+      "dateStarted": "2019-11-10 14:31:14.675",
+      "dateFinished": "2019-11-10 14:31:14.753",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nval chars \u003d Array.fill(1256000000){0}\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-07 21:18:51.783",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "name": "string",
+                      "age": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "_1": "string",
+                      "_2": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "java.lang.OutOfMemoryError: Java heap space\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573092451986_-732285066",
+      "id": "paragraph_1573092451986_-732285066",
+      "dateCreated": "2019-11-07 10:07:31.986",
+      "dateStarted": "2019-11-07 21:18:51.788",
+      "dateFinished": "2019-11-07 21:18:52.362",
+      "status": "ERROR"
+    },
+    {
+      "text": "%angular\n\n\u003cbutton type\u003d\"submit\" class\u003d\"btn btn-primary\" ng-click\u003d\"z.runParagraph(\u0027paragraph_1572920191547_-2042688064\u0027)\"\u003e Search \u003c/button\u003e\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-05 22:56:41.292",
+      "config": {
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionSupport": false,
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/undefined",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true,
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "ANGULAR",
+            "data": "\u003cbutton type\u003d\"submit\" class\u003d\"btn btn-primary\" ng-click\u003d\"z.runParagraph(\u0027paragraph_1572920191547_-2042688064\u0027)\"\u003e Search \u003c/button\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572965731171_677284756",
+      "id": "paragraph_1572965731171_677284756",
+      "dateCreated": "2019-11-05 22:55:31.171",
+      "dateStarted": "2019-11-05 22:56:41.294",
+      "dateFinished": "2019-11-05 22:56:42.450",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%sh\n\ndate",
+      "user": "admin",
+      "dateUpdated": "2019-11-06 09:58:02.525",
+      "config": {
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sh",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Wed Nov  6 09:58:02 CST 2019\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572920191547_-2042688064",
+      "id": "paragraph_1572920191547_-2042688064",
+      "dateCreated": "2019-11-05 10:16:31.547",
+      "dateStarted": "2019-11-06 09:58:02.536",
+      "dateFinished": "2019-11-06 09:58:02.558",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\nhello $${name}",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-05 10:30:13.866",
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003ehello\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572921001966_-1765250185",
+      "id": "paragraph_1572921001966_-1765250185",
+      "dateCreated": "2019-11-05 10:30:01.966",
+      "dateStarted": "2019-11-05 10:30:11.104",
+      "dateFinished": "2019-11-05 10:30:11.224",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%mysql(interpolate\u003dtrue)\n\nselect \u0027$${name}\u0027\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-05 10:29:51.732",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {}
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572920910655_195218368",
+      "id": "paragraph_1572920910655_195218368",
+      "dateCreated": "2019-11-05 10:28:30.667",
+      "dateStarted": "2019-11-05 10:29:51.356",
+      "dateFinished": "2019-11-05 10:29:51.490",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.pyspark\n\nprint(\"$${name}\")",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-05 10:28:16.032",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "$${name}\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572920348645_-1887210046",
+      "id": "paragraph_1572920348645_-1887210046",
+      "dateCreated": "2019-11-05 10:19:08.645",
+      "dateStarted": "2019-11-05 10:28:16.067",
+      "dateFinished": "2019-11-05 10:28:16.265",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\nhello {{name}}",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-05 10:17:35.181",
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003cp\u003ehello {{name}}\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572920231301_-1267739927",
+      "id": "paragraph_1572920231301_-1267739927",
+      "dateCreated": "2019-11-05 10:17:11.301",
+      "dateStarted": "2019-11-05 10:17:32.162",
+      "dateFinished": "2019-11-05 10:17:33.284",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.pyspark\n\ndf \u003d spark.createDataFrame([(\"jeff\", 12), (\"andy\", 23)], [\"name\", \"age\"])\nz.show(df)",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-04 15:04:37.001",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {
+                    "columns": [
+                      {
+                        "name": "name0",
+                        "visible": true,
+                        "width": 431.0,
+                        "sort": {},
+                        "filters": [
+                          {}
+                        ],
+                        "pinned": ""
+                      },
+                      {
+                        "name": "age1",
+                        "visible": true,
+                        "width": "*",
+                        "sort": {},
+                        "filters": [
+                          {}
+                        ],
+                        "pinned": ""
+                      }
+                    ],
+                    "scrollFocus": {},
+                    "selection": [],
+                    "grouping": {
+                      "grouping": [],
+                      "aggregations": [],
+                      "rowExpandedStates": {}
+                    },
+                    "treeView": {},
+                    "pagination": {
+                      "paginationCurrentPage": 1.0,
+                      "paginationPageSize": 250.0
+                    }
+                  },
+                  "tableColumnTypeState": {
+                    "names": {
+                      "name": "string",
+                      "age": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "name\tage\njeff\t12\nandy\t23\n"
+          },
+          {
+            "type": "TEXT",
+            "data": "\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1572850257259_68365051",
+      "id": "paragraph_1572850257259_68365051",
+      "dateCreated": "2019-11-04 14:50:57.259",
+      "dateStarted": "2019-11-04 14:52:38.303",
+      "dateFinished": "2019-11-04 14:52:40.884",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nprintln(\"\"\"%angular\n\u003cform class\u003d\"form-inline\"\u003e\n  \u003cdiv class\u003d\"form-group\"\u003e\n    \u003clabel for\u003d\"superheroId\"\u003eSuper Hero: \u003c/label\u003e\n    \u003cinput type\u003d\"text\" class\u003d\"form-control\" id\u003d\"superheroId\" placeholder\u003d\"Superhero name ...\" ng-model\u003d\"superhero\"\u003e\u003c/input\u003e\n  \u003c/div\u003e\n  \u003cbutton type\u003d\"submit\" class\u003d\"btn btn-primary\" ng-click\u003d\"z.angularBind(\u0027superhero\u0027,superhero,\u0027paragraph_1569560830582_-1162618753\u0027)\"\u003e Bind\u003c/button\u003e\n\u003c/form\u003e\n\"\"\")\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-10-25 15:57:08.943",
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "ANGULAR",
+            "data": "\u003cform class\u003d\"form-inline\"\u003e\n  \u003cdiv class\u003d\"form-group\"\u003e\n    \u003clabel for\u003d\"superheroId\"\u003eSuper Hero: \u003c/label\u003e\n    \u003cinput type\u003d\"text\" class\u003d\"form-control\" id\u003d\"superheroId\" placeholder\u003d\"Superhero name ...\" ng-model\u003d\"superhero\"\u003e\u003c/input\u003e\n  \u003c/div\u003e\n  \u003cbutton type\u003d\"submit\" class\u003d\"btn btn-primary\" ng-click\u003d\"z.angularBind(\u0027superhero\u0027,superhero,\u0027paragraph_1569560830582_-1162618753\u0027)\"\u003e Bind\u003c/button\u003e\n\u003c/form\u003e\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1569560830582_-1162618753",
+      "id": "paragraph_1569560830582_-1162618753",
+      "dateCreated": "2019-09-27 13:07:10.584",
+      "dateStarted": "2019-10-25 15:57:08.956",
+      "dateFinished": "2019-10-25 15:57:21.303",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n\na \u003c- z.angular(\u0027superhero\u0027, \u00272EK2KJC8H\u0027, \u0027paragraph_1569560830582_-1162618753\u0027)\nprint(a)",
+      "user": "anonymous",
+      "dateUpdated": "2019-10-25 16:02:12.692",
+      "config": {
+        "editorSetting": {
+          "language": "r",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/r",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 87.7983,
+              "optionOpen": false
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\n[1] “jeff2”\n\n\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1569560939003_12258006",
+      "id": "paragraph_1569560939003_12258006",
+      "dateCreated": "2019-09-27 13:08:59.003",
+      "dateStarted": "2019-10-25 15:58:51.289",
+      "dateFinished": "2019-10-25 15:58:51.374",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nval a \u003d z.angular(\"superhero\", \"2EK2KJC8H\", \"paragraph_1569560830582_-1162618753\")\nprint(a)\n\n\n\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-10-25 16:01:34.011",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "jeff2\u001b[1m\u001b[34ma\u001b[0m: \u001b[1m\u001b[32mObject\u001b[0m \u003d jeff2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1569565404264_855687990",
+      "id": "paragraph_1569565404264_855687990",
+      "dateCreated": "2019-09-27 14:23:24.264",
+      "dateStarted": "2019-10-25 15:58:52.699",
+      "dateFinished": "2019-10-25 15:58:52.915",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.pyspark\n\na \u003d z.angular(\"superhero\", \"2EK2KJC8H\", \"paragraph_1569560830582_-1162618753\")\nprint(a)\n\n\n\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-10-25 16:01:51.277",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "jeff2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1569565449130_323051961",
+      "id": "paragraph_1569565449130_323051961",
+      "dateCreated": "2019-09-27 14:24:09.130",
+      "dateStarted": "2019-10-25 15:58:54.288",
+      "dateFinished": "2019-10-25 15:58:54.468",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nz.angularBind(\"superhero\", \"jeff_spark\", \"2EK2KJC8H\",\"paragraph_1569560830582_-1162618753\" )\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-10-25 16:00:40.927",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1571988968258_-1315300056",
+      "id": "paragraph_1571988968258_-1315300056",
+      "dateCreated": "2019-10-25 15:36:08.258",
+      "dateStarted": "2019-10-25 15:58:48.338",
+      "dateFinished": "2019-10-25 15:58:48.557",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.conf\n\n z.angular(\u0027superhero\u0027,\u0027jeff_sparkr\u0027 \u00272EK2KJC8H\u0027, \u0027paragraph_1569560830582_-1162618753\u0027)\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-10-25 16:01:08.525",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1565015828095_629405491",
+      "id": "paragraph_1565015828095_629405491",
+      "dateCreated": "2019-08-05 22:37:08.096",
+      "dateStarted": "2019-09-27 10:51:16.277",
+      "dateFinished": "2019-09-27 10:51:16.303",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.pyspark\n\nz.angularBind(\"superhero\", \"jeff_pyspark\", \"2EK2KJC8H\",\"paragraph_1569560830582_-1162618753\" )",
+      "user": "anonymous",
+      "dateUpdated": "2019-10-25 16:00:28.446",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1568900530318_-1601156988",
+      "id": "paragraph_1568900530318_-1601156988",
+      "dateCreated": "2019-09-19 21:42:10.320",
+      "dateStarted": "2019-10-25 16:00:28.451",
+      "dateFinished": "2019-10-25 16:00:28.631",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n\nlibrary(rCharts)\nnames(iris) \u003d gsub(\"\\\\.\", \"\", names(iris))\nrPlot(SepalLength ~ SepalWidth | Species, data \u003d iris, color \u003d \u0027Species\u0027, type \u003d \u0027point\u0027)\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-09-03 21:28:13.151",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "r",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/r",
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\n \n\n\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1565016804810_830938007",
+      "id": "paragraph_1565016804810_830938007",
+      "dateCreated": "2019-08-05 22:53:24.810",
+      "dateStarted": "2019-09-03 21:28:13.156",
+      "dateFinished": "2019-09-03 21:28:14.659",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n\nx \u003c- seq(-4, 4, 0.2) ;  y \u003c- 2*x^2 + 4*x - 7\nplot(x, y)\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-09-27 10:51:52.115",
+      "config": {
+        "editorSetting": {
+          "language": "r",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/r",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cp\u003e\u003cimg src\u003d\"data:image/png;base64,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ECBAgAABAgQIECBAgACBHAgI8DnoJE0kQIAAAQIECBAgQIAAAQICvHuAAAECBAgQIECAAAECBAjkQECAz0EnaSIBAgQIECBAgAABAgQIEBDg3QMECBAgQIAAAQIECBAgQCAHAgJ8DjpJEwkQIECAAAECBAgQIECAgADvHiBAgAABAgQIECBAgAABAjkQEOBz0EmaSIAAAQIECBAgQIAAAQIEBHj3AAECBAgQIECAAAECBAgQyIGAAJ+DTtJEAgQIECBAgAABAgQIECAgwLsHCBAgQIAAAQIECBAgQIBADgQE+Bx0kiYSIECAAAECBAgQIECAAAEB3j1AgAABAgQIECBAgAABAgRyICDA56CTNJEAAQIECBAgQIAAAQIECAjw7gECBAgQIECAAAECBAgQIJADAQE+B52kiQQIECBAgAABAgQIECBAQIB3DxAgQIAAAQIECBAgQIAAgRwICPA56CRNJECAAAECBAgQIECAAAECArx7gAABAgQIECBAgAABAgQI5EBAgM9BJ2kiAQIECBAgQIAAAQIECBAQ4N0DBAgQIECAAAECBAgQIEAgBwICfA46SRMJECBAgAABAgQIECBAgIAA7x4gQIAAAQIECBAgQIAAAQI5EBDgc9BJmkiAAAECBAgQIECAAAECBAR49wABAgQIECBAgAABAgQIEMiBgACfg07SRAIECBAgQIAAAQIECBAgIMC7BwgQIECAAAECBAgQIECAQA4EBPgcdJImEiBAgAABAgQIECBAgAABAd49QIAAAQIECBAgQIAAAQIEciAgwOegkzSRAAECBAgQIECAAAECBAgI8O4BAgQIECBAgAABAgQIECCQAwEBPgedpIkECBAgQIAAAQIECBAgQECAdw8QIECAAAECBAgQIECAAIEcCAjwOegkTSRAgAABAgQIECBAgAABAgK8e4AAAQIECBAgQIAAAQIECORAQIDPQSdpIgECBAgQIECAAAECBAgQEODdAwQIECBAgAABAgQIECBAIAcCAnwOOkkTCRAgQIAAAQIECBAgQICAAO8eIECAAAECBAgQIECAAAECORAQ4HPQSZpIgAABAgQIECBAgAABAgQEePcAAQIECBAgQIAAAQIECBDIgYAAn4NO0kQCBAgQIECAAAECBAgQICDAuwcIECBAgAABAgQIECBAgEAOBAT4HHSSJhIgQIAAAQIECBAgQIAAAQHePUCAAAECBAgQIECAAAECBHIgIMDnoJM0kQABAgQIECBAgAABAgQICPDuAQIECBAgQIAAAQIECBAgkAMBAT4HnaSJBAgQIECAAAECBAgQIEBAgHcPECBAgAABAgQIECBAgACBHAgI8DnoJE0kQIAAAQIECBAgQIAAAQICvHuAAAECBAgQIECAAAECBAjkQECAz0EnaSIBAgQIECBAgAABAgQIEBDg3QMECBAgQIAAAQIECBAgQCAHAgJ8DjpJEwkQIECAAAECBAgQIECAgADvHiBAgAABAgQIECBAgAABAjkQEOBz0EmaSIAAAQIECBAgQIAAAQIEBHj3AAECBAgQIECAAAECBAgQyIGAAJ+DTtJEAgQIECBAgAABAgQIECAgwLsHCBAgQIAAAQIECBAgQIBADgQE+Bx0kiYSIECAAAECBAgQIECAAAEB3j1AgAABAgQIECBAgAABAgRyICDA56CTNJEAAQIECBAgQIAAAQIECAjw7gECBAgQIECAAAECBAgQIJADAQE+B52kiQQIECBAgAABAgQIECBAQIB3DxAgQIAAAQIECBAgQIAAgRwICPA56CRNJECAAAECBAgQIECAAAECArx7gAABAgQIECBAgAABAgQI5EBAgM9BJ2kiAQIECBAgQIAAAQIECBAQ4N0DBAgQIECAAAECBAgQIEAgBwICfA46SRMJECBAgAABAgQIECBAgIAA7x4gQIAAAQIECBAgQIAAAQI5EBDgc9BJmkiAAAECBAgQIECAAAECBAR49wABAgQIECBAgAABAgQIEMiBgACfg07SRAIECBAgQIAAAQIECBAgIMC7BwgQIECAAAECBAgQIECAQA4EBPgcdJImEiBAgAABAgQIECBAgAABAd49QIAAAQIECBAgQIAAAQIEciAgwOegkzSRAAECBAgQIECAAAECBAgI8O4BAgQIECBAgAABAgQIECCQAwEBPgedpIkECBAgQIAAAQIECBAgQECAdw8QIECAAAECBAgQIECAAIEcCAjwOegkTSRAgAABAgQIECBAgAABAgK8e4AAAQIECBAgQIAAAQIECORAQIDPQSdpIgECBAgQIECAAAECBAgQEODdAwQIECBAgAABAgQIECBAIAcCAnwOOkkTCRAgQIAAAQIECBAgQICAAO8eIECAAAECBAgQIECAAAECORAQ4HPQSZpIgAABAgQIECBAgAABAgQEePcAAQIECBAgQIAAAQIECBDIgUCjHLRRE2soMGLEiBg6dGgNj1KcAAECBAgQIECAAAEC+RHYaKON4tprr422bdvmp9EFtrTBsn8vBdbh8DITOPbYY+Ohhx6KLl26lFnLNIcAAQIECBAgQIAAAQKFCyxcuDCmTZsWo0ePjt69exdeYU5q8AQ+Jx1V02am8D5lypSaHqY8AQIECBAgQIAAAQIEyl5g/Pjxsffee0d9ex7tG/iyvzU1kAABAgQIECBAgAABAgQIRAjw7gICBAgQIECAAAECBAgQIJADAQE+B52kiQQIECBAgAABAgQIECBAQIB3DxAgQIAAAQIECBAgQIAAgRwICPA56CRNJECAAAECBAgQIECAAAECArx7gAABAgQIECBAgAABAgQI5EBAgM9BJ2kiAQIECBAgQIAAAQIECBAQ4N0DBAgQIECAAAECBAgQIEAgBwICfA46SRMJECBAgAABAgQIECBAgIAA7x4gQIAAAQIECBAgQIAAAQI5EBDgc9BJmkiAAAECBAgQIECAAAECBAR49wABAgQIECBAgAABAgQIEMiBgACfg07SRAIECBAgQIAAAQIECBAgIMC7BwgQIECAAAECBAgQIECAQA4EBPgcdJImEiBAgAABAgQIECBAgAABAd49QIAAAQIECBAgQIAAAQIEciAgwOegkzSRAAECBAgQIECAAAECBAgI8O4BAgQIECBAgAABAgQIECCQAwEBPgedpIkECBAgQIAAAQIECBAgQKARAgIECBAgQIAAAQIECBAgUBOBGTNmxKOPPhpvvvlmNG3aNLp37x4HHnhgNG7cuCbVKFtDAQG+hmCKEyBAgAABAgQIECBAoL4KLFq0KC688MK44YYbYvHixVlg//TTT2PZsmXxhS98IW666aY47LDD6itPrV+3V+hrndgJCBAgQIAAAQIECBAgkH+BFNT79OkT1113XZx++unx8ssvxyeffBILFy6Mhx56KFq2bBlHHHFEDB06NP8XW6ZXIMCXacdoFgECBAgQIECAAAECBMpJ4KqrropRo0bFb37zm+xJ+w477BANGjSIjTbaKAvuEyZMiK985StZuH/77bfLqel1pi0CfJ3pShdCgAABAgQIECBAgACB2hFIr8v/4he/iH79+sU3vvGNSk+Sgvztt98eS5cuzZ7SV1rIxoIEBPiC+BxMgAABAgQIECBAgACBui/w7LPPxty5c+PUU09d48VuueWW2WB26Um9pfgCAnzxTdVIgAABAgQIECBAgACBOiWQRp1PS+fOnau9rm222SaWl6+2sAI1EhDga8SlMAECBAgQIECAAAECBOqfwKabbppd9MyZM6u9+FRmeflqCytQIwHTyFXDNW/evJg9e3YsWLAgG6AhjazYqlWraNGiRTVH2k2AAAECBAgQIECAAIG6IbDnnntGkyZN4r777steka/qqubPnx+jR4+Oo446qqoithcg4Al8JXiTJ0+OAQMGRMeOHbOwvu2228aXvvSl2HnnnaNTp06xySabZL+PO+64+NOf/pTNeVhJNTYRIECAAAECBAgQIECgTgg0b948vvnNb8att94af/nLX6q8psGDB8cHH3wQ5557bpVl7Fh3AQF+Jbv0lP3ggw+OPfbYI37729+u8t1Gmh4h/Sxf0rQIw4cPz+ZB3GuvveLdd99dvstvAgQIECBAgAABAgQI1DmB//7v/46tt946DjnkkLjtttsijUy/fJk+fXp8/etfj1tuuSUuvvji6N69+/JdfhdRQICvwFy0aFE2JUJ63aNdu3YxcODAGDNmTLz22msxa9as7Ob89NNPs9fpX3/99Rg7dmwMGjQoe0o/ceLE2G+//SLVYSFAgAABAgQIECBAgEBdFEjftacctNtuu2VzvW+22WbRq1evz95UvvfeeyOF/CuuuKIuXn5ZXJNv4Cu64ZFHHok01cEuu+wSTzzxRPbqfGU91Lp160g/Xbp0iX333Tcuu+yy6N27d6QQn/5rk1dFKlOzjQABAgQIECBAgACBuiDQoUOHLMSn7HT//ffHtGnTYosttogTTjghTjrppOwJfV24znK9BgG+omfGjx+frd1www1VhvfKOjF9C5KCewr+48aNE+ArQ7KNAAECBAgQIECAAIE6JZA+PU4/ltIKeIW+wnvq1KnZWhqorqZL165dY4MNNoj333+/pocqT4AAAQIECBAgQIAAAQIE1kpAgK9gSqPLp2XSpEkVW9b+19NPPx1LliyJbt26rf1BShIgQIAAAQIECBAgQIAAgRoICPAVWH369MnW0vRxU6ZMWWvCNKDdySefnJVP38RbCBAgQIAAAQIECBAgQIBAbQj4Br5C9bDDDou+ffvGiBEjslEUe/ToEUcffXQ2IEPbtm2jTZs20bBhw5gzZ072M2PGjHjggQeyARyWLl0a/fv3j2OOOaY2+kidBAgQIECAAAECBAgQIEAgBPiVboJhw4bF+eefHzfddFP2Kv3avE7fqlWrOOOMM2LIkCEr1WSVAAECBAgQIECAAAECBAgUV0CAX8mzUaNGce2118bgwYNj6NChMWHChHjxxRfjgw8+iHnz5kXjxo2zed87duyY/e7Zs2ekV+5btGixUi3FW/3Tn/4U7733Xo0rfPnll7M21/hABxAgQIAAAQIECBAgQIBA2QoI8JV0TZrHMD2JX5/LokWL4vjjj4+FCxeuUzPS6/4WAgQIECBAgAABAgQIEKg7AgL8OvTlO++8EzNnzow0cn3r1q3XoYbqD9lwww0jnWf+/PnVF16txJ577pl9p7/aZn8SIECAAAECBAgQIECAQI4FBPh16Lz0mv0vfvGLuPXWW+O0005bhxrW7pCWLVtG+qnpkuakb9CgQU0PU54AAQIECBAgQIAAAQIEyljAe9Zl3DmaRoAAAQIECBAgQIAAAQIElgt4Al8hcfbZZ8fIkSOXu6zxd5pKLi0XXnhhXHnllZ+VPe+88yL9WAgQIECAAAECBAgQIECAQLEFBPgK0VmzZsW0adNq5JuOST/LlzRavYUAAQIECBAgQIAAAQIECNSGgABfoZrmfl+8eHHcf//90aRJk7j88sujV69elZqnsvfcc09ccMEFcfjhh39WZuutt/5s3QoBAgQIECBAgAABAgQIECimgABfodm2bdsYMWJE3Hbbbdlr8BdffHFcdNFF8eMf/zib/31l9Iceeij7c7vttot999135V3WCRAgQIAAAQIECBAgQIBArQgYxG411jSq/HPPPRd77LFHXHHFFbHXXnvFK6+8slopfxIgQIAAAQIECBAgQIAAgdIKCPCVeHfp0iWeeuqpGDJkSBbmu3fvHtdff30sW7asktI2ESBAgAABAgQIECBAgACB2hcQ4KswbtSoUVx66aVZkO/YsWMMHDgwDjnkkJg+fXoVR9hMgAABAgQIECBAgAABAgRqT0CAr8Y2DWSXXqkfMGBAjB49OnbeeecYO3ZsNUfZTYAAAQIECBAgQIAAAQIEiisgwK+FZ/PmzbPB7e69995o2LBhPPPMM2txlCIECBAgQIAAAQIECBAgQKB4Akahr4Flv379skHt0gj1s2fPDtPG1QBPUQIECBAgQIAAAQIECBAoSECAryFfhw4d4re//W0Nj1KcAAECBAgQIECAAAECBAgUJuAV+sL8HE2AAAECBAgQIECAAAECBEoiIMCXhNlJCBAgQIAAAQIECBAgQIBAYQICfGF+jiZAgAABAgQIECBAgAABAiUREOBLwuwkBAgQIECAAAECBAgQIECgMAEBvjA/RxMgQIAAAQIECBAgQIAAgZIICPAlYXYSAgQIECBAgAABAgQIECBQmIAAX5ifowkQIECAAAECBAgQIECAQEkEBPiSMDsJAQIECBAgQIAAAQIECBAoTECAL8zP0QQIECBAgAABAgQIECBAoCQCAnxJmJ2EAAECBAgQIECAAAECBAgUJiDAF+bnaAIECBAgQIAAAQIECBAgUBIBAb4kzE5CgAABAgQIECBAgAABAgQKExDgC/NzNAECBAgQIECAAAECBAgQKImAAF8SZichQIAAAQIECBAgQIAAAQKFCQjwhfk5mgABAgQIECBAgAABAgQIlERAgC8Js5MQIECAAAECBAgQIECAAIHCBAT4wvwcTYAAAQIECBAgQIAAAQIESiIgwJeE2UkIECBAgAABAgQIECBAgEBhAgJ8YX6OJkCAAAECBAgQIECAAAECJRFoVJKzOAkBAgQIECBAgAABAgQIrFeBSZMmxahRo2LGjBmx6aabxj777BO9e/eODTbYYL22y8nXXkCAX3srJQkQIECAAAECBAgQIJA7gX/+859x6qmnxuOPPx4NGzaMNm3axLx58+LKK6+Mrl27xu9+97vo0aNH7q6rPjbYK/T1sdddMwECBAgQIECAAAEC9UJg+vTp0atXr5g8eXLceOONMXfu3Jg5c2bMnz8/7r333vjkk09iv/32i6effrpeeOT9IgX4vPeg9hMgQIAAAQIECBAgQKAKgdNPPz0L60899VScffbZsckmm2QlN9xww+jXr18888wzsfXWW8fXv/71+Pjjj6uoxeZyERDgy6UntIMAAQIECBAgQIAAAQJFFJgyZUqMHDkyhgwZEt26dau05tatW8fNN98cb731Vtxzzz2VlrGxfAQE+PLpCy0hQIAAAQIECBAgQIBA0QQee+yxrK4TTzxxjXWmV+i32GKLWF5+jYXtXK8CAvx65XdyAgQIECBAgAABAgQI1I7Ae++9F+lV+Xbt2lV7gk6dOkUqbylvAQG+vPtH6wgQIECAAAECBAgQILBOAm3bto1FixbF7Nmzqz3+nXfeiVTeUt4CAnx594/WESBAgAABAgQIECBAYJ0E0qvxaRk2bNgaj0/zw//jH//IRqNfY0E717uAAL/eu0ADCBAgQIAAAQIECBAgUHyB3XffPfbZZ5/48Y9/HNOmTav0BAsWLIizzjore80+jURvKW8BAb68+0frCBAgQIAAAQIECBAgsM4Cv/nNb2Lp0qXx5S9/OXsSv3jx4s/qevLJJ2PvvfeOF154IW6//fZo3rz5Z/uslKeAAF+e/aJVBAgQIECAAAECBAgQKFigS5cuMX78+Gjfvn0cf/zx0aZNm9hxxx1js802y16ZnzVrVjz66KNxyCGHFHwuFdS+QKPaP4UzECBAgAABAgQIECBAgMD6Eth+++1j8uTJ2Zzwo0aNihkzZsSmm26avV7fr1+/2HjjjddX05y3hgICfA3BFCdAgAABAgQIECBAgEDeBBo2bBhf/epXs5+8tV17Vwh4hX6FhTUCBAgQIECAAAECBAgQIFC2AgJ82XaNhhEgQIAAAQIECBAgQIAAgRUCAvwKC2sECBAgQIAAAQIECBAgQKBsBQT4su0aDSNAgAABAgQIECBAgAABAisEBPgVFtYIECBAgAABAgQIECBAgEDZCgjwZds1GkaAAAECBAgQIECAAAECBFYICPArLKwRIECAAAECBAgQIECAAIGyFRDgy7ZrNIwAAQIECBAgQIAAAQIECKwQEOBXWFgjQIAAAQIECBAgQIAAAQJlKyDAl23XaBgBAgQIECBAgAABAgQIEFghIMCvsLBGgAABAgQIECBAgAABAgTKVkCAL9uu0TACBAgQIECAAAECBAgQILBCQIBfYWGNAAECBAgQIECAAAECBAiUrYAAX7Zdo2EECBAgQIAAAQIECBAgQGCFgAC/wsIaAQIECBAgQIAAAQIECBAoWwEBvmy7RsMIECBAgAABAgQIECBAgMAKAQF+hYU1AgQIECBAgAABAgQIECBQtgICfNl2jYYRIECAAAECBAgQIECAAIEVAgL8CgtrBAgQIECAAAECBAgQIECgbAUE+LLtGg0jQIAAAQIECBAgQIAAAQIrBAT4FRbWCBAgQIAAAQIECBAgQIBA2QoI8GXbNRpGgAABAgQIECBAgAABAgRWCAjwKyysESBAgAABAgQIECBAgACBshUQ4Mu2azSMAAECBAgQIECAAAECBAisEBDgV1hYI0CAAAECBAgQIECAAAECZSsgwJdt12gYAQIECBAgQIAAAQIECBBYISDAr7CwRoAAAQIECBAgQIAAAQIEylZAgC/brtEwAgQIECBAgAABAgQIECCwQkCAX2FhjQABAgQIECBAgAABAgQIlK2AAF+2XaNhBAgQIECAAAECBAgQIEBghYAAv8LCGgECBAgQIECAAAECBAgQKFsBAb5su0bDCBAgQIAAAQIECBAgQIDACgEBfoWFNQIECBAgQIAAAQIECBAgULYCAnzZdo2GESBAgAABAgQIECBAgACBFQIC/AoLawQIECBAgAABAgQIECBAoGwFBPiy7RoNI0CAAAECBAgQIECAAAECKwQE+BUW1ggQIECAAAECBAgQIECAQNkKCPBl2zUaRoAAAQIECBAgQIAAAQIEVgg0WrFqjQABAgQIECBAgAABAgTKReCNN96IX//61/HUU0/F3Llzo0OHDnHwwQfHmWeeGa1bty6XZmpHCQU8gS8htlMRIECAAAECBAgQIEBgbQSuvfba6Nq1a1x//fXRtGnT2G233eKjjz6KH/3oR9GlS5d49NFH16YaZeqYgABfxzrU5RAgQIAAAQIECBAgkG+Bm266KQYNGhRHHnlk/OMf/4jHHnss7r777pgwYUJMmTIlttlmm2zfuHHj8n2hWl9jAQG+xmQOIECAAAECBAgQIECAQO0IzJgxI84///zo06dPDBs2LNq1a7fKidJT+ccffzw6d+4cZ5xxRixZsmSV/f6o2wICfN3uX1dHgAABAgQIECBAgECOBO68887sVfnrrrsuGjRoUGnLN9lkk7jyyivjlVdeibFjx1Zaxsa6KSDA181+dVUECBAgQIAAAQIECORQYOLEibH99ttnr8mvqfmHHXZYtnvSpElrKmZfHRMQ4OtYh7ocAgQIECBAgAABAgTyK/Dhhx9Gq1atqr2AZs2aRePGjWP+/PnVllWg7ggI8HWnL10JAQIECBAgQIAAAQI5F+jUqVO8/vrr1X7bnqaYW7x4cWy99dY5v2LNr4mAAF8TLWUJECBAgAABAgQIECBQiwJHHHFEzJ49O/74xz+u8SxpfviGDRvGoYceusZydtYtAQG+bvWnqyFAgAABAgQIECBAIMcCafT53XffPc4555x46aWXKr2SBx54INI88aeddlqkJ/aW+iMgwNefvnalBAgQIECAAAECBAiUuUAaeX748OHRpEmT6NWrVwwZMiSef/75SNPLjR8/Ps4888zo169f7LHHHpFGqrfULwEBvn71t6slQIAAAQIECBAgQKDMBdIc788++2z2evxPfvKT2HXXXaNjx46x9957x+233x7nnXdejBkzJpo2bVrmV6J5xRZoVOwK1UeAAAECBAgQIECAAAEChQl06NAhexL/zjvvxNNPPx1z586NtG2//faLNA+8pX4KCPD1s99dNQECBAgQIECAAAECORBIT96PPfbYHLRUE0sh4BX6Uig7BwECBAgQIECAAAECBAgQKFBAgC8Q0OEECBAgQIAAAQIECBAgQKAUAgJ8KZSdgwABAgQIECBAgAABAgQIFCggwBcI6HACBAgQIECAAAECBAgQIFAKAQG+FMrOQYAAAQIECBAgQIAAAQIEChQQ4AsEdDgBAgQIECBAgAABAgQIECiFgABfCmXnIECAAAECBAgQIECAAAECBQoI8AUCOpwAAQIECBAgQIAAAQIECJRCQIAvhbJzECBAgAABAgQIECBAgACBAgUE+AIBHU6AAAECBAgQIECAAAECBEohIMCXQtk5CBAgQIAAAQIECBAgQIBAgQICfIGADidAgAABAgQIECBAgAABAqUQEOBLoewcBAgQIECAAAECBAgQIECgQAEBvkBAhxMgQIAAAQIECBAgQIAAgVIICPClUHYOAgQIECBAgAABAgQIECBQoIAAXyCgwwkQIECAAAECBAgQIECAQCkEBPhSKDsHAQIECBAgQIAAAQIECBAoUECALxDQ4QQIECBAgAABAgQIECBAoBQCAnwplJ2DAAECBAgQIECAAAECBAgUKCDAFwjocAIECBAgQIAAAQIECBAgUAoBAb4Uys5BgAABAgQIECBAgAABAgQKFBDgCwR0OAECBAgQIECAAAECBAgQKIWAAF8KZecgQIAAAQIECBAgQIAAAQIFCgjwBQI6nAABAgQIECBAgAABAgQIlEJAgC+FsnMQIECAAAECBAgQIECAAIECBRoVeHydP3zevHkxe/bsWLBgQTRo0CBatmwZrVq1ihYtWtT5a3eBBAgQIECAAAECBAgQIFA+AgJ8JX0xefLkuPHGG2PkyJExY8aMSkpEbLXVVtGrV6845ZRT4vDDD8/CfaUFbSRAgAABAgQIECBAgAABAkUQEOBXQkxP2fv27RujR49eaet/VtPT97QsW7Ys+/32229H+hk+fHj07Nkz7r///mjfvn22z/8QIECAAAECBAgQIECAAIFiC/gGvkJ00aJF0a9fvyy8t2vXLgYOHBhjxoyJ1157LWbNmhWLFy+OTz/9NHud/vXXX4+xY8fGoEGDomPHjjFx4sTYb7/9ItVhIUCAAAECBAgQIECAAAECtSHgCXyF6iOPPBKjRo2KXXbZJZ544onsO/fKwFu3bh3pp0uXLrHvvvvGZZddFr17985C/C233BLnnntuZYfZRoAAAQIECBAgQIAAAQIEChLwBL6Cb/z48dnaDTfcUGV4r0y6efPmkYJ7WsaNG1dZEdsIECBAgAABAgQIECBAgEDBAgJ8BeHUqVOztZ133rnGqF27do0NNtgg3n///Rof6wACBAgQIECAAAECBAgQILA2AgJ8hVKnTp2ytUmTJq2N2yplnn766ViyZEl069Ztle3+IECAAAECBAgQIECAAAECxRIQ4Csk+/Tpk60NGDAgpkyZsta+aUC7k08+OSufvom3ECBAgAABAgQIECBAgACB2hAwiF2F6mGHHZZNITdixIhIr9H36NEjjj766Nhiiy2ibdu20aZNm2jYsGHMmTMn+0nzwz/wwAPZaPRLly6N/v37xzHHHFMbfaROAgQIECBAgAABAgQIECAQAvxKN8GwYcPi/PPPj5tuuinSq/Rr8zp9q1at4owzzoghQ4asVJNVAgQIECBAgAABAgTqq0Cahvq5556Ljz76KDp37uxT2/p6I9TCdQvwK6E2atQorr322hg8eHAMHTo0JkyYEC+++GJ88MEHMW/evGjcuHE273ua+z399OzZM9Ir9y1atFipFqsECBAgQIAAAQIECNRHgTfffDPLEg8++GA2RtZyg2233TauvPLKOP7445dv8pvAOgkI8JWwpdfm05P49bmkQfH69u0b7777bo2bMXPmzEiv9VsIECBAgAABAgQIECiNwDPPPBOHHHJI9u/hF110URx88MHRrFmz7IHgjTfeGCeccEL89a9/jZ///OelaZCz1EkBAb5Mu7VBgwbZt/cpyNd0Sd/qC/A1VVOeAAECBAgQIECAwLoJzJ8/P4466qho3bp1PPbYY7H11lt/VlH37t2zQa/PO++8uOqqq2LXXXfNxs/6rIAVAjUQEOBrgJWKLlu2LP7+979nc76n+d9r6/X5FMJ/85vf1LB1/ym+5ZZbRvruxkKAAAECBAgQIECAQO0LpCfsaZDr9BR+5fC+/Mzp3+1/9atfZWNs/fCHPxTgl8P4XWMB08hVQpbC7x//+Md44YUXVtn7l7/8JRuAYptttsm+f2/ZsmX2uybTzq1SoT8IECBAgAABAgQIEMi9wP333x9777137L777lVeSwrx3/nOd2LatGmfyxlVHmQHgdUEBPiVQBYtWpR9d96uXbs49thjY5dddontttsu3nnnnWwEyRNPPDGmTp362RHpaXwaqX7PPfeMRx555LPtVggQIECAAAECBAgQqD8CafC6L33pS9VecJquOi2pvIXAuggI8BVq6Zvxk08+OdJ/PUvrXbp0yb5hef3117PvWdKrLum/lqX53l9++eX4+OOPswEp0mAUaT1NJZe+fbEQIECAAAECBAgQIFC/BDbeeONYsGBBtRe9cOHCrEwqbyGwLgICfIXa2LFjI80Dv9NOO8VTTz0VKbinV+kvuOCC7FuWNL3cEUcckU0vt8MOO0STJk2y1+nvvvvuOOmkk2L69Olx6623rksfOIYAAQIECBAgQIAAgRwLpIHqxowZs8rUcZVdzujRoyMNVp0GsrMQWBcBAb5CLYX2tAwaNCj7fiWtp3+4rrjiis8GqjvnnHPS5s8tl156abbt+eef/9w+GwgQIECAAAECBAgQqNsCAwYMiLfeeiuuv/76Ki/0n//8ZzaQ3eGHHx7pk10LgXUREOAr1J599tls7Wtf+9oqjo0bN47evXtn29L88JUtnTp1ig022CDeeOONynbbRoAAAQIECBAgQIBAHRbo06dP9tnt+eefn4X01aeCTg/6DjzwwOwJ/TXXXFOHJVxabQuYRq5CeLPNNsvWHn/88TjuuONWcf/mN78Z6XuVuXPnrrJ9+R+PPvpo9g9jCvIWAgQIECBAgAABAgTqn8Cdd94ZadDr7373u3HdddfFAQccEM2aNcvGzXryyScj5Y2UG774xS/WPxxXXDQBT+ArKHv06JGtpdde3n///VWA039RGzlyZOy7776rbE9/fPrpp5HmfUxL+vbFQoAAAQIECBAgQIBA/RNIYT0NiJ1+0oj0f/7zn+Ouu+7KBrpOn9y++uqrsddee9U/GFdcVIEG/54KbVlRa8xpZWkKuTSA3d/+9rdIo0Keeuqp2TcsjRpV/pJCGnH+3nvvzcJ7ev1+q622ykanT//gru9lyy23zAbgS6PjWwgQIECAAAECBAgQIFDXBMaPH5+NXTZq1Kg46KCD6trlVXk9nsBX0Gy44Ybx8MMPR9euXbM53++5556oKrynQ1544YVIr9an8L755ptno9OXQ3ivsqftIECAAAECBAgQIECAAIFcC1T+eDnXl7Tujd9uu+2yKeOGDx+eTSO3ppq22Wab2H777ePggw+OCy+8MDp27Lim4vYRIECAAAECBAgQIECAAIGCBAT41fjSU/RvfOMbq239/J8dOnSIV1555fM7bCFAgAABAgQIECBAgAABArUg4BX6WkBVJQECBAgQIECAAAECBAgQKLaAAF9sUfURIECAAAECBAgQIECAAIFaEBDgawFVlQQIECBAgAABAgQIECBAoNgCAnyxRdVHgAABAgQIECBAgAABAgRqQUCArwVUVRIgQIAAAQIECBAgQIAAgWILCPDFFlUfAQIECBAgQIAAAQIECBCoBQEBvhZQVUmAAAECBAgQIECAAAECBIotIMAXW1R9BAgQIECAAAECBAgQIECgFgQE+FpAVSUBAgQIECBAgAABAgQIECi2gABfbFH1ESBAgAABAgQIECBAgACBWhAQ4GsBVZUECBAgQIAAAQIECBAgQKDYAgJ8sUXVR4AAAQIECBAgQIAAAQIEakFAgK8FVFUSIECAAAECBAgQIECAAIFiCwjwxRZVHwECBAgQIECAAAECBAgQqAUBAb4WUFVJgAABAgQIECBAgAABAgSKLSDAF1tUfQQIECBAgAABAgQIECBAoBYEBPhaQFUlAQIECBAgQIAAAQIECBAotoAAX2xR9REgQIAAAQIECBAgQIAAgVoQEOBrAVWVBAgQIECAAAECBAgQIECg2AICfLFF1UeAAAECBAgQIECAAAECBGpBQICvBVRVEiBAgAABAgQIECBAgACBYgsI8MUWVR8BAgQIECBAgAABAgQIEKgFAQG+FlBVSYAAAQIECBAgQIAAAQIEii0gwBdbVH0ECBAgQIAAAQIECBAgQKAWBAT4WkBVJQECBAgQIECAAAECBAgQKLaAAF9sUfURIECAAAECBAgQIECAAIFaEBDgawFVlQQIECBAgAABAgQIECBAoNgCAnyxRdVHgAABAgQIECBAgAABAgRqQUCArwVUVRIgQIAAAQIECBAgQIAAgWILCPDFFlUfAQIECBAgQIAAAQIECBCoBQEBvhZQVUmAAAECBAgQIECAAAECBIotIMAXW1R9BAgQIECAAAECBAjkRuDjjz+Oa6+9Nnr06BEtWrTIftJ62pb2WQiUk4AAX069oS0ECBAgQIAAAQIECJRM4I033ojddtstBg0aFI0bN44zzzwz+0nraVval8pYCJSLQKNyaYh2ECBAgAABAgQIECBAoFQC//rXv+LQQw+NefPmxWOPPRYHHHDAKqd+/PHH44QTTsjKTJ48OTbZZJNV9vuDwPoQ8AR+fag7JwECBAgQIECAAAEC61Xg5z//ebz55pvx4IMPfi68p4alQJ/2pTKprIVAOQgI8OXQC9pAgAABAgQIECBAgEBJBW6//fY46qijolevXlWeN+1LZVJZC4FyEBDgy6EXtIEAAQIECBAgQIAAgZIJvP/++zF9+vRKn7yv3oj0JD6VTcdYCKxvAQF+ffeA8xMgQIAAAQIECBAgUFKBTz75JDvfRhttVO15l5dZfky1ByhAoBYFBPhaxFU1AQIECBAgQIAAAQLlJ9C+ffto1qxZPPfcc9U2LpVJZdMxFgLrW0CAX9894PwECBAgQIAAAQIECJRUoFGjRtGnT5+48847Y9asWVWeO702n8qksukYC4H1LSDAr+8ecH4CBAgQIECAAAECBEouMGTIkEivxfft2zc++OCDz50/bevXr19WJpW1ECgHAf8ZqRx6QRsIECBAgAABAgQIECipwA477BC///3v48QTT4wdd9wxvvOd78Ree+2VteEvf/lLXH/99TFnzpy46667IpW1ECgHAQG+HHpBGwgQIECAAAECBAgQKLnA0UcfHZ07d47zzz8/fvjDH8ayZcuyNjRo0CD233//uPrqq6N79+4lb5cTEqhKQICvSsZ2AgQIECBAgAABAgTqvEAK6I899li899578corr2TXm564t2vXrs5fuwvMn4AAn78+02ICBAgQIECAAAECBIoskAK70F5kVNUVXcAgdkUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+gABffFM1EiBAgAABAgQIECBAgACBogsI8EUnVSEBAgQIECBAgAABAgQIECi+QKPiV6lGAgQIECBAgAABAgQI1J7AokWL4vbbb48HHnggpk2bFhtvvHF07949TjvttOjZs2ftnVjNBNazgCfw67kDnJ4AAQIECBAgQIAAgbUXmDp1auy8885xxhlnxJtvvhk77bRTtGvXLoYNGxa9evWKs846KxYvXrz2FSpJIEcCnsDnqLM0lQABAgQIECBAgEB9Fpg+fXoceOCB0bBhwxg9enT07t37M46FCxfGT37yk/jZz36WBfjbbrvts31WCNQVAQG+rvSk6yBAgAABAgQIECBQxwUGDx4cH374YTz77LOx/fbbr3K1TZs2jZ/+9Kex4YYbxuWXXx4nnXRS7L///quU8QeBvAt4hT7vPaj9BAgQIECAAAECBOqBwJw5c2L48OFxzjnnfC68r3z5P/zhD6N9+/Zx8803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+++/H2kg6datW6MiQGAtBEwjV4GUvnlPy8UXXxyPPPJINthGxa5VfvXq1SvuuuuuOOaYY2Lw4MHZtBhpvngLAQIECBAgQIAAAQJrFkhP4//rv/5rzYXsJUCgSgFP4CtoTjzxxNhuu+3i//7v/yLN/Z6erv/tb3+rFK5v377ZSJopuKcBN/73f/+30nI2EiBAgAABAgQIECBAgACBYgkI8BWSaXqLe+65J7bddtuYMmVKNqXchAkTqnROg93deuut2ev0s2fPzsp5El8llx0ECBAgQIAAAQIECBAgUKCAAL8S4K677ppNGffLX/4y+vTpk4X5lXZ/bvW0006L9M18GojDQoAAAQIECBAgQIAAAQIEalOgwb+fGvuAuwjC77zzTja13FZbbVWE2gqrIo2Yn0bV//jjjwuryNEECBAgQIAAAQIECBAoQ4E0zffee++dzWxw0EEHlWELa6dJBrErkqtpL4oEqRoCBAgQIECAAAECBAgQqFTAK/SVsthIgAABAgSyXeVGAABAAElEQVQIECBAgAABAgTKS0CAL6/+0BoCBAgQIECAAAECBAgQIFCpgABfKYuNBAgQIECAAAECBAgQIECgvAQE+PLqD60hQIAAAQIECBAgQIAAAQKVCgjwlbLYSIAAAQIECBAgQIAAAQIEyktAgC+v/tAaAgQIECBAgAABAgQIECBQqYAAXymLjQQIECBAgAABAgQIECBAoLwEBPjy6g+tIUCAAAECBAgQIECAAAEClQoI8JWy2EiAAAECBAgQIECAAAECBMpLQIAvr/7QGgIECBAgQIAAAQIECBAgUKmAAF8pi40ECBAgQIAAAQIECBAgQKC8BAT48uoPrSFAgAABAgQIECBAgAABApUKCPCVsthIgAABAgQIECBAgAABAgTKS0CAL6/+0BoCBAgQIECAAAECBAgQIFCpgABfKYuNBAgQIECAAAECBAgQIECgvAQE+PLqD60hQIAAAQIECBAgQIAAAQKVCgjwlbLYSIAAAQIECBAgQIAAAQIEyktAgC+v/tAaAgQIECBAgAABAgQIECBQqYAAXymLjQQIECBAgAABAgQIECBAoLwEBPjy6g+tIUCAAAECBAgQIECAAAEClQoI8JWy2EiAAAECBAgQIECAAAECBMpLoFF5NUdrCBAgQIAAAQIECBAoN4G333475s6dGx06dIjNNtus3JqnPQTqjYAn8PWmq10oAQIECBAgQIAAgbUXWLx4cfzyl7+ML3zhC9GpU6fYZZddYvPNN4/ddtsthg0btvYVKUmAQNEEBPiiUaqIAAECBAgQIECAQN0Q+PDDD6N3794xePDg2H777ePXv/513HfffVmgX7ZsWRx//PFx5plnRlq3ECBQOgGv0JfO2pkIECBAgAABAgQI5ELgtNNOi/Hjx8cf/vCHLKyv3Ojvfe97cckll8SVV14Z2267bVxwwQUr77ZOgEAtCngCX4u4qiZAgAABAgQIECCQN4GJEydmr8hffvnlnwvv6VoaNGgQV1xxRRx99NHxk5/8JD744IO8XaL2EsitgACf267TcAIECBAgQIAAAQLFF0jft2+88cZx3nnnrbHyCy+8MNKr9o888sgay9lJgEDxBAT44lmqiQABAgQIECBAgEDuBV599dXYaaedomnTpmu8lu7du8cGG2wQqbyFAIHSCAjwpXF2FgIECBAgQIAAAQK5EEihfMmSJdW2denSpdkgdqm8hQCB0ggI8KVxdhYCBAgQIECAAAECuRDo1q1bTJkyJZv3fU0NToPcpRCfylsIECiNgABfGmdnIUCAAAECBAgQIJALgf79+2dP4NNAdVUtKbhfeuml0bZt2zjkkEOqKmY7AQJFFhDgiwyqOgIECBAgQIAAAQJ5FkhP1L/97W/HNddcE1dffXX2lH3l6/noo49iwIABMWbMmLjqqquiWbNmK++2ToBALQqYB74WcVVNgAABAgQIECBAII8C1157bcyaNSub4/13v/tdHHXUUbH55pvHtGnTsinm3n333WwquW9+85t5vDxtJpBbAQE+t12n4QQIECBAgAABAgRqR6Bx48bxhz/8IZvr/frrr4+f//zn2Wv1aXq5gw46KNIUcnvttVftnFytBAhUKSDAV0ljBwECBAgQIECAAIH6LXDsscdG+kmj0s+fPz9atmwZDRo0qN8orp7AehRYp2/gzz333Bg7dmw2bcR6bLtTEyBAgAABAgQIECBQAoE0VVyrVq2E9xJYOwWBNQmsU4D//e9/H1/5yldi2223zUafTN/CWAgQIECAAAECBAgQIECAAIHaE1inAH/xxRfHdtttlw1icdlll2VBPgX6NMDFhx9+WHutVTMBAgQIECBAgAABAgQIEKinAusU4H/wgx/Eq6++GhMmTIizzz47Nt100+yV+jQKZfv27ePUU0/NppVYtmxZPWV12QQIECBAgAABAgQIECBAoLgC6xTglzehZ8+eceONN8aMGTPivvvuy6aXWLx4cdxxxx1xwAEHROfOnWPIkCHxxhtvLD/EbwIECBAgQIAAAQIECBAgQGAdBAoK8MvPt+GGG0bfvn1jxIgRMXPmzLj77rvjmGOOibfeeisuv/zy+OIXvxj7779/NhVFGsHSQoAAAQIECBAgQIAAAQIECNRMoCgBfvkpP/7443jsscfi4Ycfzn4vf4W+SZMm8cQTT0T//v1jl112iTfffHP5IX4TIECAAAECBAgQIECAAAECayFQcIBfunRp9r37aaedFu3atYujjz467rzzzli4cGEcf/zxMXLkyGzOyDFjxsThhx8eL730UqRX79OTegsBAgQIECBAgAABAgQIECCwdgKN1q7Y50u9+OKLWVAfOnRo/POf//yswB577BFpMLv0tD0Nbrd8SaPU77vvvrHPPvvE+PHjs2B/yimnLN/tNwECBAgQIECAAAECBAgQILAGgXUK8L169YqJEyd+Vu3mm28eJ510Uhbcu3Xr9tn21VcaNmwYX/7yl7MAv3LoX72cvwkQIECAAAECBAgQIECAAIFVBdYpwL/88svRuHHj7JX49LT9q1/9ajRqtHZVdezYMU4//fQ44ogjVm2JvwgQIECAAAECBAgQIECAAIEqBdYuda92+M9+9rPsW/f05L2my/e+972aHqI8AQIECBAgQIAAAQIECBCo9wLrFOC//e1v13s4AAQIECBAgAABAgQIECBAoJQCBY9CX8rGOhcBAgQIECBAgAABAgQIEKivAgJ8fe15102AAAECBAgQIECAAAECuRIQ4HPVXRpLgAABAgQIECBAgAABAvVVQICvrz3vugkQIECAAAECBAgQIEAgVwICfK66S2MJECBAgAABAgQIECBAoL4KCPD1teddNwECBAgQIECAAAECBAjkSkCAz1V3aSwBAgQIECBAgAABAgQI1FcBAb6+9rzrJkCAAAECBAgQIECAAIFcCQjwueoujSVAgAABAgQIECBAgACB+iogwNfXnnfdBAgQIECAAAECBAgQIJArAQE+V92lsQQIECBAgAABAgQIECBQXwUE+Pra866bAAECBAgQIECAAAECBHIl0ChXrdVYAgQIECBAgAABAgTWKDBr1qwYPnx4TJ48OT766KPo3LlzHHnkkbHnnnuu8Tg7CRAofwFP4Mu/j7SQAAECBAgQIECAwFoJ/PrXv45tttkmzj777Hj00UfjmWeeiauvvjp69OgRffv2jblz565VPQoRIFCeAgJ8efaLVhEgQIAAAQIECBCokUAK6t/+9rfjv/7rv+Kll16K6dOnx2uvvRbpiXzalwL9/vvvHwsWLKhRvQoTIFA+AgJ8+fSFlhAgQIAAAQIECBBYJ4GpU6fGRRddFP3794+HH344dtxxx8/qadGiRQwePDgeeuihmDJlSvz4xz/+bJ8VAgTyJSDA56u/tJYAAQIECBAgQIDA5wR+9atfRdOmTePGG2+MBg0afG5/2nDQQQfFqaeeGuk1+/RtvIUAgfwJCPD56zMtJkCAAAECBAgQILCKwNixY7OAvummm66yffU/jjvuuFi4cGFMmjRp9V3+JkAgBwICfA46SRMJECBAgAABAgQIrEkgfefesWPHNRXJ9m2xxRbZ71TeQoBA/gQE+Pz1mRYTIECAAAECBAgQWEVg8803j7fffnuVbZX98dZbb2Wb27VrV9lu2wgQKHMBAb7MO0jzCBAgQIAAAQIECFQncOCBB8bo0aNj5syZayx61113RRrUzpzwa2Syk0DZCgjwZds1GkaAAAECBAgQIEBg7QTOO++8WLx4cXzrW9+KTz/9tNKDRowYEXfffXcMHDgwmjRpUmkZGwkQKG8BAb68+0frCBAgQIAAAQIECFQr0KVLl/if//mfePDBB7O53sePHx/Lli3Ljnv33XfjRz/6URx77LHRq1evuOSSS6qtTwECBMpToFF5NkurCBAgQIAAAQIECBCoicBZZ50VrVq1yp6w77333tGsWbNsarnlA9adcsop2TRznr7XRFVZAuUlIMCXV39oDQECBAgQIECAAIF1FjjhhBPiiCOOiIceeigmT56czffeuXPn+NrXvhbbbbfdOtfrQAIEykNAgC+PftAKAgQIECBAgAABAkURaN68efTv3z/7KUqFKiFAoGwEfANfNl2hIQQIECBAgAABAgQIECBAoGoBAb5qG3sIECBAgAABAgQIECBAgEDZCAjwZdMVGkKAAAECBAgQIECAAAECBKoWEOCrtrGHAAECBAgQIECAAAECBAiUjYAAXzZdoSEECBAgQIAAAQIECBAgQKBqAQG+aht7CBAgQIAAAQIECBAgQIBA2QgI8GXTFRpCgAABAgQIECBAgAABAgSqFhDgq7axhwABAgQIECBAgAABAgQIlI2AAF82XaEhBAgQIECAAAECBAgQIECgagEBvmobewgQIECAAAECBAgQIECAQNkICPBl0xUaQoAAAQIECBAgQIAAAQIEqhYQ4Ku2sYcAAQIECBAgQIAAAQIECJSNgABfNl2hIQQIECBAgAABAgQIECBAoGoBAb5qG3sIECBAgAABAgQIECBAgEDZCAjwZdMVGkKAAAECBAgQIECAAAECBKoWEOCrtrGHAAECBAgQIECAAAECBAiUjYAAXzZdoSEECBAgQIAAAQIECBAgQKBqAQG+aht7CBAgQIAAAQIECBAgQIBA2QgI8GXTFRpCgAABAgQIECBAgAABAgSqFhDgq7axhwABAgQIECBAgAABAgQIlI2AAF82XaEhBAgQIECAAAECBAgQIECgagEBvmobewgQIECAAAECBAgQIECAQNkINCqblmgIAQIECBAgQIAAgXos8Le//S1efvnlTKBr167RpUuXeqzh0gkQqExAgK9MxTYCBAgQIECAAAECJRIYN25cDBo0KJ599tlVzrjHHnvENddcE/vss88q2/1BgED9FfAKff3te1dOgAABAgQIECCwngXuuOOO2H///WPOnDlxww03xOTJk7OftJ62pX2pjIUAAQJJwBN49wEBAgQIECBAgACB9SDwwgsvxOmnnx4HHnhg3HfffdGsWbPPWtG9e/f4xje+Ef369cvK7LrrrvGlL33ps/1WCBConwKewNfPfnfVBAgQIECAAAEC61ngsssui5YtW8Y999yzSnhf3qwU6NO+VCaVtRAgQECAdw8QIECAAAECBAgQKLHA4sWL45FHHomTTz45WrVqVeXZ075UJpVNx1gIEKjfAgJ8/e5/V0+AAAECBAgQILAeBN599934+OOPo1u3btWePZVJZdMxFgIE6reAAF+/+9/VEyBAgAABAgQIrAeBjTfeODvrggULqj378jLLj6n2AAUIEKizAgJ8ne1aF0aAAAECBAgQIFCuAm3bto2tt946Ro0aVW0TU5lUNh1jIUCgfgsI8PW7/109AQIECBAgQIDAehIYMGBAPPzwwzFmzJgqW5D2pTKprIUAAQICvHuAAAECBAgQIECAwHoQ+P73vx877rhj9O3bN0aMGPG5FqRtad9OO+0UqayFAAEC5oF3DxAgQIAAAQIECBBYDwJpmrg///nPceSRR2bzvafB6nr16pW1ZMKECTFlypTYfffd44EHHqh0mrn10GSnJEBgPQt4Ar+eO8DpCRAgQIAAAQIE6q/AFltsESms33bbbdG+fftsurg0ZVxaT9vSvlTGQoAAgSTgCbz7gAABAgQIECBAgMB6FGjUqFH2jbvv3NdjJzg1gZwIeAKfk47STAIECBAgQIAAAQIECBCo3wKewFfT//PmzYvZs2dHmn+zQYMG0bJly2jVqlW0aNGimiPtJkCAAAECBAgQIECAAAECxRMQ4CuxnDx5ctx4440xcuTImDFjRiUlIrbaaqtskJFTTjklDj/88CzcV1rQRgIECBAgQIAAAQIECBAgUAQBAX4lxPSUPU3VMXr06JW2/mc1PX1Py7Jly7Lfb7/9dqSf4cOHR8+ePeP+++/PBhvJdvofAgQIECBAgAABAgQIECBQZAHfwFeALlq0KJu+I4X3du3axcCBA2PMmDHx2muvxaxZs2Lx4sXx6aefZq/Tv/766zF27NgYNGhQdOzYMSZOnBj77bdfpDosBAgQIECAAAECBAgQIECgNgQ8ga9QTdN1jBo1KnbZZZd44oknsu/cKwNv3bp1pJ8uXbrEvvvuG5dddln07t07C/G33HJLnHvuuZUdZhsBAgQIECBAgAABAgQIEChIwBP4Cr7x48dnazfccEOV4b0y6ebNm0cK7mkZN25cZUVsI0CAAAECBAgQIECAAAECBQsI8BWEU6dOzdZ23nnnGqN27do1Nthgg3j//fdrfKwDCBAgQIAAAQIECBAgQIDA2ggI8BVKnTp1ytYmTZq0Nm6rlHn66adjyZIl0a1bt1W2+4MAAQIECBAgQIAAAQIECBRLQICvkOzTp0+2NmDAgJgyZcpa+6YB7U4++eSsfPom3kKAAAECBAgQIECAAAECBGpDwCB2FaqHHXZYNoXciBEjIr1G36NHjzj66KNjiy22iLZt20abNm2iYcOGMWfOnOwnzQ//wAMPZKPRL126NPr37x/HHHNMbfSROgkQIECAAAECBAgQIECAQAjwK90Ew4YNi/PPPz9uuummSK/Sr83r9K1atYozzjgjhgwZslJNVgkQIECAAAECBAgQIECAQHEFBPiVPBs1ahTXXnttDB48OIYOHRoTJkyIF198MT744IOYN29eNG7cOJv3Pc39nn569uwZ6ZX7Fi1arFRL8VbTFHXvvvtujStM7U3f5FsIECBAgAABAgQIECBAoO4ICPCV9GV6bT49iV+fy+LFi+O+++6L9957r8bN+Oijj2p8jAMIECBAgAABAgQIECBAoLwFBPgy7Z/0tP/5559fp9ZtueWWMWvWrHU61kEECBAgQIAAAQIECBAgUJ4CRqEvz37RKgIECBAgQIAAAQIECBAgsIqAAL8Khz8IECBAgAABAgQIECBAgEB5Cgjw5dkvWkWAAAECBAgQIECAAAECBFYR8A18BccRRxwR48aNWwWnpn9cdNFFceGFF9b0MOUJECBAgAABAgQIECBAgEC1AgJ8BdGOO+4YDz/8cLVgayrwySefrGm3fQQIECBAgAABAgQIECBAYJ0FBPgKuquuuiqb2z3NAZ/mUP/Zz34W6al8TZbNN9+8JsXrXNk5c+bE3//+92jatGlsu+22kUbStxAgQIAAAQIE6rKAf/+py73r2giUn4AAv1KffPe7340OHTrECSecEFdffXWcfPLJWahfqYjVSgSefPLJuOSSS7JPEJYtW5aVaNmyZeZ36aWXRps2bSo5yiYCBAgQIECAQH4F/PtPfvtOywnkWcAgdqv13vHHHx/HHntszJ49OwYOHLjaXn+uLvCrX/0q9t9//3jrrbfiiiuuiAcffDCGDh0a/fr1i5tvvjl23333eO2111Y/zN8ECBAgQIAAgdwK+Pef3HadhhPIvUCDfz8x/c8j09xfSvEuYObMmdG1a9eYO3duvPDCC9GtW7fiVV6CmrbccsuYNWtWfPzxx7V6tpEjR8ZXv/rVOOaYY+KOO+6IjTbaaJXzPffcc3HooYdGq1at4vnnn48mTZqsst8fBAgQIECAAIG8Cfj3n7z1mPbWVYHx48fH3v+fvfsAj6JaGzj+htClSBUQC0WqCkjvigQBEaUpVRQuKAJKvQLqhwVFBQTEK4r34gUpghTBggRQEQlFwEYVEfFKNXSE0JJv33PdXJJsS9nd2Zn/eZ7IZubMzDm/M2723TmlYUOJjY2VmJgYu1YzTb14Ap+GRETHsn/66afyzjvvyIULFzzkYJMKDB8+3HzRMWvWrDTBu+6vXr26zJ49W3bt2iXTpk3TTSQEEEAAAQQQQCCiBfj8E9HNR+ERiHgBAngvTVi3bl3p3bu33HbbbV5yOHvzzp07ZevWraLzBuTMmdMrxp133im1atWSDz74wGsediCAAAIIIIAAApEgwOefSGglyoiAvQUI4O3dvkGrnXtcuwbn/pLmcef3l5f9CCCAAAIIIICAVQXcn2f4/GPVFqJcCNhfgADe/m0clBpmz/7fBQwuXbrk9/wXL14Ud36/mcmAAAIIIIAAAghYVMD9eYbPPxZtIIqFgAMECOAd0MjBqKJ7Yj9dQsVfWrNmjdxyyy3+srEfAQQQQAABBBCwtACffyzdPBQOAUcIEMA7opmzvpLXX3+9NGnSRF577TUzW7+3K7z33num+3yPHj28ZWE7AggggAACCCAQEQJ8/omIZqKQCNhagADe1s0b3MpNnDhRjh07Jq1atZL9+/enudiCBQvk0UcfNYF+586d0+xnAwIIIIAAAgggEGkCfP6JtBajvAjYS+C/A5ntVSdqEyIBnaF//vz50rVrV6lQoYK0b9/edJX/888/zXqM69evl/r168vChQslWza+KwpRs3AZBBBAAAEEEAiiAJ9/gojLqRFAwK9AVJIr+c1FhogSKF26tMTHx0tCQkJIyr1v3z4ZO3asLFmyRA4dOiTR0dFSrVo1swxfnz59JEeOHCEpBxdBAAEEEEAAAQRCJcDnn1BJcx0EPAvExcVJw4YNzYPDmJgYz5lsuJUA3oaNGuoA/krCc+fOmXXhNYgnIYAAAggggAACThDg848TWpk6Wk3AqQE8XeitdidGeHny5MkT4TWg+AgggAACCCCAQPoE+PyTPi9yI4BAxgUYmJxxO45EAAEEEEAAAQQQQAABBBBAIGQCBPAho+ZCCCCAAAIIIIAAAggggAACCGRcgAA+43YciQACCCCAAAIIIIAAAggggEDIBAjgQ0bNhRBAAAEEEEAAAQQQQAABBBDIuAABfMbtOBIBBBBAAAEEEEAAAQQQQACBkAkQwIeMmgshgAACCCCAAAIIIIAAAgggkHEBAviM23EkAggggAACCCCAAAIIIIAAAiETIIAPGTUXQgABBBBAAAEEEEAAAQQQQCDjAgTwGbfjSAQQQAABBBBAAAEEEEAAAQRCJkAAHzJqLoQAAggggAACCCCAAAIIIIBAxgUI4DNux5EIIIAAAggggAACCCCAAAIIhEyAAD5k1FwIAQQQQAABBBBAAAEEEEAAgYwLEMBn3I4jEUAAAQQQQAABBBBAAAEEEAiZAAF8yKi5EAIIIIAAAggggAACCCCAAAIZFyCAz7gdRyKAAAIIIIAAAggggAACCCAQMgEC+JBRcyEEEEAAAQQQQAABBBBAAAEEMi5AAJ9xO45EAAEEEEAAAQQQQAABBBBAIGQC2UN2JS6EQDoEDh48KDt37jRHVKpUSUqWLJmOo8mKAAIIIIAAAgh4FkhMTJStW7eKftYoVKiQVKtWTXLlyuU5M1sRQAABiwnwBN5iDeL04mzatEnuuOMOufbaa6VZs2bmR1/rNt1HQgABBBBAAAEEMiKggfvkyZPNZwwN2lu2bCl169aVYsWKybBhw+TMmTMZOS3HIIAAAiEVIIAPKTcX8yXwwQcfSMOGDeWnn36SsWPHyurVq82PvtZtum/BggW+TsE+BBBAAAEEEEAgjcClS5ekffv2MmjQIPPEfc6cObJu3TpZsmSJ2T5p0iSpX7++xMfHpzmWDQgggICVBKKSXMlKBaIsmRcoXbq0+QOUkJCQ+ZOF6Aw7duyQ2267TerUqSNLly6VggULprjyyZMnpW3btrJx40bZsmWLVK5cOcV+fkEAAQQQQAABBLwJjBw5Ul5++WV54403pH///mmyffHFF9KmTRvzsCA2NjbNfjYggID1BOLi4pL/n42JibFeAYNUIp7ABwmW06ZP4LnnnpPcuXPLwoUL0wTveiYN6HWf5tG8JAQQQAABBBBAIBCBI0eOyMSJE6V3794eg3c9hw7VGz9+vKxYsUI+//zzQE5LHgQQQCAsAgTwYWHnolcKaLe2jz76SHr06CFFixa9cleK17pP82hePYaEAAIIIIAAAgj4E/j000/l/PnzMnjwYJ9ZNcDPnz+/LF682Gc+diKAAALhFCCAD6c+1zYCOgvs2bNnzZg0fyQ66YzmPXTokL+s7EcAAQQQQAABBGTPnj2SPXt2qVKlik+NnDlzmiF6mp+EAAIIWFWAAN6qLeOgcmm3eE2BjNl352G5FwfdIFQVAQQQQACBTAjoZ4bLly/LxYsX/Z7l3LlzLCnnV4kMCCAQTgEC+HDqc20joMu36FJxq1at8iuieTSvHkNCAAEEEEAAAQT8CdSoUUN0zmZ/Y9u1d9/27dtF85MQQAABqwoQwFu1ZRxWroceesgs5aKzSXpLuk+Xe9G8JAQQQAABBBBAIBCB5s2bi67Q88wzz8iFCxe8HjJq1CjJli2bdOvWzWsediCAAALhFiCAD3cLcH0j8Pe//13KlSsn9957r5kBNjWLzgqr+zSP5iUhgAACCCCAAAKBCGgX+ilTpsjmzZulXbt28scff6Q4TIfnDRkyRN59910ZMWKE+ayRIgO/IIAAAhYSyG6hslAUBwsUKFBAli9fbtZgbdGihdSrV0/q169vRNatWyfr1683k898/PHHonlJCCCAAAIIIIBAoAL33XefTJs2TR577DEpW7astG7dWsqUKSO6xJzOUn/48GEZNGgQS9UGCko+BBAIm0CUa0xQUtiuzoWDIqDdxOLj4wOaFC4oBcjESXWZl7feekvmzp0rO3bsMGeqXLmydOnSRR599FEmlsmELYcigAACCCDgdIHdu3fLhAkTJDY2VnQVnEKFCknjxo1l4MCB0qhRI6fzUH8EIkpAh9c2bNjQ/P8cExMTUWXPTGEJ4DOjZ9FjIzmAtygpxUIAAQQQQAABBBBAAAELCTg1gGcMvIVuQoqCAAIIIIAAAggggAACCCCAgDcBAnhvMmxHAAEEEEAAAQQQQAABBBBAwEICBPAWagyKggACCCCAAAIIIIAAAggggIA3AQJ4bzJsRwABBBBAAAEEEEAAAQQQQMBCAgTwFmoMioIAAggggAACCCCAAAIIIICANwECeG8ybEcAAQQQQAABBBBAAAEEEEDAQgIE8BZqDIqCAAIIIIAAAggggAACCCCAgDcBAnhvMmxHAAEEEEAAAQQQQAABBBBAwEICBPAWagyKggACCCCAAAIIIIAAAggggIA3AQJ4bzJsRwABBBBAAAEEEEAAAQQQQMBCAgTwFmoMioIAAggggAACCCCAAAIIIICANwECeG8ybEcAAQQQQAABBBBAAAEEEEDAQgIE8BZqDIqCAAIIIIAAAggggAACCCCAgDcBAnhvMmxHAAEEEEAAAQQQQAABBBBAwEICBPAWagyKggACCCCAAAIIIIAAAggggIA3AQJ4bzJsRwABBBBAAAEEEEAAAQQQQMBCAtktVBaKgkCWCyQkJMiyZctky5YtcvbsWSlbtqy0adNGbrjhhiy/FidEAAEEEEAAgawXSExMlNWrV8vXX38tx44dk1KlSklMTIxUr1496y/GGRFAAAGLCxDAW7yBKF7GBRYvXiwDBgyQAwcOSI4cOSRXrlxy5swZeeKJJ6RPnz4yceJEyZ07d8YvwJEIIIAAAgggEFSBb7/9Vh566CH54YcfJFu2bJI/f345efKkuWbLli1l+vTpUrJkyaCWgZMjgAACVhKgC72VWoOyZJnAu+++Kx06dJDSpUvLypUr5dy5c3L69Gn59ddfTQA/bdo00T/8Fy9ezLJrciIEEEAAAQQQyDqBDRs2SKNGjeTEiRMyZ84c8yW8vo6Pj5fXXntN1q5dK/Xq1ZNDhw5l3UU5EwIIIGBxAQJ4izcQxUu/wN69e6Vfv35y1113yZo1a+TOO++U6OhocyLtOj9hwgSZPXu2fPXVV/Liiy+m/wIcgQACCCCAAAJBFTh//rx07tzZdJfftGmTdOnSRfLkyWOuWaRIERk8eLDpVq9d6rVXHQkBBBBwigABvFNa2kH1nDx5sulmp0/hc+bM6bHm+qGgU6dOMmnSJLlw4YLHPGxEAAEEEEAAgfAIzJ8/3/Sae/vtt6VYsWIeC1GjRg155pln5OOPP5bt27d7zMNGBBBAwG4CBPB2a1HqY7rMN2/eXEqUKOFTo0ePHmYc3TfffOMzHzsRQAABBBBAILQCOvxNJ6tr1qyZzwvr33JNmp+EAAIIOEGAAN4JreywOupYuEBmmXfnYeycw24QqosAAgggYHmBQP+W6wR22tuOv+WWb1IKiAACWSRAAJ9FkJzGOgKFCxcO6A+5+4+9jqUjIYAAAggggIB1BPRvs/vvtK9S6Rh4HQrH33JfSuxDAAE7CRDA26k1qYsRaNq0qaxYsSJ5mRlvLAsWLDDLyNWuXdtbFrYjgAACCCCAQBgEmjRpIjop7ebNm31eXf+Wa9L8JAQQQMAJAgTwTmhlh9Vx4MCBZsk4Xe/dW1q9erVZO1Znrr3qqqu8ZWM7AggggAACCIRBoGvXrlK0aFGzqowuBesp/fbbb2YSuwYNGghfxnsSYhsCCNhRgADejq3q8Drdeuut8uyzz8qMGTOkffv28ssvvySLJCQkyBtvvCGtW7eWChUqyJgxY5L38QIBBBBAAAEErCFQoEAB0dVk9Al848aNZf369ckFu3z5snz44Yeigbt2n58+fXryPl4ggAACdhfIbvcKUj9nCuiyMvnz55ennnpKFi9eLOXKlTNP2n/++Wc5e/asWSN+1qxZoh8QSAgggAACCCBgPYE2bdrI0qVLpXfv3lK/fn0zK33x4sVl3759cvz4calataosX75cKlasaL3CUyIEEEAgSAJRSa4UpHNz2jAJlC5dWuLj40WfNjs9HTx4UObOnStbtmwxgXuZMmXkvvvuM9/mO92G+iOAAAIIIBAJAmfOnBFdF37NmjUmcNeZ51u0aCFt27aV6OjoSKgCZUQAgSAIxMXFScOGDSU2NlZiYmKCcAVrnpIA3prtkqlSEcBnio+DEUAAAQQQQAABBBBAwOICTg3gGQNv8RuT4iGAAAIIIIAAAggggAACCCCgAgTw3AcIIIAAAggggAACCCCAAAIIRIAAAXwENBJFRAABBBBAAAEEEEAAAQQQQIAAnnsAAQQQQAABBBBAAAEEEEAAgQgQIICPgEaiiAgggAACCCCAAAIIIIAAAggQwHMPIIAAAggggAACCCCAAAIIIBABAgTwEdBIFBEBBBBAAAEEEEAAAQQQQAABAnjuAQQQQAABBBBAAAEEEEAAAQQiQIAAPgIaiSIigAACCCCAAAIIIIAAAgggQADPPYAAAggggAACCCCAAAIIIIBABAgQwEdAI1FEBBBAAAEEEEAAAQQQQAABBAjguQcQQAABBBBAAAEEEEAAAQQQiAABAvgIaCSKiAACCCCAAAIIIIAAAggggAABPPcAAhkQOHfuXAaO4hAEEEAAAQScJZCYmCgJCQnOqjS1RQABBIIoQAAfRFxObS+BpUuXSvPmzSV37tySN29eufrqq6VTp06yadMme1WU2iCAAAIIIJAJgUuXLsnUqVOlVq1akjNnTsmTJ4+UKlVK+vXrJ7/99lsmzsyhCCCAAAIE8NwDCPgR0A8iDz74oNx7773mg8eAAQPklVdekS5dusjq1aulbt26Mm7cOD9nYTcCCCCAAAL2Fzh69Kg0bdpUHnvsMcmePbuMHDlSxo4dK82aNZMZM2ZI1apV5eOPP7Y/BDVEAAEEgiSQPUjn5bQI2EZg+PDh8t5778kLL7xgPohER0cn100D90ceeUT+/ve/S8mSJaV79+7J+3iBAAIIIICAkwSSkpKkffv28u2338r8+fNNL7Ur6//7779Lhw4dzPa4uDipUaPGlbt5jQACCCAQgABP4ANAIotzBXbs2CGvv/66PP744/L000/LlcG7quTLl09mzpwpTZo0kaFDh8rZs2edi0XNEUAAAQQcLTB37lz56quv5K233koTvCtM6dKlZdmyZVK4cGEZPHiwo62oPAIIIJBRAQL4jMpxnCME5syZI9myZZPRo0d7ra8G9c8++6wcOXJEYmNjveZjBwIIIIAAAnYW0N5qFSpUMMPOvNXTHbzrEDTGw3tTYjsCCCDgXYAA3rsNexCQH374QW6++WbztMAXR6NGjUyg/+OPP/rKxj4EEEAAAQRsK6B/Axs3buy3ftprTdPWrVv95iUDAggggEBKAQL4lB78hkAKAZ3ALkeOHCm2efpFn8Lrk3rNT0IAAQQQQMCJAoH+zXT/XeVvphPvEuqMAAKZFSCAz6wgx9taQLsCbtu2Tfyt+/7999+b4F3zkxBAAAEEEHCigP4NDGRpVXce/mY68S6hzgggkFkBAvjMCnK8rQV0nXedmO6NN97wWU9dVu6qq66SVq1a+czHTgQQQAABBOwqoH8zNTj//PPPvVbxwoULMmnSJDM8rVKlSl7zsQMBBBBAwLMAAbxnF7YiYAQaNGgg7dq1k6eeekoWL17sUUWXl5s3b56MGjXK71h5jydgIwIIIIAAAjYQ6Nu3r5nErmvXrqI901KnhIQE6dGjh+gKL6+++mrq3fyOAAIIIBCAAOvAB4BEFmcL/Pvf/5aWLVuatW3vuece82/x4sXll19+MUvIffPNN/LQQw+ZNeKdLUXtEUAAAQScLJArVy756KOPJCYmRmrXrm2C9RYtWpgeajrB3TvvvCP79u2T1157jR5rTr5RqDsCCGRKgAA+U3wc7ASBAgUKyBdffCETJkwwXen1w4k7Va5c2QTx+kSBhAACCCCAgNMFdFz75s2bzfKquqzc9OnTDUlUVJToii3vvvuuNG3a1OlM1B8BBBDIsEBUkitl+GgOtKRA6dKlJT4+XrSrGilrBfR/lz179sjx48elZMmSotYkBBBAAAEEEEgroOPdf/75ZzMR7I033ihFihRJm4ktCCCAQAYF4uLipGHDhhIbG2t6/mTwNBF3GE/gI67JKHA4BfQJQvny5cNZBK6NAAIIIIBARAjkzJlTqlSpEhFlpZAIIIBApAgwiV2ktBTlRAABBBBAAAEEEEAAAQQQcLQAAbyjm5/KI4AAAggggAACCCCAAAIIRIoAAXyktBTlRAABBBBAAAEEEEAAAQQQcLQAAbyjm5/KI4AAAggggAACCCCAAAIIRIoAAXyktBTlRAABBBBAAAEEEEAAAQQQcLQAAbyjm5/KI4AAAggggAACCCCAAAIIRIoAAXyktBTlRAABBBBAAAEEEEAAAQQQcLQAAbyjm5/KI4AAAggggAACCCCAAAIIRIoAAXyktBTlRAABBBBAAAEEEEAAAQQQcLQAAbyjm5/KI4AAAggggAACCCCAAAIIRIoAAXyktBTlRAABBBBAAAEEEEAAAQQQcLRAdkfXnsojECaBixcvyoIFCyQ2NlYOHjwohQoVksaNG0u3bt2kYMGCYSoVl0UAAQQQcLLAt99+K/PmzZPt27cbhipVqsgDDzwgNWrUcDILdUcAAQQsJcATeEs1B4VxgoB+QNIPRV27dpXPPvtMTp48KRs3bpT+/ftL2bJlZdGiRU5goI4IIIAAAhYRSEhIkF69esltt90mkyZNkv3795sffV2zZk2zT/OQEEAAAQTCL0AAH/42oAQOEti2bZs0bdpU9Am8Bu8HDhyQdevWyZ49e0QD+4oVK0rHjh0J4h10T1BVBBBAIJwCiYmJ5u/OjBkz5KmnnpIjR47I5s2bzY++HjVqlOg+/dukeUkIIIAAAuEVIIAPrz9Xd5iAPuHIly+fxMXFyV133SVRUVHJAtWrV5cvvvhC6tWrJ3369JETJ04k7+MFAggggAACwRCYPn26fPLJJzJ16lQZM2aMFChQIPky+lq3vfnmmybPu+++m7yPFwgggAAC4REggA+PO1d1oMD69etNV3n9MFSqVCmPArly5TIfoo4dOyazZ8/2mIeNCCCAAAIIZJXAlClTpG7dutK3b1+vp3zkkUdMntdff91rHnYggAACCIRGgAA+NM5cBQH5+uuvjUL79u19alSrVs2MhXfn95mZnQgggAACCGRQ4NSpU/LDDz+Iv79LenrNo3n1GBICCCCAQPgECODDZ8+VHSagT9Vz5swpV199td+aX3PNNaL5SQgggAACCARL4Pjx4+bUxYsX93sJdx73MX4PIAMCCCCAQFAECOCDwspJEUgrULJkSblw4YKZ2Tft3v9tSUpKkr1794rmJyGAAAIIIBAsAQ3Ko6Ojzd8cf9fQv0ua1x3I+8vPfgQQQACB4AgQwAfHlbMikEYgJibGbJs5c2aafVduWLFihRw6dEhatGhx5WZeI4AAAgggkKUCefLkkYYNG8qcOXPk0qVLXs+t+zSP5tVjSAgggAAC4RMggA+fPVd2mEClSpWkXbt2ZkZfXffdUzp48KDoZEHly5eXTp06ecrCNgQQQAABBLJMYOTIkfLzzz/L0KFDvZ5T92kezUtCAAEEEAivAAG8H/+TJ0/KL7/8Ij/++KNs3bpV/vOf/8jp06f9HMVuBDwLvP3226Zr/B133CFjx44168BrTr3PdHmeWrVqydGjR2XevHmSI0cOzydhKwIIIIAAAlkk0LJlSxk2bJjoDPNt2rQRXTFF13u/fPmyea3bdJ/m0bwkBBBAAIHwCmQP7+WtefXNmzfLP/7xD/nss89En4h6Stddd51Zr/vBBx+Uu+++O8V63p7ysw0BFShWrJisW7fOPGUfNWqU6I9ObKdj4zXVrl1bdE3em2++2fzOfxBAAAEEEAi2wLhx4+SGG26Qp59+WurXr2/Guus1NYgvWLCg6FJzAwYMCHYxOD8CCCCAQAACUa4Js5ICyOeILH/++afp4qxjkFOnqKgos8kTl66f+uGHH0qJEiVSHxaW30uXLi3x8fGSkJAQlutz0cAEdu7cKXqv6ZdEhQoVkkaNGpkvhdz3WmBnIRcCCCCAAAJZI6BLxC1btkx27NhhTli5cmVp1aqVFChQIGsuwFkQQACBLBSIi4szc3PExsaKe66pLDy9ZU/FE/i/mkafgOoapxpQ6RJeDzzwgAnmr732WilcuLBZ+ksDqxMnTpjlvQ4cOCBLliyR999/XzZs2CBNmzY13ez1aSoJgUAEdEy8/pAQQAABBBCwgoAG6vr5h4QAAgggYF0BAvi/2ubTTz8V/famWrVq8uWXX3pdq1uDef3RScaaNGkizz33nDRv3twE8dOmTaOLmXXvdUqGAAIIIIAAAggggAACCES0AJPY/dV82gVD0xtvvOE1eP8ra4p/8uXLJxq4a1qzZk2KfZn55eLFi1KqVCkzDk3XXU3Pz/79+0WPJyGAAAIIIIAAAggggAACCNhHgCfwf7Xl9u3bzatbbrkl3a2rY8Q0wP7jjz/Sfay3A3QG8qeeekoOHz7sLYvX7ZMmTWL8u1cddiCAAAIIIIAAAggggAACkSlAAP9Xu11//fXmla7Pnd5JENauXWtmas3qmcP79++fobtKZzF3z2qeoRNwEAIIIIAAAggggAACCCCAgOUE6EL/V5Pcc8895lWvXr3Meu+BttTu3bulR48eJruOiSchgAACCCCAAAIIIIAAAgggEAwBnsD/parLpLRr104WL14s2o2+Tp060qFDB9FZ6IsWLSpFihSRbNmymRnojx07Zpb+0lnoV69eLYmJidKlSxfp2LFjMNqIcyKAAAIIIIAAAggggAACCCAgBPBX3ATz58+X4cOHy5tvvinalV5//KWrr75a+vbtK6NHj/aXlf0IIIAAAggggAACCCCAAAIIZFiAAP4KuuzZs8vEiRNl2LBhMmfOHFm/fr1Z213Xfj958qToxHI6M7z7p27duqJd7vPnz3/FWXiJAAIIIIAAAggggAACCCCAQNYLEMB7MNVu8/oknoQAAggggAACCCCAAAIIIICAVQQI4K3SEpQDgUwI7NixQ5YuXSp79+6VPHnySM2aNeXee++ld0gmTDkUAQQQiAQB3v8joZUoIwIIIJB1AgTwWWfJmRAIucCZM2fksccek1mzZklUVJQUL15czp49K5MmTTITL06ePFm6desW8nJxQQQQQACB4Arw/h9cX86OAAIIWFWAZeSs2jKUCwE/AgkJCdK8eXOZO3euPPPMM2ZlhIMHD5r5GtatWydVq1aV7t27m0kZ/ZyK3QgggAACESTA+38ENRZFRQABBLJYgAA+i0E5HQKhEnj++eflm2++kQULFshzzz1nnr67r12vXj1ZtWqV3HfffTJo0CDZvXu3exf/IoAAAghEuADv/xHegBQfAQQQyIQAAXwm8DgUgXAJnD9/XqZMmSJdu3Y1Y909lUNXVZg2bZrkzJlTtCs9CQEEEEAg8gV4/4/8NqQGCCCAQGYECOAzo8exCIRJYOPGjaLjHzWA95WKFStmutl//vnnvrKxDwEEEEAgQgR4/4+QhqKYCCCAQJAECOCDBMtpEQimwJEjR8zpr7vuOr+X0Tzu/H4zkwEBBBBAwNIC7vdz3v8t3UwUDgEEEAiaAAF80Gg5MQLBE9An65r279/v9yKap2jRon7zkQEBBBBAwPoCvP9bv40oIQIIIBBMAQL4YOpybgSCJFC7dm3JmzevzJs3z+cVjh07JitXrpTbb7/dZz52IoAAAghEhgDv/5HRTpQSAQQQCJYAAXywZDkvAkEUyJMnj/Tr109mzpwpy5cv93ilxMREs0a8rgv/xBNPeMzDRgQQQACByBLg/T+y2ovSIoAAAlktQACf1aKcD4EQCegyQrfeequ0bdtWXnnlFbP+u/vSP/74o7Ru3do8odd9lStXdu/iXwQQQACBCBfg/T/CG5DiI4AAApkQiEpypUwcz6EWFChdurTEx8dLQkKCBUtHkbJS4MSJE9K7d29ZtGiR5MiRQ3RSoz///FMOHz4sBQoUkPHjx0ufPn2y8pKcCwEEEEDAAgK8/1ugESgCAgiEVSAuLk4aNmwosbGxEhMTE9ayhPLi2UN5Ma6FAAJZK3D11VfLwoULZcuWLbJkyRLZu3evaPfKmjVrSseOHaVw4cJZe0HOhgACCCBgCQHe/y3RDBQCAQQQCLkAAXzIybkgAlkvcNttt4n+kBBAAAEEnCXA+7+z2pvaIoAAAoyB5x5AAAEEEEAAAQQQQAABBBBAIAIECOAjoJEoIgIIIIAAAggggAACCCCAAAIE8NwDCCCAAAIIIIAAAggggAACCESAAAF8BDQSRUQAAQQQQAABBBBAAAEEEECAAJ57AAEEEEAAAQQQQAABBBBAAIEIECCAj4BGoogIIIAAAggggAACCCCAAAIIEMBzDyCAAAIIIIAAAggggAACCCAQAQKsAx8BjUQREQilwPbt22X+/Pmi/2qqUqWK3H///ebfUJaDayGAAAJ2FLh8+bIsXbpUYmNj5eDBg1KoUCFp3LixeZ/Nly+fHatMnRBAAAEEslCAJ/BZiMmpEIhkgQsXLshjjz0mt9xyi7z44ouydetW86OvdZvu0zwkBBBAAIGMCWzbtk2qVasm7du3l3nz5sm+fftMIN+7d28pX768fPLJJxk7MUchgAACCDhGgADeMU1NRRHwLpCUlCSdO3eWt956SwYPHiyHDh0yT+D1Kby+1m26T/NoXhICCCCAQPoEdu3aJY0aNZITJ07I4sWL5Y8//pBvv/1W9u/fL+vWrZPSpUtL27Zt5eOPP07ficmNAAIIIOAoAQJ4RzU3lUXAs8DMmTPNB8rJkyfL+PHjpUiRIskZ9bVu0336oVPzkhBAAAEE0ifQq1cvyZkzp8TFxcl9990n0dHRySeoV6+erFmzRmrWrCma79SpU8n7eIEAAggggMCVAgTwV2rwGgGHCkyaNElq1aolAwcO9Cqg+/TDpeYlIYAAAggELvDNN9+YwP2FF16Q66+/3uOBefLkkalTp5on83PmzPGYh40IIIAAAggQwHMPIOBwgdOnT8t3330nHTp08CvRsWNHk1ePISGAAAIIBCbw1VdfmYz6Huor6ZekZcqUEXd+X3nZhwACCCDgTAECeGe2O7VGIFng2LFj5nWJEiWSt3l74c7jPsZbPrYjgAACCPxP4OjRo6b7fOHChf+30csrfZ/V/CQEEEAAAQQ8CRDAe1JhGwIOEihWrJhky5bNzIbsr9o6Y7Lm1WNICCCAAAKBCWhQrqt46LJx/pK+z7q/LPWXl/0IIIAAAs4TIIB3XptTYwRSCOTNm1fq168vc+fOFV2f2FvSfZqnQYMGoseQEEAAAQQCE2jevLnJOGvWLJ8HfP7553LgwAFx5/eZmZ0IIIAAAo4UIIB3ZLNTaQRSCowYMUJ0iaORI0em3HHFb7pP8zz55JNXbOUlAggggIA/gSpVqkibNm3k+eefN0vHecqvy8o98sgjcuONN8r999/vKQvbEEAAAQQQEAJ4bgIEEDAfLAcMGCDjxo0zk9nppHbu5J7gTvfpTPT6IZSEAAIIIJA+gXfeeUd0DHzTpk1l4sSJyePcz507Z3o36Uog+vR93rx5kitXrvSdnNwIIIAAAo4RyO6YmlJRBBDwKTBlyhSzvJE+IVq0aJHokkaa9MNlvnz5THA/bNgwn+dgJwIIIICAZwEd175+/XqzzvuQIUNEfwoWLCi6qkdiYqLceuut8uGHH0qNGjU8n4CtCCCAAAIIuAQI4LkNEEAgWWD48OHSu3dv+eijj2THjh1me+XKleWee+4xT46SM/ICAQQQQCDdAiVLlpRly5aZ5ThXrFhhnrjrU/lGjRqZJ/M6SSgJAQQQQAABXwIE8L502IeAAwX0w2TPnj0dWHOqjAACCIRGoHr16qI/JAQQQAABBNIrwFe96RUjPwIIIIAAAggggAACCCCAAAJhECCADwM6l0QAAQQQQAABBBBAAAEEEEAgvQIE8OkVIz8CCCCAAAIIIIAAAggggAACYRAggA8DOpdEAAEEEEAAAQQQQAABBBBAIL0CBPDpFSM/AggggAACCCCAAAIIIIAAAmEQIIAPAzqXRMAJAklJSfL+++9LTEyMWYJO15WvUqWKjBw5UuLj451AQB0RQMAmAl999ZV06tRJdC33XLlyyY033ih9+/aVn376ySY1pBoIIIAAApEiQAAfKS1FORGIIIFTp05Jq1atpEuXLvL7779Lt27d5IknnpAyZcrI+PHjpWLFivLll19GUI0oKgIIOFEgMTHRvHc1bdpU1q5dK23atJGhQ4dK/fr1zReUN998s7zzzjtOpKHOCCCAAAJhEmAd+DDBc1kE7CzQuXNn+eKLL2TatGnyt7/9TaKiopKru2vXLunYsaPcc889smHDBvNUPnknLxBAAAELCYwePVpef/11E7SPGTNGcufOnVw67Un08MMPyyOPPCJFixaVdu3aJe/jBQIIIIAAAsES4Al8sGQ5LwIOFVi0aJEsW7ZMJk2aJH369EkRvCuJPn1fsWKFaJf6IUOGOFSJaiOAgNUF9uzZIy+//LL07t3b9By6MnjXsmvQvnDhQqlVq5YMHDhQzp8/b/UqUT4EEEAAARsIEMDboBGpAgJWEvj3v/9tusrrUylvSceRDho0SGJjY+XAgQPesrEdAQQQCJvArFmzROfyePHFF72WIWfOnPLCCy/I/v37zReTXjOyAwEEEEAAgSwSIIDPIkhOgwAC/xX47rvv5Pbbb5ds2Xy/vTRr1sx8OP7hhx+gQwABBCwnoO9lVatWlWuuucZn2e644w7T00jzkxBAAAEEEAi2gO9P2MG+OudHAAHbCWg30tRdTT1V0p2HbqeedNiGAALhFgj0vSxHjhwSHR1NF/pwNxjXRwABBBwiQADvkIammgiESqBcuXISyJOo77//3hRJ85MQQAABqwnoe9OOHTvkwoULPou2bds2uXTpkpQvX95nPnYigAACCCCQFQIE8FmhyDkQQCBZoH379rJu3TpZv3598rbULy5fvmxmdr7ppptEl2EiIYAAAlYT0Pey06dP+10m7rXXXjNrw7du3dpqVaA8CCCAAAI2FCCAt2GjUiUEwinQr18/uf766+WBxiJ1tAAAOKdJREFUBx6Q3bt3pymKBu86wd2WLVvMDM9pMrABAQQQsICAjm1v0aKFDB8+XFatWuWxRFOmTJF3333XLDNXrFgxj3nYiAACCCCAQFYKsA58VmpyLgQQkKuuukqWLl1qPvjWqFFDHn30UYmJiTHbf/zxR5k6darov88++6zoEy4SAgggYFWB2bNny5133il33XWXdO3a1bxnFS9eXPbu3SszZswwM8/r+u/PP/+8VatAuRBAAAEEbCZAAG+zBqU6CFhBoFq1arJ582Z58sknRZ9QTZgwIblY2mV+yZIl0rZt2+RtvEAAAQSsKKBrva9du9YE6G+//ba89957ycUsVaqUGQrUv39/v6tuJB/ECwQQQAABBDIpEOVa4zQpk+fgcIsJlC5dWuLj4yUhIcFiJaM4ThQ4deqUbN26Vc6dO2fWhy9btqwTGagzAghEuIBOZqfLXh4/flxKlixplpiLioqK8FpRfAQQQCByBeLi4qRhw4YSGxtrentGbk3SV3KewKfPi9wIIJBOgQIFCkiDBg3SeRTZEUAAAWsJ5MyZU2rVqmWtQlEaBBBAAAHHCTCJneOanAojgAACCCCAAAIIIIAAAghEogABfCS2GmVGAAEEEEAAAQQQQAABBBBwnABd6B3X5FQYgcgV2Llzp6xZsyZ5DKrODq0TSZEQQACB1AI6xc+GDRvMhJruOTh0RQwd1kNCAAEEEEAgUgUI4CO15Sg3Ag4S+OWXX8za8StXrkxR62zZsknPnj1l0qRJfChPIcMvCDhb4OuvvzZLWG7bti0FRN68ec3qGE899ZRER0en2McvCCCAAAIIRIIAXegjoZUoIwIOFtixY4fUqVNHtmzZIq+99pr8+uuvcvbsWTOz/dChQ2XWrFlmBtKTJ086WImqI4CAW2Dp0qXSrFkzOX/+vFn27fDhw3LmzBlZt26d3HfffTJ69Gi5//77JTEx0X0I/yKAAAIIIBAxAiwjFzFNFXhBWUYucCtyWlvg8uXLomvKHzt2TPSJmqcl6D7//HNp1aqVdOrUyQTz1q4RpUMAgWAKHDp0SCpUqGCWeNNlhfLnz5/mcpMnT5ZBgwaZLwQHDx6cZj8bEEAAAQQiQ8Cpy8jxBD4y7k9KiYAjBRYvXizaBXbq1Kkeg3dF0SdtTz75pMyZM0e0qz0JAQScK6DDaRISEsz7gafgXWWeeOIJad26tYwdO1b0S0ISAggggAACkSRAAB9JrUVZEXCYwLJly6RYsWLStm1bnzXv3bu36IRVn332mc987EQAAXsL6HuAfqlXpkwZnxXV94w//vjDTHDnMyM7EUAAAQQQsJgAAbzFGoTiIIDA/wT2798v5cqVk6ioqP9t9PDqhhtukJw5c4rmJyGAgHMFfv/9d7npppv8ArjzaH4SAggggAACkSRAAB9JrUVZEXCYgC73pOPf/aXTp0/LhQsXpGDBgv6ysh8BBGwsoO8BR48e9VtDdx7eM/xSkQEBBBBAwGICBPAWaxCKgwAC/xNo0KCB/PTTT6Lrv/tKOuu0pvr16/vKxj4EELC5gL5nrFixQnTdd19J3zNy5MghtWrV8pWNfQgggAACCFhOgADeck1CgRBAwC3QvXt3s777gAEDvE42pU/SdE1nna2+YcOG7kP5FwEEHCjQr18/iY+Pl6efftpr7b///nszMWa3bt3oteNViR0IIIAAAlYVIIC3astQLgQQkKJFi8qUKVNk1apVZtbovXv3plDZsGGDNG7cWI4cOSL//Oc/JVs23tJSAPELAg4T0Cfwjz/+uFki7rHHHpPjx48nC+hElwsXLpQ777xTihcvLq+88kryPl4ggAACCCAQKQLZI6WglBMBBJwp8OCDD5qn7wMHDpTy5ctL9erVzYdvDeZ37dolpUqVkuXLl9MV1pm3B7VGII3AxIkTJXfu3DJ+/HiZPn26eW+46qqrzJKUOtFljRo1TCCvQTwJAQQQQACBSBPgcVWktRjlRcCBAg8//LD8/PPP8vzzz5vgXZ+qVa5cWd58803ZvXu3eQrvQBaqjAACHgS0J44+Xf/hhx/M0/hcuXKJTnTZtGlTmTdvnmzatMnvMnMeTssmBBBAAAEELCHAE3hLNAOFQAABfwIlSpQwY9395WM/AgggoAJVq1aVV199FQwEEEAAAQRsJUAAb6vmpDIIIJAegZMnT8qhQ4ekcOHCUqxYsfQcSl4EEAiSwMWLF0W7umu69tprzWzxQboUp0UAAQQQQCDiBOhCH3FNRoERQCCzAkuWLJF69epJoUKFpFKlSqZbfsWKFeUf//iH19nuM3tNjkcAAd8Cv/32m/Tq1UuKFCliuriXKVPGvNZtuo+EAAIIIIAAAiI8gecuQAABRwnoDNU6s72OoR8zZowJFHQW+0WLFokuV/fhhx+KBvh58+Z1lAuVRSCcAmvWrJF7771Xzp8/Lz169JD69eub4qxbt07ee++95P8vddUJEgIIIIAAAk4WiHItq5LkZAA71r106dJmHdyEhAQ7Vo86IZBhAZ2desiQITJs2DB5+eWXJTo6OsW5ZsyYIb1795bOnTvLrFmzUuzjFwQQCI7A77//LrfeequULFlSPv30U7nhhhtSXGjfvn1mGcmDBw+aien0bxwJAQQQQACBuLg4adiwocTGxkpMTIxjQOhC75impqIIOFtAx7s/++yz0rZtWxk3blya4F11evbsKf/3f/8ns2fPNjNVO1uM2iMQGgFdXUK/cP7444/TBO9aAg3odZ/m0bwkBBBAAAEEnCxAAO/k1qfuCDhIYNmyZXLq1Cm/M9nrE3pdQ1qXmyIhgEBwBRITE+WDDz6Qrl27+lzaTcfDd+nSxeTVY0gIIIAAAgg4VYAA3qktT70RcJjAzp07zVP3WrVq+ax5vnz5zPJTmp+EAALBFdBVIE6cOCF169b1eyGdeFLz6jEkBBBAAAEEnCpAAO/UlqfeCDhMICoqSnTKj0Cm/dA8mp+EAALBFciW7b8fQwJ5qu7O4z4muCXj7AgggAACCFhTgADemu1CqRBAIIsFqlatKhoArF+/3ueZdaz81q1bzVN4nxnZiQACmRYoXry4WSpu7dq1fs+leXSJOT2GhAACCCCAgFMFCOCd2vLUGwGHCbRs2VIKFy5sJsHy9RR+7NixcvHiRTPe1mFEVBeBkAvo03Rd9UHnnPA1bEX3aR4dB88T+JA3ExdEAAEEELCQAAG8hRqDoiCAQPAEdGy7Bue61Mijjz5q1ptOfTVdH/7VV1+VPn36mGWtUu/ndwQQyHqBZ555RgoVKiR333237NixI80FdJvu0zxPP/10mv1sQAABBBBAwEkC2Z1UWeqKAALOFujbt6/85z//kTFjxshnn31mnvyVLVtWDh8+LIsXL5bvvvtO2rVrJ6+//rqzoag9AiEUuOaaa8wycW3atJFq1apJx44dRSes06RDXhYsWGB6z+hScpqXhAACCCCAgJMFolxdSZOcDGDHupcuXVri4+PNmrl2rB91QiCzAl9++aV5Gv/FF1+Y7vI6YZ3OTj9w4EDp3r17hiewO3funOTMmdPjGvOZLTPHI2B1gcze/0eOHJGXXnpJ3n//ffOlmtZXA3btNj9y5EjGvlv9BqB8CCCAQIgF4uLipGHDhqZ3ZUxMTIivHr7L0YU+fPZcGQEEwiRw++23y/Lly+Xs2bNy8OBB8+/GjRulR48e6Q7e9+3bZ7rklyxZUvLmzSu5cuWSmjVryptvvmm+HAhTFbksAiERyMr7XyenmzRpklkm7ujRo6I/umTcxIkTCd5D0ppcBAEEEEAgEgToQh8JrUQZEUAgKALZs2eXEiVKZPjcH330kXTt2tXMbt++fXu55ZZb5MyZM7JixQrp37+/zJo1S5YuXSpFixbN8DU4EAGrCgTz/tcJJ0kIIIAAAgggkFaALvRpTSJ+C13oI74JqUAECGzZssV029IxuwsXLpRrr702Ral13G7Pnj1N13ztqs/M2Sl4+CXCBbj/I7wBKT4CCCBgAwG60NugEakCAgggECqBwYMHm4m1li1bliZ41zLoRFxvvfWWfPXVV2ZMb6jKxXUQCIUA938olLkGAggggAACaQUYA5/WhC0IIICAT4HffvvNBOZDhgwxS1t5y6xj6itUqCDvvfeetyxsRyDiBLj/I67JKDACCCCAgI0ECOBt1JhUBQEEQiOwdetWc6EmTZr4vWDjxo3lxx9/9JuPDAhEigD3f6S0FOVEAAEEELCjAAG8HVuVOiGAQFAFLl26ZM6vk+D5Szly5BB3fn952Y9AJAi472fu/0hoLcqIAAIIIGA3AQJ4u7Uo9UEAgaALaLd4TZs2bfJ7Lc3jzu83MxkQiAAB9/3M/R8BjUUREUAAAQRsJ0AAb7smpUIIIBBsgUqVKsnNN99s1qy+cOGC18utWrXKBPmdOnXymocdCESaAPd/pLUY5UUAAQQQsJMAAbydWpO6IIBAyATGjRsnO3bskO7du0tCQkKa63733XfSrVs3qVixovTt2zfNfl8bLl++LL///rv50dckBIIhcObMGfnll1/k+PHj6T59MO//dBeGAxBAAAEEEHCQAAG8gxqbqiKAQNYJtGzZUiZOnGjWgK9cubK89NJL8tFHH8ncuXOlV69eUqdOHcmdO7csXbpUcuXKFdCF9+/fb4L9okWLynXXXWd+9LV+AaD7SAhkhcCnn34qjRo1koIFC0q5cuXMcohVq1aVt99+WwL9wigY939W1I1zIIAAAgggYHeBqCRXsnslnVa/0qVLS3x8vMengk6zoL4IBFtA13l/5plnZM2aNeJ+O9XASJeQe/bZZ6VIkSIBFWHt2rXStm1bOXv2rHlyX79+fXPcunXrZPbs2XLVVVeZLwMaNGgQ0PnIhIAnAV36UL940nHs2kOkTJkycuTIEVm0aJHExcWJBub6Ok+ePJ4OT7Mtq+7/NCdmAwIIIIAAAn4E9O9Ww4YNJTY2VmJiYvzkts9uAnj7tGVyTQjgkyl4gUDIBI4dOya//vqr5M2b1zzV1NnnA036dL1atWpSrFgx+eSTT6Rs2bIpDtVuznfffbf88ccf8v3338u1116bYj+/IBCIwOuvvy5PPPGEDBo0SLQLfOpZ5P/1r3+Z3h46LGTGjBmBnDI5T2bu/+ST8AIBBBBAAIF0CBDApwOLrNYWIIC3dvtQOgRSCzz66KMmYNL1tbVLs6e0Z88eM3Fez5495a233vKUhW0IeBU4deqUXH/99dK4cWMz1MNbxtGjR8vzzz9vJl+sWbOmt2xsRwABBBBAIOwCTg3gGQMf9luPAiCAgJMFEhMTZf78+dKlSxevwbv6aGCveTSvHkNCID0Cy5Ytk5MnT8rTTz/t87Dhw4ebuRvmzZvnMx87EUAAAQQQQCA8AgTw4XHnqggggIAROHz4sJkFvF69en5FNI/OGK7HkBBIj4CumBAdHS21atXyeVi+fPlEJ7TT/CQEEEAAAQQQsJ4AAbz12oQSIYCAAwXcE+D5qnogeXwdzz7nCkRFRQVceb3P0pM/4BOTEQEEEEAAAQQyLZA902fgBAgggAACGRa45pprzEz1Otv8I4884vM8mkdntddjAk26Hv2WLVvM7PY64/gdd9xhJtoL9HjyWUdAJ0nU1Q60F0bJkiVNW+oyg4GkKlWqmCXiNmzYIL5WMtCx8tu2bXPUbL6B+JEHAQQQQAABqwgQwFulJSgHAgg4UiBbtmzywAMPiM4APmrUKLO8lyeIn376Sd5//33p3bu36DH+0saNG6Vfv34meL8yb4ECBeSpp54SHevMU9YrZaz7+j//+Y/0798/zeRzOot8nz59zIzyusygr6TLwxUqVEheeOEF0XXgvbX9K6+8IhcuXJDOnTv7Oh37EEAAAQQQQCBMAv4/BYapYFwWAQQQcIqATiymgXWbNm1EA/XUSbfpMnKaR9ec95c+++wzadKkiRw9elTeeecd2bdvn8THx8sXX3whd955pzz55JNmDXC65PuTDP/+3bt3S+3atUXXW3/xxRdl586doku2bdq0yXxBo+2rbX369Gmfhc2fP785Xu+NAQMGyMWLF9Pknzp1qrz88svSq1cvqV69epr9bEAAAQQQQACB8AuwDnz42yDLS8AycllOygkRCLqAPjHXAF5nCtcn8vXr1zfX1G7zOiN4wYIF5eOPP5Y6der4LIuuFX/TTTdJ+fLlZcWKFeapa+oD9CnriBEjZMqUKSaYS72f360hoKsN3HbbbXLw4EHTdb5ChQppCqYB+T333CO6dvu7776bZn/qDSNHjjRBug6n0FUNypYtK0eOHJFFixaZLwX0XB988IHkypUr9aH8jgACCCCAgKUEnLqMHAG8pW7DrCkMAXzWOHIWBEItcOjQIRkzZowJ2PWJuSYd46wBvT6lL1GihN8iaff4V199VbZv324CeW8H3HXXXfL999/LgQMHAuqS7+08bA+ewOLFi6V9+/ayYMEC6dChg9cL6dAL/VJmz549cuONN3rN596xcuVKGTt2rHmqf+nSJbO5Ro0aMnDgQOnZsyf3gxuKfxFAAAEELC1AAG/p5qFw6REggE+PFnkRsJ6Adm3XJ+maihUr5nW8sqeSayCmx8TGxnranbxNg8JOnTqJPvnXLtok6wno+PYPP/zQLBvoa96DvXv3mifp2gX+0UcfDbgi58+fN/eZjo33N4Y+4JOSEQEEEEAAgRAJODWAZwx8iG4wLoMAAggEKqATjBUvXtz8eJtszNu5fv/9d68T4V15TMWKFc2vOkFaIGnz5s3y8MMPm675OhP+zTffLEOGDJHffvstkMMdmUeHPLRr105uuOEG86WKDn946aWXRGd6DyRp2+hQCF/Bu55Hu8PnyJFDAm1L97W1m7x+4Uvw7hbhXwQQQAABBKwvQABv/TaihAgggEDAAjpZmS4z5i+58+jEeP6SdsvXp/RLliyRWrVqmQnwtKu2PvHVLwLmzJnj7xSO2n/27FnT5V3Hk+sSfs2aNTPDIPLkyWMmIaxUqZLocm7+UqBteebMGTMpXSBt6e+a7EcAAQQQQAABawuwjJy124fSIYAAAukSqFevnugY54SEBMmdO7fXYz/66CPRZchq1qzpNY/u0CfG+qNr1I8fP17y5cuXnH///v3y4IMPSo8ePcxkea1atUre5+QX6qFfdkyYMEGeeOIJiY6OTub49ttvTTCvy7p988035gl78s5UL3QiQx3qoDPR68SE3pI+6dekbU9CAAEEEEAAAXsLMImdDduXMfA2bFSqhECAArrcWNOmTUVnG9fA21Patm2bmc1eu3fPmjXLUxazTZef05nPO3bsKLNnz/aYT78o0MBRZ8/X5e60K3cg6csvvzTj9HWGdR2D3ahRIzMLf86cOQM5PGh5tBv6woULZceOHeYalStXNk/Tr7vuuoCuqcG0PnnX4F2HGHhKeo1q1aqZOi9dutRTFrPt8OHDJsBXm08++cRjV/oTJ06YXhH6Zc0PP/zgMY/XC7ADAQQQQACBCBZw6hh4cU2WRLKZwLXXXpvkGttos1pRHQQQCFTANZFZkuvvcdLgwYOTXOOtUxzmCjCTXOPrk0qVKpXkmoE+xb7Uv7hmxE9yjb9Oco2rT70rxe+up/nmesuWLUux3dMvv/zyS5Ir4Df59X3KNT48yfVU3/zuGsud5PoCwtNhPrdpPf71r38lubr6J7nWSk/Scly4cMHnMal3Xr58Ock1m3uS6wsEU5aSJUsm6Y866jbdp3n8JdeXIkmuYD/JNbu7z6zPPvussXWtPOAzn2udd1MG15cCadrB9TQ/6dZbbzXv967lBn2eh50IIIAAAgjYTWDt2rXmb6Rr4l67Vc1nfQjgffJE5k4C+MhsN0qNQFYJXLx4Menxxx9Pck2Al+SaoCzpzjvvTLr33nuTXGt+mz90VatWTXI9Lfd7OQ1GXZPV+c137tw5cy0Nnn2lX3/91Xx54JoEL8m1ZnmSa6y4ya7BrgbdrrHhSa4n+Emff/65r9Mk73PNom6+pNBjNNDWf7XO+to1Rj/p008/Tc7r74VrKIA5rnfv3klaTndyzfCepNv0nJrHX7r++uuTXEux+cuW5P7Q4VrH3W/eN998M8n1hD3JNeQhqUGDBknaLq4n+KZMrhUHklxDJvyegwwIIIAAAgjYTcD9t9RpATyT2Lk+lZEQQAABOwno2PbJkyeLe+Z4V4BtZouvXr26zJgxQ7777jufY6rdFnpcIDOU62zmek3N7yu5AmEz2Zp2eXvooYdEJ3XTpGPEdUy4Tuymk+J1795ddCI4X0nXL9eu6pMmTZK//e1vpsu7Loumx+n4/oIFC5ou+YFMsDd//nyZOXOmuHocyD//+U8za7z72jpZn27TfZpH8/pKgZq5Xf2Z6bX69etnhieMGDFCdIiBrvfu6h1guun//PPP4vqCxleR2IcAAggggAACNhJgDLyNGtNdFcbAuyX4FwEEMiPQv39/M/Zd16T3NbZdx4tXqVJFXN3YpVevXh4vqV8a6Br1r7/+ugwcONBjHt3oHs+mQbMG/N6S62m/PP300+J6km++DEidT8fm33333eLqWi67du0SX2PY69ata758+P7778Xbsn2upxZm3Lp+6eBrBnk9l36hoXMR+Eo694BOdqcuOh6ehAACCCCAAALpE3B/ZnA9gZeYmJj0HRzBuXkC76fxdGIm15hN+fHHH2Xr1q1mnd3Tp0/7OYrdCCCAQOQLuLrdm8np9MmzrzRlyhQT4Ldu3dprti+++MLs69y5s9c8usPVRdwE2+78njK7hgiYp8/t27f3GLzrMTqpm/Y2SExMNE/pPZ1Ht+kSbDob/AMPPOA1eNd8GthrHs2rx3hL9913n3z99ddm+ThvefTLgDfeeEP06b5rDLu3bGxHAAEEEEAAAQTSCBDApyER0+1UnyK5JnmSq6++WsqVK2c+ZN1yyy3iGt8outau/nv//feLzjisH8ZICCCAgN0EWrRoYWa0HzRokHmS7al++gT8rbfeMk/VS5Qo4SmL2aZP8bX7t2vMttc87h3ai0jze0ubNm0ya927xpp7y2K263m0e7l+M+8txcfHm/dw19wh3rIkb9c8+n5/9OjR5G2pX2ivBXXQYP+3335Lvdscr576FF97EXh74p/mQDYggAACCCCAAAIuAdaBv+I2+PPPP0WXVVqxYsUVW//70v0hyx2s6zJA+vPBBx+Idpn88MMPzYe2NAeyAQEEEIhggffff98E8bo0nY4116fe11xzjemZpE+4Fy9eLHfddZeMHTvWZy01cHfNDG8Cc39BvGvWe2nSpInX87lmnTf7XLPWe83j3uGauM9nl/eiRYuaIFrXtPeXtFz6t8A1CZ/XrPoFr/49UBPtGq/rwGu3PtdM+6Ynlz551+B92LBh0rVrV6/nYQcCCCCAAAIIIOBJgCfwf6noB0v9YKrBu344dc3gLNqFU9c11ic02mVTJ03SJy+7d++W1atXmzV+9Sm9fhjTD7d6DhICCCBgJwF9mqzvcRq8T58+3QSj2u1bu4p/6VrLXdea155I+nTdV7rjjjvM7rlz5/rKJq4ZZc2Xo+78njIXLlzYbD5y5Iin3Sm2aR5dZ95b0sC6du3aMm/ePJ+9qfTLW53ATvPqMb5SnTp1RHsJ6JcQL7zwglnvXScQ1DHvWp7Zs2fLuHHjfJ2CfQgggAACCCCAgEcBJrH7i0WfmOjTd31ioh9Ktet8IEnHQjZv3tx8wNVxoAMGDAjksKDmYRK7oPJycgQcK6DvdxqYHjt2zAwxqlWrlpl9PlAQfa/csmWL6Y6vs82nTjrnSKNGjcz59YvSvHnzps5iftdy6JNzneTuH//4h8c8ulHnK3GtM2++bNAvH7wlDcy1y7sG2zoxnqeks9A/88wzJtDX4VOBJg3YdaI6nR1fewMw5j1QOfIhgAACCCDgW4BJ7Hz72H6v3gCatHtjoMG75tcnMdOmTdOXsmbNGvMv/0EAAQTsKKDvd7fffrvprVSvXr10Be/qobPU65P6hg0byr///e/kZecuX74srvXQRc+pvZ50hnZvwbueR8vx8MMPm+XddJZ5b0m7qZ84ccLvF6sakLvWeDcBun4p4FoHPvmU+lq3afCuedITvOtJihcvLjqXgPZYIHhPZuUFAggggAACCGRQgC70f8Ft377dvNKJ6tKbKleubNYx9jXpUnrPSX4EEEDAbgL6NFwD7goVKpgAXLu260zs+qVpq1atzDCklStXiq/u824T7bqv59Ox5vrFgA5zcicdz67jy/XL1VGjRsltt93m3uX1X52MT/Pqlwc6tl6HR+mPvtZtuk/zkBBAAAEEEEAAgXAKMIndX/o6q7ymjRs3pnsdQR2zqU+Qbr755r/Oxj8IIIAAAp4ENCDWHk86VElnhz948KAZo964cWOzbru/sfTuc2rwr3OR6LJ0Oj5/6NChUqlSJdHJSPUL2ezZs5vx+SNHjnQf4vPfbNmymVnhH330UVm4cKHo2vaadH17nR/F1zryPk/MTgQQQAABBBBAIAsFGAP/F+ayZctE1zDW8eP6OtBgXMdpNmvWTHR2Yp2RvmPHjlnYPBk7FWPgM+bGUQggEJkC+kWAzmOyd+9e0/Ven7h3797dPKGPzBpRagQQQAABBBDwJ+DUMfA8gf/rztDumzqJnS6JpN3odRbhDh06iK77q5Ml6bJB+oRGJ2/SH31qtGTJEvMEKDExUbp06WKJ4N3fjc5+BBBAwG4COsZcf0gIIIAAAggggIDdBQjgr2hhnYl4+PDh8uabb5qu9Nqd3l/SsZt9+/aV0aNH+8vKfgQQQAABBBBAAAEEEEAAAQQyLEAAfwWdjpmcOHGi6MzFc+bMkfXr18uPP/5oZjHW5Y1y5MiRPLGRTm5Ut25d6dWrl+TPn/+Ks/ASAQQQQAABBBBAAAEEEEAAgawXIID3YKrd5vVJPAkBBBBAAAEEEEAAAQQQQAABqwiwjJxVWoJyIIAAAggggAACCCCAAAIIIOBDgADeBw67EEAAAQQQQAABBBBAAAEEELCKAF3ordISHsrx8ccfy+HDhz3s8b1J10HWmfFJCCCAAAIIIIAAAggggAAC9hEggLdoW164cEEeeOABOXv2bIZKqEvekRBAAAEEEEAAAQQQQAABBOwjQAD/V1u2adNG1qxZk6mWHTlypIwYMSJT53AfnDNnTjlw4ICcPn3avSngf3VZu7179wacn4wIIIAAAggggAACCCCAAALWFyCA/6uNqlSpIp988kmmWuz8+fOZOj71wQULFhT9SW+66qqrJDo6Or2HkR8BBBBAAAEEEEAAAQQQQMDCAgTwfzXOq6++atZ41zXgL1++LC+//LLoU/n0pOLFi6cnO3kRQAABBBBAAAEEEEAAAQQQCFiAAP4KqkGDBknJkiWlc+fOMm7cOOnRo4cJ6q/IwksEEEAAAQQQQAABBBBAAAEEwiLATGep2HXiuE6dOsnRo0fl8ccfT7WXXxFAAAEEEEAAAQQQQAABBBAIjwABvAf3N954QwoXLiyLFi2SrVu3esjBJgQQQAABBBBAAAEEEEAAAQRCK0AXeg/eOpb9008/NcG7LudGQgABBBBAAAEEEEAAAQQQQCDcAgTwXlqgbt26oj8kBBBAAAEEEEAAAQQQQAABBKwgQBd6K7QCZUAAAQQQQAABBBBAAAEEEEDAjwBP4P0Apd793XffyalTp6Ry5cpSrFix1Lv5HQEEEEAAAQQQQAABBBBAAIGgCPAEPp2sjz32mDRt2lRWrVqVziPJjgACCCCAAAIIIIAAAggggEDGBQjgM27HkQgggAACCCCAAAIIIIAAAgiETIAu9CGjDu2F9u/fLz179gztRV1XW7lypblm7ty5Q35tLohAuAVOnDgheu9z/4e7Jbh+OAS4/8OhzjWtIsD9b5WWoBzhEND7v2LFinLTTTeF9PJHjhwJ6fWscjECeKu0RBaWo169erJ582ZZs2ZNFp41sFMdOHBAoqKiJDo6OrADyIWAjQQuXbrE/W+j9qQq6RPg/k+fF7ntJcD9b6/2pDbpE9D7X+cJO3ToUPoOzILcOi9ZuXLlsuBMkXMKAvjIaauASzp06FDRn3Ck/PnzyyOPPCLjx48Px+W5JgJhFeD+Dys/Fw+zAPd/mBuAy4dVgPs/rPxcPMwC3P+hbQDGwIfWm6shgAACCCCAAAIIIIAAAgggkCEBnsCnk23q1Kly+vRpqVSpUjqPJDsCCCCAAAIIIIAAAggggAACGRcggE+nXbVq1dJ5BNkRQAABBBBAAAEEEEAAAQQQyLwAXegzb8gZEEAAAQQQQAABBBBAAAEEEAi6AAF80Im5AAIIIIAAAggggAACCCCAAAKZFyCAz7whZ0AAAQQQQAABBBBAAAEEEEAg6AIE8EEn5gIIIIAAAggggAACCCCAAAIIZF6AAD7zhpwBAQQQQAABBBBAAAEEEEAAgaALEMAHnZgLIIAAAggggAACCCCAAAIIIJB5AQL4zBtyBgQQQAABBBBAAAEEEEAAAQSCLkAAH3RiLoAAAggggAACCCCAAAIIIIBA5gUI4DNvyBkQQAABBBBAAAEEEEAAAQQQCLoAAXzQiZ11gdy5c4v+kBBwogD3vxNbnTq7Bbj/3RL860QB7n8ntjp1dgtw/7slQvNvVJIrheZSXMUJArt27ZJSpUpJ/vz5nVBd6ohACgHu/xQc/OIwAe5/hzU41U0hwP2fgoNfHCbA/R/aBieAD603V0MAAQQQQAABBBBAAAEEEEAgQwJ0oc8QGwchgAACCCCAAAIIIIAAAgggEFoBAvjQenM1BBBAAAEEEEAAAQQQQAABBDIkQACfITYOQgABBBBAAAEEEEAAAQQQQCC0AgTwofXmaggggAACCCCAAAIIIIAAAghkSIAAPkNsHIQAAggggAACCCCAAAIIIIBAaAUI4EPrzdUQQAABBBBAAAEEEEAAAQQQyJAAAXyG2DgIAQQQQAABBBBAAAEEEEAAgdAKEMCH1purIYAAAggggAACCCCAAAIIIJAhAQL4DLFxEAIIIIAAAggggAACCCCAAAKhFSCAD603V0MAAQQQQAABBBBAAAEEEEAgQwIE8Bli4yAEEEAAAQQQQAABBBBAAAEEQitAAB9ab66GAAIIIIAAAggggAACCCCAQIYECOAzxMZBCCCAAAIIIIAAAggggAACCIRWgAA+tN5cDQEEEEAAAQQQQAABBBBAAIEMCRDAZ4iNgxBAAAEEEEAAAQQQQAABBBAIrQABfGi9uRoCCCCAAAIIIIAAAggggAACGRIggM8QGwchgAACCCCAAAIIIIAAAgggEFoBAvjQejv2atu3b5ddu3Y5tv5U3HkCR48elW+++UZ+/fVXSUxMdB4ANXaUwJEjR2TTpk1y+vRpR9WbyiKgArzfcx8g8F8BPu+H5k4ggA+Ns6Ov8sEHH0jVqlWlVatWjnag8vYXSEpKkpkzZ8qNN94oRYsWlTp16kiZMmUkX758MmTIEIIb+98Cjqvh+vXrpW7dunLNNddI7dq15eqrr5bq1atLbGys4yyosLMEeL93VntTW/8CfN73b5RVOaJcb0BJWXUyzoNAaoH9+/fLLbfcIsePHzeBzC+//JI6C78jYBuBYcOGyYQJEyQqKsp8YaVfXB06dEiWLFkip06dksqVK5unlHnz5rVNnamIcwU2btwod9xxh5w9e1YaNGhgAvkffvhBPv/8c8mRI4fMmTNHOnTo4Fwgam5rAd7vbd28VC6dAnzeTydYJrMTwGcSkMO9C+h3QzExMbJq1SqTSZ9EEsB792JPZAusXr3aBDPR0dGyfPlyadasWXKFDhw4IE2bNpWff/5ZBg8eLK+99lryPl4gEIkC+v6uX1Dt2LFDRowYIWPHjk2uxvTp0+Vvf/ub5M+fX/RDnfZAISFgJwHe7+3UmtQlswJ83s+sYPqPpwt9+s04IkCBiRMnmuBdu1eSELC7wMKFC0X/iPXp0ydF8K71LlWqlLzyyiuGYOnSpXanoH4OEPjkk09M8F6wYEEZPXp0ihr36tVLbr/9dtPrZNasWSn28QsCdhDg/d4OrUgdskqAz/tZJRn4eQjgA7ciZzoEtBvlqFGjzBOaF154wRyp3YpJCNhVICEhQcqVKydNmjTxWMUqVaqY7Xv37pVLly55zMNGBCJFYMWKFaao999/v+TOnTtNsbt27Wq26dN4EgJ2E+D93m4tSn0yKsDn/YzKZe647Jk7nKMRSCtw/vx56datm3kaqU9fmJU4rRFb7Ccwbdo0n5XaunWr2a9BfvbsvPX6xGKn5QU2bNhgyqgT13lKOoGjJv1wd/nyZdGhJSQE7CLA+71dWpJ6ZEaAz/uZ0cvcsTyBz5wfR3sQ0PGQGqw899xzZjZiD1nYhICjBLRr/csvv2zqrJN+kRCIdAEd265JV1vwlAoXLmw26we8gwcPesrCNgRsKcD7vS2blUp5EODzvgeUEG0igA8RtFMus3LlSpk8ebI0atRI/v73vzul2tQTAZ8CTz75pGzevFmKFSsmY8aM8ZmXnQhEgsDJkydNMYsUKeKxuO4AXnf++eefHvOwEQE7CvB+b8dWpU6pBfi8n1oktL8TwIfW29ZXO3bsmPTs2VOuuuoqmTFjhmTLxu1l6wancgEJ6JP3cePGmaXl3n77bRPEB3QgmRCwsIAuHadJ1333lHSpRHe3eR0vTELACQK83zuhlakjn/fDfw8wEDP8bRARJThx4oS4xzymLrCOdSxUqJA88sgjostl/fOf/5SyZcumzsbvCESsQCD3f+rKJSYmytChQ2XSpEkmeH/nnXekXbt2qbPxOwIRKaC9SQ4dOuR1jpNz586Zse9aOf1Sl4SAnQV4v7dz61K31AJ83k8tEvrfCeBDbx6RV9Qx7S1btvRY9q+++sqs775gwQK566675IEHHpAzZ84k53U/qdE/cO7t+nSGJ/TJRLywuIC/+79x48YpaqBPHLt37y661FCuXLlMjxT9/4KEgF0EdGlEDeD1SYyndOX2AgUKeMrCNgRsIcD7vS2akUoEKKA9bPm8HyBWELMRwAcR106nzpMnj1SqVMljlXTfokWLzL7ly5dL/vz5Peb79ddfk/d99913Uq1aNY/52IiA1QT83f9Xljc+Pl7atm0r69atMz1TPvzwQ69Ly115HK8RiCQBDeC3bNniN4DXJeauHA8fSXWkrAj4E+D93p8Q++0mwOd9a7QoAbw12sHypahZs6bs2LHDazl1JuLrrrvO436dhfjIkSNmPKR+6NOUI0cOj3nZiIAVBfzd/+4y//HHH3L77bfL9u3bzZrwn3zyiVSsWNG9m38RsI3A9ddfb+qiQbzOfZI66aSNmmrUqMGyialx+N0WArzf26IZqUQ6Bfi8n06wIGWPci13kRSkc3NaBIzAmjVrzBNIHRe/Z88eVBCwpYC+lerqC3FxcaZ3SWxsrBQvXtyWdaVSCGzcuFHq1q0r11xzjeiScu4J69wyLVq0kBUrVsjTTz8tL7zwgnsz/yJgCwHe723RjFQiiwX4vJ/FoD5OxzThPnDYhQACCAQqoJM3avCuy2rp2PeCBQuK9j7x9BPoOcmHgFUFdPJS/cLq8OHD8n//938pijlv3jxZtWqVmf+hf//+KfbxCwJ2EOD93g6tSB0QiFwButBHbttRcgQQsIiATmI0YsQIU5qjR49K+fLlfZZMh5ToLN4kBCJZQJ+st27dWl566SVZu3at6WmlEz4uWbJEdNJSXYGhRIkSkVxFyo5AGgHe79OQsAEBBEIsQAAfYnAuhwAC9hPYuXOn18m87FdbaoTAfwV0vgftdaIrLqxevdr86J6SJUuaoP6hhx76b0b+i4CNBHi/t1FjUhUEIlSAMfAR2nAUGwEEEEAAAasI6LJx+vRd530oV64cE5VapWEoBwIIIICA7QQI4G3XpFQIAQQQQAABBBBAAAEEEEDAjgJMYmfHVqVOCCCAAAIIIIAAAggggAACthMggLddk1IhBBBAAAEEEEAAAQQQQAABOwoQwNuxVakTAggggAACCCCAAAIIIICA7QQI4G3XpFQIAQQQQAABBBBAAAEEEEDAjgIE8HZsVeqEAAIIIIAAAggggAACCCBgOwECeNs1KRVCAAEEEEAAAQQQQAABBBCwowABvB1blTohgAACCCCAAAIIIIAAAgjYToAA3nZNSoUQQAABBBBAAAEEEEAAAQTsKEAAb8dWpU4IIIAAAggggAACCCCAAAK2EyCAt12TUiEEEEAAAQQQQAABBBBAAAE7ChDA27FVqRMCCCCAAAIIIIAAAggggIDtBAjgbdekVAgBBBBAAAEEEEAAAQQQQMCOAgTwdmxV6oQAAggggAACCCCAAAIIIGA7AQJ42zUpFUIAAQQQQAABBBBAAAEEELCjAAG8HVuVOiGAAAIIIIAAAggggAACCNhOgADedk1KhRBAAAEEEEAAAQQQQAABBOwoQABvx1alTggggAACCCCAAAIIIIAAArYTIIC3XZNSIQQQQAABBBBAAAEEEEAAATsKEMDbsVWpEwIIIIAAAggggAACCCCAgO0ECOBt16RUCAEEEEAAAQQQQAABBBBAwI4CBPB2bFXqhAACCCCAAAIIIIAAAgggYDsBAnjbNSkVQgABBBBAAAEEEEAAAQQQsKMAAbwdW5U6IYAAAggggAACCCCAAAII2E6AAN52TUqFEEAAAQQQQAABBBBAAAEE7ChAAG/HVqVOCCCAAAIIIIAAAggggAACthMggLddk1IhBBBAAAEEEEAAAQQQQAABOwoQwNuxVakTAggggAACCCCAAAIIIICA7QQI4G3XpFQIAQQQQAABBBBAAAEEEEDAjgIE8HZsVeqEAAIIIIAAAggggAACCCBgOwECeNs1KRVCAAEEEEAAAQQQQAABBBCwowABvB1blTohgAACCCCAAAIIIIAAAgjYToAA3nZNSoUQQAABBBBAAAEEEEAAAQTsKEAAb8dWpU4IIIAAAggggAACCCCAAAK2EyCAt12TUiEEEEAAAQQQQAABBBBAAAE7ChDA27FVqRMCCCCAAAIIIIAAAggggIDtBAjgbdekVAgBBBBAAAEEEEAAAQQQQMCOAgTwdmxV6oQAAggggAACCCCAAAIIIGA7AQJ42zUpFUIAAQQQQAABBBBAAAEEELCjAAG8HVuVOiGAAAIIIIAAAggggAACCNhOgADedk1KhRBAAAEEEEAAAQQQQAABBOwoQABvx1alTggggAACCCCAAAIIIIAAArYTIIC3XZNSIQQQQAABBBBAAAEEEEAAATsKEMDbsVWpEwIIIIAAAggggAACCCCAgO0EstuuRlQIAQQQQAABBIIqMHPmTImPj5cSJUpI165d01zro48+kt27d0vRokXlwQcfTLOfDQgggAACCCCQMQEC+Iy5cRQCCCCAAAKOFcifP7/07NnT1F+D9BYtWiRbbNiwQdq3by+XLl2SJUuWJG/nBQIIIIAAAghkXoAu9Jk35AwIIIAAAgg4SqBdu3bSq1cvU+e+ffvKmTNnzGv9t1u3biZ4f/zxx6Vt27aOcqGyCCCAAAIIBFuAAD7YwpwfAQQQQAABGwpMnjxZypUrJ/v27ZORI0eaGg4cOFD27NkjNWrUkFdffdWGtaZKCCCAAAIIhFcgKsmVwlsEro4AAggggAACkSiwfv16adSokehHCQ3iX3zxRcmXL59s3rxZKlSoEIlVoswIIIAAAghYWoAA3tLNQ+EQQAABBBCwtsCzzz4rzz33XHIhdYK7Hj16JP/OCwQQQAABBBDIOgEC+Kyz5EwIIIAAAgg4TuDChQtmNvrjx49LmTJl5Oeff5Zs2Rih57gbgQojgAACCIREgL+wIWHmIggggAACCNhTQMfCa/Cuae/evTJhwgR7VpRaIYAAAgggYAEBnsBboBEoAgIIIIAAApEo8P3330udOnXMrPM6/n3UqFGSI0cO2bhxo1SrVi0Sq0SZEUAAAQQQsLQAT+At3TwUDgEEEEAAAWsKJCQkmCXjtAu9Lhk3YsQI6d+/v+jvupTc/7d3x6gKQwEQRZ+t67B1EwriNqysxL24GkkhuCBL+08CFr92pvKksUi84OmGF3C+7yJAgAABAgSyAk7gs55qBAgQIEDgJwSu1+u43W5js9mM+SR+vV6P9/s9ttvt8ir9POrn1+tdBAgQIECAQE7AgM9ZKhEgQIAAgZ8QmKZpHI/HsVqtxvP5XP5K7vPDH4/H2O/3y737/T4Oh8Pnlk8CBAgQIEDgSwGv0H8J6OsECBAgQOCXBF6v1zidTst/v18ul3/jfXbY7XbjfD4v9+fn5uddBAgQIECAQEbACXzGUYUAAQIECBAgQIAAAQIECFQFnMBXecUJECBAgAABAgQIECBAgEBGwIDPOKoQIECAAAECBAgQIECAAIGqgAFf5RUnQIAAAQIECBAgQIAAAQIZAQM+46hCgAABAgQIECBAgAABAgSqAgZ8lVecAAECBAgQIECAAAECBAhkBAz4jKMKAQIECBAgQIAAAQIECBCoChjwVV5xAgQIECBAgAABAgQIECCQETDgM44qBAgQIECAAAECBAgQIECgKmDAV3nFCRAgQIAAAQIECBAgQIBARsCAzziqECBAgAABAgQIECBAgACBqoABX+UVJ0CAAAECBAgQIECAAAECGQEDPuOoQoAAAQIECBAgQIAAAQIEqgIGfJVXnAABAgQIECBAgAABAgQIZAQM+IyjCgECBAgQIECAAAECBAgQqAoY8FVecQIECBAgQIAAAQIECBAgkBEw4DOOKgQIECBAgAABAgQIECBAoCpgwFd5xQkQIECAAAECBAgQIECAQEbAgM84qhAgQIAAAQIECBAgQIAAgaqAAV/lFSdAgAABAgQIECBAgAABAhkBAz7jqEKAAAECBAgQIECAAAECBKoCBnyVV5wAAQIECBAgQIAAAQIECGQEDPiMowoBAgQIECBAgAABAgQIEKgKGPBVXnECBAgQIECAAAECBAgQIJARMOAzjioECBAgQIAAAQIECBAgQKAqYMBXecUJECBAgAABAgQIECBAgEBGwIDPOKoQIECAAAECBAgQIECAAIGqgAFf5RUnQIAAAQIECBAgQIAAAQIZAQM+46hCgAABAgQIECBAgAABAgSqAgZ8lVecAAECBAgQIECAAAECBAhkBAz4jKMKAQIECBAgQIAAAQIECBCoChjwVV5xAgQIECBAgAABAgQIECCQETDgM44qBAgQIECAAAECBAgQIECgKmDAV3nFCRAgQIAAAQIECBAgQIBARsCAzziqECBAgAABAgQIECBAgACBqoABX+UVJ0CAAAECBAgQIECAAAECGQEDPuOoQoAAAQIECBAgQIAAAQIEqgJ/FmtZLWD1qfkAAAAASUVORK5CYII\u003d\" title\u003d\"plot of chunk unnamed-chunk-1\" alt\u003d\"plot of chunk unnamed-chunk-1\" width\u003d\"100%\"\u003e\u003c/p\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1567515769146_-778247158",
+      "id": "paragraph_1567515769146_-778247158",
+      "dateCreated": "2019-09-03 21:02:49.152",
+      "dateStarted": "2019-09-27 10:51:52.130",
+      "dateFinished": "2019-09-27 10:51:54.411",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-09-03 21:29:13.576",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1567517353576_-368433388",
+      "id": "paragraph_1567517353576_-368433388",
+      "dateCreated": "2019-09-03 21:29:13.576",
+      "status": "READY"
+    }
+  ],
+  "name": "Spark Tutorial",
+  "id": "2EK2KJC8H",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false",
+    "noteFormTitle": ""
+  },
+  "info": {},
+  "path": "/Spark Tutorial"
+}

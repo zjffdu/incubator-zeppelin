@@ -1,0 +1,811 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark.conf\n\n#run.mode local\n#spark.version 2.3.2\n#master local\nmaster yarn-client\n\nhadoop.core-site.fs.defaultFS hdfs://192.168.0.137:9000\nhadoop.yarn-site.yarn.resourcemanager.scheduler.address 192.168.0.137:8030\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:40:25.718",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634449_1002130871",
+      "id": "paragraph_1561526634658_421710918",
+      "dateCreated": "2019-11-13 21:27:14.449",
+      "dateStarted": "2019-11-13 21:40:25.737",
+      "dateFinished": "2019-11-13 21:40:25.766",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n\nsc.version",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres1\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m \u003d 2.3.2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634449_-1570546787",
+      "id": "paragraph_1561526660485_-451366785",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%spark\n\nsc.range(1,10).sum()",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres3\u001b[0m: \u001b[1m\u001b[32mDouble\u001b[0m \u003d 45.0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634450_-1753707025",
+      "id": "paragraph_1561951806742_-395962407",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%sh.conf\n\nrun.mode local\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634450_1364370984",
+      "id": "paragraph_1561512598520_696483787",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%sh\n\npwd",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sh",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "/zeppelin-0.9.0-SNAPSHOT\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634450_1930392451",
+      "id": "paragraph_1561512610010_446937961",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%python\n\n1+1",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634450_-950523537",
+      "id": "paragraph_1561533229507_-596545070",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%sh\n\nexport HADOOP_CONF_DIR\u003d/etc/hadoop/conf\nrm -rf /tmp/a.csv\nprintf \"1,jeff\\n2,andy\\n3,james\" \u003e /tmp/a.csv\n/hadoop/bin/hadoop fs -rmr /tmp/a.csv\ncat /tmp/a.csv\n/hadoop/bin/hadoop fs -put /tmp/a.csv /tmp\n/hadoop/bin/hadoop fs -cat /tmp/a.csv",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sh",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "rmr: DEPRECATED: Please use \u0027-rm -r\u0027 instead.\n2019-05-28 06:20:29,906 INFO  [main] fs.TrashPolicyDefault (TrashPolicyDefault.java:moveToTrash(169)) - Moved: \u0027hdfs://192.168.0.115:9000/tmp/a.csv\u0027 to trash at: hdfs://192.168.0.115:9000/user/root/.Trash/Current/tmp/a.csv\n1,jeff\n2,andy\n3,james1,jeff\n2,andy\n3,james"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634450_-1907617445",
+      "id": "paragraph_1559012725789_2036073150",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /blink\nflink.execution.mode yarn\nflink.tm.num 2\nflink.tm.memory 2048\nzeppelin.flink.enableHive true\nzeppelin.flink.hive.metastore.uris thrift://192.168.0.137:9083\nhadoop.core-site.fs.defaultFS hdfs://192.168.0.137:9000\nhadoop.yarn-site.yarn.resourcemanager.scheduler.address 192.168.0.137:8030\n\ntaskmanager.managed.memory.size 128\nzeppelin.flink.app-manager.url http://cluster-test-service:80\nzeppelin.flink.app-manager.session-cluster.name jzhang-k8s-test\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634450_1260863610",
+      "id": "paragraph_1559011086623_-1211689401",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%flink\n\nval data \u003d benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\n\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\")).\n    map(w \u003d\u003e (w, 1)).\n    groupBy(0).\n    sum(1)\n    .print()\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.450",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.api.scala.DataSet[String]\u001b[0m \u003d org.apache.flink.api.scala.DataSet@68022798\n(flink,1)\n(hadoop,1)\n(hello,3)\n(world,1)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634450_552975094",
+      "id": "paragraph_1559012438321_-1507333205",
+      "dateCreated": "2019-11-13 21:27:14.450",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n\nuse tpcds_bin_partitioned_orc_2;\nshow tables;\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.451",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionSupport": true,
+          "completionKey": "TAB"
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "table": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "table\ncall_center\ncatalog_page\ncatalog_returns\ncatalog_sales\ncustomer\ncustomer_address\ncustomer_demographics\ndate_dim\nhousehold_demographics\nincome_band\ninventory\nitem\npromotion\nreason\nship_mode\nstore\nstore_returns\nstore_sales\ntime_dim\nwarehouse\nweb_page\nweb_returns\nweb_sales\nweb_site\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634451_-1445123114",
+      "id": "paragraph_1559012443027_868431031",
+      "dateCreated": "2019-11-13 21:27:14.451",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n\nselect count(1) from customer;",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.451",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Fail to run sql command: select count(1) from customer\norg.apache.flink.table.api.ValidationException: \n************\nERR_ID:\n     SQL-00120001\nCAUSE:\n     SQL validation failed:\n     Unable to deserialize string \u0027null\u0027 of base class \u0027org.apache.flink.table.api.TableSchema\u0027.\nACTION:\n     Please see descriptions above. If it doesn\u0027t help, please contact customer support for this.\nDETAIL:\n\n************\n\tat org.apache.flink.table.calcite.FlinkPlannerImpl.validate(FlinkPlannerImpl.scala:103)\n\tat org.apache.flink.table.util.TableEnvironmentUtil$.queryToRel(TableEnvironmentUtil.scala:35)\n\tat org.apache.flink.table.api.TableEnvironment.sqlQuery(TableEnvironment.scala:1325)\n\tat org.apache.zeppelin.flink.FlinkBatchSqlInterpreter.callSelect(FlinkBatchSqlInterpreter.java:56)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callCommand(FlinkSqlInterrpeter.java:182)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.runSqlList(FlinkSqlInterrpeter.java:137)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.interpret(FlinkSqlInterrpeter.java:91)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:103)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:615)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:508)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.ParallelScheduler.lambda$runJobInScheduler$0(ParallelScheduler.java:39)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.flink.table.api.ValidationException: Unable to deserialize string \u0027null\u0027 of base class \u0027org.apache.flink.table.api.TableSchema\u0027.\n\tat org.apache.flink.table.utils.EncodingUtils.decodeStringToObject(EncodingUtils.java:79)\n\tat org.apache.flink.table.utils.EncodingUtils.decodeStringToObject(EncodingUtils.java:64)\n\tat org.apache.flink.table.catalog.hive.GenericHiveMetastoreCatalogUtil.createCatalogTable(GenericHiveMetastoreCatalogUtil.java:134)\n\tat org.apache.flink.table.catalog.hive.GenericHiveMetastoreCatalog.getTable(GenericHiveMetastoreCatalog.java:92)\n\tat org.apache.flink.table.catalog.CatalogCalciteSchema$DatabaseCalciteSchema.getTable(CatalogCalciteSchema.java:167)\n\tat org.apache.calcite.jdbc.SimpleCalciteSchema.getImplicitTable(SimpleCalciteSchema.java:83)\n\tat org.apache.calcite.jdbc.CalciteSchema.getTable(CalciteSchema.java:288)\n\tat org.apache.calcite.sql.validate.EmptyScope.resolve_(EmptyScope.java:143)\n\tat org.apache.calcite.sql.validate.EmptyScope.resolveTable(EmptyScope.java:99)\n\tat org.apache.calcite.sql.validate.DelegatingScope.resolveTable(DelegatingScope.java:203)\n\tat org.apache.calcite.sql.validate.IdentifierNamespace.resolveImpl(IdentifierNamespace.java:113)\n\tat org.apache.calcite.sql.validate.IdentifierNamespace.validateImpl(IdentifierNamespace.java:185)\n\tat org.apache.calcite.sql.validate.AbstractNamespace.validate(AbstractNamespace.java:84)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateNamespace(SqlValidatorImpl.java:1014)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateQuery(SqlValidatorImpl.java:974)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateFrom(SqlValidatorImpl.java:3278)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateFrom(SqlValidatorImpl.java:3257)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateSelect(SqlValidatorImpl.java:3522)\n\tat org.apache.calcite.sql.validate.SelectNamespace.validateImpl(SelectNamespace.java:60)\n\tat org.apache.calcite.sql.validate.AbstractNamespace.validate(AbstractNamespace.java:84)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateNamespace(SqlValidatorImpl.java:1014)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateQuery(SqlValidatorImpl.java:974)\n\tat org.apache.calcite.sql.SqlSelect.validate(SqlSelect.java:225)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateScopedExpression(SqlValidatorImpl.java:949)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validate(SqlValidatorImpl.java:659)\n\tat org.apache.flink.table.calcite.FlinkPlannerImpl.validate(FlinkPlannerImpl.scala:99)\n\t... 15 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634451_1453719506",
+      "id": "paragraph_1561464137312_1572283658",
+      "dateCreated": "2019-11-13 21:27:14.451",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n\ncreate table people (id int, name varchar) with (type\u003d\u0027csv\u0027, path\u003d\u0027hdfs://192.168.0.115:9000/tmp/a.csv\u0027)",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.451",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been created.\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634451_817476912",
+      "id": "paragraph_1559012565673_875017843",
+      "dateCreated": "2019-11-13 21:27:14.451",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n\nselect * from people\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.451",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "id": "string",
+                      "name": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "id",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "name",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "id\tname\n1\tjeff\n2\tandy\n3\tjames"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634451_-279785641",
+      "id": "paragraph_1559013150176_-701772535",
+      "dateCreated": "2019-11-13 21:27:14.451",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n\ncreate table people_upper (id int, name varchar) with (type\u003d\u0027csv\u0027, path\u003d\u0027hdfs://192.168.0.115:9000/tmp/people_upper\u0027)\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.451",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been created.\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634451_-297314837",
+      "id": "paragraph_1559013159863_145741168",
+      "dateCreated": "2019-11-13 21:27:14.451",
+      "status": "READY"
+    },
+    {
+      "text": "%flink\n\nimport org.apache.flink.table.functions.ScalarFunction\nclass MyUpper extends ScalarFunction {\n  def eval(str: String) \u003d str.toUpperCase\n}\nbtenv.registerFunction(\"myupper\", new MyUpper())\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.451",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.flink.table.functions.ScalarFunction\ndefined class MyUpper\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634451_715374595",
+      "id": "paragraph_1559013227549_1822843264",
+      "dateCreated": "2019-11-13 21:27:14.451",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n\ninsert into people_upper select id, myupper(name) from people",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.451",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Insert Succeeded.\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634451_2080532341",
+      "id": "paragraph_1559013276180_-1045894403",
+      "dateCreated": "2019-11-13 21:27:14.451",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n\nselect * from people_upper\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.452",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "id": "string",
+                      "name": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "id\tname\n1\tJEFF\n2\tANDY\n3\tJAMES"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634452_-1675235760",
+      "id": "paragraph_1559013302217_982899867",
+      "dateCreated": "2019-11-13 21:27:14.452",
+      "status": "READY"
+    },
+    {
+      "text": "%flink.bsql\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-13 21:27:14.452",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651634452_-506135087",
+      "id": "paragraph_1559020816847_-1274815912",
+      "dateCreated": "2019-11-13 21:27:14.452",
+      "status": "READY"
+    }
+  ],
+  "name": "Flink K8s Tutorial",
+  "id": "2ETKJZKVJ",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {
+    "owners": [
+      "admin"
+    ]
+  },
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {},
+  "path": "/Flink K8s Tutorial"
+}

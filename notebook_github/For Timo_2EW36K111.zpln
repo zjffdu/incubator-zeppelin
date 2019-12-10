@@ -1,0 +1,232 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /Users/jzhang/github/flink/build-target\nzeppelin.flink.planner flink",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:32:55.449",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575969692776_1889016811",
+      "id": "paragraph_1575969692776_1889016811",
+      "dateCreated": "2019-12-10 17:21:32.776",
+      "dateStarted": "2019-12-10 17:32:55.456",
+      "dateFinished": "2019-12-10 17:32:55.466",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\nval data \u003d benv.fromElements(\"a\", \"b\", \"c\")\nbtenv.registerDataSet(\"test_table\", data,  \u0027word)\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:32:57.303",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.api.scala.DataSet[String]\u001b[0m \u003d org.apache.flink.api.scala.DataSet@7d968faa\n\u001b[33mwarning: \u001b[0mthere was one deprecation warning; re-run with -deprecation for details\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575969724207_-1916157556",
+      "id": "paragraph_1575969724207_-1916157556",
+      "dateCreated": "2019-12-10 17:22:04.207",
+      "dateStarted": "2019-12-10 17:32:57.308",
+      "dateFinished": "2019-12-10 17:33:08.011",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\nimport org.apache.flink.table.functions.ScalarFunction\n\nclass ScalaUpper extends ScalarFunction {\n  def eval(str: String) \u003d str.toUpperCase\n}\nbtenv.registerFunction(\"scala_upper\", new ScalaUpper())",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:33:09.362",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.flink.table.functions.ScalarFunction\ndefined class ScalaUpper\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575969869990_-1430643261",
+      "id": "paragraph_1575969869990_-1430643261",
+      "dateCreated": "2019-12-10 17:24:29.991",
+      "dateStarted": "2019-12-10 17:33:09.366",
+      "dateFinished": "2019-12-10 17:33:09.981",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n\nselect scala_upper(word) from test_table\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:33:15.495",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "EXPR$0": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "EXPR$0\nA\nB\nC\n"
+          },
+          {
+            "type": "TEXT",
+            "data": ""
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575969728247_-1633708020",
+      "id": "paragraph_1575969728247_-1633708020",
+      "dateCreated": "2019-12-10 17:22:08.247",
+      "dateStarted": "2019-12-10 17:33:12.223",
+      "dateFinished": "2019-12-10 17:33:15.091",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:24:24.322",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575969864322_1868173907",
+      "id": "paragraph_1575969864322_1868173907",
+      "dateCreated": "2019-12-10 17:24:24.322",
+      "status": "READY"
+    }
+  ],
+  "name": "For Timo",
+  "id": "2EW36K111",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {
+    "owners": [
+      "admin"
+    ]
+  },
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": true
+  },
+  "info": {},
+  "path": "/For Timo"
+}

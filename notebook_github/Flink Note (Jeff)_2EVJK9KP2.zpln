@@ -1,0 +1,20 @@
+{
+  "paragraphs": [],
+  "name": "Flink Note (Jeff)",
+  "id": "2EVJK9KP2",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {
+    "owners": [
+      "admin"
+    ]
+  },
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {},
+  "path": "/Flink Note (Jeff)"
+}

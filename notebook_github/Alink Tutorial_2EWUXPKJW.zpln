@@ -1,0 +1,31 @@
+{
+  "paragraphs": [
+    {
+      "user": "anonymous",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575613649026_206534544",
+      "id": "paragraph_1575613649026_206534544",
+      "dateCreated": "2019-12-06 14:27:29.026",
+      "status": "READY"
+    }
+  ],
+  "name": "Alink Tutorial",
+  "id": "2EWUXPKJW",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": true
+  },
+  "info": {},
+  "path": "/Alink Tutorial"
+}

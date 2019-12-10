@@ -1,0 +1,903 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /Users/jzhang/github/flink/build-target\nflink.execution.mode yarn\n\nflink.execution.remote.host localhost\nflink.execution.remote.port 8081\n\nzeppelin.flink.enableHive true\nzeppelin.flink.hive.database default\nzeppelin.flink.hive.version 2.3.4\nzeppelin.flink.planner blink\nzeppelin.pyflink.python /Users/jzhang/anaconda3/envs/python-3.6/bin/python\ntable.exec.resource.default-parallelism 1\n\n#HIVE_CONF_DIR /Users/jzhang/Java/lib/apache-hive-2.3.4-bin/conf\n\nPATH /Users/jzhang/anaconda3/envs/python-3.6/bin:/Users/jzhang/.rvm/gems/ruby-2.3.7/bin:/Users/jzhang/.rvm/gems/ruby-2.3.7@global/bin:/Users/jzhang/.rvm/rubies/ruby-2.3.7/bin:/Users/jzhang/.rvm/bin:/Users/jzhang/anaconda3/bin:/Users/jzhang/anaconda3/condabin:/usr/local/opt/thrift@0.9/bin:/usr/local/opt/bison/bin:/usr/local/opt/ruby/bin:/Library/Java/JavaVirtualMachines/jdk1.8.0_211.jdk/Contents/Home/bin:/Users/jzhang/Java/lib/hadoop-2.7.7/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/Users/jzhang/github/pha-all/arcanist/bin:/Users/jzhang/oss_cmd:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Users/jzhang/Java/lib/apache-maven-3.6.1/bin:/Users/jzhang/bin:/Users/jzhang/anaconda3/bin:/Users/jzhang/github/pha-all/arcanist/bin\n\nHADOOP_CLASSPATH /Users/jzhang/Java/lib/hadoop-2.7.7/etc/hadoop:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/*:/Users/jzhang/Java/lib/hadoop-2.7.7/etc/hadoop:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/*:/Users/jzhang/Java/lib/hadoop-2.7.7/contrib/capacity-scheduler/*.jar:/Users/jzhang/Java/lib/hadoop-2.7.7/contrib/capacity-scheduler/*.jar\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:10:45.007",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1562567347434_-2047699644",
+      "id": "paragraph_1562567347434_-2047699644",
+      "dateCreated": "2019-07-08 14:29:07.435",
+      "dateStarted": "2019-12-10 17:03:41.320",
+      "dateFinished": "2019-12-10 17:03:41.348",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\nval data \u003d benv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\"))\n             .map(w \u003d\u003e {Thread.sleep(1000); (w, 1)})\n             .groupBy(0)\n             .sum(1)\n             .print()",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:03:43.510",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.api.scala.DataSet[String]\u001b[0m \u003d org.apache.flink.api.scala.DataSet@64057bc6\n(flink,1)\n(hadoop,1)\n(hello,3)\n(world,1)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573635883378_311192024",
+      "id": "paragraph_1573635883378_311192024",
+      "dateCreated": "2019-11-13 17:04:43.378",
+      "dateStarted": "2019-12-10 17:03:43.521",
+      "dateFinished": "2019-12-10 17:04:35.863",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\nval data \u003d senv.fromElements(\"hello world\", \"hello flink\", \"hello hadoop\")\n\ndata.flatMap(line \u003d\u003e line.split(\"\\\\s\")).\n    map(w \u003d\u003e {Thread.sleep(100); (w, 1)}).\n    keyBy(0).\n    sum(1).\n    print\n\nsenv.execute()",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:04:37.412",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "editorHide": false,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mdata\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.streaming.api.scala.DataStream[String]\u001b[0m \u003d org.apache.flink.streaming.api.scala.DataStream@332b7bab\n\u001b[1m\u001b[34mres2\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.streaming.api.datastream.DataStreamSink[(String, Int)]\u001b[0m \u003d org.apache.flink.streaming.api.datastream.DataStreamSink@40a4f2d4\n\u001b[1m\u001b[34mres3\u001b[0m: \u001b[1m\u001b[32morg.apache.flink.api.common.JobExecutionResult\u001b[0m \u003d org.apache.flink.api.common.JobExecutionResult@3c430645\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1562567584970_-321834792",
+      "id": "paragraph_1562567584970_-321834792",
+      "dateCreated": "2019-07-08 14:33:04.970",
+      "dateStarted": "2019-12-10 17:04:37.420",
+      "dateFinished": "2019-12-10 17:04:40.938",
+      "status": "FINISHED"
+    },
+    {
+      "title": "",
+      "text": "%flink.bsql\n\nshow catalogs;\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:04:43.037",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "catalog": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "catalog\ndefault_catalog\nhive\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1562567589112_1605376729",
+      "id": "paragraph_1562567589112_1605376729",
+      "dateCreated": "2019-07-08 14:33:09.112",
+      "dateStarted": "2019-12-10 17:04:43.043",
+      "dateFinished": "2019-12-10 17:04:43.321",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n\nshow tables;\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:04:44.504",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "table": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "table\nbank\ndepartments\nemployees\nitems\nweb_log_small\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1562572149898_-1412782531",
+      "id": "paragraph_1562572149898_-1412782531",
+      "dateCreated": "2019-07-08 15:49:09.899",
+      "dateStarted": "2019-12-10 17:04:44.511",
+      "dateFinished": "2019-12-10 17:04:44.868",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n\ndescribe web_log_small\n\n\n\n\n\n\n\n\n\n\n\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:04:45.895",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Column\tType\nOptional[ts]\tOptional[BIGINT]\nOptional[page]\tOptional[STRING]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574059477362_240046609",
+      "id": "paragraph_1574059477362_240046609",
+      "dateCreated": "2019-11-18 14:44:37.362",
+      "dateStarted": "2019-12-10 17:04:45.901",
+      "dateFinished": "2019-12-10 17:04:47.198",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-26 14:43:47.016",
+      "config": {
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574750627010_-906442091",
+      "id": "paragraph_1574750627010_-906442091",
+      "dateCreated": "2019-11-26 14:43:47.015",
+      "status": "READY"
+    },
+    {
+      "title": "Batch Job of Total Page View ",
+      "text": "%flink.bsql\n\nselect page, count(1) as page_view from web_log_small group by page\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-10 17:05:26.062",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "page": "string",
+                      "page_view": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Fail to run sql command: select page, count(1) as page_view from web_log_small group by page\njava.util.concurrent.ExecutionException: org.apache.flink.client.program.ProgramInvocationException: Job failed (JobID: 2cf3df00575597f561d13d3f401bae17)\n\tat java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:357)\n\tat java.util.concurrent.CompletableFuture.get(CompletableFuture.java:1895)\n\tat org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:1647)\n\tat org.apache.flink.api.java.ScalaShellStreamEnvironment.execute(ScalaShellStreamEnvironment.java:80)\n\tat org.apache.flink.table.planner.delegation.BatchExecutor.execute(BatchExecutor.java:44)\n\tat org.apache.flink.table.api.internal.TableEnvironmentImpl.execute(TableEnvironmentImpl.java:641)\n\tat org.apache.zeppelin.flink.util.TableUtil$.collect(TableUtil.scala:127)\n\tat org.apache.zeppelin.flink.util.TableUtil$.collectSink(TableUtil.scala:83)\n\tat org.apache.zeppelin.flink.util.TableUtil$.collect(TableUtil.scala:57)\n\tat org.apache.zeppelin.flink.FlinkZeppelinContext.showData(FlinkZeppelinContext.scala:111)\n\tat org.apache.zeppelin.interpreter.BaseZeppelinContext.showData(BaseZeppelinContext.java:69)\n\tat org.apache.zeppelin.flink.FlinkBatchSqlInterpreter.callSelect(FlinkBatchSqlInterpreter.java:55)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callCommand(FlinkSqlInterrpeter.java:158)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.runSqlList(FlinkSqlInterrpeter.java:122)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.interpret(FlinkSqlInterrpeter.java:80)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:103)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:676)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:569)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.ParallelScheduler.lambda$runJobInScheduler$0(ParallelScheduler.java:39)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.flink.client.program.ProgramInvocationException: Job failed (JobID: 2cf3df00575597f561d13d3f401bae17)\n\tat org.apache.flink.client.deployment.ClusterClientJobClientAdapter.lambda$null$6(ClusterClientJobClientAdapter.java:112)\n\tat java.util.concurrent.CompletableFuture.uniApply(CompletableFuture.java:602)\n\tat java.util.concurrent.CompletableFuture$UniApply.tryFire(CompletableFuture.java:577)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.complete(CompletableFuture.java:1962)\n\tat org.apache.flink.client.program.rest.RestClusterClient.lambda$pollResourceAsync$21(RestClusterClient.java:532)\n\tat java.util.concurrent.CompletableFuture.uniWhenComplete(CompletableFuture.java:760)\n\tat java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(CompletableFuture.java:736)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.complete(CompletableFuture.java:1962)\n\tat org.apache.flink.runtime.concurrent.FutureUtils.lambda$retryOperationWithDelay$8(FutureUtils.java:291)\n\tat java.util.concurrent.CompletableFuture.uniWhenComplete(CompletableFuture.java:760)\n\tat java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(CompletableFuture.java:736)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.postFire(CompletableFuture.java:561)\n\tat java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:929)\n\tat java.util.concurrent.CompletableFuture$Completion.run(CompletableFuture.java:442)\n\t... 3 more\nCaused by: org.apache.flink.runtime.client.JobExecutionException: Job execution failed.\n\tat org.apache.flink.runtime.jobmaster.JobResult.toJobExecutionResult(JobResult.java:146)\n\tat org.apache.flink.client.deployment.ClusterClientJobClientAdapter.lambda$null$6(ClusterClientJobClientAdapter.java:110)\n\t... 19 more\nCaused by: org.apache.flink.runtime.JobException: Recovery is suppressed by NoRestartBackoffTimeStrategy\n\tat org.apache.flink.runtime.executiongraph.failover.flip1.ExecutionFailureHandler.handleFailure(ExecutionFailureHandler.java:110)\n\tat org.apache.flink.runtime.executiongraph.failover.flip1.ExecutionFailureHandler.getFailureHandlingResult(ExecutionFailureHandler.java:76)\n\tat org.apache.flink.runtime.scheduler.DefaultScheduler.handleTaskFailure(DefaultScheduler.java:188)\n\tat org.apache.flink.runtime.scheduler.DefaultScheduler.handleTaskDeploymentFailure(DefaultScheduler.java:425)\n\tat org.apache.flink.runtime.scheduler.DefaultScheduler.lambda$deployOrHandleError$6(DefaultScheduler.java:452)\n\tat java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:822)\n\tat java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:797)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.complete(CompletableFuture.java:1962)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SchedulerImpl.lambda$internalAllocateSlot$0(SchedulerImpl.java:170)\n\tat java.util.concurrent.CompletableFuture.uniWhenComplete(CompletableFuture.java:760)\n\tat java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(CompletableFuture.java:736)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.complete(CompletableFuture.java:1962)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SlotPoolImpl.tryFulfillSlotRequestOrMakeAvailable(SlotPoolImpl.java:534)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SlotPoolImpl.releaseSingleSlot(SlotPoolImpl.java:479)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SlotPoolImpl.releaseSlot(SlotPoolImpl.java:390)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SlotSharingManager$MultiTaskSlot.release(SlotSharingManager.java:557)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SlotSharingManager$MultiTaskSlot.releaseChild(SlotSharingManager.java:607)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SlotSharingManager$MultiTaskSlot.access$700(SlotSharingManager.java:352)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SlotSharingManager$SingleTaskSlot.release(SlotSharingManager.java:716)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SchedulerImpl.releaseSharedSlot(SchedulerImpl.java:552)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SchedulerImpl.cancelSlotRequest(SchedulerImpl.java:184)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SchedulerImpl.returnLogicalSlot(SchedulerImpl.java:195)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SingleLogicalSlot.lambda$returnSlotToOwner$0(SingleLogicalSlot.java:181)\n\tat java.util.concurrent.CompletableFuture.uniWhenComplete(CompletableFuture.java:760)\n\tat java.util.concurrent.CompletableFuture.uniWhenCompleteStage(CompletableFuture.java:778)\n\tat java.util.concurrent.CompletableFuture.whenComplete(CompletableFuture.java:2140)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SingleLogicalSlot.returnSlotToOwner(SingleLogicalSlot.java:178)\n\tat org.apache.flink.runtime.jobmaster.slotpool.SingleLogicalSlot.releaseSlot(SingleLogicalSlot.java:125)\n\tat org.apache.flink.runtime.executiongraph.Execution.releaseAssignedResource(Execution.java:1451)\n\tat org.apache.flink.runtime.executiongraph.Execution.finishCancellation(Execution.java:1170)\n\tat org.apache.flink.runtime.executiongraph.Execution.completeCancelling(Execution.java:1150)\n\tat org.apache.flink.runtime.executiongraph.ExecutionGraph.updateStateInternal(ExecutionGraph.java:1500)\n\tat org.apache.flink.runtime.executiongraph.ExecutionGraph.updateState(ExecutionGraph.java:1467)\n\tat org.apache.flink.runtime.scheduler.SchedulerBase.updateTaskExecutionState(SchedulerBase.java:446)\n\tat org.apache.flink.runtime.jobmaster.JobMaster.updateTaskExecutionState(JobMaster.java:380)\n\tat sun.reflect.GeneratedMethodAccessor31.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRpcInvocation(AkkaRpcActor.java:279)\n\tat org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRpcMessage(AkkaRpcActor.java:194)\n\tat org.apache.flink.runtime.rpc.akka.FencedAkkaRpcActor.handleRpcMessage(FencedAkkaRpcActor.java:74)\n\tat org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleMessage(AkkaRpcActor.java:152)\n\tat akka.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:26)\n\tat akka.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:21)\n\tat scala.PartialFunction$class.applyOrElse(PartialFunction.scala:123)\n\tat akka.japi.pf.UnitCaseStatement.applyOrElse(CaseStatements.scala:21)\n\tat scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170)\n\tat scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:171)\n\tat scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:171)\n\tat akka.actor.Actor$class.aroundReceive(Actor.scala:517)\n\tat akka.actor.AbstractActor.aroundReceive(AbstractActor.scala:225)\n\tat akka.actor.ActorCell.receiveMessage(ActorCell.scala:592)\n\tat akka.actor.ActorCell.invoke(ActorCell.scala:561)\n\tat akka.dispatch.Mailbox.processMailbox(Mailbox.scala:258)\n\tat akka.dispatch.Mailbox.run(Mailbox.scala:225)\n\tat akka.dispatch.Mailbox.exec(Mailbox.scala:235)\n\tat akka.dispatch.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)\n\tat akka.dispatch.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339)\n\tat akka.dispatch.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)\n\tat akka.dispatch.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)\nCaused by: java.util.concurrent.CompletionException: java.lang.IllegalStateException: Could not assign resource org.apache.flink.runtime.jobmaster.slotpool.SingleLogicalSlot@118fb91b to current execution Attempt #0 (Source: HiveTableSource(ts, page) TablePath: default.web_log_small, PartitionPruned: false, PartitionNums: 1, ProjectedFields: [1] (5/8)) @ (unassigned) - [CANCELED].\n\tat java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:273)\n\tat java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:280)\n\tat java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:824)\n\t... 56 more\nCaused by: java.lang.IllegalStateException: Could not assign resource org.apache.flink.runtime.jobmaster.slotpool.SingleLogicalSlot@118fb91b to current execution Attempt #0 (Source: HiveTableSource(ts, page) TablePath: default.web_log_small, PartitionPruned: false, PartitionNums: 1, ProjectedFields: [1] (5/8)) @ (unassigned) - [CANCELED].\n\tat org.apache.flink.runtime.executiongraph.ExecutionVertex.tryAssignResource(ExecutionVertex.java:701)\n\tat org.apache.flink.runtime.scheduler.DefaultScheduler.lambda$assignResourceOrHandleError$5(DefaultScheduler.java:409)\n\tat java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:822)\n\t... 56 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574044841151_-399896844",
+      "id": "paragraph_1574044841151_-399896844",
+      "dateCreated": "2019-11-18 10:40:41.151",
+      "dateStarted": "2019-12-10 17:05:26.083",
+      "dateFinished": "2019-12-10 17:05:41.256",
+      "status": "ABORT"
+    },
+    {
+      "title": "Streaming Job of Total Page View",
+      "text": "%flink.ssql(type\u003dsingle, refreshInterval\u003d1000, template\u003d\u003ch1\u003e{0}\u003c/h1\u003e)\n\n\n\n\n\nselect count(1) as page_view from web_log_small\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+      "user": "admin",
+      "dateUpdated": "2019-12-09 17:05:08.273",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "page": "string",
+                      "EXPR$1": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "page",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "EXPR$1",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003ch1\u003e3662\u003c/h1\u003e"
+          },
+          {
+            "type": "TEXT",
+            "data": "Fail to run sql command: select count(1) as page_view from web_log_small\njava.io.IOException: Fail to run stream sql job\n\tat org.apache.zeppelin.flink.sql.AbstractStreamSqlJob.run(AbstractStreamSqlJob.java:159)\n\tat org.apache.zeppelin.flink.FlinkStreamSqlInterpreter.callSelect(FlinkStreamSqlInterpreter.java:63)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callCommand(FlinkSqlInterrpeter.java:158)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.runSqlList(FlinkSqlInterrpeter.java:122)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.interpret(FlinkSqlInterrpeter.java:80)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:103)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:676)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:569)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.ParallelScheduler.lambda$runJobInScheduler$0(ParallelScheduler.java:39)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: java.util.concurrent.ExecutionException: org.apache.flink.client.program.ProgramInvocationException: Job failed (JobID: 89399deab8175312d86e6e6291aac405)\n\tat java.util.concurrent.CompletableFuture.reportGet(CompletableFuture.java:357)\n\tat java.util.concurrent.CompletableFuture.get(CompletableFuture.java:1895)\n\tat org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:1629)\n\tat org.apache.flink.api.java.ScalaShellStreamEnvironment.execute(ScalaShellStreamEnvironment.java:80)\n\tat org.apache.flink.streaming.api.environment.StreamExecutionEnvironment.execute(StreamExecutionEnvironment.java:1612)\n\tat org.apache.flink.table.planner.delegation.StreamExecutor.execute(StreamExecutor.java:42)\n\tat org.apache.flink.table.api.internal.TableEnvironmentImpl.execute(TableEnvironmentImpl.java:641)\n\tat org.apache.zeppelin.flink.sql.AbstractStreamSqlJob.run(AbstractStreamSqlJob.java:148)\n\t... 13 more\nCaused by: org.apache.flink.client.program.ProgramInvocationException: Job failed (JobID: 89399deab8175312d86e6e6291aac405)\n\tat org.apache.flink.client.deployment.ClusterClientJobClientAdapter.lambda$null$6(ClusterClientJobClientAdapter.java:112)\n\tat java.util.concurrent.CompletableFuture.uniApply(CompletableFuture.java:602)\n\tat java.util.concurrent.CompletableFuture$UniApply.tryFire(CompletableFuture.java:577)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.complete(CompletableFuture.java:1962)\n\tat org.apache.flink.client.program.rest.RestClusterClient.lambda$pollResourceAsync$21(RestClusterClient.java:532)\n\tat java.util.concurrent.CompletableFuture.uniWhenComplete(CompletableFuture.java:760)\n\tat java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(CompletableFuture.java:736)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.complete(CompletableFuture.java:1962)\n\tat org.apache.flink.runtime.concurrent.FutureUtils.lambda$retryOperationWithDelay$8(FutureUtils.java:291)\n\tat java.util.concurrent.CompletableFuture.uniWhenComplete(CompletableFuture.java:760)\n\tat java.util.concurrent.CompletableFuture$UniWhenComplete.tryFire(CompletableFuture.java:736)\n\tat java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:474)\n\tat java.util.concurrent.CompletableFuture.postFire(CompletableFuture.java:561)\n\tat java.util.concurrent.CompletableFuture$UniCompose.tryFire(CompletableFuture.java:929)\n\tat java.util.concurrent.CompletableFuture$Completion.run(CompletableFuture.java:442)\n\t... 3 more\nCaused by: org.apache.flink.runtime.client.JobExecutionException: Job execution failed.\n\tat org.apache.flink.runtime.jobmaster.JobResult.toJobExecutionResult(JobResult.java:146)\n\tat org.apache.flink.client.deployment.ClusterClientJobClientAdapter.lambda$null$6(ClusterClientJobClientAdapter.java:110)\n\t... 19 more\nCaused by: org.apache.flink.runtime.JobException: Recovery is suppressed by NoRestartBackoffTimeStrategy\n\tat org.apache.flink.runtime.executiongraph.failover.flip1.ExecutionFailureHandler.handleFailure(ExecutionFailureHandler.java:110)\n\tat org.apache.flink.runtime.executiongraph.failover.flip1.ExecutionFailureHandler.getFailureHandlingResult(ExecutionFailureHandler.java:76)\n\tat org.apache.flink.runtime.scheduler.DefaultScheduler.handleTaskFailure(DefaultScheduler.java:188)\n\tat org.apache.flink.runtime.scheduler.DefaultScheduler.maybeHandleTaskFailure(DefaultScheduler.java:183)\n\tat org.apache.flink.runtime.scheduler.DefaultScheduler.updateTaskExecutionStateInternal(DefaultScheduler.java:177)\n\tat org.apache.flink.runtime.scheduler.SchedulerBase.updateTaskExecutionState(SchedulerBase.java:452)\n\tat org.apache.flink.runtime.jobmaster.JobMaster.updateTaskExecutionState(JobMaster.java:380)\n\tat sun.reflect.GeneratedMethodAccessor42.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRpcInvocation(AkkaRpcActor.java:279)\n\tat org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleRpcMessage(AkkaRpcActor.java:194)\n\tat org.apache.flink.runtime.rpc.akka.FencedAkkaRpcActor.handleRpcMessage(FencedAkkaRpcActor.java:74)\n\tat org.apache.flink.runtime.rpc.akka.AkkaRpcActor.handleMessage(AkkaRpcActor.java:152)\n\tat akka.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:26)\n\tat akka.japi.pf.UnitCaseStatement.apply(CaseStatements.scala:21)\n\tat scala.PartialFunction$class.applyOrElse(PartialFunction.scala:123)\n\tat akka.japi.pf.UnitCaseStatement.applyOrElse(CaseStatements.scala:21)\n\tat scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:170)\n\tat scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:171)\n\tat scala.PartialFunction$OrElse.applyOrElse(PartialFunction.scala:171)\n\tat akka.actor.Actor$class.aroundReceive(Actor.scala:517)\n\tat akka.actor.AbstractActor.aroundReceive(AbstractActor.scala:225)\n\tat akka.actor.ActorCell.receiveMessage(ActorCell.scala:592)\n\tat akka.actor.ActorCell.invoke(ActorCell.scala:561)\n\tat akka.dispatch.Mailbox.processMailbox(Mailbox.scala:258)\n\tat akka.dispatch.Mailbox.run(Mailbox.scala:225)\n\tat akka.dispatch.Mailbox.exec(Mailbox.scala:235)\n\tat akka.dispatch.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)\n\tat akka.dispatch.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339)\n\tat akka.dispatch.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979)\n\tat akka.dispatch.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107)\nCaused by: java.io.IOException: Cannot connect to the client to send back the stream\n\tat org.apache.flink.streaming.experimental.CollectSink.open(CollectSink.java:85)\n\tat org.apache.flink.api.common.functions.util.FunctionUtils.openFunction(FunctionUtils.java:36)\n\tat org.apache.flink.streaming.api.operators.AbstractUdfStreamOperator.open(AbstractUdfStreamOperator.java:102)\n\tat org.apache.flink.streaming.api.operators.StreamSink.open(StreamSink.java:48)\n\tat org.apache.flink.streaming.runtime.tasks.StreamTask.initializeStateAndOpen(StreamTask.java:986)\n\tat org.apache.flink.streaming.runtime.tasks.StreamTask.lambda$beforeInvoke$0(StreamTask.java:453)\n\tat org.apache.flink.streaming.runtime.tasks.StreamTaskActionExecutor$SynchronizedStreamTaskActionExecutor.runThrowing(StreamTaskActionExecutor.java:94)\n\tat org.apache.flink.streaming.runtime.tasks.StreamTask.beforeInvoke(StreamTask.java:448)\n\tat org.apache.flink.streaming.runtime.tasks.StreamTask.invoke(StreamTask.java:460)\n\tat org.apache.flink.runtime.taskmanager.Task.doRun(Task.java:702)\n\tat org.apache.flink.runtime.taskmanager.Task.run(Task.java:527)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: java.net.ConnectException: Connection refused (Connection refused)\n\tat java.net.PlainSocketImpl.socketConnect(Native Method)\n\tat java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)\n\tat java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:204)\n\tat java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)\n\tat java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)\n\tat java.net.Socket.connect(Socket.java:589)\n\tat java.net.Socket.connect(Socket.java:538)\n\tat java.net.Socket.\u003cinit\u003e(Socket.java:434)\n\tat java.net.Socket.\u003cinit\u003e(Socket.java:244)\n\tat org.apache.flink.streaming.experimental.CollectSink.open(CollectSink.java:80)\n\t... 11 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573800817228_-909351483",
+      "id": "paragraph_1573800817228_-909351483",
+      "dateCreated": "2019-11-15 14:53:37.228",
+      "dateStarted": "2019-12-09 17:05:08.292",
+      "dateFinished": "2019-12-09 17:05:13.995",
+      "status": "ERROR"
+    },
+    {
+      "title": "Define Scala UDF",
+      "text": "%flink\n\nimport org.apache.flink.table.functions.ScalarFunction\n\nclass ScalaUpper extends ScalarFunction {\n  def eval(str: String) \u003d str.toUpperCase\n}\nbtenv.registerFunction(\"scala_upper\", new ScalaUpper())",
+      "user": "anonymous",
+      "dateUpdated": "2019-12-06 16:31:14.864",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import org.apache.flink.table.functions.ScalarFunction\ndefined class ScalaUpper\norg.apache.flink.table.api.ValidationException: The class ScalaUpper is an inner class, but not statically accessible.\n  at org.apache.flink.table.functions.UserFunctionsTypeHelper.validateInstantiation(UserFunctionsTypeHelper.java:156)\n  at org.apache.flink.table.catalog.FunctionCatalog.registerTempSystemScalarFunction(FunctionCatalog.java:80)\n  at org.apache.flink.table.api.internal.TableEnvironmentImpl.registerFunction(TableEnvironmentImpl.java:236)\n  ... 47 elided\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573651686176_-1332859458",
+      "id": "paragraph_1573651686176_-1332859458",
+      "dateCreated": "2019-11-13 21:28:06.176",
+      "dateStarted": "2019-12-06 16:31:14.869",
+      "dateFinished": "2019-12-06 16:31:15.540",
+      "status": "ERROR"
+    },
+    {
+      "title": "Define Python UDF",
+      "text": "%flink.pyflink\n\nfrom pyflink.table.udf import udf\nfrom pyflink.table.udf import ScalarFunction\n\nclass PythonUpper(ScalarFunction):\n  def eval(self, s):\n    return s.upper()\n\nbt_env.register_function(\"python_upper\", udf(PythonUpper(), DataTypes.STRING(), DataTypes.STRING()))\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-12-06 16:31:26.448",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573786555916_-947933699",
+      "id": "paragraph_1573786555916_-947933699",
+      "dateCreated": "2019-11-15 10:55:55.924",
+      "dateStarted": "2019-12-06 16:31:26.454",
+      "dateFinished": "2019-12-06 16:31:31.951",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Hive UDF",
+      "text": "%flink.bsql\n\nselect upper(page), count(1) as pv from web_log_small group by page\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-12-04 12:23:02.539",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "EXPR$0": "string",
+                      "pv": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "EXPR$0",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "pv",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "EXPR$0\tpv\nHOME\t33334\nPRODUCT\t99999\nSEARCH\t66667\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574059516226_-298678547",
+      "id": "paragraph_1574059516226_-298678547",
+      "dateCreated": "2019-11-18 14:45:16.226",
+      "dateStarted": "2019-12-04 12:23:02.551",
+      "dateFinished": "2019-12-04 12:23:19.971",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Scala UDF",
+      "text": "%flink.bsql\n\nselect scala_upper(page), count(1) as pv from web_log_small group by page\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-12-06 16:31:36.335",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "pieChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "EXPR$0": "string",
+                      "pv": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "EXPR$0",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "pv",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Fail to run sql command: select scala_upper(page), count(1) as pv from web_log_small group by page\norg.apache.flink.table.api.ValidationException: SQL validation failed. From line 1, column 8 to line 1, column 24: No match found for function signature scala_upper(\u003cCHARACTER\u003e)\n\tat org.apache.flink.table.planner.calcite.FlinkPlannerImpl.validate(FlinkPlannerImpl.scala:127)\n\tat org.apache.flink.table.planner.calcite.FlinkPlannerImpl.validate(FlinkPlannerImpl.scala:105)\n\tat org.apache.flink.table.planner.operations.SqlToOperationConverter.convert(SqlToOperationConverter.java:115)\n\tat org.apache.flink.table.planner.delegation.ParserImpl.parse(ParserImpl.java:66)\n\tat org.apache.flink.table.api.internal.TableEnvironmentImpl.sqlQuery(TableEnvironmentImpl.java:445)\n\tat org.apache.zeppelin.flink.FlinkBatchSqlInterpreter.callSelect(FlinkBatchSqlInterpreter.java:53)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.callCommand(FlinkSqlInterrpeter.java:158)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.runSqlList(FlinkSqlInterrpeter.java:122)\n\tat org.apache.zeppelin.flink.FlinkSqlInterrpeter.interpret(FlinkSqlInterrpeter.java:80)\n\tat org.apache.zeppelin.interpreter.LazyOpenInterpreter.interpret(LazyOpenInterpreter.java:117)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:676)\n\tat org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer$InterpretJob.jobRun(RemoteInterpreterServer.java:569)\n\tat org.apache.zeppelin.scheduler.Job.run(Job.java:172)\n\tat org.apache.zeppelin.scheduler.AbstractScheduler.runJob(AbstractScheduler.java:121)\n\tat org.apache.zeppelin.scheduler.ParallelScheduler.lambda$runJobInScheduler$0(ParallelScheduler.java:39)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)\n\tat java.lang.Thread.run(Thread.java:748)\nCaused by: org.apache.calcite.runtime.CalciteContextException: From line 1, column 8 to line 1, column 24: No match found for function signature scala_upper(\u003cCHARACTER\u003e)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.calcite.runtime.Resources$ExInstWithCause.ex(Resources.java:463)\n\tat org.apache.calcite.sql.SqlUtil.newContextException(SqlUtil.java:834)\n\tat org.apache.calcite.sql.SqlUtil.newContextException(SqlUtil.java:819)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.newValidationError(SqlValidatorImpl.java:4841)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.handleUnresolvedFunction(SqlValidatorImpl.java:1773)\n\tat org.apache.calcite.sql.SqlFunction.deriveType(SqlFunction.java:293)\n\tat org.apache.calcite.sql.SqlFunction.deriveType(SqlFunction.java:219)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl$DeriveTypeVisitor.visit(SqlValidatorImpl.java:5600)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl$DeriveTypeVisitor.visit(SqlValidatorImpl.java:5587)\n\tat org.apache.calcite.sql.SqlCall.accept(SqlCall.java:139)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.deriveTypeImpl(SqlValidatorImpl.java:1691)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.deriveType(SqlValidatorImpl.java:1676)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.expandSelectItem(SqlValidatorImpl.java:479)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateSelectList(SqlValidatorImpl.java:4105)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateSelect(SqlValidatorImpl.java:3389)\n\tat org.apache.calcite.sql.validate.SelectNamespace.validateImpl(SelectNamespace.java:60)\n\tat org.apache.calcite.sql.validate.AbstractNamespace.validate(AbstractNamespace.java:84)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateNamespace(SqlValidatorImpl.java:1008)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateQuery(SqlValidatorImpl.java:968)\n\tat org.apache.calcite.sql.SqlSelect.validate(SqlSelect.java:216)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validateScopedExpression(SqlValidatorImpl.java:943)\n\tat org.apache.calcite.sql.validate.SqlValidatorImpl.validate(SqlValidatorImpl.java:650)\n\tat org.apache.flink.table.planner.calcite.FlinkPlannerImpl.validate(FlinkPlannerImpl.scala:123)\n\t... 17 more\nCaused by: org.apache.calcite.sql.validate.SqlValidatorException: No match found for function signature scala_upper(\u003cCHARACTER\u003e)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)\n\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)\n\tat java.lang.reflect.Constructor.newInstance(Constructor.java:423)\n\tat org.apache.calcite.runtime.Resources$ExInstWithCause.ex(Resources.java:463)\n\tat org.apache.calcite.runtime.Resources$ExInst.ex(Resources.java:572)\n\t... 39 more\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574044782568_564483565",
+      "id": "paragraph_1574044782568_564483565",
+      "dateCreated": "2019-11-18 10:39:42.569",
+      "dateStarted": "2019-12-06 16:31:36.340",
+      "dateFinished": "2019-12-06 16:31:37.333",
+      "status": "ERROR"
+    },
+    {
+      "title": "Python UDF",
+      "text": "%flink.bsql\n\nselect python_upper(page), count(1) as pv from web_log_small group by page\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-12-06 16:32:00.301",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "stackedAreaChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "EXPR$0": "string",
+                      "pv": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "stackedAreaChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "EXPR$0",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "pv",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "EXPR$0\tpv\nHOME\t33334\nPRODUCT\t99999\nSEARCH\t66667\n"
+          },
+          {
+            "type": "TEXT",
+            "data": ""
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573800343921_1002740155",
+      "id": "paragraph_1573800343921_1002740155",
+      "dateCreated": "2019-11-15 14:45:43.921",
+      "dateStarted": "2019-12-06 16:32:00.307",
+      "dateFinished": "2019-12-06 16:32:17.664",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.ipyflink\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-09-06 13:22:30.887",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1567747350886_116996495",
+      "id": "paragraph_1567747350886_116996495",
+      "dateCreated": "2019-09-06 13:22:30.887",
+      "status": "READY"
+    }
+  ],
+  "name": "Flink Tutorial",
+  "id": "2EGVZV6JN",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": true
+  },
+  "info": {},
+  "path": "/Flink Tutorial"
+}

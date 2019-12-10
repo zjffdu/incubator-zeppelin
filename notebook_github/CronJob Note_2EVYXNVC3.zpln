@@ -1,0 +1,82 @@
+{
+  "paragraphs": [
+    {
+      "text": "%sh\n\ndate",
+      "user": "anonymous",
+      "dateUpdated": "2019-12-06 14:16:26.049",
+      "config": {
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/sh",
+        "fontSize": 9.0,
+        "results": {},
+        "enabled": true,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Fri Dec  6 15:19:00 CST 2019\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575612964374_-346562202",
+      "id": "paragraph_1575612964374_-346562202",
+      "dateCreated": "2019-12-06 14:16:04.374",
+      "dateStarted": "2019-12-06 15:19:00.012",
+      "dateFinished": "2019-12-06 15:19:00.035",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%sh\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-12-06 14:16:26.061",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1575612986061_1893156964",
+      "id": "paragraph_1575612986061_1893156964",
+      "dateCreated": "2019-12-06 14:16:26.061",
+      "status": "FINISHED"
+    }
+  ],
+  "name": "CronJob Note",
+  "id": "2EVYXNVC3",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": true,
+    "looknfeel": "default",
+    "personalizedMode": "false",
+    "cronExecutingUser": "anonymous",
+    "cronExecutingRoles": "[]",
+    "cron": "0 0/1 * * * ?"
+  },
+  "info": {
+    "isRunning": true
+  },
+  "path": "/CronJob Note"
+}

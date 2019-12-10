@@ -1,0 +1,487 @@
+{
+  "paragraphs": [
+    {
+      "text": "%flink.conf\n\nFLINK_HOME /Users/jzhang/github/flink/build-target\nflink.execution.mode local\n\nflink.execution.remote.host localhost\nflink.execution.remote.port 8081\n\nzeppelin.flink.enableHive true\nzeppelin.flink.hive.database default\nzeppelin.flink.hive.version 2.3.4\nzeppelin.flink.planner blink\nzeppelin.pyflink.python /Users/jzhang/anaconda3/envs/python-3.6/bin/python\nHIVE_CONF_DIR /Users/jzhang/Java/lib/apache-hive-2.3.4-bin/conf\n\nPATH /Users/jzhang/anaconda3/envs/python-3.6/bin:/Users/jzhang/.rvm/gems/ruby-2.3.7/bin:/Users/jzhang/.rvm/gems/ruby-2.3.7@global/bin:/Users/jzhang/.rvm/rubies/ruby-2.3.7/bin:/Users/jzhang/.rvm/bin:/Users/jzhang/anaconda3/bin:/Users/jzhang/anaconda3/condabin:/usr/local/opt/thrift@0.9/bin:/usr/local/opt/bison/bin:/usr/local/opt/ruby/bin:/Library/Java/JavaVirtualMachines/jdk1.8.0_211.jdk/Contents/Home/bin:/Users/jzhang/Java/lib/hadoop-2.7.7/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/Users/jzhang/github/pha-all/arcanist/bin:/Users/jzhang/oss_cmd:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Users/jzhang/Java/lib/apache-maven-3.6.1/bin:/Users/jzhang/bin:/Users/jzhang/anaconda3/bin:/Users/jzhang/github/pha-all/arcanist/bin\n\nHADOOP_CLASSPATH /Users/jzhang/Java/lib/hadoop-2.7.7/etc/hadoop:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/*:/Users/jzhang/Java/lib/hadoop-2.7.7/etc/hadoop:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/common/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/hdfs/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/yarn/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/lib/*:/Users/jzhang/Java/lib/hadoop-2.7.7/share/hadoop/mapreduce/*:/Users/jzhang/Java/lib/hadoop-2.7.7/contrib/capacity-scheduler/*.jar:/Users/jzhang/Java/lib/hadoop-2.7.7/contrib/capacity-scheduler/*.jar\n\nrest.port 18081",
+      "user": "admin",
+      "dateUpdated": "2019-11-26 15:44:56.018",
+      "config": {
+        "editorSetting": {
+          "language": "text",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/text",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1566380712452_-1576894735",
+      "id": "paragraph_1566380712452_-1576894735",
+      "dateCreated": "2019-08-21 17:45:12.452",
+      "dateStarted": "2019-11-26 15:44:56.024",
+      "dateFinished": "2019-11-26 15:44:56.026",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink\n\n1+1",
+      "user": "admin",
+      "dateUpdated": "2019-11-26 15:44:57.039",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9.0,
+        "editorHide": true,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres0\u001b[0m: \u001b[1m\u001b[32mInt\u001b[0m \u003d 2\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574069777727_-1498191426",
+      "id": "paragraph_1574069777727_-1498191426",
+      "dateCreated": "2019-11-18 17:36:17.732",
+      "dateStarted": "2019-11-26 15:44:57.043",
+      "dateFinished": "2019-11-26 15:45:09.362",
+      "status": "FINISHED"
+    },
+    {
+      "title": "PyFlink Batch",
+      "text": "%flink.pyflink\n\ndata \u003d bt_env.from_elements([(\u0027Cell Phones\u0027, 100000), (\u0027Computers\u0027, 200000), (\u0027TV \u0026 Video\u0027, 150000)],\n                              DataTypes.ROW([DataTypes.FIELD(\"Category\", DataTypes.STRING()),\n                              DataTypes.FIELD(\"Total_Num\", DataTypes.INT())]))\n\nbt_env.register_table(\"ffa_test\", data)",
+      "user": "admin",
+      "dateUpdated": "2019-11-27 17:05:51.365",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "ERROR",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m\n\u001b[0;31mPy4JJavaError\u001b[0m                             Traceback (most recent call last)\n\u001b[0;32m\u003cipython-input-8-f6e382b14c70\u003e\u001b[0m in \u001b[0;36m\u003cmodule\u003e\u001b[0;34m\u001b[0m\n\u001b[1;32m      3\u001b[0m                               DataTypes.FIELD(\"Total_Num\", DataTypes.INT())]))\n\u001b[1;32m      4\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----\u003e 5\u001b[0;31m \u001b[0mbt_env\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mregister_table\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"ffa_test\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mdata\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\n\u001b[0;32m~/github/flink/build-target/opt/python/pyflink.zip/pyflink/table/table_environment.py\u001b[0m in \u001b[0;36mregister_table\u001b[0;34m(self, name, table)\u001b[0m\n\u001b[1;32m    137\u001b[0m         \"\"\"\n\u001b[1;32m    138\u001b[0m         \u001b[0mwarnings\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwarn\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Deprecated in 1.10. Use create_temporary_view instead.\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mDeprecationWarning\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 139\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_j_tenv\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mregisterTable\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mname\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtable\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_j_table\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    140\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    141\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mregister_table_source\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mname\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtable_source\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/var/folders/99/mfxjjdtj7x70rvwgkxpq4jm40000gn/T/zeppelin_ipython1302559934442420707/py4j-src-0.10.7.zip/py4j/java_gateway.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, *args)\u001b[0m\n\u001b[1;32m   1255\u001b[0m         \u001b[0manswer\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgateway_client\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msend_command\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mcommand\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1256\u001b[0m         return_value \u003d get_return_value(\n\u001b[0;32m-\u003e 1257\u001b[0;31m             answer, self.gateway_client, self.target_id, self.name)\n\u001b[0m\u001b[1;32m   1258\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1259\u001b[0m         \u001b[0;32mfor\u001b[0m \u001b[0mtemp_arg\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mtemp_args\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m~/github/flink/build-target/opt/python/pyflink.zip/pyflink/util/exceptions.py\u001b[0m in \u001b[0;36mdeco\u001b[0;34m(*a, **kw)\u001b[0m\n\u001b[1;32m    145\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mdeco\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    146\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 147\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0mf\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0ma\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkw\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    148\u001b[0m         \u001b[0;32mexcept\u001b[0m \u001b[0mPy4JJavaError\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    149\u001b[0m             \u001b[0ms\u001b[0m \u001b[0;34m\u003d\u001b[0m \u001b[0me\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mjava_exception\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtoString\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\n\u001b[0;32m/var/folders/99/mfxjjdtj7x70rvwgkxpq4jm40000gn/T/zeppelin_ipython1302559934442420707/py4j-src-0.10.7.zip/py4j/protocol.py\u001b[0m in \u001b[0;36mget_return_value\u001b[0;34m(answer, gateway_client, target_id, name)\u001b[0m\n\u001b[1;32m    326\u001b[0m                 raise Py4JJavaError(\n\u001b[1;32m    327\u001b[0m                     \u001b[0;34m\"An error occurred while calling {0}{1}{2}.\\n\"\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--\u003e 328\u001b[0;31m                     format(target_id, \".\", name), value)\n\u001b[0m\u001b[1;32m    329\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    330\u001b[0m                 raise Py4JError(\n\n\u001b[0;31mPy4JJavaError\u001b[0m: An error occurred while calling o2.registerTable.\n: org.apache.flink.table.api.ValidationException: Temporary table `hive`.`default`.`ffa_test` already exists\n\tat org.apache.flink.table.catalog.CatalogManager.lambda$createTemporaryTable$10(CatalogManager.java:472)\n\tat java.util.HashMap.compute(HashMap.java:1197)\n\tat org.apache.flink.table.catalog.CatalogManager.createTemporaryTable(CatalogManager.java:470)\n\tat org.apache.flink.table.api.internal.TableEnvironmentImpl.createTemporaryView(TableEnvironmentImpl.java:246)\n\tat org.apache.flink.table.api.internal.TableEnvironmentImpl.registerTable(TableEnvironmentImpl.java:227)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.lang.reflect.Method.invoke(Method.java:498)\n\tat py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)\n\tat py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:357)\n\tat py4j.Gateway.invoke(Gateway.java:282)\n\tat py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)\n\tat py4j.commands.CallCommand.execute(CallCommand.java:79)\n\tat py4j.GatewayConnection.run(GatewayConnection.java:238)\n\tat java.lang.Thread.run(Thread.java:748)\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1566380730552_1860718628",
+      "id": "paragraph_1566380730552_1860718628",
+      "dateCreated": "2019-08-21 17:45:30.552",
+      "dateStarted": "2019-11-27 17:05:51.467",
+      "dateFinished": "2019-11-27 17:05:53.553",
+      "status": "ERROR"
+    },
+    {
+      "text": "%flink.bsql\n\nshow tables",
+      "user": "admin",
+      "dateUpdated": "2019-11-26 15:46:00.159",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "table": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "table\ndepartments\nemployees\nffa_test\nitems\nweb_log_small\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574067078962_-1486980302",
+      "id": "paragraph_1574067078962_-1486980302",
+      "dateCreated": "2019-11-18 16:51:18.982",
+      "dateStarted": "2019-11-26 15:46:00.164",
+      "dateFinished": "2019-11-26 15:46:00.461",
+      "status": "FINISHED"
+    },
+    {
+      "title": "PyFlink Stream",
+      "text": "%flink.bsql\n\nselect * from ffa_test",
+      "user": "admin",
+      "dateUpdated": "2019-11-27 17:06:01.523",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "title": false,
+        "runOnSelectionChange": true,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "multiBarChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "Category": "string",
+                      "Total_Num": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "Category",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "Total_Num",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "Category\tTotal_Num\nCell Phones\t100000\nComputers\t200000\nTV \u0026 Video\t150000\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1566380740590_29988750",
+      "id": "paragraph_1566380740590_29988750",
+      "dateCreated": "2019-08-21 17:45:40.590",
+      "dateStarted": "2019-11-27 17:06:01.535",
+      "dateFinished": "2019-11-27 17:06:03.663",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.pyflink\n\nfrom pyflink.table.udf import udf\nfrom pyflink.table.udf import ScalarFunction\n\nclass PythonUpper(ScalarFunction):\n  def eval(self, s):\n    return s.upper()\n\nbt_env.register_function(\"python_upper\", udf(PythonUpper(), DataTypes.STRING(), DataTypes.STRING()))",
+      "user": "admin",
+      "dateUpdated": "2019-11-26 15:46:45.801",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": []
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1566382544305_783514737",
+      "id": "paragraph_1566382544305_783514737",
+      "dateCreated": "2019-08-21 18:15:44.305",
+      "dateStarted": "2019-11-26 15:46:45.806",
+      "dateFinished": "2019-11-26 15:46:45.924",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql(saveAs\u003ddf)\n\nselect python_upper(Category) as Category, Total_Num from ffa_test",
+      "user": "admin",
+      "dateUpdated": "2019-11-26 15:46:50.644",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 6.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "Category": "string",
+                      "Total_Num": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "Category\tTotal_Num\nCELL PHONES\t100000\nCOMPUTERS\t200000\nTV \u0026 VIDEO\t150000\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574067252729_-1332001493",
+      "id": "paragraph_1574067252729_-1332001493",
+      "dateCreated": "2019-11-18 16:54:12.729",
+      "dateStarted": "2019-11-26 15:46:50.648",
+      "dateFinished": "2019-11-26 15:46:59.457",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.pyflink\n\n%matplotlib inline\nimport matplotlib.pyplot as plt\n\nimport pandas as pd\n\ndf \u003d z.getAsDataFrame(\u0027df\u0027)\ndf.plot.bar(x\u003d\u0027Category\u0027, y\u003d\u0027Total_Num\u0027, rot\u003d0)\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-26 15:48:28.482",
+      "config": {
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/python",
+        "fontSize": 9.0,
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u003cmatplotlib.axes._subplots.AxesSubplot at 0x118177470\u003e\n"
+          },
+          {
+            "type": "IMG",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAYoAAAEGCAYAAAB7DNKzAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4xLjEsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy8QZhcZAAAgAElEQVR4nO3de7xVZb3v8c9X8IK3QFiaG2RDuvKI2FnCyjglplKIt8CyI5SK5tmI4d5l5RZz75duy30wT7lfthW3KQlmglsz2AYZkZcsCVFXKN5YGuVSUgRF3F7R3/ljPBMHk7nGmuvCWgv4vl+v+Zpj/MbzPOMZc8y5fmvcFRGYmZk1Z4eu7oCZmXVvThRmZlbIicLMzAo5UZiZWSEnCjMzK9SzqzvQ0fr16xeDBg3q6m6YmW1VHnrooZcjoqbStG0uUQwaNIilS5d2dTfMzLYqkv7c3DTvejIzs0JOFGZmVsiJwszMCm1zxyjMbOv27rvv0tTUxFtvvdXVXdkm7bLLLgwYMIAdd9yx6jpOFGbWrTQ1NbHHHnswaNAgJHV1d7YpEcGaNWtoampi8ODBVdfzricz61beeust+vbt6ySxBUiib9++rd5aazFRSNpP0t2SnpC0XNLXUnwvSQslrUjvfVJckq6S1ChpmaRhubYmpvIrJE3MxYdLejTVuUrpG9LcPMxs2+YkseW05bOtZotiA/DNiDgIGAFMkTQEmAosiohaYFEaBzgWqE2vScD01Lm9gIuBTwCHARfn/vBPT2VL9cakeHPzMDOzTtLiMYqIWAWsSsPrJT0B9AfGAkemYjOBe4ALUnxWZA+6WCypt6R9U9mFEbEWQNJCYIyke4A9I+KBFJ8FjAMWFMzDzLYTg6b+okPbWznt+A5tb3vQqoPZkgYBhwJ/APZJSYSIWCVp71SsP/BcrlpTihXFmyrEKZhHeb8mkW2RMHDgwNYskm3nOvqPUHfiP4itt2bNGkaNGgXAX//6V3r06EFNTXZXiyVLlrDTTjttUn7t2rXceuutTJ48ubDdDRs20K9fP1599dWK0xsbG6mtreWaa67hnHPOAWDy5MkcfvjhnHrqqe1drHar+mC2pN2B24GvR8RrRUUrxKIN8apFxHURUR8R9aWVambWWn379qWhoYGGhgYmT57Meeedt3G8PElAliiuvfbaDpn3Pvvsw5VXXsmGDRs6pL2OVFWikLQjWZK4OSJ+lsIvpl1KpPeXUrwJ2C9XfQDwQgvxARXiRfMwM+tU3/ve9xg6dChDhw7lhz/8IQBTp07lqaeeoq6ujqlTp/Laa69x9NFHM2zYMD72sY9x5513Vt3+hz/8YUaOHMlNN9202bTDDz+choYGINvSOeCAAwC4/vrr+fznP88JJ5zA4MGDmT59OldccQWHHnoon/zkJ5vdgmmtas56EnAD8ERE/CA3aR5QOnNpIjA3Fz89nf00AliXdh/dBYyW1CcdxB4N3JWmrZc0Is3r9LK2Ks3DzKzTLFmyhJtvvpklS5bwwAMPcM0117Bs2TKmTZvGgQceSENDA9OmTaNXr17MnTuXhx9+mF//+tecd955rZrPhRdeyBVXXMH7779fdZ3ly5czZ84cFi9ezAUXXECfPn145JFHGD58OD/5yU9au6gVVXOM4lPAacCjkhpS7NvANOBWSWcBfwG+mKbNB44DGoE3gDMBImKtpO8AD6Zyl5YObAPnADcCvcgOYi9I8ebmYWbWaX7729/yhS98gV133RWAcePGcf/99zN69OhNykUEF1xwAffffz877LADzz33HC+//DK9e/euaj4HHHAAdXV1zJkzp+q+HX300ey2227stttu7L777px44okAHHLIITz99NNVt1OkmrOe7qfycQSAURXKBzClmbZmADMqxJcCQyvE11Sah5lZZ8r+rLVs1qxZrFu3jocffpiePXsyYMCAVl/cdtFFF/GlL32JESNGbIz17Nlz41ZGeXs777zzxuEddthh4/gOO+zQYcc7fAsPM+vWusPZW0cccQRnn302559/Pu+99x5z585lzpw57LHHHqxfv35juXXr1rH33nvTs2dPFi5cyPPPP9/qeR188MHsv//+LFiwgJEjRwLZc3Yeeughhg0bxm233dZhy1UtJwozsxYcdthhTJgwgY9//OMAnHPOORxyyCEA1NfXc8ghh3D88cfzjW98gxNPPJH6+nqGDRtGbW1tm+b3T//0TwwfPnzj+Pnnn88pp5zCj3/8Y4466qj2L1ArqdpNqq1FfX19+Al3Vi1fR9H9PPHEExx00EFd3Y1tWqXPWNJDEVFfqbxvCmhmZoW868nMrJM0NDRwxhlnbBLbdddd+f3vf981HaqSE4WZdTsRsU3eQbaurm7jhXNdpS2H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\u003d\u003d\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574067273577_-774474926",
+      "id": "paragraph_1574067273577_-774474926",
+      "dateCreated": "2019-11-18 16:54:33.581",
+      "dateStarted": "2019-11-26 15:48:28.486",
+      "dateFinished": "2019-11-26 15:48:29.804",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark.r\n\ndf \u003c- z.getAsDataFrame(\u0027df\u0027)\n",
+      "user": "admin",
+      "dateUpdated": "2019-11-28 17:59:22.787",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1574067724982_-2047719582",
+      "id": "paragraph_1574067724982_-2047719582",
+      "dateCreated": "2019-11-18 17:02:04.982",
+      "status": "READY"
+    }
+  ],
+  "name": "PyFlink Tutorial",
+  "id": "2EJQ31WD3",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {},
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {},
+  "path": "/PyFlink Tutorial"
+}

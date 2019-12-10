@@ -1,0 +1,99 @@
+{
+  "paragraphs": [
+    {
+      "text": "%spark\n\nsc.version",
+      "user": "user1",
+      "dateUpdated": "2019-11-07 17:06:45.736",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mres1\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m \u003d 2.2.3\n"
+          }
+        ]
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573116718540_271776674",
+      "id": "paragraph_1573116718540_271776674",
+      "dateCreated": "2019-11-07 16:51:58.540",
+      "dateStarted": "2019-11-07 17:06:45.743",
+      "dateFinished": "2019-11-07 17:07:08.070",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%spark\n",
+      "user": "anonymous",
+      "dateUpdated": "2019-11-11 15:16:42.647",
+      "config": {
+        "runOnSelectionChange": true,
+        "title": false,
+        "checkEmpty": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573456602636_1063900783",
+      "id": "paragraph_1573456602636_1063900783",
+      "dateCreated": "2019-11-11 15:16:42.643",
+      "status": "READY"
+    },
+    {
+      "text": "%spark\n",
+      "user": "user1",
+      "dateUpdated": "2019-11-07 17:06:45.743",
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1573117605743_1935810699",
+      "id": "paragraph_1573117605743_1935810699",
+      "dateCreated": "2019-11-07 17:06:45.743",
+      "status": "READY"
+    }
+  ],
+  "name": "User1-Note",
+  "id": "2EU3PDZNM",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-SNAPSHOT",
+  "permissions": {
+    "owners": [
+      "user1"
+    ]
+  },
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {},
+  "path": "/User1-Note"
+}

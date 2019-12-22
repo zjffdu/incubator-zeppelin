@@ -45,6 +45,7 @@ import org.apache.zeppelin.notebook.NoteManager;
 import org.apache.zeppelin.notebook.Notebook;
 import org.apache.zeppelin.notebook.Paragraph;
 import org.apache.zeppelin.notebook.AuthorizationService;
+import org.apache.zeppelin.notebook.ParagraphTextParser;
 import org.apache.zeppelin.notebook.repo.NotebookRepoWithVersionControl;
 import org.apache.zeppelin.notebook.scheduler.SchedulerService;
 import org.apache.zeppelin.notebook.socket.Message;
@@ -841,7 +842,7 @@ public class NotebookService {
   }
 
   public void getEditorSetting(String noteId,
-                               String replName,
+                               String magic,
                                ServiceContext context,
                                ServiceCallback<Map<String, Object>> callback) throws IOException {
     Note note = notebook.getNote(noteId);
@@ -850,11 +851,12 @@ public class NotebookService {
       return;
     }
     try {
+      ParagraphTextParser.ParseResult parseResult = ParagraphTextParser.parse(magic);
       Interpreter intp = notebook.getInterpreterFactory().getInterpreter(
-          context.getAutheInfo().getUser(), noteId, replName,
+          context.getAutheInfo().getUser(), noteId, parseResult.getIntpText(),
           notebook.getNote(noteId).getDefaultInterpreterGroup());
       Map<String, Object> settings = notebook.getInterpreterSettingManager().
-          getEditorSetting(intp, context.getAutheInfo().getUser(), noteId, replName);
+          getEditorSetting(intp, noteId, parseResult.getIntpText(), parseResult.getLocalProperties());
       callback.onSuccess(settings, context);
     } catch (InterpreterNotFoundException e) {
       callback.onFailure(new IOException("Fail to find interpreter", e), context);

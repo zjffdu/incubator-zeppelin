@@ -471,8 +471,8 @@ public class InterpreterSettingManager implements NoteEventListener, ClusterEven
   }
 
   //TODO(zjffdu) logic here is a little ugly
-  public Map<String, Object> getEditorSetting(Interpreter interpreter, String user, String noteId,
-      String replName) {
+  public Map<String, Object> getEditorSetting(Interpreter interpreter, String noteId,
+      String replName, Map<String, String> localProperties) {
     Map<String, Object> editor = DEFAULT_EDITOR;
     String group = StringUtils.EMPTY;
     try {
@@ -490,6 +490,16 @@ public class InterpreterSettingManager implements NoteEventListener, ClusterEven
         // when replName is 'alias name' of interpreter or 'group' of interpreter
         if (replName.equals(intpSetting.getName()) || group.equals(intpSetting.getName())) {
           editor = intpSetting.getEditorFromSettingByClassName(interpreter.getClassName());
+          if (interpreter.getClassName().equals("org.apache.zeppelin.jupyter.JupyterInterpreter")) {
+            String kernel = localProperties.get("kernel");
+            if (kernel != null) {
+              if (kernel.equalsIgnoreCase("ipython")) {
+                editor.put("language", "python");
+              } else if (kernel.equalsIgnoreCase("ir")) {
+                editor.put("language", "r");
+              }
+            }
+          }
           break;
         }
       }

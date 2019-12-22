@@ -1029,20 +1029,17 @@ public class Note implements JsonSerializable {
     return gson.toJson(this);
   }
 
-  public static Note fromJson(String json) {
-    try
-    {
+  public static Note fromJson(String json) throws IOException {
+    try {
       Note note = gson.fromJson(json, Note.class);
       note.setCronSupported(ZeppelinConfiguration.create());
       convertOldInput(note);
       note.info.remove("isRunning");
       note.postProcessParagraphs();
-
       return note;
     } catch (Exception e) {
-      logger.error("Unable to parse notebook: " + e.toString());
-
-      return null;
+      logger.error("Unable to parse note json: " + json, e);
+      throw new IOException("Fail to parse note json", e);
     }
   }
 

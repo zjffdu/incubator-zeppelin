@@ -658,7 +658,11 @@ public class NotebookServer extends WebSocketServlet
       if (StringUtils.equals(key, "AuthenticationInfo")) {
         authenticationInfo = AuthenticationInfo.fromJson(json);
       } else if (StringUtils.equals(key, "Note")) {
-        note = Note.fromJson(json);
+        try {
+          note = Note.fromJson(json);
+        } catch (IOException e) {
+          LOG.warn("Unable to parse note json", e);
+        }
       } else if (StringUtils.equals(key, "Paragraph")) {
         paragraph = Paragraph.fromJson(json);
       } else if (StringUtils.equals(key, "Set<String>")) {
@@ -1952,10 +1956,10 @@ public class NotebookServer extends WebSocketServlet
 
   private void getEditorSetting(NotebookSocket conn, Message fromMessage) throws IOException {
     String paragraphId = (String) fromMessage.get("paragraphId");
-    String replName = (String) fromMessage.get("magic");
+    String magic = (String) fromMessage.get("magic");
     String noteId = connectionManager.getAssociatedNoteId(conn);
 
-    getNotebookService().getEditorSetting(noteId, replName,
+    getNotebookService().getEditorSetting(noteId, magic,
         getServiceContext(fromMessage),
         new WebSocketServiceCallback<Map<String, Object>>(conn) {
           @Override

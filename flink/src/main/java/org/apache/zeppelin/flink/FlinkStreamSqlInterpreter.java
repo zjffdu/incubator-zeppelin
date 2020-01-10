@@ -20,9 +20,9 @@ package org.apache.zeppelin.flink;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.table.api.config.ExecutionConfigOptions;
-import org.apache.zeppelin.flink.sql.RetractStreamSqlJob;
+import org.apache.zeppelin.flink.sql.UpdateStreamSqlJob;
 import org.apache.zeppelin.flink.sql.SingleRowStreamSqlJob;
-import org.apache.zeppelin.flink.sql.TimeSeriesStreamSqlJob;
+import org.apache.zeppelin.flink.sql.AppendStreamSqlJob;
 import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
@@ -46,7 +46,7 @@ public class FlinkStreamSqlInterpreter extends FlinkSqlInterrpeter {
   @Override
   public void open() throws InterpreterException {
     super.open();
-    this.tbenv = flinkInterpreter.getJavaStreamTableEnvironment();
+    this.tbenv = flinkInterpreter.getJavaStreamTableEnvironment("blink");
   }
 
   @Override
@@ -84,19 +84,25 @@ public class FlinkStreamSqlInterpreter extends FlinkSqlInterrpeter {
       if (streamType.equalsIgnoreCase("single")) {
         SingleRowStreamSqlJob streamJob = new SingleRowStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
-                flinkInterpreter.getStreamTableEnvironment(), context,
+                tbenv,
+                flinkInterpreter.getJobManager(),
+                context,
                 flinkInterpreter.getDefaultParallelism());
         streamJob.run(sql);
-      } else if (streamType.equalsIgnoreCase("ts")) {
-        TimeSeriesStreamSqlJob streamJob = new TimeSeriesStreamSqlJob(
+      } else if (streamType.equalsIgnoreCase("append")) {
+        AppendStreamSqlJob streamJob = new AppendStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
-                flinkInterpreter.getStreamTableEnvironment(), context,
+                flinkInterpreter.getStreamTableEnvironment(),
+                flinkInterpreter.getJobManager(),
+                context,
                 flinkInterpreter.getDefaultParallelism());
         streamJob.run(sql);
-      } else if (streamType.equalsIgnoreCase("retract")) {
-        RetractStreamSqlJob streamJob = new RetractStreamSqlJob(
+      } else if (streamType.equalsIgnoreCase("update")) {
+        UpdateStreamSqlJob streamJob = new UpdateStreamSqlJob(
                 flinkInterpreter.getStreamExecutionEnvironment(),
-                flinkInterpreter.getStreamTableEnvironment(), context,
+                flinkInterpreter.getStreamTableEnvironment(),
+                flinkInterpreter.getJobManager(),
+                context,
                 flinkInterpreter.getDefaultParallelism());
         streamJob.run(sql);
       } else {

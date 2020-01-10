@@ -91,9 +91,9 @@ public abstract class SqlInterpreterTest {
   protected Properties getFlinkProperties() throws IOException {
     Properties p = new Properties();
     p.setProperty("zeppelin.flink.enableHive", "true");
-    p.setProperty("zeppelin.flink.planner", "blink");
     p.setProperty("taskmanager.managed.memory.size", "32");
     p.setProperty("zeppelin.flink.hive.version", "2.3.4");
+    p.setProperty("zeppelin.pyflink.useIPython", "false");
     File hiveConfDir = Files.createTempDir();
     hiveShell.getHiveConf().writeXml(new FileWriter(new File(hiveConfDir, "hive-site.xml")));
     p.setProperty("HIVE_CONF_DIR", hiveConfDir.getAbsolutePath());
@@ -117,9 +117,10 @@ public abstract class SqlInterpreterTest {
     intpGroup.addInterpreterToSession(iPyFlinkInterpreter, "session_1");
     intpGroup.addInterpreterToSession(pyFlinkInterpreter, "session_1");
 
+    InterpreterContext.set(getInterpreterContext());
     flinkInterpreter.open();
     sqlInterpreter.open();
-    iPyFlinkInterpreter.open();
+    //iPyFlinkInterpreter.open();
     pyFlinkInterpreter.open();
 
     hiveShell.execute("drop database if exists test_db CASCADE");
@@ -267,11 +268,44 @@ public abstract class SqlInterpreterTest {
 
     // drop unknown table
     context = getInterpreterContext();
-    result = sqlInterpreter.interpret("drop unknown_table", context);
+    result = sqlInterpreter.interpret("drop table unknown_table", context);
+    resultMessages = context.out.toInterpreterResultMessage();
     assertEquals(Code.ERROR, result.code());
     assertEquals(1, resultMessages.size());
     assertTrue(resultMessages.toString(),
-            resultMessages.get(0).getData().contains("Table `unknown_table` was not found."));
+            resultMessages.get(0).getData().contains("does not exist in"));
+
+    // drop table
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("drop table source_table", context);
+    assertEquals(Code.SUCCESS, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(1, resultMessages.size());
+    assertEquals("Table has been dropped.\n", resultMessages.get(0).getData());
+
+    // describe the dropped table
+    context = getInterpreterContext();
+    result = sqlInterpreter.interpret("describe source_table", context);
+    assertEquals(Code.ERROR, result.code());
+    resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(1, resultMessages.size());
+    assertTrue(resultMessages.get(0).getData(),
+            resultMessages.get(0).getData().contains("Table `source_table` was not found"));
+  }
+
+  @Test
+  public void testInvalidSql() throws InterpreterException, IOException {
+
+    InterpreterContext context = getInterpreterContext();
+    InterpreterResult result = sqlInterpreter.interpret("Invalid sql", context);
+    assertEquals(Code.ERROR, result.code());
+    List<InterpreterResultMessage> resultMessages = context.out.toInterpreterResultMessage();
+    assertEquals(1, resultMessages.size());
+    assertEquals(Type.TEXT, resultMessages.get(0).getType());
+    assertTrue(resultMessages.get(0).getData(),
+            resultMessages.get(0).getData().contains("Invalid Sql statement: Invalid sql"));
+    assertTrue(resultMessages.get(0).getData(),
+            resultMessages.get(0).getData().contains("The following commands are available"));
   }
 
   protected InterpreterContext getInterpreterContext() {

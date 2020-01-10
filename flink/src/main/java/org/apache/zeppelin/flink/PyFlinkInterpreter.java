@@ -22,6 +22,7 @@ import org.apache.flink.table.api.TableEnvironment;
 import org.apache.zeppelin.interpreter.BaseZeppelinContext;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
+import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.python.IPythonInterpreter;
 import org.apache.zeppelin.python.PythonInterpreter;
 import org.slf4j.Logger;
@@ -43,6 +44,8 @@ public class PyFlinkInterpreter extends PythonInterpreter {
   private static final Logger LOGGER = LoggerFactory.getLogger(PyFlinkInterpreter.class);
 
   private FlinkInterpreter flinkInterpreter;
+  private InterpreterContext curInterpreterContext;
+  private boolean isOpened = false;
 
   public PyFlinkInterpreter(Properties properties) {
     super(properties);
@@ -52,6 +55,7 @@ public class PyFlinkInterpreter extends PythonInterpreter {
   public void open() throws InterpreterException {
     this.flinkInterpreter = getInterpreterInTheSameSessionByClassName(FlinkInterpreter.class);
 
+    setProperty("zeppelin.python", getProperty("zeppelin.pyflink.python", "python"));
     setProperty("zeppelin.python.useIPython", getProperty("zeppelin.pyflink.useIPython", "true"));
     URL[] urls = new URL[0];
     List<URL> urlList = new LinkedList<>();
@@ -94,6 +98,27 @@ public class PyFlinkInterpreter extends PythonInterpreter {
         throw new InterpreterException("Fail to bootstrap pyflink", e);
       }
     }
+    isOpened = true;
+  }
+
+  @Override
+  public InterpreterResult interpret(String st, InterpreterContext context) throws InterpreterException {
+    if (isOpened) {
+      // set InterpreterContext in the python thread first, otherwise flink job could not be
+      // associated with paragraph in JobListener
+      this.curInterpreterContext = context;
+      InterpreterResult result =
+              super.interpret("intp.setInterpreterContextInPythonThread()", context);
+      if (result.code() != InterpreterResult.Code.SUCCESS) {
+        throw new InterpreterException("Fail to setInterpreterContextInPythonThread: " +
+                result.toString());
+      }
+    }
+    return super.interpret(st, context);
+  }
+
+  public void setInterpreterContextInPythonThread() {
+    InterpreterContext.set(curInterpreterContext);
   }
 
   @Override
@@ -158,15 +183,11 @@ public class PyFlinkInterpreter extends PythonInterpreter {
     return flinkInterpreter.getStreamExecutionEnvironment().getJavaEnv();
   }
 
-  public TableEnvironment getJavaBatchTableEnvironment() {
-    return flinkInterpreter.getJavaBatchTableEnvironment();
+  public TableEnvironment getJavaBatchTableEnvironment(String planner) {
+    return flinkInterpreter.getJavaBatchTableEnvironment(planner);
   }
 
-  public org.apache.flink.table.api.java.StreamTableEnvironment getJavaStreamTableEnvironment() {
-    return flinkInterpreter.getJavaStreamTableEnvironment();
-  }
-
-  public boolean isBlinkPlanner() {
-    return flinkInterpreter.isBlinkPlanner();
+  public TableEnvironment getJavaStreamTableEnvironment(String planner) {
+    return flinkInterpreter.getJavaStreamTableEnvironment(planner);
   }
 }

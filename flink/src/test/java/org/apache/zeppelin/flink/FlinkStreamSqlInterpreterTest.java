@@ -34,7 +34,7 @@ import java.util.Properties;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-public class BlinkStreamSqlInterpreterTest extends SqlInterpreterTest {
+public class FlinkStreamSqlInterpreterTest extends SqlInterpreterTest {
 
   @Override
   protected FlinkSqlInterrpeter createFlinkSqlInterpreter(Properties properties) {
@@ -44,11 +44,11 @@ public class BlinkStreamSqlInterpreterTest extends SqlInterpreterTest {
   @Test
   public void testSingleStreamSql() throws IOException, InterpreterException {
     String initStreamScalaScript = IOUtils.toString(getClass().getResource("/init_stream.scala"));
-    InterpreterResult result = flinkInterpreter.interpret(initStreamScalaScript,
-            getInterpreterContext());
+    InterpreterContext context = getInterpreterContext();
+    InterpreterResult result = flinkInterpreter.interpret(initStreamScalaScript, context);
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
-    InterpreterContext context = getInterpreterContext();
+    context = getInterpreterContext();
     context.getLocalProperties().put("type", "single");
     context.getLocalProperties().put("template", "Total Count: {1} <br/> {0}");
     result = sqlInterpreter.interpret("select max(rowtime), count(1) " +
@@ -61,14 +61,14 @@ public class BlinkStreamSqlInterpreterTest extends SqlInterpreterTest {
   }
 
   @Test
-  public void testRetractStreamSql() throws IOException, InterpreterException {
+  public void testUpdateStreamSql() throws IOException, InterpreterException {
     String initStreamScalaScript = IOUtils.toString(getClass().getResource("/init_stream.scala"));
     InterpreterResult result = flinkInterpreter.interpret(initStreamScalaScript,
             getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     InterpreterContext context = getInterpreterContext();
-    context.getLocalProperties().put("type", "retract");
+    context.getLocalProperties().put("type", "update");
     result = sqlInterpreter.interpret("select url, count(1) as pv from " +
             "log group by url", context);
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
@@ -79,14 +79,14 @@ public class BlinkStreamSqlInterpreterTest extends SqlInterpreterTest {
   }
 
   @Test
-  public void testTimeSeriesStreamSql() throws IOException, InterpreterException {
+  public void testAppendStreamSql() throws IOException, InterpreterException {
     String initStreamScalaScript = IOUtils.toString(getClass().getResource("/init_stream.scala"));
     InterpreterResult result = flinkInterpreter.interpret(initStreamScalaScript,
             getInterpreterContext());
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     InterpreterContext context = getInterpreterContext();
-    context.getLocalProperties().put("type", "ts");
+    context.getLocalProperties().put("type", "append");
     result = sqlInterpreter.interpret("select TUMBLE_START(rowtime, INTERVAL '5' SECOND) as " +
             "start_time, url, count(1) as pv from log group by " +
             "TUMBLE(rowtime, INTERVAL '5' SECOND), url", context);
@@ -111,7 +111,7 @@ public class BlinkStreamSqlInterpreterTest extends SqlInterpreterTest {
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     InterpreterContext context = getInterpreterContext();
-    context.getLocalProperties().put("type", "retract");
+    context.getLocalProperties().put("type", "update");
     result = sqlInterpreter.interpret("select myupper(url), count(1) as pv from " +
             "log group by url", context);
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());

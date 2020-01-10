@@ -37,6 +37,7 @@ import scala.collection.{JavaConversions, Seq}
   * ZeppelinContext for Flink
   */
 class FlinkZeppelinContext(val btenv: TableEnvironment,
+                           val btenv_2: TableEnvironment,
                            val hooks2: InterpreterHookRegistry,
                            val maxResult2: Int) extends BaseZeppelinContext(hooks2, maxResult2) {
 
@@ -64,9 +65,8 @@ class FlinkZeppelinContext(val btenv: TableEnvironment,
 
   override def showData(obj: Any, maxResult: Int): String = {
     def showTable(columnsNames: Array[String], rows: Seq[Row]): String = {
-      val columnNames = obj.asInstanceOf[Table].getSchema.getFieldNames
-      val builder: StringBuilder = new StringBuilder("%table ")
-      builder.append(columnNames.mkString("\t"))
+      val builder = new java.lang.StringBuilder("%table ")
+      builder.append(columnsNames.mkString("\t"))
       builder.append("\n")
       val isLargerThanMaxResult = rows.size > maxResult
       var displayRows = rows
@@ -96,7 +96,7 @@ class FlinkZeppelinContext(val btenv: TableEnvironment,
 
     if (obj.isInstanceOf[DataSet[_]]) {
       val ds = obj.asInstanceOf[DataSet[_]]
-      val env = btenv.asInstanceOf[BatchTableEnvironment]
+      val env = btenv_2.asInstanceOf[BatchTableEnvironment]
       val table = env.fromDataSet(ds)
       val columnNames: Array[String] = table.getSchema.getFieldNames
       val dsRows: DataSet[Row] = env.toDataSet[Row](table)
@@ -108,7 +108,7 @@ class FlinkZeppelinContext(val btenv: TableEnvironment,
         val dsRows: DataSet[Row] = btenv.asInstanceOf[BatchTableEnvironment].toDataSet[Row](table)
         showTable(columnNames, dsRows.first(maxResult + 1).collect())
       } else {
-        var rows = TableUtil.collect(obj.asInstanceOf[TableImpl], currentSql)
+        val rows = TableUtil.collect(obj.asInstanceOf[TableImpl], currentSql)
         val columnNames = obj.asInstanceOf[Table].getSchema.getFieldNames
         showTable(columnNames, rows)
       }

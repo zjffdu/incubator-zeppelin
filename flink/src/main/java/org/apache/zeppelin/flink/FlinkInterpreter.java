@@ -33,6 +33,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Interpreter for flink scala. It delegates all the function to FlinkScalaInterpreter.
+ */
 public class FlinkInterpreter extends Interpreter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FlinkInterpreter.class);
@@ -101,12 +104,12 @@ public class FlinkInterpreter extends Interpreter {
     return this.innerIntp.getStreamTableEnvironment();
   }
 
-  org.apache.flink.table.api.TableEnvironment getJavaBatchTableEnvironment() {
-    return this.innerIntp.getJavaBatchTableEnvironment();
+  org.apache.flink.table.api.TableEnvironment getJavaBatchTableEnvironment(String planner) {
+    return this.innerIntp.getJavaBatchTableEnvironment(planner);
   }
 
-  org.apache.flink.table.api.java.StreamTableEnvironment getJavaStreamTableEnvironment() {
-    return this.innerIntp.getJavaStreamTableEnvironment();
+  TableEnvironment getJavaStreamTableEnvironment(String planner) {
+    return this.innerIntp.getJavaStreamTableEnvironment(planner);
   }
 
   TableEnvironment getBatchTableEnvironment() {
@@ -135,9 +138,5 @@ public class FlinkInterpreter extends Interpreter {
 
   public FlinkScalaInterpreter getInnerIntp() {
     return this.innerIntp;
-  }
-
-  public boolean isBlinkPlanner() {
-    return this.innerIntp.isBlinkPlanner();
   }
 }

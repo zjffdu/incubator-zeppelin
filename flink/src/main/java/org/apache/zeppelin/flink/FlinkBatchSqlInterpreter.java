@@ -43,7 +43,7 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
   @Override
   public void open() throws InterpreterException {
     super.open();
-    this.tbenv = flinkInterpreter.getJavaBatchTableEnvironment();
+    this.tbenv = flinkInterpreter.getJavaBatchTableEnvironment("blink");
     this.z = flinkInterpreter.getZeppelinContext();
   }
 
@@ -90,9 +90,7 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
 
   @Override
   public Scheduler getScheduler() {
-    int maxConcurrency = Integer.parseInt(
-            getProperty("zeppelin.flink.concurrentBatchSql.max", "10"));
-    return SchedulerFactory.singleton().createOrGetParallelScheduler(
-            FlinkBatchSqlInterpreter.class.getName() + this.hashCode(), maxConcurrency);
+    return SchedulerFactory.singleton().createOrGetFIFOScheduler(
+            FlinkBatchSqlInterpreter.class.getName());
   }
 }

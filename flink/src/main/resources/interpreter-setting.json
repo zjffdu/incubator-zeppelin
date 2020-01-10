@@ -61,11 +61,18 @@
         "description": "yarn queue name",
         "type": "string"
       },
-      "flink.yarn.jars": {
+      "flink.execution.jars": {
         "envName": null,
         "propertyName": null,
         "defaultValue": "",
-        "description": "additional user jars (comma separated)",
+        "description": "additional user jars (comma separated), e.g. flink udf jars",
+        "type": "string"
+      },
+      "flink.execution.packages": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "",
+        "description": "additional user packages (comma separated), e.g. flink connector packages",
         "type": "string"
       },
       "zeppelin.flink.scala.color": {
@@ -94,13 +101,6 @@
         "propertyName": "zeppelin.flink.maxResult",
         "defaultValue": "1000",
         "description": "max number of row returned by sql interpreter.",
-        "type": "number"
-      },
-      "zeppelin.flink.planner": {
-        "envName": "zeppelin.flink.planner",
-        "propertyName": "zeppelin.flink.planner",
-        "defaultValue": "blink",
-        "description": "planner or flink table api, blink or flink",
         "type": "number"
       },
       "zeppelin.pyflink.python": {

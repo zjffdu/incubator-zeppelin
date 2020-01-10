@@ -19,9 +19,9 @@
 package org.apache.zeppelin.flink.sql;
 
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
-import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.flink.types.Row;
+import org.apache.zeppelin.flink.JobManager;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,46 +29,43 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
+public class UpdateStreamSqlJob extends AbstractStreamSqlJob {
 
-  private static Logger LOGGER = LoggerFactory.getLogger(RetractStreamSqlJob.class);
+  private static Logger LOGGER = LoggerFactory.getLogger(UpdateStreamSqlJob.class);
 
   private List<Row> materializedTable = new ArrayList<>();
-  private long tsWindowThreshold;
+  private List<Row> lastSnapshot = new ArrayList<>();
 
-  public TimeSeriesStreamSqlJob(StreamExecutionEnvironment senv,
-                                StreamTableEnvironment stEnv,
-                                InterpreterContext context,
-                                int defaultParallelism) {
-    super(senv, stEnv, context, defaultParallelism);
-    this.tsWindowThreshold = Long.parseLong(context.getLocalProperties()
-            .getOrDefault("threshold", 1000 * 60 * 60 + ""));
+  public UpdateStreamSqlJob(StreamExecutionEnvironment senv,
+                            StreamTableEnvironment stEnv,
+                            JobManager jobManager,
+                            InterpreterContext context,
+                            int defaultParallelism) {
+    super(senv, stEnv, jobManager, context, defaultParallelism);
   }
 
   @Override
   protected String getType() {
-    return "ts";
+    return "retract";
   }
 
-  @Override
-  protected void checkTableSchema(TableSchema schema) throws Exception {
-    //    if (!(schema.getFieldDataType(0).get() instanceof TimestampType)) {
-    //      throw new Exception("The first column must be TimestampType, but is " +
-    //              schema.getFieldDataType(0));
-    //    }
-  }
-
-  @Override
   protected void processInsert(Row row) {
+    enableToRefresh = true;
+    resultLock.notify();
     LOGGER.debug("processInsert: " + row.toString());
     materializedTable.add(row);
   }
 
-  @Override
   protected void processDelete(Row row) {
-    throw new RuntimeException("Delete operation is not expected");
+    enableToRefresh = false;
+    LOGGER.debug("processDelete: " + row.toString());
+    for (int i = 0; i < materializedTable.size(); i++) {
+      if (materializedTable.get(i).equals(row)) {
+        materializedTable.remove(i);
+        break;
+      }
+    }
   }
 
   @Override
@@ -76,42 +73,30 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
     StringBuilder builder = new StringBuilder();
     builder.append("%table\n");
     for (int i = 0; i < schema.getFieldCount(); ++i) {
-      String field = schema.getFieldNames()[i];
+      String field = schema.getFieldName(i).get();
       builder.append(field);
       if (i != (schema.getFieldCount() - 1)) {
         builder.append("\t");
       }
     }
     builder.append("\n");
-
     // sort it by the first column
     materializedTable.sort((r1, r2) -> {
       String f1 = r1.getField(0).toString();
       String f2 = r2.getField(0).toString();
       return f1.compareTo(f2);
     });
-
-    if (materializedTable.size() != 0) {
-      long maxTimestamp =
-              ((java.sql.Timestamp) materializedTable.get(materializedTable.size() - 1)
-                      .getField(0)).getTime();
-
-      materializedTable = materializedTable.stream()
-              .filter(row -> ((java.sql.Timestamp) row.getField(0)).getTime() >
-                      maxTimestamp - tsWindowThreshold)
-              .collect(Collectors.toList());
-
-      for (Row row : materializedTable) {
-        for (int i = 0; i < row.getArity(); ++i) {
-          Object field = row.getField(i);
-          builder.append(field.toString());
-          if (i != (row.getArity() - 1)) {
-            builder.append("\t");
-          }
+    for (Row row : materializedTable) {
+      for (int i = 0; i < row.getArity(); ++i) {
+        Object field = row.getField(i);
+        builder.append(field.toString());
+        if (i != (row.getArity() - 1)) {
+          builder.append("\t");
         }
-        builder.append("\n");
       }
+      builder.append("\n");
     }
+    builder.append("\n%text\n");
     return builder.toString();
   }
 
@@ -119,8 +104,15 @@ public class TimeSeriesStreamSqlJob extends AbstractStreamSqlJob {
   protected void refresh(InterpreterContext context) {
     context.out().clear();
     try {
-      context.out.write(buildResult());
+      jobManager.sendFlinkJobUrl(context);
+      String result = buildResult();
+      LOGGER.debug(("Refresh with data: " + result));
+      context.out.write(result);
       context.out.flush();
+      this.lastSnapshot.clear();
+      for (Row row : materializedTable) {
+        this.lastSnapshot.add(row);
+      }
     } catch (IOException e) {
       LOGGER.error("Fail to refresh data", e);
     }

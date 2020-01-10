@@ -46,9 +46,11 @@ pyflink.java_gateway.import_flink_view(gateway)
 pyflink.java_gateway.install_exception_handler()
 
 b_env = pyflink.dataset.ExecutionEnvironment(intp.getJavaExecutionEnvironment())
-bt_env = BatchTableEnvironment(intp.getJavaBatchTableEnvironment(), intp.isBlinkPlanner())
+bt_env = BatchTableEnvironment(intp.getJavaBatchTableEnvironment("blink"), True)
+bt_env_2 = BatchTableEnvironment(intp.getJavaBatchTableEnvironment("flink"), False)
 s_env = StreamExecutionEnvironment(intp.getJavaStreamExecutionEnvironment())
-st_env = StreamTableEnvironment(intp.getJavaStreamTableEnvironment(), intp.isBlinkPlanner())
+st_env = StreamTableEnvironment(intp.getJavaStreamTableEnvironment("blink"), True)
+st_env_2 = StreamTableEnvironment(intp.getJavaStreamTableEnvironment("flink"), False)
 
 class IPyFlinkZeppelinContext(PyZeppelinContext):
 

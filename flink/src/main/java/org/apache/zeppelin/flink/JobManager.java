@@ -43,17 +43,11 @@ public class JobManager {
   private Map<String, JobClient> jobs = new HashMap<>();
   private ConcurrentHashMap<JobID, FlinkJobProgressPoller> jobProgressPollerMap =
           new ConcurrentHashMap<>();
-  private ExecutionEnvironment env;
-  private StreamExecutionEnvironment senv;
   private FlinkZeppelinContext z;
   private String flinkWebUI;
 
-  public JobManager(ExecutionEnvironment env,
-                    StreamExecutionEnvironment senv,
-                    FlinkZeppelinContext z,
+  public JobManager(FlinkZeppelinContext z,
                     String flinkWebUI) {
-    this.env = env;
-    this.senv = senv;
     this.z = z;
     this.flinkWebUI = flinkWebUI;
   }
@@ -71,6 +65,7 @@ public class JobManager {
   }
 
   public void removeJob(String paragraphId) {
+    LOGGER.info("Remove job in paragraph: " + paragraphId);
     JobClient jobClient = this.jobs.remove(paragraphId);
     if (jobClient == null) {
       LOGGER.warn("Unable to remove job, because no job is associated with paragraph: "
@@ -80,6 +75,23 @@ public class JobManager {
     FlinkJobProgressPoller jobProgressPoller =
             this.jobProgressPollerMap.remove(jobClient.getJobID());
     jobProgressPoller.cancel();
+  }
+
+  public void sendFlinkJobUrl(InterpreterContext context) {
+    JobClient jobClient = jobs.get(context.getParagraphId());
+    if (jobClient != null) {
+      String jobUrl = flinkWebUI + "#/job/" + jobClient.getJobID();
+      Map<String, String> infos = new HashMap<>();
+      infos.put("jobUrl", jobUrl);
+      infos.put("label", "FLINK JOB");
+      infos.put("tooltip", "View in Flink web UI");
+      infos.put("noteId", context.getNoteId());
+      infos.put("paraId", context.getParagraphId());
+      LOGGER.info("Job is started at: " + jobUrl);
+      context.getIntpEventClient().onParaInfosReceived(infos);
+    } else {
+      LOGGER.warn("No job is associated with paragraph: " + context.getParagraphId());
+    }
   }
 
   public int getJobProgress(String paragraphId) {
@@ -176,7 +188,9 @@ public class JobManager {
             builder.append("<h1>Duration: " +
                     Integer.parseInt(rootNode.getObject().getString("duration")) / 1000 +
                     " seconds");
+            builder.append("\n%text ");
             context.out.clear();
+            sendFlinkJobUrl(context);
             context.out.write(builder.toString());
             context.out.flush();
           }

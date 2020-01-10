@@ -28,10 +28,12 @@ import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
 import org.apache.flink.streaming.experimental.SocketStreamIterator;
 import org.apache.flink.table.api.StreamQueryConfig;
 import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.flink.table.calcite.FlinkTypeFactory;
 import org.apache.flink.types.Row;
+import org.apache.zeppelin.flink.JobManager;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterResult;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterUtils;
@@ -55,20 +57,24 @@ public abstract class AbstractStreamSqlJob {
 
   private static AtomicInteger SQL_INDEX = new AtomicInteger(0);
   protected StreamExecutionEnvironment senv;
-  protected StreamTableEnvironment stenv;
+  protected TableEnvironment stenv;
+  protected JobManager jobManager;
   protected InterpreterContext context;
   protected TableSchema schema;
   protected SocketStreamIterator<Tuple2<Boolean, Row>> iterator;
   protected Object resultLock = new Object();
   protected volatile boolean enableToRefresh = true;
   protected int defaultParallelism;
+  protected ScheduledExecutorService refreshScheduler = Executors.newScheduledThreadPool(1);
 
   public AbstractStreamSqlJob(StreamExecutionEnvironment senv,
-                              StreamTableEnvironment stenv,
+                              TableEnvironment stenv,
+                              JobManager jobManager,
                               InterpreterContext context,
                               int defaultParallelism) {
     this.senv = senv;
     this.stenv = stenv;
+    this.jobManager = jobManager;
     this.context = context;
     this.defaultParallelism = defaultParallelism;
   }
@@ -135,7 +141,6 @@ public abstract class AbstractStreamSqlJob {
         stenv.useDatabase(originalDatabase);
       }
 
-      ScheduledExecutorService refreshScheduler = Executors.newScheduledThreadPool(1);
       long delay = 1000L;
       long period = Long.parseLong(
               context.getLocalProperties().getOrDefault("refreshInterval", "3000"));
@@ -145,7 +150,7 @@ public abstract class AbstractStreamSqlJob {
       retrievalThread.start();
 
       LOGGER.info("Run job without savePointPath, " + ", parallelism: " + parallelism);
-      JobExecutionResult jobExecutionResult = stenv.execute(st);
+      stenv.execute(st);
       LOGGER.info("Flink Job is finished");
       // wait for retrieve thread consume all data
       LOGGER.info("Waiting for retrieve thread to be done");
@@ -157,6 +162,8 @@ public abstract class AbstractStreamSqlJob {
     } catch (Exception e) {
       LOGGER.error("Fail to run stream sql job", e);
       throw new IOException("Fail to run stream sql job", e);
+    } finally {
+      refreshScheduler.shutdownNow();
     }
   }
 

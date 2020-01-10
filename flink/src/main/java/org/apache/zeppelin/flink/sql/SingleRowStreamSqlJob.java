@@ -19,8 +19,10 @@
 package org.apache.zeppelin.flink.sql;
 
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
+import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.scala.StreamTableEnvironment;
 import org.apache.flink.types.Row;
+import org.apache.zeppelin.flink.JobManager;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +36,11 @@ public class SingleRowStreamSqlJob extends AbstractStreamSqlJob {
   private String template;
 
   public SingleRowStreamSqlJob(StreamExecutionEnvironment senv,
-                               StreamTableEnvironment stenv,
+                               TableEnvironment stenv,
+                               JobManager jobManager,
                                InterpreterContext context,
                                int defaultParallelism) {
-    super(senv, stenv, context, defaultParallelism);
+    super(senv, stenv, jobManager, context, defaultParallelism);
     this.template = context.getLocalProperties().getOrDefault("template", "{0}");
   }
 
@@ -77,6 +80,7 @@ public class SingleRowStreamSqlJob extends AbstractStreamSqlJob {
     context.out().clear();
     String output = buildResult();
     context.out.write(output);
+    jobManager.sendFlinkJobUrl(context);
     LOGGER.debug("Refresh Output: " + output);
     context.out.flush();
   }

@@ -136,7 +136,8 @@ public abstract class FlinkSqlInterrpeter extends Interpreter {
       Optional<SqlCommandParser.SqlCommandCall> sqlCommand = parse(sql);
       if (!sqlCommand.isPresent()) {
         try {
-          context.out.write("Invalid Sql statement: " + sql);
+          context.out.write("Invalid Sql statement: " + sql + "\n");
+          context.out.write(MESSAGE_HELP);
         } catch (IOException e) {
           return new InterpreterResult(InterpreterResult.Code.ERROR, e.toString());
         }
@@ -149,12 +150,14 @@ public abstract class FlinkSqlInterrpeter extends Interpreter {
         callCommand(sqlCommand, context);
         context.out.flush();
       }  catch (Throwable e) {
-        LOGGER.error("Fail to run sql:" + sqlCommand, e);
+        LOGGER.error("Fail to run sql:" + sqlCommand.operands[0], e);
         try {
           context.out.write("Fail to run sql command: " +
                   sqlCommand.operands[0] + "\n" + ExceptionUtils.getStackTrace(e));
         } catch (IOException ex) {
-          return new InterpreterResult(InterpreterResult.Code.ERROR, ex.toString());
+          LOGGER.warn("Unexpected exception:", ex);
+          return new InterpreterResult(InterpreterResult.Code.ERROR,
+                  ExceptionUtils.getStackTrace(e));
         }
         return new InterpreterResult(InterpreterResult.Code.ERROR);
       }
@@ -330,20 +333,16 @@ public abstract class FlinkSqlInterrpeter extends Interpreter {
 
   private void callInsertInto(String sql,
                               InterpreterContext context) throws IOException {
-     if (flinkInterpreter.isBlinkPlanner()) {
-       if (!isBatch()) {
-         context.getLocalProperties().put("flink.streaming.insert_into", "true");
-       }
-       this.tbenv.sqlUpdate(sql);
-       try {
-         this.tbenv.execute(sql);
-       } catch (Exception e) {
-         throw new IOException(e);
-       }
-       context.out.write("Insertion successfully.\n");
-     } else {
-       throw new IOException("Insert into is not supported in flink planner, please use blink planner");
+     if (!isBatch()) {
+       context.getLocalProperties().put("flink.streaming.insert_into", "true");
      }
+     this.tbenv.sqlUpdate(sql);
+     try {
+       this.tbenv.execute(sql);
+     } catch (Exception e) {
+       throw new IOException(e);
+     }
+     context.out.write("Insertion successfully.\n");
   }
 
   private static AttributedString formatCommand(SqlCommand cmd, String description) {

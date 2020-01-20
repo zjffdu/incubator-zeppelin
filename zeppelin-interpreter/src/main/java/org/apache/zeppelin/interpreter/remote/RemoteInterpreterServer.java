@@ -833,6 +833,7 @@ public class RemoteInterpreterServer extends Thread
         try {
           intpEventClient.onInterpreterOutputUpdateAll(
               noteId, paragraphId, out.toInterpreterResultMessage());
+          logger.debug("onUpdateAll: " + out.toInterpreterResultMessage());
         } catch (IOException e) {
           logger.error(e.getMessage(), e);
         }

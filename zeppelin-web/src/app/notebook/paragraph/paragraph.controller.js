@@ -1529,6 +1529,7 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
   };
 
   $scope.updateParagraph = function(oldPara, newPara, updateCallback) {
+    console.log("updateParagraph...............");
      // 1. can't update on revision view
     if ($scope.revisionView === true) {
       return;
@@ -1540,13 +1541,13 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
        isEmpty(newPara.results) !== isEmpty(oldPara.results) ||
        newPara.status === ParagraphStatus.ERROR ||
        (newPara.status === ParagraphStatus.FINISHED && statusChanged);
-
+    console.log("resultRefreshed: " + resultRefreshed);
      // 3. update texts managed by $scope
     $scope.updateAllScopeTexts(oldPara, newPara);
-
+    console.log("update paragraph: " + JSON.stringify(newPara));
      // 4. execute callback to update result
     updateCallback();
-
+    console.log("updateCallback");
      // 5. update remaining paragraph objects
     $scope.updateParagraphObjectWhenUpdated(newPara);
 
@@ -1585,6 +1586,9 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
     const newPara = data.paragraph;
 
     if (!isUpdateRequired(oldPara, newPara)) {
+      console.log("old para:" + JSON.stringify(oldPara));
+      console.log("new para:" + JSON.stringify(newPara));
+      console.log("no update...............")
       return;
     }
 

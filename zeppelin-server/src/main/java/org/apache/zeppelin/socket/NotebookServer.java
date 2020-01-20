@@ -551,6 +551,7 @@ public class NotebookServer extends WebSocketServlet
       broadcastParagraphs(p.getUserParagraphMap(), p);
     } else {
       Message message = new Message(OP.PARAGRAPH).put("paragraph", p);
+      LOG.debug("broadcast paragraph: " + p.getReturn());
       connectionManager.broadcast(note.getId(), message);
     }
   }
@@ -1587,6 +1588,7 @@ public class NotebookServer extends WebSocketServlet
   public void onOutputAppend(String noteId, String paragraphId, int index, String output) {
     Message msg = new Message(OP.PARAGRAPH_APPEND_OUTPUT).put("noteId", noteId)
         .put("paragraphId", paragraphId).put("index", index).put("data", output);
+    LOG.debug("onOutputAppend: " + msg);
     connectionManager.broadcast(noteId, msg);
   }
 
@@ -1627,6 +1629,7 @@ public class NotebookServer extends WebSocketServlet
   @Override
   public void onOutputClear(String noteId, String paragraphId) {
     try {
+      LOG.debug("onOutputClear, paragraphId: " + paragraphId);
       final Note note = getNotebook().getNote(noteId);
       if (note == null) {
         // It is possible the note is removed, but the job is still running

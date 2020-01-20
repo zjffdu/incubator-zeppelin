@@ -23,14 +23,19 @@ import kernel_pb2_grpc
 def run():
     channel = grpc.insecure_channel('localhost:50053')
     stub = kernel_pb2_grpc.JupyterKernelStub(channel)
-    response = stub.execute(kernel_pb2.ExecuteRequest(code="import time\nfor i in range(1,4):\n\ttime.sleep(1)\n\tprint(i)\n" +
-                                                            "%matplotlib inline\nimport matplotlib.pyplot as plt\ndata=[1,1,2,3,4]\nplt.figure()\nplt.plot(data)"))
+    response = stub.execute(kernel_pb2.ExecuteRequest(code="""
+import sys
+import time
+from IPython.display import display, clear_output
+for i in range(10):
+    time.sleep(0.25)
+    clear_output(wait=True)
+    print(i)
+    sys.stdout.flush()
+    """))
     for r in response:
         print("output:" + r.output)
 
-    response = stub.execute(kernel_pb2.ExecuteRequest(code="range?"))
-    for r in response:
-        print(r)
 
 if __name__ == '__main__':
     run()

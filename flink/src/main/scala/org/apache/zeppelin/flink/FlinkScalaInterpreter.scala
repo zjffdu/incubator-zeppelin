@@ -91,19 +91,23 @@ class FlinkScalaInterpreter(val properties: Properties) {
   private var java_btenv_2: TableEnvironment = _
   private var java_stenv_2: TableEnvironment = _
 
-  private var btEnvSetting: EnvironmentSettings = _
-  private var stEnvSetting: EnvironmentSettings = _
   private var z: FlinkZeppelinContext = _
   private var jmWebUrl: String = _
   private var jobManager: JobManager = _
   private var defaultParallelism = 1;
+  private var userJars: Seq[String] = _
 
   def open(): Unit = {
-    LOGGER.info("FLINK_HOME: " + sys.env.getOrElse("FLINK_HOME", ""))
-    LOGGER.info("FLINK_CONF_DIR: " + sys.env.getOrElse("FLINK_CONF_DIR", ""))
-    LOGGER.info("HADOOP_CONF_DIR: " + sys.env.getOrElse("HADOOP_CONF_DIR", ""))
-    LOGGER.info("YARN_CONF_DIR: " + sys.env.getOrElse("YARN_CONF_DIR", ""))
-    LOGGER.info("HIVE_CONF_DIR: " + sys.env.getOrElse("HIVE_CONF_DIR", ""))
+    val flinkHome = properties.getProperty("FLINK_HOME", sys.env.getOrElse("FLINK_HOME", ""))
+    val flinkConfDir = properties.getProperty("FLINK_CONF_DIR", sys.env.getOrElse("FLINK_CONF_DIR", ""))
+    val hadoopConfDir = properties.getProperty("HADOOP_CONF_DIR", sys.env.getOrElse("HADOOP_CONF_DIR", ""))
+    val yarnConfDir = properties.getProperty("YARN_CONF_DIR", sys.env.getOrElse("YARN_CONF_DIR", ""))
+    val hiveConfDir = properties.getProperty("HIVE_CONF_DIR", sys.env.getOrElse("HIVE_CONF_DIR", ""))
+    LOGGER.info("FLINK_HOME: " + flinkHome)
+    LOGGER.info("FLINK_CONF_DIR: " + flinkConfDir)
+    LOGGER.info("HADOOP_CONF_DIR: " + hadoopConfDir)
+    LOGGER.info("YARN_CONF_DIR: " + yarnConfDir)
+    LOGGER.info("HIVE_CONF_DIR: " + hiveConfDir)
 
     mode = ExecutionMode.withName(
       properties.getProperty("flink.execution.mode", "LOCAL").toUpperCase)
@@ -134,14 +138,10 @@ class FlinkScalaInterpreter(val properties: Properties) {
       config = config.copy(yarnConfig =
         Some(ensureYarnConfig(config)
           .copy(queue = Some(queue))))
-
-      config = config.copy(yarnConfig =
-        Some(ensureYarnConfig(config)
-          .copy(queue = Some(queue))))
     }
 
-    this.configuration = GlobalConfiguration.loadConfiguration(System.getenv("FLINK_CONF_DIR"))
-    val userJars = getUserJars
+    this.configuration = GlobalConfiguration.loadConfiguration(flinkConfDir)
+    this.userJars = getUserJars
     LOGGER.info("UserJars: " + userJars.mkString(","))
     config = config.copy(externalJars = Some(userJars.toArray))
     LOGGER.info("Config: " + config)
@@ -206,8 +206,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
         config.externalJars.getOrElse(Array.empty[String]).mkString(":"))
       val classLoader = Thread.currentThread().getContextClassLoader
       try {
-        // use FlinkClassLoader to initialize FlinkILoop, otherwise TableFactory could not
-        // factory which is in flink.execution.jars and flink.execution.packages
+        // use FlinkClassLoader to initialize FlinkILoop, otherwise TableFactoryService could find
+        // the TableFactory properly
         Thread.currentThread().setContextClassLoader(getFlinkClassLoader)
         val repl = new FlinkILoop(configuration, config.externalJars, None, replOut)
         (repl, cluster)
@@ -225,7 +225,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     val settings = new Settings()
     settings.usejavacp.value = true
     settings.Yreplsync.value = true
-    settings.classpath.value = getUserJars.mkString(File.pathSeparator)
+    settings.classpath.value = userJars.mkString(File.pathSeparator)
 
     val outputDir = Files.createTempDirectory("flink-repl");
     val interpArguments = List(
@@ -278,27 +278,28 @@ class FlinkScalaInterpreter(val properties: Properties) {
         catalogManager, moduleManager, flinkFunctionCatalog, blinkFunctionCatalog)
 
       // blink planner
-      this.btEnvSetting = EnvironmentSettings.newInstance().inBatchMode().useBlinkPlanner().build()
-      this.btenv = tblEnvFactory.createJavaBlinkBatchTableEnvironment(this.btEnvSetting);
+      var btEnvSetting = EnvironmentSettings.newInstance().inBatchMode().useBlinkPlanner().build()
+      this.btenv = tblEnvFactory.createJavaBlinkBatchTableEnvironment(btEnvSetting);
       flinkILoop.intp.bind("btenv", this.btenv.asInstanceOf[StreamTableEnvironmentImpl])
       this.java_btenv = this.btenv
 
-      this.stEnvSetting =
+      var stEnvSetting =
         EnvironmentSettings.newInstance().inStreamingMode().useBlinkPlanner().build()
       this.stenv = tblEnvFactory.createScalaBlinkStreamTableEnvironment(stEnvSetting)
-      //this.stenv = StreamTableEnvironment.create(this.senv, this.stEnvSetting)
       flinkILoop.intp.bind("stenv", this.stenv)
-      this.java_stenv = tblEnvFactory.createJavaBlinkStreamTableEnvironment(this.stEnvSetting)
+      this.java_stenv = tblEnvFactory.createJavaBlinkStreamTableEnvironment(stEnvSetting)
 
       // flink planner
       this.btenv_2 = tblEnvFactory.createScalaFlinkBatchTableEnvironment()
       flinkILoop.intp.bind("btenv_2", this.btenv_2)
+      stEnvSetting =
+        EnvironmentSettings.newInstance().inStreamingMode().useOldPlanner().build()
       this.stenv_2 = tblEnvFactory.createScalaFlinkStreamTableEnvironment(stEnvSetting)
       flinkILoop.intp.bind("stenv_2", this.stenv_2)
 
       this.java_btenv_2 = tblEnvFactory.createJavaFlinkBatchTableEnvironment()
-      val envSettings = EnvironmentSettings.newInstance.useOldPlanner.inStreamingMode.build
-      this.java_stenv_2 = tblEnvFactory.createJavaFlinkStreamTableEnvironment(envSettings)
+      btEnvSetting = EnvironmentSettings.newInstance.useOldPlanner.inStreamingMode.build
+      this.java_stenv_2 = tblEnvFactory.createJavaFlinkStreamTableEnvironment(btEnvSetting)
     } finally {
       Thread.currentThread().setContextClassLoader(originalClassLoader)
     }
@@ -587,12 +588,10 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
   def getFlinkScalaShellLoader: ClassLoader = {
     val userCodeJarFile = this.flinkILoop.writeFilesToDisk();
-    val userJars = getUserJars
     new URLClassLoader(Array(userCodeJarFile.toURL) ++ userJars.map(e => new File(e).toURL))
   }
 
   private def getFlinkClassLoader: ClassLoader = {
-    val userJars = getUserJars
     new URLClassLoader(userJars.map(e => new File(e).toURL).toArray)
   }
 
@@ -604,7 +603,6 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
   def getFlinkILoop = flinkILoop
 
-  def getStEnvSetting = stEnvSetting
 }
 
 

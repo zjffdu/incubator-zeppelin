@@ -162,8 +162,8 @@ public class InterpreterRestApiTest extends AbstractTestRestApi {
     String md1Name = "md1";
     String md2Name = "md2";
 
-    String md1Dep = "org.apache.drill.exec:drill-jdbc:jar:1.7.0";
-    String md2Dep = "org.apache.drill.exec:drill-jdbc:jar:1.6.0";
+    String md1Dep = "org.apache.hadoop:hadoop-common:2.6.5";
+    String md2Dep = "org.apache.hadoop:hadoop-common:2.7.3";
 
     String reqBody1 = "{\"name\":\"" + md1Name + "\",\"group\":\"md\"," +
             "\"properties\":{\"propname\": {\"value\": \"propvalue\", \"name\": \"propname\", " +

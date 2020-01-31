@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.rest.AbstractTestRestApi;
 
+import static junit.framework.TestCase.assertEquals;
+
 public class DirAccessTest extends AbstractTestRestApi {
   @Test
   public void testDirAccessForbidden() throws Exception {
@@ -35,7 +37,8 @@ public class DirAccessTest extends AbstractTestRestApi {
       GetMethod getMethod = new GetMethod(getUrlToTest() + "/app/");
       httpClient.executeMethod(getMethod);
       AbstractTestRestApi.shutDown();
-      assert getMethod.getStatusCode() == HttpStatus.SC_FORBIDDEN;
+      assertEquals(getMethod.getResponseBodyAsString(),
+              getMethod.getStatusCode(), HttpStatus.SC_FORBIDDEN);
     }
   }
 
@@ -49,7 +52,8 @@ public class DirAccessTest extends AbstractTestRestApi {
       GetMethod getMethod = new GetMethod(getUrlToTest() + "/app/");
       httpClient.executeMethod(getMethod);
       AbstractTestRestApi.shutDown();
-      assert getMethod.getStatusCode() == HttpStatus.SC_OK;
+      assertEquals(getMethod.getResponseBodyAsString(),
+              getMethod.getStatusCode(), HttpStatus.SC_OK);
     }
   }
 

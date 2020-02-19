@@ -22,8 +22,9 @@ import java.util.Set;
 
 public class NoSchedulerService implements SchedulerService {
   @Override
-  public void refreshCron(String noteId) {
+  public boolean refreshCron(String noteId) {
     // Do nothing
+    return false;
   }
 
   @Override

@@ -190,7 +190,6 @@ public class Note implements JsonSerializable {
     this.info = null;
     this.noteForms = null;
     this.noteParams = null;
-    this.permissions = null;
     this.angularObjects = null;
   }
 

@@ -112,7 +112,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public Set<String> getOwners(String noteId) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return EMPTY_SET;
@@ -126,7 +126,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public Set<String> getReaders(String noteId) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return EMPTY_SET;
@@ -140,7 +140,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public Set<String> getRunners(String noteId) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return EMPTY_SET;
@@ -154,7 +154,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public Set<String> getWriters(String noteId) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return EMPTY_SET;
@@ -168,7 +168,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public boolean isOwner(String noteId, Set<String> entities) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return false;
@@ -182,7 +182,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public boolean isWriter(String noteId, Set<String> entities) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return false;
@@ -198,7 +198,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public boolean isReader(String noteId, Set<String> entities) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return false;
@@ -216,7 +216,7 @@ public class AuthorizationService implements ClusterEventListener {
 
   public boolean isRunner(String noteId, Set<String> entities) {
     try {
-      Note note = notebook.getNote(noteId);
+      Note note = notebook.getNote(noteId, false);
       if (note == null) {
         LOGGER.warn("Note " + noteId + " not found");
         return false;

@@ -101,6 +101,9 @@ public class Notebook {
 
     this.noteEventListeners.add(this.noteSearchService);
     this.noteEventListeners.add(this.interpreterSettingManager);
+
+    // init notes permission
+    initNotePermission();
   }
 
   @Inject
@@ -124,6 +127,21 @@ public class Notebook {
       this.noteEventListeners.add(noteEventListener);
     }
     this.paragraphJobListener = (ParagraphJobListener) noteEventListener;
+  }
+
+  private void initNotePermission() {
+    LOGGER.info("Start init note permission");
+    Map<String, String> notesInfo = this.noteManager.getNotesInfo();
+    for (String noteId : notesInfo.keySet()) {
+      try {
+        Note note = getNote(noteId);
+        // unload it again to save memory
+        note.unLoad();
+      } catch (IOException e) {
+        LOGGER.warn("Fail to get note: " + noteId, e);
+      }
+    }
+    LOGGER.info("Finish init note permission");
   }
 
   /**
@@ -263,6 +281,31 @@ public class Notebook {
     note.setCredentials(credentials);
     for (Paragraph p : note.getParagraphs()) {
       p.setNote(note);
+    }
+    return note;
+  }
+
+  /**
+   * Get note from NotebookRepo and also initialize it with other properties that is not
+   * persistent in NotebookRepo, such as paragraphJobListener.
+   * @param noteId
+   * @return null if note not found.
+   * @throws IOException when fail to get it from NotebookRepo.
+   */
+  public Note getNote(String noteId, boolean forceLoad) throws IOException {
+    Note note = noteManager.getNote(noteId, forceLoad);
+    if (note == null) {
+      return null;
+    }
+    note.setInterpreterFactory(replFactory);
+    note.setInterpreterSettingManager(interpreterSettingManager);
+    note.setParagraphJobListener(paragraphJobListener);
+    note.setNoteEventListeners(noteEventListeners);
+    note.setCredentials(credentials);
+    if (note.getParagraphs() != null) {
+      for (Paragraph p : note.getParagraphs()) {
+        p.setNote(note);
+      }
     }
     return note;
   }

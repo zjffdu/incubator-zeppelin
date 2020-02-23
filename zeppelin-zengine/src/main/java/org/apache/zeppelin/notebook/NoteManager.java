@@ -65,7 +65,7 @@ public class NoteManager {
 
   // build the tree structure of notes
   private void init() throws IOException {
-    LOGGER.info("Starting init NodeManager");
+    LOGGER.info("Start init NodeManager");
     this.notesInfo = notebookRepo.list(AuthenticationInfo.ANONYMOUS).values().stream()
         .collect(Collectors.toMap(noteInfo -> noteInfo.getId(), notesInfo -> notesInfo.getPath()));
     this.notesInfo.entrySet().stream()
@@ -282,6 +282,22 @@ public class NoteManager {
     }
     NoteNode noteNode = getNoteNode(notePath);
     return noteNode.getNote();
+  }
+
+  /**
+   * Get note from NotebookRepo.
+   *
+   * @param noteId
+   * @return return null if not found on NotebookRepo.
+   * @throws IOException
+   */
+  public Note getNote(String noteId, boolean forceLoad) throws IOException {
+    String notePath = this.notesInfo.get(noteId);
+    if (notePath == null) {
+      return null;
+    }
+    NoteNode noteNode = getNoteNode(notePath);
+    return noteNode.getNote(forceLoad);
   }
 
   /**
@@ -518,7 +534,17 @@ public class NoteManager {
      * @throws IOException
      */
     public synchronized Note getNote() throws IOException {
-      if (!note.isLoaded()) {
+      return getNote(true);
+    }
+
+    /**
+     * This method will load note from NotebookRepo. If you just want to get noteId, noteName or
+     * notePath, you can call method getNoteId, getNoteName & getNotePath
+     * @return
+     * @throws IOException
+     */
+    public synchronized Note getNote(boolean forceLoad) throws IOException {
+      if (!note.isLoaded() && forceLoad) {
         note = notebookRepo.get(note.getId(), note.getPath(), AuthenticationInfo.ANONYMOUS);
         if (parent.toString().equals("/")) {
           note.setPath("/" + note.getName());

@@ -65,6 +65,7 @@ public class NoteManager {
 
   // build the tree structure of notes
   private void init() throws IOException {
+    LOGGER.info("Starting init NodeManager");
     this.notesInfo = notebookRepo.list(AuthenticationInfo.ANONYMOUS).values().stream()
         .collect(Collectors.toMap(noteInfo -> noteInfo.getId(), notesInfo -> notesInfo.getPath()));
     this.notesInfo.entrySet().stream()
@@ -76,6 +77,7 @@ public class NoteManager {
             LOGGER.warn(e.getMessage());
           }
         });
+    LOGGER.info("Finish init NodeManager");
   }
 
   public Map<String, String> getNotesInfo() {

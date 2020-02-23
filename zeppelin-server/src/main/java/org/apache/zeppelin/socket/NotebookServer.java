@@ -289,6 +289,7 @@ public class NotebookServer extends WebSocketServlet
       // Lets be elegant here
       switch (messagereceived.op) {
         case LIST_NOTES:
+          LOG.info("Recevie message: LIST_NOTE");
           listNotesInfo(conn, messagereceived);
           break;
         case RELOAD_NOTES_FROM_REPO:
@@ -747,6 +748,7 @@ public class NotebookServer extends WebSocketServlet
           public void onSuccess(List<NoteInfo> notesInfo,
                                 ServiceContext context) throws IOException {
             super.onSuccess(notesInfo, context);
+            LOG.info("unicast noteslist");
             connectionManager.unicast(new Message(OP.NOTES_INFO).put("notes", notesInfo), conn);
           }
         });

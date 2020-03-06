@@ -17,6 +17,7 @@
 
 package org.apache.zeppelin.flink;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.flink.python.util.ResourceUtil;
 import org.apache.zeppelin.interpreter.ZeppelinContext;
 import org.apache.flink.table.api.TableEnvironment;
@@ -54,8 +55,6 @@ public class PyFlinkInterpreter extends PythonInterpreter {
   @Override
   public void open() throws InterpreterException {
     this.flinkInterpreter = getInterpreterInTheSameSessionByClassName(FlinkInterpreter.class);
-
-    setProperty("zeppelin.python", getProperty("zeppelin.pyflink.python", "python"));
     setProperty("zeppelin.python.useIPython", getProperty("zeppelin.pyflink.useIPython", "true"));
     URL[] urls = new URL[0];
     List<URL> urlList = new LinkedList<>();

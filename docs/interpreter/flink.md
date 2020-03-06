@@ -167,7 +167,7 @@ You can also set other flink properties which are not listed in the table. For a
     <td>Max concurrent sql of Stream Sql (`%flink.ssql`)</td>
   </tr>
   <tr>
-    <td>zeppelin.pyflink.python</td>
+    <td>zeppelin.python</td>
     <td>python</td>
     <td>Python binary executable for PyFlink</td>
   </tr>

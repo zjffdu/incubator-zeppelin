@@ -635,6 +635,13 @@ public class InterpreterSetting {
   // but not InterpreterSetting Template
   public Properties getJavaProperties() {
     Properties jProperties = new Properties();
+    // pass zeppelin.python in zeppelin-site.xml to all interpreters.
+    // `zeppelin.python` can be used for setting python globally.
+    // but each interpreter can override it.
+    if (!StringUtils.isBlank(conf.getPython())) {
+      jProperties.setProperty("zeppelin.python", conf.getPython());
+    }
+
     Map<String, InterpreterProperty> iProperties = (Map<String, InterpreterProperty>) properties;
     for (Map.Entry<String, InterpreterProperty> entry : iProperties.entrySet()) {
       if (entry.getValue().getValue() != null) {

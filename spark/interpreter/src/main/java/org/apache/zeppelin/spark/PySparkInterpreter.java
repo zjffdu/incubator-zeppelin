@@ -162,6 +162,9 @@ public class PySparkInterpreter extends PythonInterpreter {
     if (System.getenv("PYSPARK_DRIVER_PYTHON") != null) {
       return System.getenv("PYSPARK_DRIVER_PYTHON");
     }
+    if (!StringUtils.isBlank(properties.getProperty("zeppelin.python"))) {
+      return properties.getProperty("zeppelin.python");
+    }
     return "python";
   }
 

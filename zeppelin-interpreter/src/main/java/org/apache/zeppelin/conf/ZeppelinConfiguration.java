@@ -331,6 +331,10 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getString(ConfVars.ZEPPELIN_SERVER_CONTEXT_PATH);
   }
 
+  public String getPython() {
+    return getString(ConfVars.ZEPPELIN_PYTHON);
+  }
+
   public String getKeyStorePath() {
     String path = getString(ConfVars.ZEPPELIN_SSL_KEYSTORE_PATH);
     if (path != null && path.startsWith("/") || isWindowsPath(path)) {
@@ -859,6 +863,7 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     ZEPPELIN_ANGULAR_WAR("zeppelin.angular.war", "zeppelin-web-angular/dist"),
     ZEPPELIN_WAR_TEMPDIR("zeppelin.war.tempdir", "webapps"),
 
+    ZEPPELIN_PYTHON("zeppelin.python", "python"),
     ZEPPELIN_INTERPRETER_JSON("zeppelin.interpreter.setting", "interpreter-setting.json"),
     ZEPPELIN_INTERPRETER_DIR("zeppelin.interpreter.dir", "interpreter"),
     ZEPPELIN_INTERPRETER_JUPYTER_KERNELS("zeppelin.interpreter.jupyter.kernels", "python:python,ir:r"),

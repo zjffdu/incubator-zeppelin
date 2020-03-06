@@ -152,9 +152,9 @@
         "description": "Max number of rows returned by sql interpreter.",
         "type": "number"
       },
-      "zeppelin.pyflink.python": {
-        "envName": "zeppelin.pyflink.python",
-        "propertyName": "zeppelin.pyflink.python",
+      "zeppelin.python": {
+        "envName": "",
+        "propertyName": "",
         "defaultValue": "python",
         "description": "Python executable for pyflink",
         "type": "string"

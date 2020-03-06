@@ -45,53 +45,59 @@ import static org.mockito.Mockito.mock;
 public class InterpreterSettingManagerTest extends AbstractInterpreterTest {
 
   @Test
-  public void testInitInterpreterSettingManager() throws IOException, RepositoryException {
-    assertEquals(6, interpreterSettingManager.get().size());
-    InterpreterSetting interpreterSetting = interpreterSettingManager.getByName("test");
-    assertEquals("test", interpreterSetting.getName());
-    assertEquals("test", interpreterSetting.getGroup());
-    assertTrue(interpreterSetting.getLifecycleManager() instanceof NullLifecycleManager);
-    assertEquals(8, interpreterSetting.getInterpreterInfos().size());
-    // 3 other builtin properties:
-    //   * zeppelin.interpreter.output.limit
-    //   * zeppelin.interpreter.localRepo
-    //   * zeppelin.interpreter.max.poolsize
-    assertEquals(6, interpreterSetting.getJavaProperties().size());
-    assertEquals("value_1", interpreterSetting.getJavaProperties().getProperty("property_1"));
-    assertEquals("new_value_2", interpreterSetting.getJavaProperties().getProperty("property_2"));
-    assertEquals("value_3", interpreterSetting.getJavaProperties().getProperty("property_3"));
-    assertEquals("shared", interpreterSetting.getOption().perNote);
-    assertEquals("shared", interpreterSetting.getOption().perUser);
-    assertEquals(0, interpreterSetting.getDependencies().size());
-    assertNotNull(interpreterSetting.getAngularObjectRegistryListener());
-    assertNotNull(interpreterSetting.getRemoteInterpreterProcessListener());
-    assertNotNull(interpreterSetting.getAppEventListener());
-    assertNotNull(interpreterSetting.getDependencyResolver());
-    assertNotNull(interpreterSetting.getInterpreterSettingManager());
+  public void testInitInterpreterSettingManager() throws IOException {
+    try {
+      System.setProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_PYTHON.getVarName(), "/usr/bin/python");
+      assertEquals(6, interpreterSettingManager.get().size());
+      InterpreterSetting interpreterSetting = interpreterSettingManager.getByName("test");
+      assertEquals("test", interpreterSetting.getName());
+      assertEquals("test", interpreterSetting.getGroup());
+      assertTrue(interpreterSetting.getLifecycleManager() instanceof NullLifecycleManager);
+      assertEquals(8, interpreterSetting.getInterpreterInfos().size());
+      // 3 other builtin properties:
+      //   * zeppelin.interpreter.output.limit
+      //   * zeppelin.interpreter.localRepo
+      //   * zeppelin.interpreter.max.poolsize
+      assertEquals(7, interpreterSetting.getJavaProperties().size());
+      assertEquals("value_1", interpreterSetting.getJavaProperties().getProperty("property_1"));
+      assertEquals("new_value_2", interpreterSetting.getJavaProperties().getProperty("property_2"));
+      assertEquals("value_3", interpreterSetting.getJavaProperties().getProperty("property_3"));
+      assertEquals("/usr/bin/python", interpreterSetting.getJavaProperties().getProperty("zeppelin.python"));
+      assertEquals("shared", interpreterSetting.getOption().perNote);
+      assertEquals("shared", interpreterSetting.getOption().perUser);
+      assertEquals(0, interpreterSetting.getDependencies().size());
+      assertNotNull(interpreterSetting.getAngularObjectRegistryListener());
+      assertNotNull(interpreterSetting.getRemoteInterpreterProcessListener());
+      assertNotNull(interpreterSetting.getAppEventListener());
+      assertNotNull(interpreterSetting.getDependencyResolver());
+      assertNotNull(interpreterSetting.getInterpreterSettingManager());
 
-    List<RemoteRepository> repositories = interpreterSettingManager.getRepositories();
-    assertEquals(2, repositories.size());
-    assertEquals("central", repositories.get(0).getId());
+      List<RemoteRepository> repositories = interpreterSettingManager.getRepositories();
+      assertEquals(2, repositories.size());
+      assertEquals("central", repositories.get(0).getId());
 
-    // Load it again
-    InterpreterSettingManager interpreterSettingManager2 = new InterpreterSettingManager(conf,
-        mock(AngularObjectRegistryListener.class), mock(RemoteInterpreterProcessListener.class), mock(ApplicationEventListener.class));
-    assertEquals(6, interpreterSettingManager2.get().size());
-    interpreterSetting = interpreterSettingManager2.getByName("test");
-    assertEquals("test", interpreterSetting.getName());
-    assertEquals("test", interpreterSetting.getGroup());
-    assertEquals(8, interpreterSetting.getInterpreterInfos().size());
-    assertEquals(6, interpreterSetting.getJavaProperties().size());
-    assertEquals("value_1", interpreterSetting.getJavaProperties().getProperty("property_1"));
-    assertEquals("new_value_2", interpreterSetting.getJavaProperties().getProperty("property_2"));
-    assertEquals("value_3", interpreterSetting.getJavaProperties().getProperty("property_3"));
-    assertEquals("shared", interpreterSetting.getOption().perNote);
-    assertEquals("shared", interpreterSetting.getOption().perUser);
-    assertEquals(0, interpreterSetting.getDependencies().size());
+      // Load it again
+      InterpreterSettingManager interpreterSettingManager2 = new InterpreterSettingManager(conf,
+              mock(AngularObjectRegistryListener.class), mock(RemoteInterpreterProcessListener.class), mock(ApplicationEventListener.class));
+      assertEquals(6, interpreterSettingManager2.get().size());
+      interpreterSetting = interpreterSettingManager2.getByName("test");
+      assertEquals("test", interpreterSetting.getName());
+      assertEquals("test", interpreterSetting.getGroup());
+      assertEquals(8, interpreterSetting.getInterpreterInfos().size());
+      assertEquals(7, interpreterSetting.getJavaProperties().size());
+      assertEquals("value_1", interpreterSetting.getJavaProperties().getProperty("property_1"));
+      assertEquals("new_value_2", interpreterSetting.getJavaProperties().getProperty("property_2"));
+      assertEquals("value_3", interpreterSetting.getJavaProperties().getProperty("property_3"));
+      assertEquals("shared", interpreterSetting.getOption().perNote);
+      assertEquals("shared", interpreterSetting.getOption().perUser);
+      assertEquals(0, interpreterSetting.getDependencies().size());
 
-    repositories = interpreterSettingManager2.getRepositories();
-    assertEquals(2, repositories.size());
-    assertEquals("central", repositories.get(0).getId());
+      repositories = interpreterSettingManager2.getRepositories();
+      assertEquals(2, repositories.size());
+      assertEquals("central", repositories.get(0).getId());
+    } finally {
+      System.clearProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_PYTHON.getVarName());
+    }
 
   }
 
@@ -120,7 +126,7 @@ public class InterpreterSettingManagerTest extends AbstractInterpreterTest {
     //   * zeppelin.interpeter.output.limit
     //   * zeppelin.interpreter.localRepo
     //   * zeppelin.interpreter.max.poolsize
-    assertEquals(4, interpreterSetting.getJavaProperties().size());
+    assertEquals(5, interpreterSetting.getJavaProperties().size());
     assertEquals("value_4", interpreterSetting.getJavaProperties().getProperty("property_4"));
     assertEquals("scoped", interpreterSetting.getOption().perNote);
     assertEquals("scoped", interpreterSetting.getOption().perUser);
@@ -138,8 +144,9 @@ public class InterpreterSettingManagerTest extends AbstractInterpreterTest {
     interpreterSetting = interpreterSettingManager2.getByName("test3");
     assertEquals("test3", interpreterSetting.getName());
     assertEquals("test", interpreterSetting.getGroup());
-    assertEquals(4, interpreterSetting.getJavaProperties().size());
+    assertEquals(5, interpreterSetting.getJavaProperties().size());
     assertEquals("value_4", interpreterSetting.getJavaProperties().getProperty("property_4"));
+    assertEquals("python", interpreterSetting.getJavaProperties().getProperty("zeppelin.python"));
     assertEquals("scoped", interpreterSetting.getOption().perNote);
     assertEquals("scoped", interpreterSetting.getOption().perUser);
     assertEquals(0, interpreterSetting.getDependencies().size());
@@ -156,8 +163,9 @@ public class InterpreterSettingManagerTest extends AbstractInterpreterTest {
     interpreterSetting = interpreterSettingManager.get(interpreterSetting.getId());
     assertEquals("test3", interpreterSetting.getName());
     assertEquals("test", interpreterSetting.getGroup());
-    assertEquals(4, interpreterSetting.getJavaProperties().size());
+    assertEquals(5, interpreterSetting.getJavaProperties().size());
     assertEquals("new_value_4", interpreterSetting.getJavaProperties().getProperty("property_4"));
+    assertEquals("python", interpreterSetting.getJavaProperties().getProperty("zeppelin.python"));
     assertEquals("scoped", interpreterSetting.getOption().perNote);
     assertEquals("isolated", interpreterSetting.getOption().perUser);
     assertEquals(1, interpreterSetting.getDependencies().size());

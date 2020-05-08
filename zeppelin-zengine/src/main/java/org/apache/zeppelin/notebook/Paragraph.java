@@ -410,8 +410,10 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
       String form = localProperties.getOrDefault("form", interpreter.getFormType().name());
       if (form.equalsIgnoreCase("simple")) {
         // inputs will be built from script body
-        LinkedHashMap<String, Input> inputs = Input.extractSimpleQueryForm(script, false);
-        LinkedHashMap<String, Input> noteInputs = Input.extractSimpleQueryForm(script, true);
+        LinkedHashMap<String, Input> inputs = Input.extractSimpleQueryForm(script, false,
+                this.interpreter.getInterpreterGroup().getResourcePool());
+        LinkedHashMap<String, Input> noteInputs = Input.extractSimpleQueryForm(script, true,
+                this.interpreter.getInterpreterGroup().getResourcePool());
         final AngularObjectRegistry angularRegistry =
                 interpreter.getInterpreterGroup().getAngularObjectRegistry();
         String scriptBody = extractVariablesFromAngularRegistry(script, inputs, angularRegistry);
@@ -429,8 +431,10 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
             note.setNoteForms(noteInputs);
           }
         }
-        script = Input.getSimpleQuery(note.getNoteParams(), scriptBody, true);
-        script = Input.getSimpleQuery(settings.getParams(), script, false);
+        script = Input.getSimpleQuery(note.getNoteParams(), scriptBody, true,
+                this.interpreter.getInterpreterGroup().getResourcePool());
+        script = Input.getSimpleQuery(settings.getParams(), script, false,
+                this.interpreter.getInterpreterGroup().getResourcePool());
       } else {
         settings.clear();
       }

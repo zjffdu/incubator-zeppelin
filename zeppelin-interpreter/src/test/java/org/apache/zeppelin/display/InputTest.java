@@ -22,9 +22,12 @@ import org.apache.zeppelin.display.ui.OptionInput.ParamOption;
 import org.apache.zeppelin.display.ui.Password;
 import org.apache.zeppelin.display.ui.Select;
 import org.apache.zeppelin.display.ui.TextBox;
+import org.apache.zeppelin.resource.LocalResourcePool;
+import org.apache.zeppelin.resource.ResourcePool;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -36,9 +39,11 @@ public class InputTest {
 
   @Test
   public void testFormExtraction() {
+    ResourcePool resourcePool = new LocalResourcePool("id");
+
     // textbox form
     String script = "${input_form=}";
-    Map<String, Input> forms = Input.extractSimpleQueryForm(script, false);
+    Map<String, Input> forms = Input.extractSimpleQueryForm(script, false, resourcePool);
     assertEquals(1, forms.size());
     Input form = forms.get("input_form");
     assertEquals("input_form", form.name);
@@ -48,7 +53,7 @@ public class InputTest {
 
     // textbox form with display name & default value
     script = "${input_form(Input Form)=xxx}";
-    forms = Input.extractSimpleQueryForm(script, false);
+    forms = Input.extractSimpleQueryForm(script, false, resourcePool);
     form = forms.get("input_form");
     assertEquals("xxx", form.defaultValue);
     assertTrue(form instanceof TextBox);
@@ -56,14 +61,14 @@ public class InputTest {
 
     // password form with display name
     script = "${password:my_pwd(My Password)}";
-    forms = Input.extractSimpleQueryForm(script, false);
+    forms = Input.extractSimpleQueryForm(script, false, resourcePool);
     form = forms.get("my_pwd");
     assertTrue(form instanceof Password);
     assertEquals("My Password", form.getDisplayName());
 
     // selection form
     script = "${select_form(Selection Form)=op1,op1|op2(Option 2)|op3}";
-    form = Input.extractSimpleQueryForm(script, false).get("select_form");
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("select_form");
     assertEquals("select_form", form.name);
     assertEquals("op1", form.defaultValue);
     assertEquals("Selection Form", form.getDisplayName());
@@ -76,7 +81,7 @@ public class InputTest {
 
     // checkbox form
     script = "${checkbox:checkbox_form=op1,op1|op2|op3}";
-    form = Input.extractSimpleQueryForm(script, false).get("checkbox_form");
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("checkbox_form");
     assertEquals("checkbox_form", form.name);
     assertTrue(form instanceof CheckBox);
 
@@ -89,7 +94,7 @@ public class InputTest {
 
     // checkbox form with multiple default checks
     script = "${checkbox:checkbox_form(Checkbox Form)=op1|op3,op1(Option 1)|op2|op3}";
-    form = Input.extractSimpleQueryForm(script, false).get("checkbox_form");
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("checkbox_form");
     assertEquals("checkbox_form", form.name);
     assertEquals("Checkbox Form", form.displayName);
     assertTrue(form instanceof CheckBox);
@@ -102,7 +107,7 @@ public class InputTest {
 
     // checkbox form with no default check
     script = "${checkbox:checkbox_form(Checkbox Form)=,op1(Option 1)|op2(Option 2)|op3(Option 3)}";
-    form = Input.extractSimpleQueryForm(script, false).get("checkbox_form");
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("checkbox_form");
     assertEquals("checkbox_form", form.name);
     assertEquals("Checkbox Form", form.displayName);
     assertTrue(form instanceof CheckBox);
@@ -114,9 +119,91 @@ public class InputTest {
         ((CheckBox) form).getOptions());
   }
 
+  @Test
+  public void testVariableSubstitutionFromResourcePool() {
+    ResourcePool resourcePool = new LocalResourcePool("id");
+    resourcePool.put("text_value", "hello");
+
+    // textbox form
+    String script = "${input_form=[text_value]}";
+    Map<String, Input> forms = Input.extractSimpleQueryForm(script, false, resourcePool);
+    assertEquals(1, forms.size());
+    Input form = forms.get("input_form");
+    assertEquals("input_form", form.name);
+    assertNull(form.displayName);
+    assertEquals("hello", form.defaultValue);
+    assertTrue(form instanceof TextBox);
+
+    // textbox form with display name & default value
+    script = "${input_form(Input Form)=[text_value]}";
+    forms = Input.extractSimpleQueryForm(script, false, resourcePool);
+    form = forms.get("input_form");
+    assertEquals("hello", form.defaultValue);
+    assertTrue(form instanceof TextBox);
+    assertEquals("Input Form", form.getDisplayName());
+
+    // selection form
+    Map<String, String> selectItems = new LinkedHashMap<>();
+    selectItems.put("item_1", "value_1");
+    selectItems.put("item_2", "value_2");
+    resourcePool.put("select_items", selectItems);
+
+    script = "${select:select_form(Selection Form)=item_1,[select_items]}";
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("select_form");
+    assertEquals("select_form", form.name);
+    assertEquals("item_1", form.defaultValue);
+    assertEquals("Selection Form", form.getDisplayName());
+    assertTrue(form instanceof Select);
+    assertArrayEquals(new ParamOption[]{
+                    new ParamOption("item_1", "value_1"),
+                    new ParamOption("item_2", "value_2")},
+            ((Select) form).getOptions());
+
+    // checkbox form
+    Map<String, String> checkboxItems = new LinkedHashMap<>();
+    checkboxItems.put("item_1", "value_1");
+    checkboxItems.put("item_2", "value_2");
+    resourcePool.put("checkbox_items", selectItems);
+    script = "${checkbox:checkbox_form=item_1,[checkbox_items]}";
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("checkbox_form");
+    assertEquals("checkbox_form", form.name);
+    assertTrue(form instanceof CheckBox);
+
+    assertArrayEquals(new Object[]{"item_1"}, (Object[]) form.defaultValue);
+    assertArrayEquals(new ParamOption[]{
+                    new ParamOption("item_1", "value_1"),
+                    new ParamOption("item_2", "value_2")},
+            ((CheckBox) form).getOptions());
+
+    // checkbox form with multiple default checks
+    script = "${checkbox:checkbox_form(Checkbox Form)=item_1|item_2,[checkbox_items]}";
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("checkbox_form");
+    assertEquals("checkbox_form", form.name);
+    assertEquals("Checkbox Form", form.displayName);
+    assertTrue(form instanceof CheckBox);
+    assertArrayEquals(new Object[]{"item_1", "item_2"}, (Object[]) form.defaultValue);
+    assertArrayEquals(new ParamOption[]{
+                    new ParamOption("item_1", "value_1"),
+                    new ParamOption("item_2", "value_2")},
+            ((CheckBox) form).getOptions());
+
+    // checkbox form with no default check
+    script = "${checkbox:checkbox_form(Checkbox Form)=,[checkbox_items]}";
+    form = Input.extractSimpleQueryForm(script, false, resourcePool).get("checkbox_form");
+    assertEquals("checkbox_form", form.name);
+    assertEquals("Checkbox Form", form.displayName);
+    assertTrue(form instanceof CheckBox);
+    assertArrayEquals(new Object[]{}, (Object[]) form.defaultValue);
+    assertArrayEquals(new ParamOption[]{
+                    new ParamOption("item_1", "value_1"),
+                    new ParamOption("item_2", "value_2")},
+            ((CheckBox) form).getOptions());
+  }
 
   @Test
   public void testFormSubstitution() {
+    ResourcePool resourcePool = new LocalResourcePool("id");
+
     // test form substitution without new forms
     String script = "INPUT=${input_form=}SELECTED=${select_form(Selection Form)=" +
         ",s_op1|s_op2|s_op3}\nCHECKED=${checkbox:checkbox_form=c_op1|c_op2,c_op1|c_op2|c_op3}";
@@ -124,14 +211,14 @@ public class InputTest {
     params.put("input_form", "some_input");
     params.put("select_form", "s_op2");
     params.put("checkbox_form", new String[]{"c_op1", "c_op3"});
-    String replaced = Input.getSimpleQuery(params, script, false);
+    String replaced = Input.getSimpleQuery(params, script, false, resourcePool);
     assertEquals("INPUT=some_inputSELECTED=s_op2\nCHECKED=c_op1,c_op3", replaced);
 
     // test form substitution with new forms
     script = "INPUT=${input_form=}SELECTED=${select_form(Selection Form)=,s_op1|s_op2|s_op3}\n" +
         "CHECKED=${checkbox:checkbox_form=c_op1|c_op2,c_op1|c_op2|c_op3}\n" +
         "NEW_CHECKED=${checkbox( and ):new_check=nc_a|nc_c,nc_a|nc_b|nc_c}";
-    replaced = Input.getSimpleQuery(params, script, false);
+    replaced = Input.getSimpleQuery(params, script, false, resourcePool);
     assertEquals("INPUT=some_inputSELECTED=s_op2\nCHECKED=c_op1,c_op3\n" +
         "NEW_CHECKED=nc_a and nc_c", replaced);
 
@@ -139,7 +226,7 @@ public class InputTest {
     script = "INPUT=${input_form=}SELECTED=${select_form(Selection Form)=,s_op1|s_op2|s_op3}\n" +
         "CHECKED=${checkbox:checkbox_form=c_op1|c_op2,c_op1|c_op2|c_op3_new}\n" +
         "NEW_CHECKED=${checkbox( and ):new_check=nc_a|nc_c,nc_a|nc_b|nc_c}";
-    replaced = Input.getSimpleQuery(params, script, false);
+    replaced = Input.getSimpleQuery(params, script, false, resourcePool);
     assertEquals("INPUT=some_inputSELECTED=s_op2\nCHECKED=c_op1\n" +
         "NEW_CHECKED=nc_a and nc_c", replaced);
   }

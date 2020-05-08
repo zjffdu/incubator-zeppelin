@@ -24,6 +24,7 @@ import org.apache.zeppelin.display.ui.OptionInput.ParamOption;
 import org.apache.zeppelin.display.ui.Password;
 import org.apache.zeppelin.display.ui.Select;
 import org.apache.zeppelin.display.ui.TextBox;
+import org.apache.zeppelin.resource.ResourcePool;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -195,7 +196,7 @@ public class Input<T> implements Serializable {
     return ret;
   }
 
-  private static Input getInputForm(Matcher match) {
+  private static Input getInputForm(Matcher match, ResourcePool resourcePool) {
     String hiddenPart = match.group(1);
     boolean hidden = false;
     if ("_".equals(hiddenPart)) {
@@ -214,7 +215,6 @@ public class Input<T> implements Serializable {
       namePart = m;
       valuePart = null;
     }
-
 
     String varName;
     String displayName = null;
@@ -254,25 +254,33 @@ public class Input<T> implements Serializable {
           defaultValue = Input.splitPipe((String) defaultValue);
         }
         String optionPart = valuePart.substring(optionP + 1);
-        String[] options = Input.splitPipe(optionPart);
-
-        paramOptions = new ParamOption[options.length];
-
-        for (int i = 0; i < options.length; i++) {
-
-          String[] optNameArray = getNameAndDisplayName(options[i]);
-          if (optNameArray != null) {
-            paramOptions[i] = new ParamOption(optNameArray[0], optNameArray[1]);
-          } else {
-            paramOptions[i] = new ParamOption(options[i], null);
+        if (optionPart.startsWith("[") && optionPart.endsWith("]")) {
+          paramOptions = extractParamOptions(optionPart, resourcePool);
+        } else {
+          String[] options = Input.splitPipe(optionPart);
+          paramOptions = new ParamOption[options.length];
+          for (int i = 0; i < options.length; i++) {
+            String[] optNameArray = getNameAndDisplayName(options[i]);
+            if (optNameArray != null) {
+              paramOptions[i] = new ParamOption(optNameArray[0], optNameArray[1]);
+            } else {
+              paramOptions[i] = new ParamOption(options[i], null);
+            }
           }
         }
-
-
       } else { // no option
-        defaultValue = valuePart;
+        if (valuePart.startsWith("[") && valuePart.endsWith("]")) {
+          String resourceName = valuePart.substring(1, valuePart.length() - 1);
+          Object resourceValue = resourcePool.get(resourceName).get();
+          if (type != null && (type.equals("select") || type.equals("checkbox"))) {
+            paramOptions = extractParamOptions(valuePart, resourcePool);
+          } else {
+            defaultValue = (String) resourceValue;
+          }
+        } else {
+          defaultValue = valuePart;
+        }
       }
-
     }
 
     Input input = null;
@@ -282,6 +290,8 @@ public class Input<T> implements Serializable {
       } else {
         input = new Select(varName, defaultValue, paramOptions);
       }
+    } else if (type.equals("select")) {
+      input = new Select(varName, defaultValue, paramOptions);
     } else if (type.equals("checkbox")) {
       input = new CheckBox(varName, (Object[]) defaultValue, paramOptions);
     } else if (type.equals("password")) {
@@ -295,8 +305,21 @@ public class Input<T> implements Serializable {
     return input;
   }
 
+  private static ParamOption[] extractParamOptions(String optionPart, ResourcePool resourcePool) {
+    String resourceName = optionPart.substring(1, optionPart.length() - 1);
+    Object resourceValue = resourcePool.get(resourceName).get();
+    Map<String, String> map = (Map<String, String>) resourceValue;
+
+    List<ParamOption> optionList = new ArrayList<>();
+    for (Map.Entry<String, String> entry : map.entrySet()) {
+      optionList.add(new ParamOption(entry.getKey(), entry.getValue()));
+    }
+    return optionList.toArray(new ParamOption[0]);
+  }
+
   public static LinkedHashMap<String, Input> extractSimpleQueryForm(String script,
-                                                                    boolean noteForm) {
+                                                                    boolean noteForm,
+                                                                    ResourcePool resourcePool) {
     LinkedHashMap<String, Input> forms = new LinkedHashMap<>();
     if (script == null) {
       return forms;
@@ -310,7 +333,7 @@ public class Input<T> implements Serializable {
       if (!noteForm && first > 0 && replaced.charAt(first - 1) == '$') {
         continue;
       }
-      Input form = getInputForm(match);
+      Input form = getInputForm(match, resourcePool);
       forms.put(form.name, form);
     }
 
@@ -320,7 +343,10 @@ public class Input<T> implements Serializable {
 
   private static final String DEFAULT_DELIMITER = ",";
 
-  public static String getSimpleQuery(Map<String, Object> params, String script, boolean noteForm) {
+  public static String getSimpleQuery(Map<String, Object> params,
+                                      String script,
+                                      boolean noteForm,
+                                      ResourcePool resourcePool) {
     String replaced = script;
 
     Pattern pattern = noteForm ? VAR_NOTE_PTN : VAR_PTN;
@@ -332,7 +358,7 @@ public class Input<T> implements Serializable {
       if (!noteForm && first > 0 && replaced.charAt(first - 1) == '$') {
         continue;
       }
-      Input input = getInputForm(match);
+      Input input = getInputForm(match, resourcePool);
       Object value;
       if (params.containsKey(input.name)) {
         value = params.get(input.name);
@@ -381,7 +407,6 @@ public class Input<T> implements Serializable {
 
   public static String[] split(String str) {
     return str.split(";(?=([^\"']*\"[^\"']*\")*[^\"']*$)");
-
   }
 
   /*

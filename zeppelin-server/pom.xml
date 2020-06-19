@@ -259,6 +259,7 @@
       <groupId>org.apache.zeppelin</groupId>
       <artifactId>zeppelin-zengine</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
       <classifier>tests</classifier>
       <exclusions>
         <exclusion>

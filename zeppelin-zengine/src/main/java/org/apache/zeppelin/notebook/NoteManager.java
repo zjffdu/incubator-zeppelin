@@ -21,6 +21,7 @@ package org.apache.zeppelin.notebook;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.notebook.repo.NotebookRepo;
+import org.apache.zeppelin.notebook.repo.NotebookRepoWithVersionControl;
 import org.apache.zeppelin.user.AuthenticationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ public class NoteManager {
     List<Note> notes = new ArrayList<>();
     for (String notePath : notesInfo.values()) {
       try {
-        notes.add(getNoteNode(notePath).getNote());
+        notes.add(getNoteNode(notePath).getNote(null));
       } catch (Exception e) {
         LOGGER.warn("Fail to load note: " + notePath, e);
       }
@@ -275,13 +276,13 @@ public class NoteManager {
    * @return return null if not found on NotebookRepo.
    * @throws IOException
    */
-  public Note getNote(String noteId, boolean forceLoad) throws IOException {
+  public Note getNote(String noteId, String revisionId, boolean forceLoad) throws IOException {
     String notePath = this.notesInfo.get(noteId);
     if (notePath == null) {
       return null;
     }
     NoteNode noteNode = getNoteNode(notePath);
-    return noteNode.getNote(forceLoad);
+    return noteNode.getNote(revisionId, forceLoad);
   }
 
   /**
@@ -292,12 +293,23 @@ public class NoteManager {
    * @throws IOException
    */
   public Note getNote(String noteId) throws IOException {
+    return getNote(noteId, null);
+  }
+
+  /**
+   * Get note from NotebookRepo.
+   *
+   * @param noteId
+   * @return return null if not found on NotebookRepo.
+   * @throws IOException
+   */
+  public Note getNote(String noteId, String revisionId) throws IOException {
     String notePath = this.notesInfo.get(noteId);
     if (notePath == null) {
       return null;
     }
     NoteNode noteNode = getNoteNode(notePath);
-    return noteNode.getNote();
+    return noteNode.getNote(revisionId);
   }
 
   /**
@@ -527,8 +539,8 @@ public class NoteManager {
       this.notebookRepo = notebookRepo;
     }
 
-    public synchronized Note getNote() throws IOException {
-        return getNote(true);
+    public synchronized Note getNote(String revisionId) throws IOException {
+        return getNote(revisionId, true);
     }
 
     /**
@@ -537,9 +549,16 @@ public class NoteManager {
      * @return
      * @throws IOException
      */
-    public synchronized Note getNote(boolean forceLoad) throws IOException {
-      if (!note.isLoaded() && forceLoad) {
-        note = notebookRepo.get(note.getId(), note.getPath(), AuthenticationInfo.ANONYMOUS);
+    public synchronized Note getNote(String revisionId, boolean forceLoad) throws IOException {
+      // always load note when it is not the head version.
+      // TODO(zjffdu) currently we only cache the head version note, how about revisioned note ?
+      if ((!note.isLoaded() && forceLoad) || revisionId != null) {
+        if (revisionId == null) {
+          note = notebookRepo.get(note.getId(), note.getPath(), AuthenticationInfo.ANONYMOUS);
+        } else {
+          note = ((NotebookRepoWithVersionControl) notebookRepo).get(
+                  note.getId(), note.getPath(), revisionId, AuthenticationInfo.ANONYMOUS);
+        }
         if (parent.toString().equals("/")) {
           note.setPath("/" + note.getName());
         } else {

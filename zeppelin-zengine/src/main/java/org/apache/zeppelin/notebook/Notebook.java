@@ -323,7 +323,17 @@ public class Notebook {
    * @throws IOException when fail to get it from NotebookRepo.
    */
   public Note getNote(String noteId) throws IOException {
-    Note note = noteManager.getNote(noteId);
+    return getNote(noteId, null);
+  }
+
+  public void saveNote(Note note, AuthenticationInfo subject) throws IOException {
+    noteManager.saveNote(note, subject);
+    fireNoteUpdateEvent(note, subject);
+  }
+
+  public Note getNote(String noteId, String revisionId)
+          throws IOException {
+    Note note = noteManager.getNote(noteId, revisionId);
     if (note == null) {
       return null;
     }
@@ -336,11 +346,6 @@ public class Notebook {
       p.setNote(note);
     }
     return note;
-  }
-
-  public void saveNote(Note note, AuthenticationInfo subject) throws IOException {
-    noteManager.saveNote(note, subject);
-    fireNoteUpdateEvent(note, subject);
   }
 
   public boolean containsNote(String notePath) {
@@ -419,17 +424,6 @@ public class Notebook {
               .setNoteRevision(noteId, notePath, revisionId, subject);
       noteManager.saveNote(note);
       return note;
-    } else {
-      return null;
-    }
-  }
-
-  public Note getNoteByRevision(String noteId, String noteName,
-                                String revisionId, AuthenticationInfo subject)
-      throws IOException {
-    if (((NotebookRepoSync) notebookRepo).isRevisionSupportedInDefaultRepo()) {
-      return ((NotebookRepoWithVersionControl) notebookRepo).get(noteId, noteName,
-          revisionId, subject);
     } else {
       return null;
     }

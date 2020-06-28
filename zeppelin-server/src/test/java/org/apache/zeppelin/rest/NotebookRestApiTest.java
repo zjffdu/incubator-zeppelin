@@ -33,6 +33,7 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.zeppelin.interpreter.InterpreterSetting;
 import org.apache.zeppelin.interpreter.InterpreterSettingManager;
 import org.apache.zeppelin.notebook.Notebook;
+import org.apache.zeppelin.notebook.repo.NotebookRepoWithVersionControl;
 import org.apache.zeppelin.socket.NotebookServer;
 import org.apache.zeppelin.utils.TestUtils;
 import org.junit.AfterClass;
@@ -365,6 +366,71 @@ public class NotebookRestApiTest extends AbstractTestRestApi {
 
       // no new python process is created because it is isolated mode.
       assertEquals(pythonProcessNum, interpreterSetting.getAllInterpreterGroups().size());
+    } finally {
+      // cleanup
+      if (null != note1) {
+        TestUtils.getInstance(Notebook.class).removeNote(note1.getId(), anonymous);
+      }
+    }
+  }
+
+  @Test
+  public void testRunNoteByRevision() throws IOException, InterruptedException {
+    Note note1 = null;
+    try {
+      note1 = TestUtils.getInstance(Notebook.class).createNote("note1", anonymous);
+      // 2 paragraphs
+      // P1:
+      //    %python
+      //     user='version_1'
+      //     print(user)
+      Paragraph p1 = note1.addNewParagraph(AuthenticationInfo.ANONYMOUS);
+      p1.setText("%python user='version_1'\nprint(user)");
+      TestUtils.getInstance(Notebook.class).saveNote(note1, AuthenticationInfo.ANONYMOUS);
+      NotebookRepoWithVersionControl.Revision revision1 = TestUtils.getInstance(Notebook.class).checkpointNote(note1.getId(),
+              note1.getPath(), "version_1", AuthenticationInfo.ANONYMOUS);
+
+      p1.setText("%python user='version_2'\nprint(user)");
+      TestUtils.getInstance(Notebook.class).saveNote(note1, AuthenticationInfo.ANONYMOUS);
+      NotebookRepoWithVersionControl.Revision revision2 = TestUtils.getInstance(Notebook.class).checkpointNote(note1.getId(),
+              note1.getPath(), "version_2", AuthenticationInfo.ANONYMOUS);
+
+      // run version_1
+      PostMethod post = httpPost("/notebook/job/" + note1.getId() + "?blocking=true&isolated=true&revisionId=" + revision1.id, "");
+      assertThat(post, isAllowed());
+      Map<String, Object> resp = gson.fromJson(post.getResponseBodyAsString(),
+              new TypeToken<Map<String, Object>>() {}.getType());
+      assertEquals(resp.get("status"), "OK");
+      post.releaseConnection();
+
+      Note noteRevision1 =  TestUtils.getInstance(Notebook.class).getNote(note1.getId(), revision1.id);
+      Paragraph p1Revision1 = noteRevision1.getParagraph(p1.getId());
+      assertEquals(Job.Status.FINISHED, p1Revision1.getStatus());
+      assertEquals("version_1\n", p1Revision1.getReturn().message().get(0).getData());
+
+      // run revision2
+      post = httpPost("/notebook/job/" + note1.getId() + "?blocking=true&isolated=true&revisionId=" + revision2.id, "");
+      assertThat(post, isAllowed());
+      resp = gson.fromJson(post.getResponseBodyAsString(),
+              new TypeToken<Map<String, Object>>() {}.getType());
+      assertEquals(resp.get("status"), "OK");
+      post.releaseConnection();
+
+      Note noteRevision2 =  TestUtils.getInstance(Notebook.class).getNote(note1.getId(), revision2.id);
+      Paragraph p1Revision2 = noteRevision1.getParagraph(p1.getId());
+      assertEquals(Job.Status.FINISHED, p1Revision2.getStatus());
+      assertEquals("version_2\n", p1Revision2.getReturn().message().get(0).getData());
+
+      // run latest version (without specifying revision)
+      post = httpPost("/notebook/job/" + note1.getId() + "?blocking=true&isolated=true", "");
+      assertThat(post, isAllowed());
+      resp = gson.fromJson(post.getResponseBodyAsString(),
+              new TypeToken<Map<String, Object>>() {}.getType());
+      assertEquals(resp.get("status"), "OK");
+      post.releaseConnection();
+
+      assertEquals(Job.Status.FINISHED, p1.getStatus());
+      assertEquals("version_2\n", p1.getReturn().message().get(0).getData());
     } finally {
       // cleanup
       if (null != note1) {

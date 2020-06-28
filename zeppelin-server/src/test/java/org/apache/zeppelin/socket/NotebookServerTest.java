@@ -774,7 +774,7 @@ public class NotebookServerTest extends AbstractTestRestApi {
       assertEquals("first commit", revisionList.get(1).message);
 
       // checkout the first commit
-      note = notebook.getNoteByRevision(note.getId(), note.getPath(), firstRevision.id, AuthenticationInfo.ANONYMOUS);
+      note = notebook.getNote(note.getId(), firstRevision.id);
       assertEquals(0, note.getParagraphCount());
     } finally {
       if (null != note) {

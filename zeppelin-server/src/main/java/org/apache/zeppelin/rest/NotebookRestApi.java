@@ -666,7 +666,8 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response runNoteJobs(@PathParam("noteId") String noteId,
                               @QueryParam("blocking") Boolean blocking,
-                              @QueryParam("isolated") Boolean isolated)
+                              @QueryParam("isolated") Boolean isolated,
+                              @QueryParam("revisionId") String revisionId)
       throws IOException, IllegalArgumentException {
     if (blocking == null) {
       blocking = false;
@@ -675,8 +676,16 @@ public class NotebookRestApi extends AbstractRestApi {
       isolated = false;
     }
 
-    LOG.info("Run note jobs, noteId: {} blocking: {}, isolated: {}", noteId, blocking, isolated);
-    Note note = notebook.getNote(noteId);
+    LOG.info("Run note jobs, noteId: {} blocking: {}, isolated: {}, revisionId: {}",
+            noteId, blocking, isolated, revisionId);
+    Note note = null;
+    try {
+      note = notebook.getNote(noteId, revisionId);
+    } catch (IOException e) {
+      LOG.error("Fail to get note for noteId: " + noteId + " , revisionId: " + revisionId, e);
+      return new JsonResponse<>(Status.INTERNAL_SERVER_ERROR,
+              "No such note, noteId: " + noteId + ", revisionId: {}" + revisionId).build();
+    }
     AuthenticationInfo subject = new AuthenticationInfo(authenticationService.getPrincipal());
     subject.setRoles(new LinkedList<>(authenticationService.getAssociatedRoles()));
     checkIfNoteIsNotNull(note);

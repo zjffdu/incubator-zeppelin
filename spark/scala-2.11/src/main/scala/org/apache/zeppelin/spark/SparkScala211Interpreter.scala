@@ -66,7 +66,7 @@ class SparkScala211Interpreter(override val conf: SparkConf,
       sparkHttpServer = server
       conf.set("spark.repl.class.uri", uri)
     }
-    val target = conf.get("spark.repl.target", "jvm-1.8")
+    val target = conf.get("spark.repl.target", "jvm-1.6")
 
     val settings = new Settings()
     settings.processArguments(List("-Yrepl-class-based",

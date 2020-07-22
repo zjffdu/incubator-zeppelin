@@ -93,6 +93,7 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
   private transient String intpText;
   private transient String scriptText;
   private transient Interpreter interpreter;
+  private transient String interpreterGroupId;
   private transient Note note;
   private transient AuthenticationInfo subject;
   // personalized
@@ -248,13 +249,19 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
             .setDefaultInterpreterGroup(note.getDefaultInterpreterGroup())
             .setInIsolatedMode(note.isIsolatedMode())
             .setStartTime(note.getStartTime())
+            .setInterpreterGroupId(interpreterGroupId)
             .createExecutionContext();
 
     return this.note.getInterpreterFactory().getInterpreter(intpText, executionContext);
   }
 
+  @VisibleForTesting
   public void setInterpreter(Interpreter interpreter) {
     this.interpreter = interpreter;
+  }
+
+  public Interpreter getInterpreter() {
+    return interpreter;
   }
 
   public List<InterpreterCompletion> completion(String buffer, int cursor) {
@@ -313,10 +320,14 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
 
   public boolean shouldSkipRunParagraph() {
     boolean checkEmptyConfig =
-            (Boolean) config.getOrDefault(InterpreterSetting.PARAGRAPH_CONFIG_CHECK_EMTPY, true);
+            (Boolean) config.getOrDefault(InterpreterSetting.PARAGRAPH_CONFIG_CHECK_EMTPY, false);
     // don't skip paragraph when local properties is not empty.
     // local properties can customize the behavior of interpreter. e.g. %r.shiny(type=run)
-    return checkEmptyConfig && Strings.isNullOrEmpty(scriptText) && localProperties.isEmpty();
+    return checkEmptyConfig;
+  }
+
+  public boolean execute(boolean blocking) {
+    return execute(null, blocking);
   }
 
   /**
@@ -324,8 +335,9 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
    * @param blocking
    * @return
    */
-  public boolean execute(boolean blocking) {
+  public boolean execute(String interpreterGroupId, boolean blocking) {
     try {
+      this.interpreterGroupId = interpreterGroupId;
       this.interpreter = getBindedInterpreter();
       InterpreterSetting interpreterSetting = ((ManagedInterpreterGroup)
               interpreter.getInterpreterGroup()).getInterpreterSetting();
@@ -371,6 +383,15 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
       setReturn(intpResult, e);
       setStatus(Job.Status.ERROR);
       return false;
+    }
+  }
+
+  @Override
+  public void setStatus(Status status) {
+    super.setStatus(status);
+    // reset interpreterGroupId when paragraph is completed.
+    if (status.isCompleted()) {
+      this.interpreterGroupId = null;
     }
   }
 

@@ -271,57 +271,61 @@ public class RemoteInterpreterServer extends Thread
   @Override
   public void shutdown() throws TException {
     Thread shutDownThread = new Thread(() -> {
-      LOGGER.info("Shutting down...");
-      // delete interpreter cluster meta
-      deleteClusterMeta();
+      try {
+        LOGGER.info("Shutting down...");
+        // delete interpreter cluster meta
+        deleteClusterMeta();
 
-      if (interpreterGroup != null) {
-        synchronized (interpreterGroup) {
-          for (List<Interpreter> session : interpreterGroup.values()) {
-            for (Interpreter interpreter : session) {
-              try {
-                interpreter.close();
-              } catch (InterpreterException e) {
-                LOGGER.warn("Fail to close interpreter", e);
+        if (interpreterGroup != null) {
+          synchronized (interpreterGroup) {
+            for (List<Interpreter> session : interpreterGroup.values()) {
+              for (Interpreter interpreter : session) {
+                try {
+                  interpreter.close();
+                } catch (InterpreterException e) {
+                  LOGGER.warn("Fail to close interpreter", e);
+                }
               }
             }
           }
         }
-      }
-      if (!isTest) {
-        SchedulerFactory.singleton().destroy();
-      }
-
-      if ("yarn".equals(launcherEnv)) {
-        try {
-          YarnUtils.unregister(true, "");
-        } catch (Exception e) {
-          LOGGER.error("Fail to unregister yarn app", e);
+        if (!isTest) {
+          SchedulerFactory.singleton().destroy();
         }
-      }
 
-      server.stop();
-
-      // server.stop() does not always finish server.serve() loop
-      // sometimes server.serve() is hanging even after server.stop() call.
-      // this case, need to force kill the process
-
-      long startTime = System.currentTimeMillis();
-      while (System.currentTimeMillis() - startTime < DEFAULT_SHUTDOWN_TIMEOUT &&
-              server.isServing()) {
-        try {
-          Thread.sleep(300);
-        } catch (InterruptedException e) {
-          LOGGER.info("Exception in RemoteInterpreterServer while shutdown, Thread.sleep", e);
+        if ("yarn".equals(launcherEnv)) {
+          try {
+            YarnUtils.unregister(true, "");
+          } catch (Exception e) {
+            LOGGER.error("Fail to unregister yarn app", e);
+          }
         }
-      }
 
-      if (server.isServing()) {
-        LOGGER.info("Force shutting down");
-        System.exit(0);
-      }
+        server.stop();
 
-      LOGGER.info("Shutting down");
+        // server.stop() does not always finish server.serve() loop
+        // sometimes server.serve() is hanging even after server.stop() call.
+        // this case, need to force kill the process
+
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < DEFAULT_SHUTDOWN_TIMEOUT &&
+                server.isServing()) {
+          try {
+            Thread.sleep(300);
+          } catch (InterruptedException e) {
+            LOGGER.info("Exception in RemoteInterpreterServer while shutdown, Thread.sleep", e);
+          }
+        }
+
+        if (server.isServing()) {
+          LOGGER.info("Force shutting down");
+          System.exit(0);
+        }
+
+        LOGGER.info("Shutting down");
+      } catch (Throwable e) {
+        LOGGER.error("Fail to shutdown", e);
+      }
     }, "Shutdown-Thread");
 
     shutDownThread.start();
@@ -436,28 +440,21 @@ public class RemoteInterpreterServer extends Thread
                 Integer.parseInt(properties.getOrDefault("zeppelin.interpreter.result.cache", "0"));
       }
 
-      try {
-        Class<Interpreter> replClass = (Class<Interpreter>) Object.class.forName(className);
-        Properties p = new Properties();
-        p.putAll(properties);
-        setSystemProperty(p);
+      Class<Interpreter> replClass = (Class<Interpreter>) Object.class.forName(className);
+      Properties p = new Properties();
+      p.putAll(properties);
+      setSystemProperty(p);
 
-        Constructor<Interpreter> constructor =
-                replClass.getConstructor(new Class[]{Properties.class});
-        Interpreter repl = constructor.newInstance(p);
-        repl.setClassloaderUrls(new URL[]{});
-        LOGGER.info("Instantiate interpreter {}", className);
-        repl.setInterpreterGroup(interpreterGroup);
-        repl.setUserName(userName);
+      Constructor<Interpreter> constructor =
+              replClass.getConstructor(new Class[]{Properties.class});
+      Interpreter repl = constructor.newInstance(p);
+      repl.setClassloaderUrls(new URL[]{});
+      LOGGER.info("Instantiate interpreter {}", className);
+      repl.setInterpreterGroup(interpreterGroup);
+      repl.setUserName(userName);
 
-        interpreterGroup.addInterpreterToSession(new LazyOpenInterpreter(repl), sessionId);
-      } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
-              | InstantiationException | IllegalAccessException
-              | IllegalArgumentException | InvocationTargetException e) {
-        LOGGER.error(e.getMessage(), e);
-        throw new TException(e);
-      }
-    } catch (Exception e) {
+      interpreterGroup.addInterpreterToSession(new LazyOpenInterpreter(repl), sessionId);
+    } catch (Throwable e) {
       LOGGER.error(e.getMessage(), e);
       throw new TException(e.getMessage(), e);
     }
@@ -509,54 +506,58 @@ public class RemoteInterpreterServer extends Thread
 
   @Override
   public void open(String sessionId, String className) throws TException {
-    LOGGER.info(String.format("Open Interpreter %s for session %s ", className, sessionId));
-    Interpreter intp = getInterpreter(sessionId, className);
     try {
+      LOGGER.info(String.format("Open Interpreter %s for session %s ", className, sessionId));
+      Interpreter intp = getInterpreter(sessionId, className);
       intp.open();
-    } catch (InterpreterException e) {
-      throw new TException("Fail to open interpreter", e);
+    } catch (Throwable e) {
+      throw new TException("Fail to open", e);
     }
   }
 
   @Override
   public void close(String sessionId, String className) throws TException {
-    // unload all applications
-    for (String appId : runningApplications.keySet()) {
-      RunningApplication appInfo = runningApplications.get(appId);
+    try {
+      // unload all applications
+      for (String appId : runningApplications.keySet()) {
+        RunningApplication appInfo = runningApplications.get(appId);
 
-      // see NoteInterpreterLoader.SHARED_SESSION
-      if (appInfo.noteId.equals(sessionId) || sessionId.equals("shared_session")) {
-        try {
-          LOGGER.info("Unload App {} ", appInfo.pkg.getName());
-          appInfo.app.unload();
-          // see ApplicationState.Status.UNLOADED
-          intpEventClient.onAppStatusUpdate(appInfo.noteId, appInfo.paragraphId, appId, "UNLOADED");
-        } catch (ApplicationException e) {
-          LOGGER.error(e.getMessage(), e);
+        // see NoteInterpreterLoader.SHARED_SESSION
+        if (appInfo.noteId.equals(sessionId) || sessionId.equals("shared_session")) {
+          try {
+            LOGGER.info("Unload App {} ", appInfo.pkg.getName());
+            appInfo.app.unload();
+            // see ApplicationState.Status.UNLOADED
+            intpEventClient.onAppStatusUpdate(appInfo.noteId, appInfo.paragraphId, appId, "UNLOADED");
+          } catch (ApplicationException e) {
+            LOGGER.error(e.getMessage(), e);
+          }
         }
       }
-    }
 
-    // close interpreters
-    if (interpreterGroup != null) {
-      synchronized (interpreterGroup) {
-        List<Interpreter> interpreters = interpreterGroup.get(sessionId);
-        if (interpreters != null) {
-          Iterator<Interpreter> it = interpreters.iterator();
-          while (it.hasNext()) {
-            Interpreter inp = it.next();
-            if (inp.getClassName().equals(className)) {
-              try {
-                inp.close();
-              } catch (InterpreterException e) {
-                LOGGER.warn("Fail to close interpreter", e);
+      // close interpreters
+      if (interpreterGroup != null) {
+        synchronized (interpreterGroup) {
+          List<Interpreter> interpreters = interpreterGroup.get(sessionId);
+          if (interpreters != null) {
+            Iterator<Interpreter> it = interpreters.iterator();
+            while (it.hasNext()) {
+              Interpreter inp = it.next();
+              if (inp.getClassName().equals(className)) {
+                try {
+                  inp.close();
+                } catch (InterpreterException e) {
+                  LOGGER.warn("Fail to close interpreter", e);
+                }
+                it.remove();
+                break;
               }
-              it.remove();
-              break;
             }
           }
         }
       }
+    } catch (Throwable e) {
+      throw new TException("Fail to close", e);
     }
   }
 
@@ -578,7 +579,7 @@ public class RemoteInterpreterServer extends Thread
         context.setAngularObjectRegistry(angularObjectRegistry);
         context.setResourcePool(resourcePool);
       }
-    } catch (Exception e) {
+    } catch (Throwable e) {
       throw new TException("Fail to reconnect", e);
     }
   }
@@ -835,22 +836,26 @@ public class RemoteInterpreterServer extends Thread
   public void cancel(String sessionId,
                      String className,
                      RemoteInterpreterContext interpreterContext) throws TException {
-    LOGGER.info("cancel {} {}", className, interpreterContext.getParagraphId());
-    Interpreter intp = getInterpreter(sessionId, className);
-    String jobId = interpreterContext.getParagraphId();
-    Job job = intp.getScheduler().getJob(jobId);
+    try {
+      LOGGER.info("cancel {} {}", className, interpreterContext.getParagraphId());
+      Interpreter intp = getInterpreter(sessionId, className);
+      String jobId = interpreterContext.getParagraphId();
+      Job job = intp.getScheduler().getJob(jobId);
 
-    if (job != null && job.getStatus() == Status.PENDING) {
-      job.setStatus(Status.ABORT);
-    } else {
-      Thread thread = new Thread( ()-> {
-        try {
-          intp.cancel(convert(interpreterContext, null));
-        } catch (InterpreterException e) {
-          LOGGER.error("Fail to cancel paragraph: " + interpreterContext.getParagraphId());
-        }
-      });
-      thread.start();
+      if (job != null && job.getStatus() == Status.PENDING) {
+        job.setStatus(Status.ABORT);
+      } else {
+        Thread thread = new Thread(() -> {
+          try {
+            intp.cancel(convert(interpreterContext, null));
+          } catch (InterpreterException e) {
+            LOGGER.error("Fail to cancel paragraph: " + interpreterContext.getParagraphId(),  e);
+          }
+        });
+        thread.start();
+      }
+    } catch (Throwable e) {
+      throw new TException("Fail to cancel", e);
     }
   }
 
@@ -858,31 +863,31 @@ public class RemoteInterpreterServer extends Thread
   public int getProgress(String sessionId, String className,
                          RemoteInterpreterContext interpreterContext)
       throws TException {
-    Integer manuallyProvidedProgress = progressMap.get(interpreterContext.getParagraphId());
-    if (manuallyProvidedProgress != null) {
-      return manuallyProvidedProgress;
-    } else {
-      Interpreter intp = getInterpreter(sessionId, className);
-      if (intp == null) {
-        throw new TException("No interpreter {} existed for session {}".format(
-            className, sessionId));
-      }
-      try {
+    try {
+      Integer manuallyProvidedProgress = progressMap.get(interpreterContext.getParagraphId());
+      if (manuallyProvidedProgress != null) {
+        return manuallyProvidedProgress;
+      } else {
+        Interpreter intp = getInterpreter(sessionId, className);
+        if (intp == null) {
+          throw new TException("No interpreter {} existed for session {}".format(
+                  className, sessionId));
+        }
         return intp.getProgress(convert(interpreterContext, null));
-      } catch (InterpreterException e) {
-        throw new TException("Fail to getProgress", e);
       }
+    } catch (Throwable e) {
+      throw new TException("Fail to getProgress", e);
     }
   }
 
 
   @Override
   public String getFormType(String sessionId, String className) throws TException {
-    Interpreter intp = getInterpreter(sessionId, className);
     try {
+      Interpreter intp = getInterpreter(sessionId, className);
       return intp.getFormType().toString();
-    } catch (InterpreterException e) {
-      throw new TException(e);
+    } catch (Throwable e) {
+      throw new TException("Fail to getFormType", e);
     }
   }
 
@@ -893,10 +898,10 @@ public class RemoteInterpreterServer extends Thread
                                                 int cursor,
                                                 RemoteInterpreterContext remoteInterpreterContext)
       throws TException {
-    Interpreter intp = getInterpreter(sessionId, className);
     try {
+      Interpreter intp = getInterpreter(sessionId, className);
       return intp.completion(buf, cursor, convert(remoteInterpreterContext, null));
-    } catch (InterpreterException e) {
+    } catch (Throwable e) {
       throw new TException("Fail to get completion", e);
     }
   }
@@ -985,27 +990,31 @@ public class RemoteInterpreterServer extends Thread
   @Override
   public String getStatus(String sessionId, String jobId)
       throws TException {
-    if (interpreterGroup == null) {
-      return Status.UNKNOWN.name();
-    }
-
-    synchronized (interpreterGroup) {
-      List<Interpreter> interpreters = interpreterGroup.get(sessionId);
-      if (interpreters == null) {
+    try {
+      if (interpreterGroup == null) {
         return Status.UNKNOWN.name();
       }
 
-      for (Interpreter intp : interpreters) {
-        Scheduler scheduler = intp.getScheduler();
-        if (scheduler != null) {
-          Job job = scheduler.getJob(jobId);
-          if (job != null) {
-            return job.getStatus().name();
+      synchronized (interpreterGroup) {
+        List<Interpreter> interpreters = interpreterGroup.get(sessionId);
+        if (interpreters == null) {
+          return Status.UNKNOWN.name();
+        }
+
+        for (Interpreter intp : interpreters) {
+          Scheduler scheduler = intp.getScheduler();
+          if (scheduler != null) {
+            Job job = scheduler.getJob(jobId);
+            if (job != null) {
+              return job.getStatus().name();
+            }
           }
         }
       }
+      return Status.UNKNOWN.name();
+    } catch (Throwable e) {
+      throw new TException("Fail to getStatus", e);
     }
-    return Status.UNKNOWN.name();
   }
 
   /**
@@ -1020,50 +1029,54 @@ public class RemoteInterpreterServer extends Thread
   @Override
   public void angularObjectUpdate(String name, String noteId, String paragraphId, String object)
       throws TException {
-    AngularObjectRegistry registry = interpreterGroup.getAngularObjectRegistry();
-    // first try local objects
-    AngularObject ao = registry.get(name, noteId, paragraphId);
-    if (ao == null) {
-      LOGGER.debug("Angular object {} not exists", name);
-      return;
-    }
-
-    if (object == null) {
-      ao.set(null, false);
-      return;
-    }
-
-    Object oldObject = ao.get();
-    Object value = null;
-    if (oldObject != null) {  // first try with previous object's type
-      try {
-        value = gson.fromJson(object, oldObject.getClass());
-        ao.set(value, false);
+    try {
+      AngularObjectRegistry registry = interpreterGroup.getAngularObjectRegistry();
+      // first try local objects
+      AngularObject ao = registry.get(name, noteId, paragraphId);
+      if (ao == null) {
+        LOGGER.debug("Angular object {} not exists", name);
         return;
-      } catch (Exception e) {
-        // it's not a previous object's type. proceed to treat as a generic type
-        LOGGER.debug(e.getMessage(), e);
       }
-    }
 
-    // Generic java object type for json.
-    if (value == null) {
-      try {
-        value = gson.fromJson(object,
-            new TypeToken<Map<String, Object>>() {
-            }.getType());
-      } catch (Exception e) {
-        // it's not a generic json object, too. okay, proceed to threat as a string type
-        LOGGER.debug(e.getMessage(), e);
+      if (object == null) {
+        ao.set(null, false);
+        return;
       }
-    }
 
-    // try string object type at last
-    if (value == null) {
-      value = gson.fromJson(object, String.class);
-    }
+      Object oldObject = ao.get();
+      Object value = null;
+      if (oldObject != null) {  // first try with previous object's type
+        try {
+          value = gson.fromJson(object, oldObject.getClass());
+          ao.set(value, false);
+          return;
+        } catch (Exception e) {
+          // it's not a previous object's type. proceed to treat as a generic type
+          LOGGER.debug(e.getMessage(), e);
+        }
+      }
 
-    ao.set(value, false);
+      // Generic java object type for json.
+      if (value == null) {
+        try {
+          value = gson.fromJson(object,
+                  new TypeToken<Map<String, Object>>() {
+                  }.getType());
+        } catch (Exception e) {
+          // it's not a generic json object, too. okay, proceed to threat as a string type
+          LOGGER.debug(e.getMessage(), e);
+        }
+      }
+
+      // try string object type at last
+      if (value == null) {
+        value = gson.fromJson(object, String.class);
+      }
+
+      ao.set(value, false);
+    } catch (Throwable e) {
+      throw new TException("Fail to angularObjectUpdate", e);
+    }
   }
 
   /**
@@ -1073,127 +1086,151 @@ public class RemoteInterpreterServer extends Thread
   @Override
   public void angularObjectAdd(String name, String noteId, String paragraphId, String object)
       throws TException {
-    AngularObjectRegistry registry = interpreterGroup.getAngularObjectRegistry();
-    // first try local objects
-    AngularObject ao = registry.get(name, noteId, paragraphId);
-    if (ao != null) {
-      angularObjectUpdate(name, noteId, paragraphId, object);
-      return;
-    }
-
-    // Generic java object type for json.
-    Object value = null;
     try {
-      value = gson.fromJson(object,
-          new TypeToken<Map<String, Object>>() {
-          }.getType());
-    } catch (Exception e) {
-      // it's okay. proceed to treat object as a string
-      LOGGER.debug(e.getMessage(), e);
-    }
+      AngularObjectRegistry registry = interpreterGroup.getAngularObjectRegistry();
+      // first try local objects
+      AngularObject ao = registry.get(name, noteId, paragraphId);
+      if (ao != null) {
+        angularObjectUpdate(name, noteId, paragraphId, object);
+        return;
+      }
 
-    // try string object type at last
-    if (value == null) {
-      value = gson.fromJson(object, String.class);
-    }
+      // Generic java object type for json.
+      Object value = null;
+      try {
+        value = gson.fromJson(object,
+                new TypeToken<Map<String, Object>>() {
+                }.getType());
+      } catch (Exception e) {
+        // it's okay. proceed to treat object as a string
+        LOGGER.debug(e.getMessage(), e);
+      }
 
-    registry.add(name, value, noteId, paragraphId, false);
+      // try string object type at last
+      if (value == null) {
+        value = gson.fromJson(object, String.class);
+      }
+
+      registry.add(name, value, noteId, paragraphId, false);
+    } catch (Throwable e) {
+      throw new TException("Fail to angularObjectAdd", e);
+    }
   }
 
   @Override
   public void angularObjectRemove(String name, String noteId, String paragraphId) throws
       TException {
-    AngularObjectRegistry registry = interpreterGroup.getAngularObjectRegistry();
-    registry.remove(name, noteId, paragraphId, false);
+    try {
+      AngularObjectRegistry registry = interpreterGroup.getAngularObjectRegistry();
+      registry.remove(name, noteId, paragraphId, false);
+    } catch (Throwable e) {
+      throw new TException("Fail to angularObjectRemove", e);
+    }
   }
 
   @Override
   public List<String> resourcePoolGetAll() throws TException {
-    LOGGER.debug("Request resourcePoolGetAll from ZeppelinServer");
-    List<String> result = new LinkedList<>();
+    try {
+      LOGGER.debug("Request resourcePoolGetAll from ZeppelinServer");
+      List<String> result = new LinkedList<>();
 
-    if (resourcePool == null) {
+      if (resourcePool == null) {
+        return result;
+      }
+
+      ResourceSet resourceSet = resourcePool.getAll(false);
+      for (Resource r : resourceSet) {
+        result.add(r.toJson());
+      }
       return result;
+    } catch (Throwable e) {
+      throw new TException("Fail to resourcePoolGetAll", e);
     }
-
-    ResourceSet resourceSet = resourcePool.getAll(false);
-    for (Resource r : resourceSet) {
-      result.add(r.toJson());
-    }
-    return result;
   }
 
   @Override
   public boolean resourceRemove(String noteId, String paragraphId, String resourceName)
       throws TException {
-    Resource resource = resourcePool.remove(noteId, paragraphId, resourceName);
-    return resource != null;
+    try {
+      Resource resource = resourcePool.remove(noteId, paragraphId, resourceName);
+      return resource != null;
+    } catch (Throwable e) {
+      throw new TException("Fail to resourceRemove", e);
+    }
   }
 
   @Override
   public ByteBuffer resourceGet(String noteId, String paragraphId, String resourceName)
       throws TException {
-    LOGGER.debug("Request resourceGet {} from ZeppelinServer", resourceName);
-    Resource resource = resourcePool.get(noteId, paragraphId, resourceName, false);
+    try {
+      LOGGER.debug("Request resourceGet {} from ZeppelinServer", resourceName);
+      Resource resource = resourcePool.get(noteId, paragraphId, resourceName, false);
 
-    if (resource == null || resource.get() == null || !resource.isSerializable()) {
-      return ByteBuffer.allocate(0);
-    } else {
-      try {
-        return Resource.serializeObject(resource.get());
-      } catch (IOException e) {
-        LOGGER.error(e.getMessage(), e);
+      if (resource == null || resource.get() == null || !resource.isSerializable()) {
         return ByteBuffer.allocate(0);
+      } else {
+        try {
+          return Resource.serializeObject(resource.get());
+        } catch (IOException e) {
+          LOGGER.error(e.getMessage(), e);
+          return ByteBuffer.allocate(0);
+        }
       }
+    } catch (Throwable e) {
+      throw new TException("Fail to resourceGet", e);
     }
   }
 
   @Override
   public ByteBuffer resourceInvokeMethod(
-      String noteId, String paragraphId, String resourceName, String invokeMessage) {
-    InvokeResourceMethodEventMessage message =
-        InvokeResourceMethodEventMessage.fromJson(invokeMessage);
-    Resource resource = resourcePool.get(noteId, paragraphId, resourceName, false);
-    if (resource == null || resource.get() == null) {
-      return ByteBuffer.allocate(0);
-    } else {
-      try {
-        Object o = resource.get();
-        Method method = o.getClass().getMethod(
-            message.methodName,
-            message.getParamTypes());
-        Object ret = method.invoke(o, message.params);
-        if (message.shouldPutResultIntoResourcePool()) {
-          // if return resource name is specified,
-          // then put result into resource pool
-          // and return the Resource class instead of actual return object.
-          resourcePool.put(
-              noteId,
-              paragraphId,
-              message.returnResourceName,
-              ret);
-
-          Resource returnValResource = resourcePool.get(noteId, paragraphId, message.returnResourceName);
-          ByteBuffer serialized = Resource.serializeObject(returnValResource);
-          if (serialized == null) {
-            return ByteBuffer.allocate(0);
-          } else {
-            return serialized;
-          }
-        } else {
-          // if return resource name is not specified,
-          // then return serialized result
-          ByteBuffer serialized = Resource.serializeObject(ret);
-          if (serialized == null) {
-            return ByteBuffer.allocate(0);
-          } else {
-            return serialized;
-          }
-        }
-      } catch (Exception e) {
-        LOGGER.error(e.getMessage(), e);
+      String noteId, String paragraphId, String resourceName, String invokeMessage) throws TException {
+    try {
+      InvokeResourceMethodEventMessage message =
+              InvokeResourceMethodEventMessage.fromJson(invokeMessage);
+      Resource resource = resourcePool.get(noteId, paragraphId, resourceName, false);
+      if (resource == null || resource.get() == null) {
         return ByteBuffer.allocate(0);
+      } else {
+        try {
+          Object o = resource.get();
+          Method method = o.getClass().getMethod(
+                  message.methodName,
+                  message.getParamTypes());
+          Object ret = method.invoke(o, message.params);
+          if (message.shouldPutResultIntoResourcePool()) {
+            // if return resource name is specified,
+            // then put result into resource pool
+            // and return the Resource class instead of actual return object.
+            resourcePool.put(
+                    noteId,
+                    paragraphId,
+                    message.returnResourceName,
+                    ret);
+
+            Resource returnValResource = resourcePool.get(noteId, paragraphId, message.returnResourceName);
+            ByteBuffer serialized = Resource.serializeObject(returnValResource);
+            if (serialized == null) {
+              return ByteBuffer.allocate(0);
+            } else {
+              return serialized;
+            }
+          } else {
+            // if return resource name is not specified,
+            // then return serialized result
+            ByteBuffer serialized = Resource.serializeObject(ret);
+            if (serialized == null) {
+              return ByteBuffer.allocate(0);
+            } else {
+              return serialized;
+            }
+          }
+        } catch (Exception e) {
+          LOGGER.error(e.getMessage(), e);
+          return ByteBuffer.allocate(0);
+        }
       }
+    } catch (Throwable e) {
+      throw new TException("Fail to resourceInvokeMethod", e);
     }
   }
 

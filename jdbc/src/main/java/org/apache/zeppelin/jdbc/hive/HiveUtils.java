@@ -57,7 +57,7 @@ public class HiveUtils {
     HiveStatement hiveStmt = (HiveStatement)
             ((DelegatingStatement) ((DelegatingStatement) stmt).getDelegate()).getDelegate();
     String hiveVersion = HiveVersionInfo.getVersion();
-    ProgressBar progressBarTemp = null;
+    Object progressBarTemp = null;
     if (isProgressBarSupported(hiveVersion)) {
       LOGGER.debug("ProgressBar is supported for hive version: " + hiveVersion);
       progressBarTemp = new ProgressBar();
@@ -65,7 +65,7 @@ public class HiveUtils {
       LOGGER.debug("ProgressBar is not supported for hive version: " + hiveVersion);
     }
     // need to use final variable progressBar in thread, so need progressBarTemp here.
-    final ProgressBar progressBar = progressBarTemp;
+    final Object progressBar = progressBarTemp;
 
     Thread thread = new Thread(() -> {
       while (hiveStmt.hasMoreLogs() && !Thread.interrupted()) {
@@ -79,7 +79,7 @@ public class HiveUtils {
             context.out.flush();
           }
           if (!StringUtils.isBlank(logsOutput) && progressBar != null && displayLogProperty) {
-            progressBar.operationLogShowedToUser();
+            ((ProgressBar) progressBar).operationLogShowedToUser();
           }
           Optional<String> jobURL = extractJobURL(logsOutput);
           if (jobURL.isPresent()) {
@@ -104,8 +104,8 @@ public class HiveUtils {
     thread.start();
     LOGGER.info("Start HiveMonitor-Thread for sql: " + stmt);
 
-    if (progressBar != null) {
-      hiveStmt.setInPlaceUpdateStream(progressBar.getInPlaceUpdateStream(context.out));
+    if (isProgressBarSupported(hiveVersion)) {
+      hiveStmt.setInPlaceUpdateStream(((ProgressBar) progressBar).getInPlaceUpdateStream(context.out));
     }
   }
 

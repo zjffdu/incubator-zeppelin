@@ -285,6 +285,10 @@ function InterpreterCtrl($rootScope, $scope, $http, baseUrlSrv, ngToast, $timeou
     }
   };
 
+  $scope.isShiroEnabled = function() {
+    return $rootScope.ticket.screenUsername != 'anonymous';
+  }
+
   $scope.getInterpreterRunningOption = function(settingId) {
     let sharedModeName = 'shared';
 

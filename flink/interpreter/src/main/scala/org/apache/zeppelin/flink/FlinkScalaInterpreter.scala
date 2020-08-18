@@ -787,7 +787,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
     val flinkPackageJars =
       if (!StringUtils.isBlank(properties.getProperty("flink.execution.packages", ""))) {
         val packages = properties.getProperty("flink.execution.packages")
-        DependencyUtils.resolveMavenDependencies(null, packages, null, null, None).split(":").toSeq
+        val repositories = properties.getProperty("flink.execution.repositories");
+        DependencyUtils.resolveMavenDependencies(null, packages, repositories, null, None).split(":").toSeq
       } else {
         Seq.empty[String]
       }

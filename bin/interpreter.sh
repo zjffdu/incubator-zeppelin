@@ -97,6 +97,8 @@ check_java_version
 ZEPPELIN_INTERPRETER_API_JAR=$(find "${ZEPPELIN_HOME}/interpreter" -name 'zeppelin-interpreter-shaded-*.jar')
 ZEPPELIN_INTP_CLASSPATH+=":${CLASSPATH}:${ZEPPELIN_INTERPRETER_API_JAR}"
 
+ZEPPELIN_INTP_CLASSPATH+=":/opt/apps/extra-jars/*:/opt/apps/extra-jars/spark/*"
+
 # construct classpath
 if [[ -d "${ZEPPELIN_HOME}/zeppelin-interpreter/target/classes" ]]; then
   ZEPPELIN_INTP_CLASSPATH+=":${ZEPPELIN_HOME}/zeppelin-interpreter/target/classes"
@@ -264,7 +266,9 @@ elif [[ "${INTERPRETER_ID}" == "flink" ]]; then
       fi
     fi
   fi
-
+elif [[ "${INTERPRETER_ID}" == "jdbc" ]]; then
+  ZEPPELIN_INTP_CLASSPATH+=":`hadoop classpath`"
+  addEachJarInDirRecursiveForIntp "/usr/lib/hive-current/lib"
 fi
 
 addJarInDirForIntp "${LOCAL_INTERPRETER_REPO}"

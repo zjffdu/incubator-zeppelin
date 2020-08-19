@@ -17,7 +17,7 @@
 package org.apache.zeppelin.utils;
 
 import java.util.Arrays;
-import org.apache.zeppelin.server.ZeppelinServer;
+import org.apache.zeppelin.server.FlowAgentJobServer;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 
@@ -25,7 +25,7 @@ import org.glassfish.hk2.api.ServiceLocatorFactory;
 public class TestUtils {
   public static <T> T getInstance(Class<T> clazz) {
     checkCalledByTestMethod();
-    return getInstance(ZeppelinServer.sharedServiceLocator, clazz);
+    return getInstance(FlowAgentJobServer.sharedServiceLocator, clazz);
   }
 
   public static void clearInstances() {

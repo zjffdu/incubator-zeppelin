@@ -40,7 +40,7 @@ import org.apache.zeppelin.interpreter.InterpreterSetting;
 import org.apache.zeppelin.notebook.Notebook;
 import org.apache.zeppelin.plugin.PluginManager;
 import org.apache.zeppelin.rest.AbstractTestRestApi;
-import org.apache.zeppelin.server.ZeppelinServer;
+import org.apache.zeppelin.server.FlowAgentJobServer;
 import org.apache.zeppelin.utils.TestUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -88,7 +88,7 @@ public class ZeppelinServerMock {
     public void run() {
       try {
         TestUtils.clearInstances();
-        ZeppelinServer.main(new String[]{""});
+        FlowAgentJobServer.main(new String[]{""});
       } catch (Exception e) {
         LOG.error("Exception in WebDriverManager while getWebDriver ", e);
         throw new RuntimeException(e);
@@ -171,7 +171,7 @@ public class ZeppelinServerMock {
         }
       }
       LOG.info("ZeppelinServerMock shutDown...");
-      ZeppelinServer.jettyWebServer.stop();
+      FlowAgentJobServer.jettyWebServer.stop();
       executor.shutdown();
       System.clearProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_HOME.getVarName());
       System.clearProperty(ZeppelinConfiguration.ConfVars.ZEPPELIN_WAR.getVarName());
@@ -204,7 +204,7 @@ public class ZeppelinServerMock {
       }
       PluginManager.reset();
       ZeppelinConfiguration.reset();
-      ZeppelinServer.reset();
+      FlowAgentJobServer.reset();
     }
   }
 

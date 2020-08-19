@@ -554,6 +554,10 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
       subject.setUserCredentials(userCredentials);
     }
 
+    if (localProperties.containsKey("user")) {
+      subject.setUser(localProperties.get("user"));
+    }
+
     return InterpreterContext.builder()
             .setNoteId(note.getId())
             .setNoteName(note.getName())

@@ -130,8 +130,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Main class of Zeppelin. */
-public class ZeppelinServer extends ResourceConfig {
-  private static final Logger LOG = LoggerFactory.getLogger(ZeppelinServer.class);
+public class FlowAgentJobServer extends ResourceConfig {
+  private static final Logger LOG = LoggerFactory.getLogger(FlowAgentJobServer.class);
   private static final String WEB_APP_CONTEXT_NEXT = "/next";
 
   public static Server jettyWebServer;
@@ -147,14 +147,14 @@ public class ZeppelinServer extends ResourceConfig {
   }
 
   @Inject
-  public ZeppelinServer() {
+  public FlowAgentJobServer() {
     InterpreterOutput.limit = conf.getInt(ConfVars.ZEPPELIN_INTERPRETER_OUTPUT_LIMIT);
 
     packages("org.apache.zeppelin.rest");
   }
 
   public static void main(String[] args) throws InterruptedException, IOException {
-    ZeppelinServer.conf = ZeppelinConfiguration.create();
+    FlowAgentJobServer.conf = ZeppelinConfiguration.create();
     conf.setProperty("args", args);
 
     jettyWebServer = setupJettyServer(conf);
@@ -542,7 +542,7 @@ public class ZeppelinServer extends ResourceConfig {
     final ServletHolder servletHolder =
         new ServletHolder(new org.glassfish.jersey.servlet.ServletContainer());
 
-    servletHolder.setInitParameter("javax.ws.rs.Application", ZeppelinServer.class.getName());
+    servletHolder.setInitParameter("javax.ws.rs.Application", FlowAgentJobServer.class.getName());
     servletHolder.setName("rest");
     servletHolder.setForcedPath("rest");
     webapp.setSessionHandler(new SessionHandler());

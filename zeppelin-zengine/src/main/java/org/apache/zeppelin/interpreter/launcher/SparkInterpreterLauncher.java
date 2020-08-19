@@ -168,6 +168,13 @@ public class SparkInterpreterLauncher extends StandardInterpreterLauncher {
       sparkConfBuilder.append(" --proxy-user " + context.getUserName());
       sparkProperties.remove("spark.yarn.keytab");
       sparkProperties.remove("spark.yarn.principal");
+    } else {
+      String proxyUser = context.getProperties().getProperty("zeppelin.spark.proxyUser", "");
+      if (!StringUtils.isBlank(proxyUser)) {
+        sparkConfBuilder.append(" --proxy-user " + proxyUser);
+        sparkProperties.remove("spark.yarn.keytab");
+        sparkProperties.remove("spark.yarn.principal");
+      }
     }
 
     for (String name : sparkProperties.stringPropertyNames()) {

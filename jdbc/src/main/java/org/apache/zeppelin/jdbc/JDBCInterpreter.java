@@ -455,6 +455,7 @@ public class JDBCInterpreter extends KerberosInterpreter {
           properties.remove(key);
         }
       }
+      properties.setProperty("user", user);
     }
 
     ConnectionFactory connectionFactory =
@@ -512,6 +513,10 @@ public class JDBCInterpreter extends KerberosInterpreter {
       JDBCSecurityImpl.createSecureConfiguration(getProperties(), authType);
       switch (authType) {
         case KERBEROS:
+          String principal = getProperties().getProperty("zeppelin.jdbc.principal");
+          if (!StringUtils.isBlank(principal)) {
+            properties.setProperty("principal", principal);
+          }
           if (user == null || "false".equalsIgnoreCase(
               getProperty("zeppelin.jdbc.auth.kerberos.proxy.enable"))) {
             connection = getConnectionFromPool(connectionUrl, user, dbPrefix, properties);
@@ -746,8 +751,8 @@ public class JDBCInterpreter extends KerberosInterpreter {
           }
 
           // start hive monitor thread if it is hive jdbc
-          if (getJDBCConfiguration(user).getPropertyMap(dbPrefix).getProperty(URL_KEY)
-                  .startsWith("jdbc:hive2://")) {
+          String url = getJDBCConfiguration(user).getPropertyMap(dbPrefix).getProperty(URL_KEY);
+          if (url != null && url.startsWith("jdbc:hive2://")) {
             HiveUtils.startHiveMonitorThread(statement, context,
                     Boolean.parseBoolean(getProperty("hive.log.display", "true")));
           }

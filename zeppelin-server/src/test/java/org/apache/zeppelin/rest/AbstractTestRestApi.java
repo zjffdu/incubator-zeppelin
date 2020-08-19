@@ -37,6 +37,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zeppelin.notebook.Notebook;
 import org.apache.zeppelin.plugin.PluginManager;
+import org.apache.zeppelin.server.FlowAgentJobServer;
 import org.apache.zeppelin.utils.TestUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -56,7 +57,6 @@ import java.util.regex.Pattern;
 
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.InterpreterSetting;
-import org.apache.zeppelin.server.ZeppelinServer;
 
 public abstract class AbstractTestRestApi {
   protected static final Logger LOG = LoggerFactory.getLogger(AbstractTestRestApi.class);
@@ -164,7 +164,7 @@ public abstract class AbstractTestRestApi {
     public void run() {
       try {
         TestUtils.clearInstances();
-        ZeppelinServer.main(new String[]{""});
+        FlowAgentJobServer.main(new String[]{""});
       } catch (Exception e) {
         LOG.error("Exception in WebDriverManager while getWebDriver ", e);
         throw new RuntimeException(e);
@@ -310,7 +310,7 @@ public abstract class AbstractTestRestApi {
         FileUtils.deleteQuietly(shiroIni);
       }
       LOG.info("Terminating Zeppelin Server...");
-      ZeppelinServer.jettyWebServer.stop();
+      FlowAgentJobServer.jettyWebServer.stop();
       executor.shutdown();
       PluginManager.reset();
       ZeppelinConfiguration.reset();
@@ -341,7 +341,7 @@ public abstract class AbstractTestRestApi {
         FileUtils.deleteDirectory(confDir);
       }
       TestUtils.clearInstances();
-      ZeppelinServer.reset();
+      FlowAgentJobServer.reset();
     }
   }
 

@@ -107,6 +107,16 @@ public class ZeppelinWebSocketClient {
     cause.printStackTrace(System.out);
   }
 
+  public void stop() {
+    if (this.wsClient != null) {
+      try {
+        this.wsClient.stop();
+      } catch (Exception e) {
+        LOGGER.warn("Fail to close websocket client", e);
+      }
+    }
+  }
+
   public void send(Message message) throws IOException {
     session.getRemote().sendString(GSON.toJson(message));
   }
@@ -114,11 +124,5 @@ public class ZeppelinWebSocketClient {
   public CountDownLatch getConnectLatch() {
     return connectLatch;
   }
-
-  public void stop() throws Exception {
-    if (this.wsClient != null) {
-      this.wsClient.stop();
-    }
-  }
-
+  
 }

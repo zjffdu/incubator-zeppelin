@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.zeppelin.cluster.ClusterManagerServer;
 import org.apache.zeppelin.cluster.event.ClusterEvent;
 import org.apache.zeppelin.cluster.event.ClusterEventListener;
@@ -254,6 +255,7 @@ public class InterpreterSettingManager implements NoteEventListener, ClusterEven
 
     //TODO(zjffdu) still ugly (should move all to InterpreterInfoSaving)
     for (InterpreterSetting savedInterpreterSetting : infoSaving.interpreterSettings.values()) {
+      LOGGER.info("savedInterpreterSetting: " + savedInterpreterSetting.getId());
       if (!shouldRegister(savedInterpreterSetting.getGroup())) {
         break;
       }
@@ -319,6 +321,8 @@ public class InterpreterSettingManager implements NoteEventListener, ClusterEven
         setting.setDependencies(setting.getDependencies());
       }
     }
+
+    LOGGER.info("Load file finished");
   }
 
   public void saveToFile() throws IOException {

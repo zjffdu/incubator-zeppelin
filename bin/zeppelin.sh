@@ -86,7 +86,7 @@ fi
 HOSTNAME=$(hostname)
 ZEPPELIN_LOGFILE="${ZEPPELIN_LOG_DIR}/zeppelin-${ZEPPELIN_IDENT_STRING}-${HOSTNAME}.log"
 
-ZEPPELIN_SERVER=org.apache.zeppelin.server.ZeppelinServer
+ZEPPELIN_SERVER=org.apache.zeppelin.server.FlowAgentJobServer
 JAVA_OPTS+=" -Dzeppelin.log.file=${ZEPPELIN_LOGFILE}"
 
 # construct classpath

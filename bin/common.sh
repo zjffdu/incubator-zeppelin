@@ -22,23 +22,14 @@ else
   FWDIR=$(dirname "${BASH_SOURCE-$0}")
 fi
 
-if [[ -z "${ZEPPELIN_HOME}" ]]; then
-  # Make ZEPPELIN_HOME look cleaner in logs by getting rid of the
-  # extra ../
-  export ZEPPELIN_HOME="$(cd "${FWDIR}/.."; pwd)"
-fi
+export ZEPPELIN_HOME=/usr/lib/flow-agent-current/zeppelin
 
-if [[ -z "${ZEPPELIN_CONF_DIR}" ]]; then
-  export ZEPPELIN_CONF_DIR="${ZEPPELIN_HOME}/conf"
-fi
+export ZEPPELIN_CONF_DIR=/etc/ecm/flow-agent-conf/jobserver-conf
 
-if [[ -z "${ZEPPELIN_LOG_DIR}" ]]; then
-  export ZEPPELIN_LOG_DIR="${ZEPPELIN_HOME}/logs"
-fi
+export ZEPPELIN_LOG_DIR="${ZEPPELIN_HOME}/logs"
 
-if [[ -z "$ZEPPELIN_PID_DIR" ]]; then
-  export ZEPPELIN_PID_DIR="${ZEPPELIN_HOME}/run"
-fi
+export ZEPPELIN_PID_DIR="${ZEPPELIN_HOME}/run"
+
 
 if [[ -z "${ZEPPELIN_WAR}" ]]; then
   if [[ -d "${ZEPPELIN_HOME}/zeppelin-web/dist" ]]; then

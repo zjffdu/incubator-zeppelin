@@ -32,7 +32,7 @@ import org.apache.zeppelin.notebook.Notebook;
 import org.apache.zeppelin.notebook.Paragraph;
 import org.apache.zeppelin.rest.AbstractTestRestApi;
 import org.apache.zeppelin.scheduler.Job;
-import org.apache.zeppelin.server.ZeppelinServer;
+import org.apache.zeppelin.server.FlowAgentJobServer;
 import org.apache.zeppelin.user.AuthenticationInfo;
 import org.apache.zeppelin.utils.TestUtils;
 import org.junit.After;
@@ -64,7 +64,7 @@ public class RecoveryTest extends AbstractTestRestApi {
             recoveryDir.getAbsolutePath());
     startUp(RecoveryTest.class.getSimpleName());
 
-    notebook = ZeppelinServer.sharedServiceLocator.getService(Notebook.class);
+    notebook = FlowAgentJobServer.sharedServiceLocator.getService(Notebook.class);
   }
 
   @After

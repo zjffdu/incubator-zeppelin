@@ -255,9 +255,8 @@ public class InterpreterSettingManager implements NoteEventListener, ClusterEven
 
     //TODO(zjffdu) still ugly (should move all to InterpreterInfoSaving)
     for (InterpreterSetting savedInterpreterSetting : infoSaving.interpreterSettings.values()) {
-      LOGGER.info("savedInterpreterSetting: " + savedInterpreterSetting.getId());
       if (!shouldRegister(savedInterpreterSetting.getGroup())) {
-        break;
+        continue;
       }
       savedInterpreterSetting.setProperties(InterpreterSetting.convertInterpreterProperties(
           savedInterpreterSetting.getProperties()

@@ -161,8 +161,13 @@ public class SparkInterpreterLauncher extends StandardInterpreterLauncher {
       sparkConfBuilder.append(" --conf " + name + "=" + sparkProperties.getProperty(name));
     }
 
-    if (context.getOption().isUserImpersonate() && zConf.getZeppelinImpersonateSparkProxyUser()) {
+    if ((context.getOption().isUserImpersonate() && zConf.getZeppelinImpersonateSparkProxyUser())) {
       sparkConfBuilder.append(" --proxy-user " + context.getUserName());
+    } else {
+      String proxyUser = context.getProperties().getProperty("zeppelin.spark.proxyUser", "");
+      if (!StringUtils.isBlank(proxyUser)) {
+        sparkConfBuilder.append(" --proxy-user " + proxyUser);
+      }
     }
 
     env.put("ZEPPELIN_SPARK_CONF", escapeSpecialCharacter(sparkConfBuilder.toString()));

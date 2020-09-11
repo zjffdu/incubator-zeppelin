@@ -26,6 +26,8 @@ export ZEPPELIN_HOME=/usr/lib/flow-agent-current/zeppelin
 
 export ZEPPELIN_CONF_DIR=/etc/ecm/flow-agent-conf/jobserver-conf
 
+export ZEPPELIN_NOTEBOOK_DIR="${ZEPPELIN_HOME}/notebook"
+
 export ZEPPELIN_LOG_DIR="${ZEPPELIN_HOME}/logs"
 
 export ZEPPELIN_PID_DIR="${ZEPPELIN_HOME}/run"

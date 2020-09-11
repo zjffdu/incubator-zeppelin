@@ -458,6 +458,12 @@ public class JDBCInterpreter extends KerberosInterpreter {
       properties.setProperty("user", user);
     }
 
+    String principal = properties.getProperty("principal");
+    if (!StringUtils.isBlank(principal)) {
+      url = url + ";principal=" + principal;
+    }
+
+    LOGGER.info("Creating connection pool for url: {}, properties: {}", url, properties);
     ConnectionFactory connectionFactory =
             new DriverManagerConnectionFactory(url, properties);
 

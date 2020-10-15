@@ -191,7 +191,7 @@ jobs:
         - export SPARK_PRINT_LAUNCH_COMMAND=true
         - tail conf/zeppelin-env.sh
       script:
-        - mvn verify -DskipRat -Pspark-2.3 -Phadoop2 -Phelium-dev -Pexamples -Pintegration -Pspark-scala-2.11 -B -pl zeppelin-integration -DfailIfNoTests=false
+        - mvn verify -DskipRat -Pspark-2.3 -Phadoop2 -Phelium-dev -Pexamples -Pintegration -Pspark-scala-2.11 -B -pl zeppelin-integration -DfailIfNoTests=false -Dit.test=ZeppelinIT#testAngularRunParagraph
 
 
     - name: "Test interpreter modules"

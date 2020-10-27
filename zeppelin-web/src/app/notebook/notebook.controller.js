@@ -242,7 +242,11 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
 
   // Remove the note permanently if it's in the trash
   $scope.removeNote = function(noteId) {
-    noteActionService.removeNote(noteId, true);
+    if ($scope.note.info.isRunning === true) {
+      BootstrapDialog.alert('Unable to delete note which is RUNNING!');
+    } else {
+      noteActionService.removeNote(noteId, true);
+    }
   };
 
   $scope.isTrash = function(note) {

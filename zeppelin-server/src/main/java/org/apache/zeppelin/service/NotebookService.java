@@ -206,6 +206,10 @@ public class NotebookService {
       if (!checkPermission(note.getId(), Permission.OWNER, Message.OP.DEL_NOTE, context, callback)) {
         return;
       }
+      if (note.isRunning() || note.isParagraphRunning()) {
+        callback.onFailure(new Exception("Unable to delete note which is RUNNING"), context);
+        return;
+      }
       notebook.removeNote(note, context.getAutheInfo());
       callback.onSuccess("Delete note successfully", context);
     } else {
@@ -513,6 +517,10 @@ public class NotebookService {
     }
     if (note.getParagraph(paragraphId) == null) {
       throw new ParagraphNotFoundException(paragraphId);
+    }
+    if (note.getParagraph(paragraphId).isRunning()) {
+      callback.onFailure(new Exception("Unable to delete paragraph which is RUNNING"), context);
+      return;
     }
     Paragraph p = note.removeParagraph(context.getAutheInfo().getUser(), paragraphId);
     notebook.saveNote(note, context.getAutheInfo());

@@ -1087,6 +1087,15 @@ public class Note implements JsonSerializable {
     return (boolean) getInfo().getOrDefault("isRunning", false);
   }
 
+  public boolean isParagraphRunning() {
+    for (Paragraph p : paragraphs) {
+      if (p.isRunning()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public String toString() {
     if (this.path != null) {

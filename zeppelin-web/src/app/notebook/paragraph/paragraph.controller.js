@@ -595,18 +595,22 @@ function ParagraphCtrl($scope, $rootScope, $route, $window, $routeParams, $locat
         message: 'All the paragraphs can\'t be deleted.',
       });
     } else {
-      BootstrapDialog.confirm({
-        closable: true,
-        title: '',
-        message: 'Do you want to delete this paragraph?',
-        callback: function(result) {
-          if (result) {
-            console.log('Remove paragraph');
-            websocketMsgSrv.removeParagraph(paragraph.id);
-            $scope.$emit('moveFocusToNextParagraph', $scope.paragraph.id);
-          }
-        },
-      });
+      if (isParagraphRunning(paragraph)) {
+        BootstrapDialog.alert('Unable to delete paragraph which is RUNNING');
+      } else {
+        BootstrapDialog.confirm({
+          closable: true,
+          title: '',
+          message: 'Do you want to delete this paragraph?',
+          callback: function(result) {
+            if (result) {
+              console.log('Remove paragraph');
+              websocketMsgSrv.removeParagraph(paragraph.id);
+              $scope.$emit('moveFocusToNextParagraph', $scope.paragraph.id);
+            }
+          },
+        });
+      }
     }
   };
 

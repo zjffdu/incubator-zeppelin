@@ -85,6 +85,9 @@ public class TerminalService {
 
     System.setProperty("PTY_LIB_FOLDER", dataDir.resolve("libpty").toString());
 
+    LOGGER.info("termCommand: " + StringUtils.join(termCommand, " "));
+    LOGGER.info("envs: " + envs);
+    LOGGER.info("HOME: " + userHome);
     this.process = PtyProcess.exec(termCommand, envs, userHome);
 
     process.setWinSize(new WinSize(columns, rows));

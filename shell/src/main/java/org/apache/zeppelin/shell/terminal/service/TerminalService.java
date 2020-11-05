@@ -77,7 +77,7 @@ public class TerminalService {
     if (isWindows) {
       this.termCommand = "cmd.exe".split("\\s+");
     } else {
-      this.termCommand = "/bin/bash -i".split("\\s+");
+      this.termCommand = "bash -i".split("\\s+");
     }
 
     Map<String, String> envs = new HashMap<>(System.getenv());

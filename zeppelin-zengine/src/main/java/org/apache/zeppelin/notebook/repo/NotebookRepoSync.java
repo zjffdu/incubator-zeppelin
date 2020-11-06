@@ -21,7 +21,6 @@ import com.google.common.collect.Lists;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.conf.ZeppelinConfiguration.ConfVars;
 import org.apache.zeppelin.notebook.Note;
-import org.apache.zeppelin.notebook.NoteAuth;
 import org.apache.zeppelin.notebook.NoteInfo;
 import org.apache.zeppelin.notebook.OldNoteInfo;
 import org.apache.zeppelin.notebook.Paragraph;
@@ -39,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Notebook repository sync with remote storage
@@ -55,6 +55,10 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
   private List<NotebookRepo> repos = new ArrayList<>();
   private boolean oneWaySync;
 
+  private final LinkedBlockingQueue<NoteEvent> noteEventQueue = new LinkedBlockingQueue<>();
+  private Thread asyncNotebookRepoThread;
+  private boolean async;
+
   /**
    * @param conf
    */
@@ -66,6 +70,8 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
 
   public void init(ZeppelinConfiguration conf) throws IOException {
     oneWaySync = conf.getBoolean(ConfVars.ZEPPELIN_NOTEBOOK_ONE_WAY_SYNC);
+    async = conf.getBoolean(ConfVars.ZEPPELIN_NOTEBOOK_REPO_ASYNC);
+
     String allStorageClassNames = conf.getNotebookStorageClass().trim();
     if (allStorageClassNames.isEmpty()) {
       allStorageClassNames = DEFAULT_STORAGE;
@@ -100,6 +106,85 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
       } catch (IOException e) {
         LOGGER.error("Couldn't sync anonymous mode on start ", e);
       }
+    }
+
+    if (getRepoCount() > 1) {
+      if (async) {
+        asyncNotebookRepoThread = new Thread() {
+          @Override
+          public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+              try {
+                NoteEvent noteEvent = noteEventQueue.take();
+                NotebookRepoSync.this.handleNoteEvent(noteEvent);
+              } catch (Exception e) {
+                LOGGER.error("Error in handle note event async", e);
+                break;
+              }
+            }
+          }
+        };
+        asyncNotebookRepoThread.setName("AsyncNotebookRepo-Thread");
+        asyncNotebookRepoThread.setDaemon(true);
+        asyncNotebookRepoThread.start();
+      }
+    }
+  }
+
+  private void handleNoteEvent(NoteEvent noteEvent) throws IOException {
+    switch(noteEvent.getClass().getSimpleName()) {
+      case "SaveNoteEvent":
+        SaveNoteEvent saveNoteEvent = (SaveNoteEvent) noteEvent;
+        try {
+          save(1, saveNoteEvent.note, AuthenticationInfo.ANONYMOUS);
+        } catch (IOException e) {
+          LOGGER.error("Fail to save note async", e);
+        }
+        break;
+
+      case "RemoveNoteEvent":
+        RemoveNoteEvent removeNoteEvent = (RemoveNoteEvent) noteEvent;
+        try {
+          getRepo(1).remove(removeNoteEvent.noteId, removeNoteEvent.notePath, AuthenticationInfo.ANONYMOUS);
+        } catch (IOException e) {
+          LOGGER.error("Fail to remove note async", e);
+        }
+        break;
+
+      case "RemoveNoteFolderEvent":
+        RemoveNoteFolderEvent removeNoteFolderEvent = (RemoveNoteFolderEvent) noteEvent;
+        try {
+          getRepo(1).remove(removeNoteFolderEvent.folderPath, AuthenticationInfo.ANONYMOUS);
+        } catch (IOException e) {
+          LOGGER.error("Fail to remove note folder async", e);
+        }
+        break;
+
+      case "MoveNoteEvent":
+        MoveNoteEvent moveNoteEvent = (MoveNoteEvent) noteEvent;
+        try {
+          getRepo(1).move(moveNoteEvent.noteId,
+                  moveNoteEvent.notePath,
+                  moveNoteEvent.newNotePath,
+                  AuthenticationInfo.ANONYMOUS);
+        } catch (IOException e) {
+          LOGGER.error("Fail to move note async", e);
+        }
+        break;
+
+      case "MoveNoteFolderEvent":
+        MoveNoteFolderEvent moveNoteFolderEvent = (MoveNoteFolderEvent) noteEvent;
+        try {
+          getRepo(1).move(moveNoteFolderEvent.folderPath,
+                  moveNoteFolderEvent.newFolderPath,
+                  AuthenticationInfo.ANONYMOUS);
+        } catch (IOException e) {
+          LOGGER.error("Fail to move note folder async", e);
+        }
+        break;
+
+      default:
+        throw new IOException("Unable to handle this kind of event: " + noteEvent);
     }
   }
 
@@ -213,11 +298,15 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
   public void save(Note note, AuthenticationInfo subject) throws IOException {
     getRepo(0).save(note, subject);
     if (getRepoCount() > 1) {
-      try {
-        getRepo(1).save(note, subject);
-      }
-      catch (IOException e) {
-        LOGGER.info(e.getMessage() + ": Failed to write to secondary storage");
+      SaveNoteEvent saveNoteEvent = new SaveNoteEvent(note);
+      if (async) {
+        try {
+          noteEventQueue.put(saveNoteEvent);
+        } catch (InterruptedException e) {
+          LOGGER.error("Fail to put note into noteEventQueue", e);
+        }
+      } else {
+        handleNoteEvent(saveNoteEvent);
       }
     }
   }
@@ -232,11 +321,15 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
                    AuthenticationInfo subject) throws IOException {
     getRepo(0).move(noteId, notePath, newNotePath, subject);
     if (getRepoCount() > 1) {
-      try {
-        getRepo(1).move(noteId, notePath, newNotePath, subject);
-      }
-      catch (IOException e) {
-        LOGGER.info(e.getMessage() + ": Failed to write to secondary storage");
+      MoveNoteEvent moveNoteEvent = new MoveNoteEvent(noteId, notePath, newNotePath);
+      if (async) {
+        try {
+          noteEventQueue.put(moveNoteEvent);
+        } catch (InterruptedException e) {
+          LOGGER.error("Fail to put MoveNoteEvent into noteEventQueue", e);
+        }
+      } else {
+        handleNoteEvent(moveNoteEvent);
       }
     }
   }
@@ -244,23 +337,52 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
   @Override
   public void move(String folderPath, String newFolderPath,
                    AuthenticationInfo subject) throws IOException {
-    for (NotebookRepo repo : repos) {
-      repo.move(folderPath, newFolderPath, subject);
+    getRepo(0).move(folderPath, newFolderPath, subject);
+    if (getRepoCount() > 1) {
+      MoveNoteFolderEvent moveNoteFolderEvent = new MoveNoteFolderEvent(folderPath, newFolderPath);
+      if (async) {
+        try {
+          noteEventQueue.put(moveNoteFolderEvent);
+        } catch (InterruptedException e) {
+          LOGGER.error("Fail to put MoveNoteFolderEvent into noteEventQueue", e);
+        }
+      } else {
+        handleNoteEvent(moveNoteFolderEvent);
+      }
     }
   }
 
   @Override
   public void remove(String noteId, String notePath, AuthenticationInfo subject) throws IOException {
-    for (NotebookRepo repo : repos) {
-      repo.remove(noteId, notePath, subject);
+    getRepo(0).remove(noteId, notePath, subject);
+    if (getRepoCount() > 1) {
+      RemoveNoteEvent removeNoteEvent = new RemoveNoteEvent(noteId, notePath);
+      if (async) {
+        try {
+          noteEventQueue.put(removeNoteEvent);
+        } catch (InterruptedException e) {
+          LOGGER.error("Fail to put RemoveNoteEvent into noteEventQueue", e);
+        }
+      } else {
+        handleNoteEvent(removeNoteEvent);
+      }
     }
-    /* TODO(khalid): handle case when removing from secondary storage fails */
   }
 
   @Override
   public void remove(String folderPath, AuthenticationInfo subject) throws IOException {
-    for (NotebookRepo repo : repos) {
-      repo.remove(folderPath, subject);
+    getRepo(0).remove(folderPath, subject);
+    if (getRepoCount() > 1) {
+      RemoveNoteFolderEvent removeNoteFolderEvent = new RemoveNoteFolderEvent(folderPath);
+      if (async) {
+        try {
+          noteEventQueue.put(removeNoteFolderEvent);
+        } catch (InterruptedException e) {
+          LOGGER.error("Fail to put RemoveNoteFolderEvent into noteEventQueue", e);
+        }
+      } else {
+        handleNoteEvent(removeNoteFolderEvent);
+      }
     }
   }
 
@@ -590,4 +712,56 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
     return revisionNote;
   }
 
+
+  interface NoteEvent {
+
+  }
+
+  class SaveNoteEvent implements NoteEvent {
+    private Note note;
+
+    public SaveNoteEvent(Note note) {
+      this.note = note;
+    }
+  }
+
+  class MoveNoteEvent implements NoteEvent {
+    private String noteId;
+    private String notePath;
+    private String newNotePath;
+
+    public MoveNoteEvent(String noteId, String notePath, String newNotePath) {
+      this.noteId = noteId;
+      this.notePath = notePath;
+      this.newNotePath = newNotePath;
+    }
+  }
+
+  class MoveNoteFolderEvent implements NoteEvent {
+    private String folderPath;
+    private String newFolderPath;
+
+    public MoveNoteFolderEvent(String folderPath, String newFolderPath) {
+      this.folderPath = folderPath;
+      this.newFolderPath = newFolderPath;
+    }
+  }
+
+  class RemoveNoteEvent implements NoteEvent {
+    private String noteId;
+    private String notePath;
+
+    public RemoveNoteEvent(String noteId, String notePath) {
+      this.noteId = noteId;
+      this.notePath = notePath;
+    }
+  }
+
+  class RemoveNoteFolderEvent implements NoteEvent {
+    private String folderPath;
+
+    public RemoveNoteFolderEvent(String folderPath) {
+      this.folderPath = folderPath;
+    }
+  }
 }

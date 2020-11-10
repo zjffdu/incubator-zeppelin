@@ -175,6 +175,12 @@ public class SparkInterpreterLauncher extends StandardInterpreterLauncher {
         sparkProperties.remove("spark.yarn.keytab");
         sparkProperties.remove("spark.yarn.principal");
       }
+      sparkProperties.remove("spark.yarn.keytab");
+      sparkProperties.remove("spark.yarn.principal");
+    }
+
+    for (String name : sparkProperties.stringPropertyNames()) {
+      sparkConfBuilder.append(" --conf " + name + "=" + sparkProperties.getProperty(name));
     }
 
     for (String name : sparkProperties.stringPropertyNames()) {

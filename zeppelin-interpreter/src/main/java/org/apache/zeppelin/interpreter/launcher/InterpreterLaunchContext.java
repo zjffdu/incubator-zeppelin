@@ -32,6 +32,7 @@ public class InterpreterLaunchContext {
   private InterpreterRunner runner;
   private String userName;
   private String interpreterGroupId;
+  private String clusterId;
   private String interpreterSettingId;
   private String interpreterSettingGroup;
   private String interpreterSettingName;
@@ -47,7 +48,8 @@ public class InterpreterLaunchContext {
                                   String interpreterSettingGroup,
                                   String interpreterSettingName,
                                   int intpEventServerPort,
-                                  String intpEventServerHost) {
+                                  String intpEventServerHost,
+                                  String cllusterId) {
     this.properties = properties;
     this.option = option;
     this.runner = runner;
@@ -58,6 +60,7 @@ public class InterpreterLaunchContext {
     this.interpreterSettingName = interpreterSettingName;
     this.intpEventServerPort = intpEventServerPort;
     this.intpEventServerHost = intpEventServerHost;
+    this.clusterId = cllusterId;
   }
 
   public Properties getProperties() {
@@ -98,5 +101,9 @@ public class InterpreterLaunchContext {
 
   public String getIntpEventServerHost() {
     return intpEventServerHost;
+  }
+
+  public String getClusterId() {
+    return clusterId;
   }
 }

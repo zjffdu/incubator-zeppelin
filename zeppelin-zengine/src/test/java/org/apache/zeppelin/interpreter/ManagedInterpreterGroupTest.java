@@ -55,7 +55,7 @@ public class ManagedInterpreterGroupTest {
 
   @Test
   public void testInterpreterGroup() {
-    ManagedInterpreterGroup interpreterGroup = new ManagedInterpreterGroup("group_1", interpreterSetting);
+    ManagedInterpreterGroup interpreterGroup = new ManagedInterpreterGroup("group_1", null, interpreterSetting);
     assertEquals(0, interpreterGroup.getSessionNum());
 
     // create session_1

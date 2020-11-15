@@ -321,6 +321,10 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     return getString(ConfVars.ZEPPELIN_HOME);
   }
 
+  public String getZeppelinRemoteHome() {
+    return getString(ConfVars.ZEPPELIN_REMOTE_HOME);
+  }
+
   public boolean useSsl() {
     return getBoolean(ConfVars.ZEPPELIN_SSL);
   }
@@ -618,7 +622,11 @@ public class ZeppelinConfiguration extends XMLConfiguration {
   }
 
   public String getInterpreterRemoteRunnerPath() {
-    return getAbsoluteDir(ConfVars.ZEPPELIN_INTERPRETER_REMOTE_RUNNER);
+    if (getString(ConfVars.ZEPPELIN_INTERPRETER_REMOTE_RUNNER).startsWith("ssh")) {
+      return getString(ConfVars.ZEPPELIN_INTERPRETER_REMOTE_RUNNER);
+    } else {
+      return getAbsoluteDir(ConfVars.ZEPPELIN_INTERPRETER_REMOTE_RUNNER);
+    }
   }
 
   public String getInterpreterLocalRepoPath() {
@@ -954,6 +962,7 @@ public class ZeppelinConfiguration extends XMLConfiguration {
    */
   public enum ConfVars {
     ZEPPELIN_HOME("zeppelin.home", "./"),
+    ZEPPELIN_REMOTE_HOME("zeppelin.remote.home", "/usr/lib/flow-agent-current/zeppelin"),
     ZEPPELIN_ADDR("zeppelin.server.addr", "127.0.0.1"),
     ZEPPELIN_PORT("zeppelin.server.port", 8080),
     ZEPPELIN_SERVER_CONTEXT_PATH("zeppelin.server.context.path", "/"),

@@ -265,6 +265,9 @@ elif [[ "${INTERPRETER_ID}" == "flink" ]]; then
     fi
   fi
 
+elif [[ "${INTERPRETER_ID}" == "jdbc" ]]; then
+  ZEPPELIN_INTP_CLASSPATH+=":`hadoop classpath`"
+  addEachJarInDirRecursiveForIntp "/usr/lib/hive-current/lib"
 fi
 
 addJarInDirForIntp "${LOCAL_INTERPRETER_REPO}"

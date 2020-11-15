@@ -23,6 +23,7 @@ package org.apache.zeppelin.interpreter;
 public class ExecutionContextBuilder {
   private String user;
   private String noteId;
+  private String clusterId;
   private String interpreterGroupId;
   private String defaultInterpreterGroup = "";
   private boolean inIsolatedMode = false;
@@ -58,8 +59,13 @@ public class ExecutionContextBuilder {
     return this;
   }
 
+  public ExecutionContextBuilder setClusterId(String clusterId) {
+    this.clusterId = clusterId;
+    return this;
+  }
+
   public ExecutionContext createExecutionContext() {
-    return new ExecutionContext(user, noteId, interpreterGroupId, defaultInterpreterGroup, inIsolatedMode, startTime);
+    return new ExecutionContext(user, noteId, clusterId, interpreterGroupId, defaultInterpreterGroup, inIsolatedMode, startTime);
   }
 
 }

@@ -38,6 +38,7 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
   $scope.collaborativeMode = false;
   $scope.collaborativeModeUsers = [];
   $scope.looknfeelOption = ['default', 'simple', 'report'];
+  $scope.clusterIds = ['cluster-46209', 'cluster-46416', 'cluster-46555', 'localhost'];
   $scope.noteFormTitle = null;
   $scope.cronOption = [
     {name: 'None', value: undefined},
@@ -498,6 +499,11 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
     } else {
       $scope.setConfig();
     }
+  };
+
+  $scope.setClusterId = function(clusterId) {
+    $scope.note.config.clusterId = clusterId;
+    $scope.setConfig();
   };
 
   $scope.setNoteFormTitle = function(noteFormTitle) {

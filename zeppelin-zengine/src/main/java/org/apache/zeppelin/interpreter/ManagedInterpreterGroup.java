@@ -39,6 +39,7 @@ public class ManagedInterpreterGroup extends InterpreterGroup {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ManagedInterpreterGroup.class);
 
+  private String clusterId;
   private InterpreterSetting interpreterSetting;
   private RemoteInterpreterProcess remoteInterpreterProcess; // attached remote interpreter process
   private Object interpreterProcessCreationLock = new Object();
@@ -48,8 +49,9 @@ public class ManagedInterpreterGroup extends InterpreterGroup {
    * @param id
    * @param interpreterSetting
    */
-  ManagedInterpreterGroup(String id, InterpreterSetting interpreterSetting) {
+  ManagedInterpreterGroup(String id, String clusterId, InterpreterSetting interpreterSetting) {
     super(id);
+    this.clusterId = clusterId;
     this.interpreterSetting = interpreterSetting;
   }
 
@@ -63,7 +65,7 @@ public class ManagedInterpreterGroup extends InterpreterGroup {
     synchronized (interpreterProcessCreationLock) {
       if (remoteInterpreterProcess == null) {
         LOGGER.info("Create InterpreterProcess for InterpreterGroup: {}", getId());
-        remoteInterpreterProcess = interpreterSetting.createInterpreterProcess(id, userName,
+        remoteInterpreterProcess = interpreterSetting.createInterpreterProcess(id, clusterId, userName,
                 properties);
         remoteInterpreterProcess.start(userName);
         remoteInterpreterProcess.init(ZeppelinConfiguration.create());

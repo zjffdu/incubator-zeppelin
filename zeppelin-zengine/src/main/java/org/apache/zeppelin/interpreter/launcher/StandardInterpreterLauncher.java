@@ -18,7 +18,6 @@
 
 package org.apache.zeppelin.interpreter.launcher;
 
-import org.apache.commons.exec.environment.EnvironmentUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.InterpreterOption;
@@ -31,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -54,6 +54,7 @@ public class StandardInterpreterLauncher extends InterpreterLauncher {
     String name = context.getInterpreterSettingName();
     int connectTimeout = getConnectTimeout();
     int connectionPoolSize = getConnectPoolSize();
+    enhanceKeytabProperties(context);
 
     if (option.isExistingProcess()) {
       return new RemoteInterpreterRunningProcess(
@@ -75,12 +76,73 @@ public class StandardInterpreterLauncher extends InterpreterLauncher {
           context.getIntpEventServerPort(), context.getIntpEventServerHost(), zConf.getInterpreterPortRange(),
           zConf.getInterpreterDir() + "/" + groupName, localRepoPath,
           buildEnvFromProperties(context), connectTimeout, connectionPoolSize, name,
-          context.getInterpreterGroupId(), option.isUserImpersonate());
+          context.getInterpreterGroupId(), option.isUserImpersonate(), context.getClusterId());
+    }
+  }
+
+
+  private void enhanceKeytabProperties(InterpreterLaunchContext context) {
+    String[] tokens = context.getClusterId().split("-");
+    if (tokens.length != 2) {
+      LOGGER.info("It is not a valid remote clusterId: " + context.getClusterId()
+              + ", Skip enhanceKeytabProperties");
+      return;
+    }
+    if (context.getInterpreterSettingName().equalsIgnoreCase("hive")) {
+      boolean hiveKeytabExist = checkKeytab(context, "/etc/ecm/hive-conf/hive.keytab");
+      if (hiveKeytabExist) {
+        if (tokens.length != 2) {
+          throw new RuntimeException("Invalid clusterId: " + context.getClusterId());
+        }
+        LOGGER.info("Enhance hive interpreter properties with keytab info");
+        String principal = "hive/emr-header-1.cluster-" + tokens[1] + "@EMR." + tokens[1] + ".COM";
+        context.getProperties().put("zeppelin.jdbc.keytab.location", "/etc/ecm/hive-conf/hive.keytab");
+        context.getProperties().put("zeppelin.jdbc.principal", principal);
+        context.getProperties().put("default.principal", principal);
+        context.getProperties().put("zeppelin.jdbc.auth.type", "kerberos");
+      }
+    } else if (context.getInterpreterSettingName().equalsIgnoreCase("spark")) {
+      boolean sparkKeytabExist = checkKeytab(context, "/etc/ecm/spark-conf/spark.keytab");
+      if (sparkKeytabExist) {
+        if (tokens.length != 2) {
+          throw new RuntimeException("Invalid clusterId: " + context.getClusterId());
+        }
+        LOGGER.info("Enhance spark interpreter properties with keytab info");
+        String principal = "spark/emr-header-1.cluster-" + tokens[1] + "@EMR." + tokens[1] + ".COM";
+        context.getProperties().put("spark.yarn.keytab", "/etc/ecm/spark-conf/spark.keytab");
+        context.getProperties().put("spark.yarn.principal", principal);
+      }
+    }
+  }
+
+  /**
+   * Add keytab info if necessary.
+   *
+   * @param context
+   * @return
+   */
+  private boolean checkKeytab(InterpreterLaunchContext context, String keytab) {
+    try {
+      Process process = Runtime.getRuntime().exec(new String[]{"ssh", getRemoteHost(context.getClusterId()),
+              "ls " + keytab});
+      int exitCode = process.waitFor();
+      return exitCode == 0;
+    } catch (Exception e) {
+      LOGGER.error("Fail to check keytab: " + keytab, e.getMessage());
+    }
+    return false;
+  }
+
+  private String getRemoteHost(String clusterId) {
+    if (clusterId.equalsIgnoreCase("localhost")) {
+      return "localhost";
+    } else {
+      return "emr-header-1." + clusterId;
     }
   }
 
   public Map<String, String> buildEnvFromProperties(InterpreterLaunchContext context) throws IOException {
-    Map<String, String> env = EnvironmentUtils.getProcEnvironment();
+    Map<String, String> env = new HashMap<>();
     for (Map.Entry<Object,Object> entry : context.getProperties().entrySet()) {
       String key = (String) entry.getKey();
       String value = (String) entry.getValue();

@@ -402,11 +402,19 @@ public class InterpreterSetting {
     }
 
     if (executionContext.isInIsolatedMode()) {
-      return name + "-isolated-" + executionContext.getNoteId() + "-" +
-              executionContext.getStartTime();
+      if (StringUtils.isNotBlank(executionContext.getClusterId())) {
+        return name + "-" + executionContext.getClusterId() + "-isolated-" + executionContext.getNoteId() + "-" +
+                executionContext.getStartTime();
+      } else {
+        return name + "-isolated-" + executionContext.getNoteId() + "-" +
+                executionContext.getStartTime();
+      }
     }
 
     List<String> keys = new ArrayList<>();
+    if (StringUtils.isNotBlank(executionContext.getClusterId())) {
+      keys.add(executionContext.getClusterId());
+    }
     if (option.isExistingProcess) {
       keys.add(Constants.EXISTING_PROCESS);
     } else if (getOption().isIsolated()) {
@@ -452,7 +460,7 @@ public class InterpreterSetting {
       if (!interpreterGroups.containsKey(groupId)) {
         LOGGER.info("Create InterpreterGroup with groupId: {} for {}",
             groupId, executionContext);
-        ManagedInterpreterGroup intpGroup = createInterpreterGroup(groupId);
+        ManagedInterpreterGroup intpGroup = createInterpreterGroup(groupId, executionContext.getClusterId());
         interpreterGroups.put(groupId, intpGroup);
       }
       return interpreterGroups.get(groupId);
@@ -837,18 +845,20 @@ public class InterpreterSetting {
   }
 
   synchronized RemoteInterpreterProcess createInterpreterProcess(String interpreterGroupId,
+                                                                 String clusterId,
                                                                  String userName,
                                                                  Properties properties)
       throws IOException {
     InterpreterLauncher launcher = createLauncher(properties);
     InterpreterLaunchContext launchContext = new
         InterpreterLaunchContext(properties, option, interpreterRunner, userName,
-        interpreterGroupId, id, group, name, interpreterEventServer.getPort(), interpreterEventServer.getHost());
+        interpreterGroupId, id, group, name, interpreterEventServer.getPort(), interpreterEventServer.getHost(), clusterId);
     RemoteInterpreterProcess process = (RemoteInterpreterProcess) launcher.launch(launchContext);
     recoveryStorage.onInterpreterClientStart(process);
     return process;
   }
 
+  @VisibleForTesting
   List<Interpreter> getOrCreateSession(String user, String noteId) {
     return getOrCreateSession(new ExecutionContextBuilder().setUser(user).setNoteId(noteId).createExecutionContext());
   }
@@ -860,6 +870,7 @@ public class InterpreterSetting {
     return interpreterGroup.getOrCreateSession(executionContext.getUser(), sessionId);
   }
 
+  @VisibleForTesting
   public Interpreter getDefaultInterpreter(String user, String noteId) {
     return getOrCreateSession(new ExecutionContextBuilder().setUser(user).setNoteId(noteId).createExecutionContext()).get(0);
   }
@@ -868,6 +879,7 @@ public class InterpreterSetting {
     return getOrCreateSession(executionContext).get(0);
   }
 
+  @VisibleForTesting
   public Interpreter getInterpreter(String user, String noteId, String replName) {
     return getInterpreter(new ExecutionContextBuilder().setUser(user).setNoteId(noteId).createExecutionContext(), replName);
   }
@@ -909,9 +921,9 @@ public class InterpreterSetting {
     return null;
   }
 
-  private ManagedInterpreterGroup createInterpreterGroup(String groupId) {
+  private ManagedInterpreterGroup createInterpreterGroup(String groupId, String clusterId) {
     AngularObjectRegistry angularObjectRegistry;
-    ManagedInterpreterGroup interpreterGroup = new ManagedInterpreterGroup(groupId, this);
+    ManagedInterpreterGroup interpreterGroup = new ManagedInterpreterGroup(groupId, clusterId, this);
     angularObjectRegistry =
         new RemoteAngularObjectRegistry(groupId, angularObjectRegistryListener, interpreterGroup);
     interpreterGroup.setAngularObjectRegistry(angularObjectRegistry);

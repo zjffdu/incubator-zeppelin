@@ -247,6 +247,7 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
     ExecutionContext executionContext = new ExecutionContextBuilder()
             .setUser(user)
             .setNoteId(note.getId())
+            .setClusterId(note.getClusterId())
             .setDefaultInterpreterGroup(note.getDefaultInterpreterGroup())
             .setInIsolatedMode(note.isIsolatedMode())
             .setStartTime(note.getStartTime())

@@ -21,6 +21,7 @@ import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.hadoop.yarn.util.ConverterUtils;
+import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.YarnAppMonitor;
 import org.apache.zeppelin.interpreter.util.ProcessLauncher;
 import org.slf4j.Logger;
@@ -51,6 +52,7 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess {
   private final String interpreterGroupId;
   private final boolean isUserImpersonated;
   private String errorMessage;
+  private String clusterId;
 
   private Map<String, String> env;
 
@@ -66,7 +68,8 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess {
       int connectionPoolSize,
       String interpreterSettingName,
       String interpreterGroupId,
-      boolean isUserImpersonated) {
+      boolean isUserImpersonated,
+      String clusterId) {
     super(connectTimeout, connectionPoolSize, intpEventServerHost, intpEventServerPort);
     this.interpreterRunner = intpRunner;
     this.interpreterPortRange = interpreterPortRange;
@@ -76,6 +79,42 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess {
     this.interpreterSettingName = interpreterSettingName;
     this.interpreterGroupId = interpreterGroupId;
     this.isUserImpersonated = isUserImpersonated;
+    this.clusterId = clusterId;
+  }
+
+  private CommandLine buildCommandLine(String userName) {
+    StringBuilder builder = new StringBuilder();
+    for (Map.Entry<String, String> entry : env.entrySet()) {
+      builder.append("export " + entry.getKey() + "=\"" + entry.getValue() + "\" && ");
+    }
+    builder.append(ZeppelinConfiguration.create().getZeppelinRemoteHome() + "/bin/interpreter.sh");
+    builder.append(" -d ");
+    builder.append(interpreterDir);
+    builder.append(" -c ");
+    builder.append(intpEventServerHost);
+    builder.append(" -p ");
+    builder.append(intpEventServerPort);
+    builder.append(" -r ");
+    builder.append(interpreterPortRange);
+    builder.append(" -i ");
+    builder.append(interpreterGroupId);
+    if (isUserImpersonated && !userName.equals("anonymous")) {
+      builder.append(" -u ");
+      builder.append(userName);
+    }
+    builder.append(" -l ");
+    builder.append(localRepoDir);
+    builder.append(" -g ");
+    builder.append(interpreterSettingName);
+
+    CommandLine cmdLine = CommandLine.parse("ssh");
+    if (clusterId.equalsIgnoreCase("localhost")) {
+      cmdLine.addArgument(env.getOrDefault("REMOTE_HOST", "localhost"));
+    } else {
+      cmdLine.addArgument(env.getOrDefault("REMOTE_HOST", "emr-header-1." + clusterId));
+    }
+    cmdLine.addArgument(builder.toString(), false);
+    return cmdLine;
   }
 
   @Override
@@ -91,25 +130,8 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess {
   @Override
   public void start(String userName) throws IOException {
     // start server process
-    CommandLine cmdLine = CommandLine.parse(interpreterRunner);
-    cmdLine.addArgument("-d", false);
-    cmdLine.addArgument(interpreterDir, false);
-    cmdLine.addArgument("-c", false);
-    cmdLine.addArgument(intpEventServerHost, false);
-    cmdLine.addArgument("-p", false);
-    cmdLine.addArgument(String.valueOf(intpEventServerPort), false);
-    cmdLine.addArgument("-r", false);
-    cmdLine.addArgument(interpreterPortRange, false);
-    cmdLine.addArgument("-i", false);
-    cmdLine.addArgument(interpreterGroupId, false);
-    if (isUserImpersonated && !userName.equals("anonymous")) {
-      cmdLine.addArgument("-u", false);
-      cmdLine.addArgument(userName, false);
-    }
-    cmdLine.addArgument("-l", false);
-    cmdLine.addArgument(localRepoDir, false);
-    cmdLine.addArgument("-g", false);
-    cmdLine.addArgument(interpreterSettingName, false);
+
+    CommandLine cmdLine = buildCommandLine(userName);
 
     interpreterProcessLauncher = new InterpreterProcessLauncher(cmdLine, env);
     interpreterProcessLauncher.launch();
@@ -275,5 +297,12 @@ public class RemoteInterpreterManagedProcess extends RemoteInterpreterProcess {
         notify();
       }
     }
+  }
+
+  public static void main(String[] args) throws IOException, InterruptedException {
+    Process process = Runtime.getRuntime().exec(
+            new String[] {"ssh", "localhost", "export INTERPRETER_GROUP_ID=sh-shared_process && /Users/jzhang/github/zeppelin/bin/interpreter.sh -d /Users/jzhang/github/zeppelin/interpreter/sh -c 0.0.0.0 -p 49637 -r : -i sh-shared_process -l /Users/jzhang/github/zeppelin/local-repo/sh -g sh"});
+    int exitCode = process.waitFor();
+    System.out.println("exitCode: " + exitCode);
   }
 }

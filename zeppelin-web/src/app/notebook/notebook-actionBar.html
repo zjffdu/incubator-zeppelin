@@ -342,6 +342,19 @@ limitations under the License.
           </li>
         </ul>
       </span>
+
+      <span class="btn-group">
+        <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                data-toggle="dropdown">
+          {{note.config.clusterId}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right" role="menu">
+          <li ng-repeat="clusterId in clusterIds">
+            <a style="cursor:pointer" ng-click="setClusterId(clusterId)">{{clusterId}}</a>
+          </li>
+        </ul>
+      </span>
+
     </div>
   </h3>
 </headroom>

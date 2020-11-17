@@ -52,7 +52,7 @@ public class ParagraphTextParserTest {
     assertEquals("spark.pyspark", parseResult.getIntpText());
     assertEquals(1, parseResult.getLocalProperties().size());
     assertEquals("pool_1", parseResult.getLocalProperties().get("pool"));
-    assertEquals("sc.version", parseResult.getScriptText());
+    assertEquals(" sc.version", parseResult.getScriptText());
   }
 
   @Test
@@ -94,7 +94,7 @@ public class ParagraphTextParserTest {
     ParagraphTextParser.ParseResult parseResult = ParagraphTextParser.parse("%spark() sc.version");
     assertEquals("spark", parseResult.getIntpText());
     assertEquals(0, parseResult.getLocalProperties().size());
-    assertEquals("sc.version", parseResult.getScriptText());
+    assertEquals(" sc.version", parseResult.getScriptText());
   }
 
   @Test

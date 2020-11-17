@@ -198,7 +198,7 @@ public class PersonalizeActionsIT extends AbstractZeppelinIT {
         createNewNote();
       }
       String noteId = driver.getCurrentUrl().substring(driver.getCurrentUrl().lastIndexOf("/") + 1);
-      setTextOfParagraph(1, "%python print(\"%table " +
+      setTextOfParagraph(1, "%python\\nprint(\"%table " +
               "name\\\\tsize\\\\n" +
               "sun\\\\t100\\\\n" +
               "moon\\\\t10\")");

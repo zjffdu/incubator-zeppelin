@@ -279,7 +279,7 @@ public class RecoveryTest extends AbstractTestRestApi {
 
       // run  paragraph async, print 'hello' after 10 seconds
       Paragraph p1 = note1.addNewParagraph(AuthenticationInfo.ANONYMOUS);
-      p1.setText("%python import time\n" +
+      p1.setText("%python\nimport time\n" +
               "for i in range(1, 10):\n" +
               "    time.sleep(1)\n" +
               "    print(i)");

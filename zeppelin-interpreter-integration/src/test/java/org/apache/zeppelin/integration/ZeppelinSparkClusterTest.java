@@ -337,7 +337,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
       // get resource from pyspark
       p = note.addNewParagraph(anonymous);
-      p.setText("%spark.pyspark df=z.getAsDataFrame('table_result')\nz.show(df)");
+      p.setText("%spark.pyspark\ndf=z.getAsDataFrame('table_result')\nz.show(df)");
       note.run(p.getId(), true);
       assertEquals(Status.FINISHED, p.getStatus());
       assertEquals(InterpreterResult.Type.TABLE, p.getReturn().message().get(0).getType());
@@ -345,7 +345,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
       // get resource from ipyspark
       p = note.addNewParagraph(anonymous);
-      p.setText("%spark.ipyspark df=z.getAsDataFrame('table_result')\nz.show(df)");
+      p.setText("%spark.ipyspark\ndf=z.getAsDataFrame('table_result')\nz.show(df)");
       note.run(p.getId(), true);
       assertEquals(Status.FINISHED, p.getStatus());
       assertEquals(InterpreterResult.Type.TABLE, p.getReturn().message().get(0).getType());
@@ -419,27 +419,27 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
       // run markdown paragraph, again
       Paragraph p = note.addNewParagraph(anonymous);
-      p.setText("%spark.pyspark sc.parallelize(range(1, 11)).reduce(lambda a, b: a + b)");
+      p.setText("%spark.pyspark\nsc.parallelize(range(1, 11)).reduce(lambda a, b: a + b)");
       note.run(p.getId(), true);
       assertEquals(Status.FINISHED, p.getStatus());
       assertEquals("55\n", p.getReturn().message().get(0).getData());
 
       // simple form via local properties
       p = note.addNewParagraph(anonymous);
-      p.setText("%spark.pyspark(form=simple) print('name_' + '${name=abc}')");
+      p.setText("%spark.pyspark(form=simple)\nprint('name_' + '${name=abc}')");
       note.run(p.getId(), true);
       assertEquals(Status.FINISHED, p.getStatus());
       assertEquals("name_abc\n", p.getReturn().message().get(0).getData());
 
       // test code completion
-      String code = "%spark.pyspark spark.";
+      String code = "%spark.pyspark\nspark.";
       List<InterpreterCompletion> completions = note.completion(p.getId(), code, code.length(), AuthenticationInfo.ANONYMOUS);
       assertTrue(completions.size() > 0);
 
       if (isSpark1()) {
         // run sqlContext test
         p = note.addNewParagraph(anonymous);
-        p.setText("%pyspark from pyspark.sql import Row\n" +
+        p.setText("%pyspark\nfrom pyspark.sql import Row\n" +
             "df=sqlContext.createDataFrame([Row(id=1, age=20)])\n" +
             "df.collect()");
         note.run(p.getId(), true);
@@ -448,7 +448,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
         // test display Dataframe
         p = note.addNewParagraph(anonymous);
-        p.setText("%pyspark from pyspark.sql import Row\n" +
+        p.setText("%pyspark\nfrom pyspark.sql import Row\n" +
             "df=sqlContext.createDataFrame([Row(id=1, age=20)])\n" +
             "z.show(df)");
         note.run(p.getId(), true);
@@ -460,7 +460,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
         // test udf
         p = note.addNewParagraph(anonymous);
-        p.setText("%pyspark sqlContext.udf.register(\"f1\", lambda x: len(x))\n" +
+        p.setText("%pyspark\nsqlContext.udf.register(\"f1\", lambda x: len(x))\n" +
             "sqlContext.sql(\"select f1(\\\"abc\\\") as len\").collect()");
         note.run(p.getId(), true);
         assertEquals(Status.FINISHED, p.getStatus());
@@ -475,7 +475,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
          print(a2)
          */
-        p.setText("%pyspark a=1\n\nprint(a2)");
+        p.setText("%pyspark\na=1\n\nprint(a2)");
         note.run(p.getId(), true);
         assertEquals(Status.ERROR, p.getStatus());
         assertTrue(p.getReturn().message().get(0).getData()
@@ -485,7 +485,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       } else if (isSpark2()){
         // run SparkSession test
         p = note.addNewParagraph(anonymous);
-        p.setText("%pyspark from pyspark.sql import Row\n" +
+        p.setText("%pyspark\nfrom pyspark.sql import Row\n" +
             "df=sqlContext.createDataFrame([Row(id=1, age=20)])\n" +
             "df.collect()");
         note.run(p.getId(), true);
@@ -495,7 +495,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
         // test udf
         p = note.addNewParagraph(anonymous);
         // use SQLContext to register UDF but use this UDF through SparkSession
-        p.setText("%pyspark sqlContext.udf.register(\"f1\", lambda x: len(x))\n" +
+        p.setText("%pyspark\nsqlContext.udf.register(\"f1\", lambda x: len(x))\n" +
             "spark.sql(\"select f1(\\\"abc\\\") as len\").collect()");
         note.run(p.getId(), true);
         assertEquals(Status.FINISHED, p.getStatus());
@@ -504,7 +504,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       } else {
         // run SparkSession test
         p = note.addNewParagraph(anonymous);
-        p.setText("%pyspark from pyspark.sql import Row\n" +
+        p.setText("%pyspark\nfrom pyspark.sql import Row\n" +
                 "df=sqlContext.createDataFrame([Row(id=1, age=20)])\n" +
                 "df.collect()");
         note.run(p.getId(), true);
@@ -514,7 +514,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
         // test udf
         p = note.addNewParagraph(anonymous);
         // use SQLContext to register UDF but use this UDF through SparkSession
-        p.setText("%pyspark sqlContext.udf.register(\"f1\", lambda x: len(x))\n" +
+        p.setText("%pyspark\nsqlContext.udf.register(\"f1\", lambda x: len(x))\n" +
                 "spark.sql(\"select f1(\\\"abc\\\") as len\").collect()");
         note.run(p.getId(), true);
         assertEquals(Status.FINISHED, p.getStatus());
@@ -587,13 +587,13 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       p21.setText("%spark print(a)");
 
       // run p20 of note2 via paragraph in note1
-      p0.setText(String.format("%%spark.pyspark z.run(\"%s\", \"%s\")", note2.getId(), p20.getId()));
+      p0.setText(String.format("%%spark.pyspark\nz.run(\"%s\", \"%s\")", note2.getId(), p20.getId()));
       note.run(p0.getId(), true);
       waitForFinish(p20);
       assertEquals(Status.FINISHED, p20.getStatus());
       assertEquals(Status.READY, p21.getStatus());
 
-      p0.setText(String.format("%%spark z.runNote(\"%s\")", note2.getId()));
+      p0.setText(String.format("%%spark\nz.runNote(\"%s\")", note2.getId()));
       note.run(p0.getId(), true);
       waitForFinish(p20);
       waitForFinish(p21);
@@ -623,14 +623,14 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       p2.setText("%spark println(z.get(\"var_1\"))");
 
       Paragraph p3 = note.addNewParagraph(anonymous);
-      p3.setText("%spark.pyspark print(z.get(\"var_1\"))");
+      p3.setText("%spark.pyspark\nprint(z.get(\"var_1\"))");
 
       Paragraph p4 = note.addNewParagraph(anonymous);
-      p4.setText("%spark.r z.get(\"var_1\")");
+      p4.setText("%spark.r\nz.get(\"var_1\")");
 
       // resources across interpreter processes (via DistributedResourcePool)
       Paragraph p5 = note.addNewParagraph(anonymous);
-      p5.setText("%python print(z.get('var_1'))");
+      p5.setText("%python\nprint(z.get('var_1'))");
 
       note.run(p1.getId(), true);
       note.run(p2.getId(), true);
@@ -664,14 +664,14 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
       // register global hook & note1 hook
       Paragraph p1 = note.addNewParagraph(anonymous);
-      p1.setText("%python from __future__ import print_function\n" +
+      p1.setText("%python\nfrom __future__ import print_function\n" +
           "z.registerHook('pre_exec', 'print(1)')\n" +
           "z.registerHook('post_exec', 'print(2)')\n" +
           "z.registerNoteHook('pre_exec', 'print(3)', '" + note.getId() + "')\n" +
           "z.registerNoteHook('post_exec', 'print(4)', '" + note.getId() + "')\n");
 
       Paragraph p2 = note.addNewParagraph(anonymous);
-      p2.setText("%python print(5)");
+      p2.setText("%python\nprint(5)");
 
       note.run(p1.getId(), true);
       note.run(p2.getId(), true);
@@ -682,7 +682,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
 
       note2 = TestUtils.getInstance(Notebook.class).createNote("note2", anonymous);
       Paragraph p3 = note2.addNewParagraph(anonymous);
-      p3.setText("%python print(6)");
+      p3.setText("%python\nprint(6)");
       note2.run(p3.getId(), true);
       assertEquals("1\n6\n2\n", p3.getReturn().message().get(0).getData());
     } finally {
@@ -707,7 +707,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       assertEquals(Status.FINISHED, p.getStatus());
       assertEquals(sparkVersion, p.getReturn().message().get(0).getData());
 
-      p.setText("%spark.pyspark sc.version");
+      p.setText("%spark.pyspark\nsc.version");
       note.run(p.getId());
       waitForFinish(p);
       assertEquals(Status.FINISHED, p.getStatus());
@@ -777,7 +777,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
     try {
       note = TestUtils.getInstance(Notebook.class).createNote("note1", anonymous);
       Paragraph p = note.addNewParagraph(anonymous);
-      String code = "%spark.pyspark print(z.input('my_input', 'default_name'))\n" +
+      String code = "%spark.pyspark\nprint(z.input('my_input', 'default_name'))\n" +
           "print(z.password('my_pwd'))\n" +
           "print(z.select('my_select', " +
           "[('1', 'select_1'), ('2', 'select_2')], defaultValue='1'))\n" +
@@ -950,7 +950,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       Paragraph p1 = note.addNewParagraph(anonymous);
 
       // create TextBox
-      p1.setText("%spark.pyspark z.noteTextbox(\"name\", \"world\")");
+      p1.setText("%spark.pyspark\nz.noteTextbox(\"name\", \"world\")");
       note.run(p1.getId(), true);
       assertEquals(Status.FINISHED, p1.getStatus());
       Input input = p1.getNote().getNoteForms().get("name");
@@ -967,7 +967,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       assertTrue(p2.getReturn().toString(), p2.getReturn().toString().contains("hello world"));
 
       // create Select
-      p1.setText("%spark.pyspark z.noteSelect('language', [('java', 'JAVA'), ('scala', 'SCALA')], 'java')");
+      p1.setText("%spark.pyspark\nz.noteSelect('language', [('java', 'JAVA'), ('scala', 'SCALA')], 'java')");
       note.run(p1.getId(), true);
       assertEquals(Status.FINISHED, p1.getStatus());
       input = p1.getNote().getNoteForms().get("language");
@@ -984,7 +984,7 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       assertTrue(p2.getReturn().toString(), p2.getReturn().toString().contains("hello java"));
 
       // create Checkbox
-      p1.setText("%spark.pyspark z.noteCheckbox('languages', [('java', 'JAVA'), ('scala', 'SCALA')], ['java', 'scala'])");
+      p1.setText("%spark.pyspark\nz.noteCheckbox('languages', [('java', 'JAVA'), ('scala', 'SCALA')], ['java', 'scala'])");
       note.run(p1.getId(), true);
       assertEquals(Status.FINISHED, p1.getStatus());
       input = p1.getNote().getNoteForms().get("languages");

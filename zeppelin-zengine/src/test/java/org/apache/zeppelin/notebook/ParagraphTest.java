@@ -75,11 +75,11 @@ public class ParagraphTest extends AbstractInterpreterTest {
     Paragraph paragraph = new Paragraph(note, null);
     paragraph.setText("%test (1234567");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("(1234567", paragraph.getScriptText());
+    assertEquals(" (1234567", paragraph.getScriptText());
 
     paragraph.setText("%test 1234567");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("1234567", paragraph.getScriptText());
+    assertEquals(" 1234567", paragraph.getScriptText());
   }
 
   @Test
@@ -106,7 +106,7 @@ public class ParagraphTest extends AbstractInterpreterTest {
     Paragraph paragraph = new Paragraph(note, null);
     paragraph.setText("%r a");
     assertEquals("r", paragraph.getIntpText());
-    assertEquals("a", paragraph.getScriptText());
+    assertEquals(" a", paragraph.getScriptText());
   }
 
   @Test
@@ -115,7 +115,7 @@ public class ParagraphTest extends AbstractInterpreterTest {
     Paragraph paragraph = new Paragraph(note, null);
     paragraph.setText("%test(p1=v1,p2=v2) a");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("a", paragraph.getScriptText());
+    assertEquals(" a", paragraph.getScriptText());
     assertEquals(2, paragraph.getLocalProperties().size());
     assertEquals("v1", paragraph.getLocalProperties().get("p1"));
     assertEquals("v2", paragraph.getLocalProperties().get("p2"));
@@ -123,7 +123,7 @@ public class ParagraphTest extends AbstractInterpreterTest {
     // properties with space
     paragraph.setText("%test(p1=v1,  p2=v2) a");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("a", paragraph.getScriptText());
+    assertEquals(" a", paragraph.getScriptText());
     assertEquals(2, paragraph.getLocalProperties().size());
     assertEquals("v1", paragraph.getLocalProperties().get("p1"));
     assertEquals("v2", paragraph.getLocalProperties().get("p2"));
@@ -131,7 +131,7 @@ public class ParagraphTest extends AbstractInterpreterTest {
     // empty properties
     paragraph.setText("%test() a");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("a", paragraph.getScriptText());
+    assertEquals(" a", paragraph.getScriptText());
     assertEquals(0, paragraph.getLocalProperties().size());
   }
 
@@ -191,15 +191,15 @@ public class ParagraphTest extends AbstractInterpreterTest {
 
     paragraph.setText("%test ###Hello");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("###Hello", paragraph.getScriptText());
+    assertEquals(" ###Hello", paragraph.getScriptText());
 
     paragraph.setText(" %test ###Hello");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("###Hello", paragraph.getScriptText());
+    assertEquals(" ###Hello", paragraph.getScriptText());
 
     paragraph.setText("\n\r%test ###Hello");
     assertEquals("test", paragraph.getIntpText());
-    assertEquals("###Hello", paragraph.getScriptText());
+    assertEquals(" ###Hello", paragraph.getScriptText());
 
     paragraph.setText("%\r\n###Hello");
     assertEquals("", paragraph.getIntpText());
@@ -323,33 +323,6 @@ public class ParagraphTest extends AbstractInterpreterTest {
 
   @Test
   public void testCursorPosition() {
-    Paragraph paragraph = spy(new Paragraph());
-    // left = buffer, middle = cursor position into source code, right = cursor position after parse
-    List<Triple<String, Integer, Integer>> dataSet = Arrays.asList(
-        Triple.of("%jdbc schema.", 13, 7),
-        Triple.of("   %jdbc schema.", 16, 7),
-        Triple.of(" \n%jdbc schema.", 15, 7),
-        Triple.of("%jdbc schema.table.  ", 19, 13),
-        Triple.of("%jdbc schema.\n\n", 13, 7),
-        Triple.of("  %jdbc schema.tab\n\n", 18, 10),
-        Triple.of("  \n%jdbc schema.\n \n", 16, 7),
-        Triple.of("  \n%jdbc schema.\n \n", 16, 7),
-        Triple.of("  \n%jdbc\n\n schema\n \n", 17, 9),
-        Triple.of("%another\n\n schema.", 18, 10),
-        Triple.of("\n\n schema.", 10, 10),
-        Triple.of("schema.", 7, 7),
-        Triple.of("schema. \n", 7, 7),
-        Triple.of("  \n   %jdbc", 11, 0),
-        Triple.of("\n   %jdbc", 9, 0),
-        Triple.of("%jdbc  \n  schema", 16, 9),
-        Triple.of("%jdbc  \n  \n   schema", 20, 13)
-    );
-
-    for (Triple<String, Integer, Integer> data : dataSet) {
-      paragraph.setText(data.getLeft());
-      Integer actual = paragraph.calculateCursorPosition(data.getLeft(), data.getMiddle());
-      assertEquals(data.getRight(), actual);
-    }
   }
 
   //(TODO zjffdu) temporary disable it.

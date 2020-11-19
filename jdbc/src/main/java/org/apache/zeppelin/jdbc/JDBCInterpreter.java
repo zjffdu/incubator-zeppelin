@@ -236,8 +236,6 @@ public class JDBCInterpreter extends KerberosInterpreter {
     setMaxLineResults();
     setMaxRows();
 
-    this.includeStackTrace = Boolean.parseBoolean(
-            getProperty("zeppelin.jdbc.error.includeStackTrace", "false"));
     //TODO(zjffdu) Set different sql splitter for different sql dialects.
     this.sqlSplitter = new SqlSplitter();
   }
@@ -824,19 +822,6 @@ public class JDBCInterpreter extends KerberosInterpreter {
     }
 
     return new InterpreterResult(Code.SUCCESS);
-  }
-
-  private String getErrorMessage(Throwable e, InterpreterContext context) {
-    StringBuilder builder = new StringBuilder();
-    boolean includeStack = context.getBooleanLocalProperty("includeStackTrace", includeStackTrace);
-    if (includeStack) {
-      builder.append(ExceptionUtils.getStackTrace(e));
-    } else {
-      builder.append(e.getMessage());
-    }
-    builder.append("\n");
-    builder.append(context.getLocalProperties().getOrDefault(CANCEL_REASON, ""));
-    return builder.toString();
   }
 
   private List getFirstRow(ResultSet rs) throws SQLException {

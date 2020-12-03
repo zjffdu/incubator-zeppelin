@@ -541,9 +541,6 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response getParagraph(@PathParam("noteId") String noteId,
                                @PathParam("paragraphId") String paragraphId) throws IOException {
-
-    LOGGER.info("Get paragraph {} {}", noteId, paragraphId);
-
     Note note = notebook.getNote(noteId);
     checkIfNoteIsNotNull(note, noteId);
     checkIfUserCanRead(noteId, "Insufficient privileges you cannot get this paragraph");
@@ -566,7 +563,7 @@ public class NotebookRestApi extends AbstractRestApi {
                                   String message) throws IOException {
 
     String user = authenticationService.getPrincipal();
-    LOGGER.info("{} will update paragraph {} {}", user, noteId, paragraphId);
+    LOGGER.info("{} start to update paragraph {} {}", user, noteId, paragraphId);
     Note note = notebook.getNote(noteId);
     checkIfNoteIsNotNull(note, noteId);
     checkIfUserCanWrite(noteId, "Insufficient privileges you cannot update this paragraph");
@@ -583,6 +580,7 @@ public class NotebookRestApi extends AbstractRestApi {
     AuthenticationInfo subject = new AuthenticationInfo(user);
     notebook.saveNote(note, subject);
     notebookServer.broadcastParagraph(note, p, MSG_ID_NOT_DEFINED);
+    LOGGER.info("{} finish to update paragraph {} {}", user, noteId, paragraphId);
     return new JsonResponse<>(Status.OK, "").build();
   }
 
@@ -675,7 +673,7 @@ public class NotebookRestApi extends AbstractRestApi {
   public Response nextSessionParagraph(@PathParam("noteId") String noteId,
                                        @QueryParam("maxParagraph") int maxParagraph) throws IOException {
 
-    Paragraph p = notebookService.getNextSessionParagraph(noteId, maxParagraph,
+    Paragraph p = notebookService.getNextSessionParagraph(noteId, 500,
             getServiceContext(),
             new RestServiceCallback<>());
     return new JsonResponse(Status.OK, p.getId()).build();
@@ -837,7 +835,7 @@ public class NotebookRestApi extends AbstractRestApi {
                                String message)
       throws IOException, IllegalArgumentException {
 
-    LOGGER.info("Run paragraph job asynchronously {} {} {}", noteId, paragraphId, message);
+    LOGGER.info("Start to run paragraph job asynchronously {} {} {}", noteId, paragraphId, message);
 
     Note note = notebook.getNote(noteId);
     checkIfNoteIsNotNull(note, noteId);
@@ -853,6 +851,7 @@ public class NotebookRestApi extends AbstractRestApi {
     notebookService.runParagraph(noteId, paragraphId, paragraph.getTitle(),
             paragraph.getText(), params, new HashMap<>(), sessionId,
             false, false, getServiceContext(), new RestServiceCallback<>());
+    LOGGER.info("Finish to run paragraph job asynchronously {} {} {}", noteId, paragraphId, message);
     return new JsonResponse<>(Status.OK).build();
   }
 

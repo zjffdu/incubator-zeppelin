@@ -61,7 +61,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,11 +73,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Note implements JsonSerializable {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Note.class);
+
   // serialize Paragraph#runtimeInfos and Note#path to frontend but not to note file
-  private static final ExclusionStrategy strategy = new ExclusionStrategy() {
+  private static final ExclusionStrategy NOTE_GSON_EXCLUSION_STRATEGY = new ExclusionStrategy() {
+    private boolean excludeParagraphResult = ZeppelinConfiguration.create()
+            .getBoolean(ZeppelinConfiguration.ConfVars.ZEPPELIN_NOTEBOOK_SAVE_PARAGRAPH_RESULT_EXCLUDE);
+
     @Override
     public boolean shouldSkipField(FieldAttributes f) {
-      return f.getName().equals("path");
+      return f.getName().equals("path") || (excludeParagraphResult &&
+              f.getDeclaringClass().equals(Paragraph.class) && f.getName().equals("results"));
     }
 
     @Override
@@ -91,7 +95,7 @@ public class Note implements JsonSerializable {
           .setDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
           .registerTypeAdapter(Date.class, new NotebookImportDeserializer())
           .registerTypeAdapterFactory(Input.TypeAdapterFactory)
-          .setExclusionStrategies(strategy)
+          .setExclusionStrategies(NOTE_GSON_EXCLUSION_STRATEGY)
           .create();
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
           DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");

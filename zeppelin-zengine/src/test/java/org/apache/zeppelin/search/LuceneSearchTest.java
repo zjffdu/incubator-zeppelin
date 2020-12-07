@@ -133,7 +133,7 @@ public class LuceneSearchTest {
     // give
     Note note1 = newNoteWithParagraph("Notebook1", "test");
     // when
-    noteSearchService.addIndexDoc(note1);
+    noteSearchService.addNoteIndex(note1);
     // then
     String id = resultForQuery("test").get(0).get("id"); // LuceneSearch.ID_FIELD
 
@@ -163,7 +163,7 @@ public class LuceneSearchTest {
     // when
     Paragraph p2 = note2.getLastParagraph();
     p2.setText("test indeed");
-    noteSearchService.updateIndexDoc(note2);
+    noteSearchService.updateNoteIndex(note2);
 
     // then
     List<Map<String, String>> results = noteSearchService.query("all");
@@ -178,7 +178,7 @@ public class LuceneSearchTest {
     // give
     // looks like a bug in web UI: it tries to delete a note twice (after it has just been deleted)
     // when
-    noteSearchService.deleteIndexDocs(null);
+    noteSearchService.deleteNoteIndex(null);
   }
 
   @Test
@@ -191,7 +191,7 @@ public class LuceneSearchTest {
     assertThat(resultForQuery("Notebook2")).isNotEmpty();
 
     // when
-    noteSearchService.deleteIndexDocs(note2.getId());
+    noteSearchService.deleteNoteIndex(note2);
 
     // then
     assertThat(noteSearchService.query("all")).isEmpty();

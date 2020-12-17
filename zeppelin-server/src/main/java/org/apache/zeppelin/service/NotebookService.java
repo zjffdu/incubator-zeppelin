@@ -633,6 +633,7 @@ public class NotebookService {
       p.setTitle(title);
       p.setText(text);
     }
+    note.fireParagraphUpdateEvent(p);
     notebook.saveNote(note, context.getAutheInfo());
     callback.onSuccess(p, context);
   }
@@ -746,7 +747,7 @@ public class NotebookService {
       schedulerService.refreshCron(note.getId());
     }
 
-    notebook.saveNote(note, context.getAutheInfo());
+    notebook.updateNote(note, context.getAutheInfo());
     callback.onSuccess(note, context);
   }
 

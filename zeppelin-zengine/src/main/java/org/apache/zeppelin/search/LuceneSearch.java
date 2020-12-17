@@ -204,11 +204,13 @@ public class LuceneSearch extends SearchService {
    * @see org.apache.zeppelin.search.Search#updateIndexDoc(org.apache.zeppelin.notebook.Note)
    */
   @Override
-  public void updateIndexDoc(Note note) throws IOException {
+  public void updateNoteIndexDoc(Note note) throws IOException {
     updateIndexNoteName(note);
-    for (Paragraph p : note.getParagraphs()) {
-      updateIndexParagraph(note, p);
-    }
+  }
+
+  @Override
+  public void updateParagraphIndexDoc(Paragraph paragraph) throws IOException {
+    updateIndexParagraph(paragraph.getNote(), paragraph);
   }
 
   private void updateIndexNoteName(Note note) throws IOException {

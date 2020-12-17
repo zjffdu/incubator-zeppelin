@@ -163,7 +163,8 @@ public class LuceneSearchTest {
     // when
     Paragraph p2 = note2.getLastParagraph();
     p2.setText("test indeed");
-    noteSearchService.updateIndexDoc(note2);
+    noteSearchService.updateNoteIndexDoc(note2);
+    noteSearchService.updateParagraphIndexDoc(p2);
 
     // then
     List<Map<String, String>> results = noteSearchService.query("all");
@@ -215,6 +216,7 @@ public class LuceneSearchTest {
     Paragraph p1 = note1.getLastParagraph();
     p1.setText("no no no");
     notebook.saveNote(note1, AuthenticationInfo.ANONYMOUS);
+    p1.getNote().fireParagraphUpdateEvent(p1);
     noteSearchService.drainEvents();
 
     // then
@@ -240,7 +242,8 @@ public class LuceneSearchTest {
 
     // when
     note1.setName("NotebookN");
-    notebook.saveNote(note1, AuthenticationInfo.ANONYMOUS);
+    notebook.updateNote(note1, AuthenticationInfo.ANONYMOUS);
+
     noteSearchService.drainEvents();
     Thread.sleep(1000);
     // then

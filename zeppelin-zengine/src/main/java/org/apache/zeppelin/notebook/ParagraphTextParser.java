@@ -124,7 +124,7 @@ public class ParagraphTextParser {
           } else {
             if (!parseKey) {
               throw new RuntimeException(
-                      "Invalid paragraph properties format");
+                      "Invalid paragraph properties format: " + text);
             }
             propKey = sb.toString().trim();
             sb.delete(0, sb.length());

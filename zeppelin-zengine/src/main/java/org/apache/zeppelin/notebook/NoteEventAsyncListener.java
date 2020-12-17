@@ -28,7 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public abstract class NoteEventAsyncListener implements NoteEventListener {
 
-  private BlockingQueue<NoteEvent> eventsQueue = new LinkedBlockingQueue<>();
+  private BlockingQueue<NoteEvent> eventsQueue = new LinkedBlockingQueue<>(10000);
 
   private Thread eventHandlerThread;
 

@@ -435,8 +435,10 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
         }
       }
 
-      for (Paragraph p : userParagraphMap.values()) {
-        p.setText(getText());
+      if (note.isPersonalizedMode()) {
+        for (Paragraph p : userParagraphMap.values()) {
+          p.setText(getText());
+        }
       }
 
       // inject form
@@ -499,10 +501,12 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
           return getReturn();
         }
 
-        Paragraph p = getUserParagraph(getUser());
-        if (null != p) {
-          p.setResult(ret);
-          p.settings.setParams(settings.getParams());
+        if (note.isPersonalizedMode()) {
+          Paragraph p = getUserParagraph(getUser());
+          if (null != p) {
+            p.setResult(ret);
+            p.settings.setParams(settings.getParams());
+          }
         }
 
         return ret;

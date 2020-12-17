@@ -1129,7 +1129,8 @@ public class ZeppelinConfiguration extends XMLConfiguration {
     ZEPPELIN_JOBMANAGER_ENABLE("zeppelin.jobmanager.enable", false),
     ZEPPELIN_SPARK_ONLY_YARN_CLUSTER("zeppelin.spark.only_yarn_cluster", false),
     ZEPPELIN_SESSION_CHECK_INTERVAL("zeppelin.session.check_interval", 60 * 10 * 1000),
-    ZEPPELIN_NOTEBOOK_SAVE_PARAGRAPH_RESULT_EXCLUDE("zeppelin.notebook.save.paragraph_result.exclude", "false");
+    ZEPPELIN_NOTEBOOK_SAVE_PARAGRAPH_RESULT_EXCLUDE("zeppelin.notebook.save.paragraph_result.exclude", "false"),
+    ZEPPELIN_ZSESSION_MAX_STATEMENT("zeppelin.zsession.max_statement", 500);
 
     private String varName;
     @SuppressWarnings("rawtypes")

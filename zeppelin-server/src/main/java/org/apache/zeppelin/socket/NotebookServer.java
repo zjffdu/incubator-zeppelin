@@ -1928,7 +1928,9 @@ public class NotebookServer extends WebSocketServlet
       }
     }
 
-    p.setStatusToUserParagraph(p.getStatus());
+    if (p.getNote().isPersonalizedMode()) {
+      p.setStatusToUserParagraph(p.getStatus());
+    }
     broadcastParagraph(p.getNote(), p, MSG_ID_NOT_DEFINED);
     try {
       broadcastUpdateNoteJobInfo(p.getNote(), System.currentTimeMillis() - 5000);

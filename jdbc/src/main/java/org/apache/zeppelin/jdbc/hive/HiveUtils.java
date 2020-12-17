@@ -45,7 +45,8 @@ public class HiveUtils {
 
   private static final Pattern JOBURL_PATTERN =
           Pattern.compile(".*Tracking URL = (\\S*).*", Pattern.DOTALL);
-
+  private static final Pattern TEZ_JOBID_PATTERN =
+          Pattern.compile(".*Executing on YARN cluster with App id (\\S*)\\).*", Pattern.DOTALL);
   /**
    * Display hive job execution info, and progress info for hive >= 2.3
    *
@@ -166,6 +167,11 @@ public class HiveUtils {
   // extract hive job url from logs, it only works for MR engine.
   static Optional<String> extractMRJobURL(String log) {
     Matcher matcher = JOBURL_PATTERN.matcher(log);
+    if (matcher.matches()) {
+      String jobURL = matcher.group(1);
+      return Optional.of(jobURL);
+    }
+    matcher = TEZ_JOBID_PATTERN.matcher(log);
     if (matcher.matches()) {
       String jobURL = matcher.group(1);
       return Optional.of(jobURL);

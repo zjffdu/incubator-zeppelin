@@ -461,11 +461,6 @@ public class JDBCInterpreter extends KerberosInterpreter {
       properties.setProperty("user", user);
     }
 
-    String principal = properties.getProperty("principal");
-    if (!StringUtils.isBlank(principal)) {
-      url = url + ";principal=" + principal;
-    }
-
     LOGGER.info("Creating connection pool for url: {}, properties: {}", url, properties);
     ConnectionFactory connectionFactory =
             new DriverManagerConnectionFactory(url, properties);
@@ -509,9 +504,12 @@ public class JDBCInterpreter extends KerberosInterpreter {
     setUserProperty(dbPrefix, context);
 
     final Properties properties = jdbcUserConfigurations.getPropertyMap(dbPrefix);
+
     String url = properties.getProperty(URL_KEY);
-    String connectionUrl = appendProxyUserToURL(url, user, dbPrefix);
-    
+    url = appendPrincipal(url, properties);
+    url = appendProxyUserToURL(url, user, dbPrefix);
+    String connectionUrl = appendDWSpecificProperties(url, context);
+
     String authType = properties.getProperty("zeppelin.jdbc.auth.type", "SIMPLE")
             .trim().toUpperCase();
     switch (authType) {
@@ -549,6 +547,32 @@ public class JDBCInterpreter extends KerberosInterpreter {
     }
 
     return connection;
+  }
+
+  private String appendDWSpecificProperties(String url, InterpreterContext context) {
+    StringBuilder builder = new StringBuilder(url);
+    if (url.startsWith("jdbc:hive2:")) {
+      for (Map.Entry<String, String> entry : context.getLocalProperties().entrySet()) {
+        if (entry.getKey().startsWith("dw.")) {
+          Integer lastIndexOfUrl = url.indexOf("?");
+          if (lastIndexOfUrl == -1) {
+            builder.append("?");
+            lastIndexOfUrl = url.length() + 1;
+          }
+          builder.insert(lastIndexOfUrl, entry.getKey().substring(3) + "="
+                  + entry.getValue() + ";");
+        }
+      }
+    }
+    return builder.toString();
+  }
+
+  private String appendPrincipal(String url, Properties properties) {
+    String principal = properties.getProperty("principal");
+    if (!StringUtils.isBlank(principal)) {
+      url = url + ";principal=" + principal;
+    }
+    return url;
   }
 
   private String appendProxyUserToURL(String url, String user, String propertyKey) {
@@ -696,7 +720,7 @@ public class JDBCInterpreter extends KerberosInterpreter {
   private InterpreterResult executeSql(String dbPrefix, String sql,
       InterpreterContext context) throws InterpreterException {
     Connection connection = null;
-    Statement statement;
+    Statement statement = null;
     ResultSet resultSet = null;
     String paragraphId = context.getParagraphId();
     String user = context.getAuthenticationInfo().getUser();
@@ -723,17 +747,17 @@ public class JDBCInterpreter extends KerberosInterpreter {
     try {
       List<String>  sqlArray = sqlSplitter.splitSql(sql);
       for (String sqlToExecute : sqlArray) {
-        statement = connection.createStatement();
-
-        // fetch n+1 rows in order to indicate there's more rows available (for large selects)
-        statement.setFetchSize(context.getIntLocalProperty("limit", getMaxResult()));
-        statement.setMaxRows(context.getIntLocalProperty("limit", maxRows));
-
-        if (statement == null) {
-          return new InterpreterResult(Code.ERROR, "Prefix not found.");
-        }
-
         try {
+          statement = connection.createStatement();
+
+          // fetch n+1 rows in order to indicate there's more rows available (for large selects)
+          statement.setFetchSize(context.getIntLocalProperty("limit", getMaxResult()));
+          statement.setMaxRows(context.getIntLocalProperty("limit", maxRows));
+
+          if (statement == null) {
+            return new InterpreterResult(Code.ERROR, "Prefix not found.");
+          }
+
           getJDBCConfiguration(user).saveStatement(paragraphId, statement);
 
           String statementPrecode =
@@ -788,6 +812,13 @@ public class JDBCInterpreter extends KerberosInterpreter {
                 "Query executed successfully. Affected rows : " +
                     updateCount);
           }
+        } catch (Throwable e) {
+          LOGGER.error("Cannot run " + sqlToExecute, e);
+          if (e instanceof SQLException) {
+            return new InterpreterResult(Code.ERROR,  e.getMessage());
+          } else {
+            return new InterpreterResult(Code.ERROR, ExceptionUtils.getStackTrace(e));
+          }
         } finally {
           if (resultSet != null) {
             try {
@@ -800,13 +831,6 @@ public class JDBCInterpreter extends KerberosInterpreter {
             } catch (SQLException e) { /*ignored*/ }
           }
         }
-      }
-    } catch (Throwable e) {
-      LOGGER.error("Cannot run " + sql, e);
-      if (e instanceof SQLException) {
-        return new InterpreterResult(Code.ERROR,  e.getMessage());
-      } else {
-        return new InterpreterResult(Code.ERROR, ExceptionUtils.getStackTrace(e));
       }
     } finally {
       //In case user ran an insert/update/upsert statement

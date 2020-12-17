@@ -100,7 +100,7 @@ public class Note implements JsonSerializable {
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
           DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 
-  private CopyOnWriteArrayList<Paragraph> paragraphs = new CopyOnWriteArrayList<>();
+  private List<Paragraph> paragraphs = new CopyOnWriteArrayList<>();
   private String name = "";
   private String id;
   private String defaultInterpreterGroup;
@@ -491,9 +491,9 @@ public class Note implements JsonSerializable {
       // 'result' part of Note consists of exception, instead of actual interpreter results
       LOGGER.warn("Paragraph {} has a result with exception. {}", srcParagraph.getId(), e.getMessage());
     }
-
-    paragraphs.add(newParagraph);
-
+    synchronized (paragraphs) {
+      paragraphs.add(newParagraph);
+    }
     try {
       fireParagraphCreateEvent(newParagraph);
     } catch (IOException e) {
@@ -546,7 +546,9 @@ public class Note implements JsonSerializable {
   }
 
   private void insertParagraph(Paragraph paragraph, int index) {
-    paragraphs.add(index, paragraph);
+    synchronized (paragraphs) {
+      paragraphs.add(index, paragraph);
+    }
     try {
       fireParagraphCreateEvent(paragraph);
     } catch (IOException e) {
@@ -563,15 +565,17 @@ public class Note implements JsonSerializable {
   public Paragraph removeParagraph(String user, String paragraphId) {
     removeAllAngularObjectInParagraph(user, paragraphId);
     interpreterSettingManager.removeResourcesBelongsToParagraph(getId(), paragraphId);
-    for (Paragraph p : paragraphs) {
-      if (p.getId().equals(paragraphId)) {
-        paragraphs.remove(p);
-        try {
-          fireParagraphRemoveEvent(p);
-        } catch (IOException e) {
-          LOGGER.error("Fail to fire ParagraphRemoveEvent", e);
+    synchronized (paragraphs) {
+      for (Paragraph p : paragraphs) {
+        if (p.getId().equals(paragraphId)) {
+          paragraphs.remove(p);
+          try {
+            fireParagraphRemoveEvent(p);
+          } catch (IOException e) {
+            LOGGER.error("Fail to fire ParagraphRemoveEvent", e);
+          }
+          return p;
         }
-        return p;
       }
     }
     return null;
@@ -584,14 +588,16 @@ public class Note implements JsonSerializable {
   }
 
   public Paragraph clearPersonalizedParagraphOutput(String paragraphId, String user) {
-    for (Paragraph p : paragraphs) {
-      if (!p.getId().equals(paragraphId)) {
-        continue;
-      }
+    synchronized (paragraphs) {
+      for (Paragraph p : paragraphs) {
+        if (!p.getId().equals(paragraphId)) {
+          continue;
+        }
 
-      p = p.getUserParagraphMap().get(user);
-      clearParagraphOutputFields(p);
-      return p;
+        p = p.getUserParagraphMap().get(user);
+        clearParagraphOutputFields(p);
+        return p;
+      }
     }
     return null;
   }
@@ -603,13 +609,15 @@ public class Note implements JsonSerializable {
    * @return Paragraph
    */
   public Paragraph clearParagraphOutput(String paragraphId) {
-    for (Paragraph p : paragraphs) {
-      if (!p.getId().equals(paragraphId)) {
-        continue;
-      }
+    synchronized (paragraphs) {
+      for (Paragraph p : paragraphs) {
+        if (!p.getId().equals(paragraphId)) {
+          continue;
+        }
 
-      clearParagraphOutputFields(p);
-      return p;
+        clearParagraphOutputFields(p);
+        return p;
+      }
     }
     return null;
   }
@@ -618,8 +626,10 @@ public class Note implements JsonSerializable {
    * Clear all paragraph output of note
    */
   public void clearAllParagraphOutput() {
-    for (Paragraph p : paragraphs) {
-      p.setReturn(null, null);
+    synchronized (paragraphs) {
+      for (Paragraph p : paragraphs) {
+        p.setReturn(null, null);
+      }
     }
   }
 
@@ -642,44 +652,47 @@ public class Note implements JsonSerializable {
    *                                   when index is out of bound
    */
   public void moveParagraph(String paragraphId, int index, boolean throwWhenIndexIsOutOfBound) {
-    int oldIndex;
-    Paragraph p = null;
+    synchronized (paragraphs) {
+      int oldIndex;
+      Paragraph p = null;
 
-    if (index < 0 || index >= paragraphs.size()) {
-      if (throwWhenIndexIsOutOfBound) {
-        throw new IndexOutOfBoundsException(
-                "paragraph size is " + paragraphs.size() + " , index is " + index);
-      } else {
-        return;
-      }
-    }
-
-    for (int i = 0; i < paragraphs.size(); i++) {
-      if (paragraphs.get(i).getId().equals(paragraphId)) {
-        oldIndex = i;
-        if (oldIndex == index) {
+      if (index < 0 || index >= paragraphs.size()) {
+        if (throwWhenIndexIsOutOfBound) {
+          throw new IndexOutOfBoundsException(
+                  "paragraph size is " + paragraphs.size() + " , index is " + index);
+        } else {
           return;
         }
-        p = paragraphs.remove(i);
       }
-    }
 
-    if (p != null) {
-      paragraphs.add(index, p);
+      for (int i = 0; i < paragraphs.size(); i++) {
+        if (paragraphs.get(i).getId().equals(paragraphId)) {
+          oldIndex = i;
+          if (oldIndex == index) {
+            return;
+          }
+          p = paragraphs.remove(i);
+        }
+      }
+
+      if (p != null) {
+        paragraphs.add(index, p);
+      }
     }
   }
 
   public boolean isLastParagraph(String paragraphId) {
-    if (!paragraphs.isEmpty()) {
-      if (paragraphId.equals(paragraphs.get(paragraphs.size() - 1).getId())) {
-        return true;
+    synchronized (paragraphs) {
+      if (!paragraphs.isEmpty()) {
+        if (paragraphId.equals(paragraphs.get(paragraphs.size() - 1).getId())) {
+          return true;
+        }
+        return false;
       }
-      return false;
+      /** because empty list, cannot remove nothing right? */
+      return true;
     }
-    /** because empty list, cannot remove nothing right? */
-    return true;
   }
-
   public int getParagraphCount() {
     return paragraphs.size();
   }
@@ -698,7 +711,9 @@ public class Note implements JsonSerializable {
   }
 
   public Paragraph getLastParagraph() {
-    return paragraphs.get(paragraphs.size() - 1);
+    synchronized (paragraphs) {
+      return paragraphs.get(paragraphs.size() - 1);
+    }
   }
 
   private void setParagraphMagic(Paragraph p, int index) {
@@ -859,10 +874,12 @@ public class Note implements JsonSerializable {
    * Return true if there is a running or pending paragraph
    */
   public boolean haveRunningOrPendingParagraphs() {
-    for (Paragraph p : paragraphs) {
-      Status status = p.getStatus();
-      if (status.isRunning() || status.isPending()) {
-        return true;
+    synchronized (paragraphs) {
+      for (Paragraph p : paragraphs) {
+        Status status = p.getStatus();
+        if (status.isRunning() || status.isPending()) {
+          return true;
+        }
       }
     }
     return false;
@@ -882,7 +899,7 @@ public class Note implements JsonSerializable {
     return p.completion(buffer, cursor);
   }
 
-  public CopyOnWriteArrayList<Paragraph> getParagraphs() {
+  public List<Paragraph> getParagraphs() {
     return this.paragraphs;
   }
 
@@ -1097,7 +1114,13 @@ public class Note implements JsonSerializable {
 
   @Override
   public String toJson() {
-    return GSON.toJson(this);
+    if (paragraphs != null) {
+      synchronized (paragraphs) {
+        return GSON.toJson(this);
+      }
+    } else {
+      return GSON.toJson(this);
+    }
   }
 
   /**

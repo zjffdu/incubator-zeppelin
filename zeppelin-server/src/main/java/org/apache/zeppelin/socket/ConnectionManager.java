@@ -72,6 +72,8 @@ public class ConnectionManager {
   // user -> connection
   final Map<String, Queue<NotebookSocket>> userSocketMap = new HashMap<>();
 
+  private boolean disableWebSocket = true;
+
   /**
    * This is a special endpoint in the notebook websoket, Every connection in this Queue
    * will be able to watch every websocket event, it doesnt need to be listed into the map of
@@ -232,6 +234,9 @@ public class ConnectionManager {
   }
 
   public void broadcast(String noteId, Message m) {
+    if (disableWebSocket) {
+      return;
+    }
     List<NotebookSocket> socketsToBroadcast = Collections.emptyList();
     synchronized (noteSocketMap) {
       broadcastToWatchers(noteId, StringUtils.EMPTY, m);
@@ -269,6 +274,9 @@ public class ConnectionManager {
   }
 
   public void broadcastExcept(String noteId, Message m, NotebookSocket exclude) {
+    if (disableWebSocket) {
+      return;
+    }
     List<NotebookSocket> socketsToBroadcast = Collections.emptyList();
     synchronized (noteSocketMap) {
       broadcastToWatchers(noteId, StringUtils.EMPTY, m);
@@ -300,6 +308,9 @@ public class ConnectionManager {
   }
 
   public void broadcastToAllConnectionsExcept(NotebookSocket exclude, String serializedMsg) {
+    if (disableWebSocket) {
+      return;
+    }
     synchronized (connectedSockets) {
       for (NotebookSocket conn : connectedSockets) {
         if (exclude != null && exclude.equals(conn)) {
@@ -336,6 +347,9 @@ public class ConnectionManager {
   }
 
   public void unicast(Message m, NotebookSocket conn) {
+    if (disableWebSocket) {
+      return;
+    }
     try {
       conn.send(serializeMessage(m));
     } catch (IOException | WebSocketException e) {

@@ -673,7 +673,8 @@ public class NotebookRestApi extends AbstractRestApi {
   public Response nextSessionParagraph(@PathParam("noteId") String noteId,
                                        @QueryParam("maxParagraph") int maxParagraph) throws IOException {
 
-    Paragraph p = notebookService.getNextSessionParagraph(noteId, 500,
+    Paragraph p = notebookService.getNextSessionParagraph(noteId,
+            zConf.getInt(ZeppelinConfiguration.ConfVars.ZEPPELIN_ZSESSION_MAX_STATEMENT),
             getServiceContext(),
             new RestServiceCallback<>());
     return new JsonResponse(Status.OK, p.getId()).build();

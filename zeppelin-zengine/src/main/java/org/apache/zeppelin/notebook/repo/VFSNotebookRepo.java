@@ -19,6 +19,7 @@ package org.apache.zeppelin.notebook.repo;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -131,12 +132,13 @@ public class VFSNotebookRepo implements NotebookRepo {
   public Note get(String noteId, String notePath, AuthenticationInfo subject) throws IOException {
     FileObject noteFile = rootNotebookFileObject.resolveFile(buildNoteFileName(noteId, notePath),
         NameScope.DESCENDENT);
-    String json = IOUtils.toString(noteFile.getContent().getInputStream(),
-        conf.getString(ConfVars.ZEPPELIN_ENCODING));
-    Note note = Note.fromJson(json);
-    // setPath here just for testing, because actually NoteManager will setPath
-    note.setPath(notePath);
-    return note;
+    try (InputStream in = noteFile.getContent().getInputStream()) {
+      String json = IOUtils.toString(in, conf.getString(ConfVars.ZEPPELIN_ENCODING));
+      Note note = Note.fromJson(json);
+      // setPath here just for testing, because actually NoteManager will setPath
+      note.setPath(notePath);
+      return note;
+    }
   }
 
   @Override

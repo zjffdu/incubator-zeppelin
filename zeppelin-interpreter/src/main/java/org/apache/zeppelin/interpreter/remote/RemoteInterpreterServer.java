@@ -168,7 +168,7 @@ public class RemoteInterpreterServer extends Thread
       this.host = RemoteInterpreterUtils.findAvailableHostAddress();
       if (!isTest) {
         LOGGER.info("Starting remote interpreter server on port {}, intpEventServerAddress: {}:{}", port,
-          intpEventServerHost, intpEventServerPort);
+                intpEventServerHost, intpEventServerPort);
         intpEventClient = new RemoteInterpreterEventClient(intpEventServerHost, intpEventServerPort);
       }
     } else {
@@ -226,6 +226,13 @@ public class RemoteInterpreterServer extends Thread
       lifecycleManager.onInterpreterProcessStarted(interpreterGroupId);
     } catch (Exception e) {
       throw new TException("Fail to create LifeCycleManager", e);
+    }
+
+    if (!isTest) {
+      int connectionPoolSize =
+              this.zConf.getInt(ZeppelinConfiguration.ConfVars.ZEPPELIN_INTERPRETER_CONNECTION_POOL_SIZE);
+      LOGGER.info("Create RemoteInterpreterEventClient again with connection pool size: {}", connectionPoolSize);
+      intpEventClient = new RemoteInterpreterEventClient(intpEventServerHost, intpEventServerPort, connectionPoolSize);
     }
   }
 
@@ -496,7 +503,8 @@ public class RemoteInterpreterServer extends Thread
       LOGGER.info("Reconnect to this interpreter process from {}:{}", host, port);
       this.intpEventServerHost = host;
       this.intpEventServerPort = port;
-      intpEventClient = new RemoteInterpreterEventClient(intpEventServerHost, intpEventServerPort);
+      intpEventClient = new RemoteInterpreterEventClient(intpEventServerHost, intpEventServerPort,
+              zConf.getInt(ZeppelinConfiguration.ConfVars.ZEPPELIN_INTERPRETER_CONNECTION_POOL_SIZE));
       intpEventClient.setIntpGroupId(interpreterGroupId);
 
       this.angularObjectRegistry = new AngularObjectRegistry(interpreterGroup.getId(), intpEventClient);

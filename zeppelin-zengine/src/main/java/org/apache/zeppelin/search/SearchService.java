@@ -55,7 +55,16 @@ public abstract class SearchService extends NoteEventAsyncListener {
    * @param note a Note to update index for
    * @throws IOException
    */
-  public abstract void updateIndexDoc(Note note) throws IOException;
+  public abstract void updateNoteIndexDoc(Note note) throws IOException;
+
+  /**
+   * Updates document in index for the given Paragraph.
+   *
+   * @param paragraph a Paragraph to update index for
+   * @throws IOException
+   */
+  public abstract void updateParagraphIndexDoc(Paragraph paragraph) throws IOException;
+
 
   /**
    * Indexes full collection of notes: all the paragraphs + Note names
@@ -105,7 +114,7 @@ public abstract class SearchService extends NoteEventAsyncListener {
   @Override
   public void handleNoteUpdateEvent(NoteUpdateEvent noteUpdateEvent) {
     try {
-      updateIndexDoc(noteUpdateEvent.getNote());
+      updateNoteIndexDoc(noteUpdateEvent.getNote());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -114,7 +123,7 @@ public abstract class SearchService extends NoteEventAsyncListener {
   @Override
   public void handleParagraphCreateEvent(ParagraphCreateEvent paragraphCreateEvent) {
     try {
-      updateIndexDoc(paragraphCreateEvent.getParagraph().getNote());
+      updateParagraphIndexDoc(paragraphCreateEvent.getParagraph());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -129,7 +138,7 @@ public abstract class SearchService extends NoteEventAsyncListener {
   @Override
   public void handleParagraphUpdateEvent(ParagraphUpdateEvent paragraphUpdateEvent) {
     try {
-      updateIndexDoc(paragraphUpdateEvent.getParagraph().getNote());
+      updateParagraphIndexDoc(paragraphUpdateEvent.getParagraph());
     } catch (IOException e) {
       e.printStackTrace();
     }

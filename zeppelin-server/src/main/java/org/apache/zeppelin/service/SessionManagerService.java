@@ -68,7 +68,7 @@ public class SessionManagerService {
         SessionInfo sessionInfo = null;
         try {
           sessionInfo = getSessionInfo(entry.getKey());
-          if (sessionInfo != null && sessionInfo.getState().equalsIgnoreCase("Stopped")) {
+          if (sessionInfo != null && "Stopped".equalsIgnoreCase(sessionInfo.getState())) {
             LOGGER.info("Session {} has been stopped, remove it and its associated note", entry.getKey());
             try {
               notebook.removeNote(sessionInfo.getNoteId(), AuthenticationInfo.ANONYMOUS);
@@ -179,7 +179,7 @@ public class SessionManagerService {
         }
       }
     } else {
-      if (sessionInfo.getState().equals(SessionState.RUNNING.name())) {
+      if (sessionInfo.getState() != null && sessionInfo.getState().equals(SessionState.RUNNING.name())) {
         // if it is running before, but interpreterGroup is null now, that means the session is stopped.
         // e.g. InterpreterProcess is killed if it exceed idle timeout threshold.
         sessionInfo.setState(SessionState.STOPPED.name());

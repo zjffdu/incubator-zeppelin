@@ -65,6 +65,10 @@ public class JDBCSecurityImpl {
           LOGGER.error("Failed to get either keytab location or principal name in the " +
               "interpreter", e);
         }
+        break;
+      case SIMPLE:
+        LOGGER.info("SIMPLE type, do nothing");
+        break;
     }
   }
 

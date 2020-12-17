@@ -189,6 +189,8 @@ public class JDBCInterpreter extends KerberosInterpreter {
       } else if (UserGroupInformation.isLoginTicketBased()) {
         UserGroupInformation.getLoginUser().reloginFromTicketCache();
         return true;
+      } else {
+        throw new Exception("No way to init kerberos");
       }
     } catch (Exception e) {
       LOGGER.error("Unable to run kinit for zeppelin", e);
@@ -198,6 +200,15 @@ public class JDBCInterpreter extends KerberosInterpreter {
 
   @Override
   public void open() {
+    // login via keytab first in open method, otherwise the underlying runKerbose thread will
+    // fail and cause the interpreter closed.
+    String authType = properties.getProperty("zeppelin.jdbc.auth.type", "SIMPLE")
+            .trim().toUpperCase();
+    if (authType.equalsIgnoreCase("KERBEROS")) {
+      JDBCSecurityImpl.createSecureConfiguration(getProperties(),
+              UserGroupInformation.AuthenticationMethod.KERBEROS);
+    }
+
     super.open();
     for (String propertyKey : properties.stringPropertyNames()) {
       LOGGER.debug("propertyKey: {}", propertyKey);

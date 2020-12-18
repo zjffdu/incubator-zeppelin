@@ -123,6 +123,11 @@ public class SparkInterpreter extends AbstractInterpreter {
     }
   }
 
+  private boolean isYarnCluster(SparkConf conf) {
+    return conf.contains(SparkStringConstants.SUBMIT_DEPLOY_MODE_PROP_NAME) &&
+            conf.get(SparkStringConstants.SUBMIT_DEPLOY_MODE_PROP_NAME).equals("cluster");
+  }
+
   /**
    * Load AbstractSparkScalaInterpreter based on the runtime scala version.
    * Load AbstractSparkScalaInterpreter from the following location:
@@ -139,8 +144,8 @@ public class SparkInterpreter extends AbstractInterpreter {
     String scalaVersion = extractScalaVersion();
     ClassLoader scalaInterpreterClassLoader = Thread.currentThread().getContextClassLoader();
 
-    String zeppelinHome = System.getenv("ZEPPELIN_HOME");
-    if (zeppelinHome != null) {
+    if (!isYarnCluster(conf)) {
+      String zeppelinHome = System.getenv("ZEPPELIN_HOME");
       // ZEPPELIN_HOME is null in yarn-cluster mode, load it directly via current ClassLoader.
       // otherwise, load from the specific folder ZEPPELIN_HOME/interpreter/spark/scala-<version>
 

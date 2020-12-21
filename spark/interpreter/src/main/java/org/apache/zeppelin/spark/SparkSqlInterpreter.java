@@ -20,6 +20,7 @@ package org.apache.zeppelin.spark;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.AnalysisException;
+import org.apache.spark.sql.SparkSession;
 import org.apache.zeppelin.interpreter.AbstractInterpreter;
 import org.apache.zeppelin.interpreter.ZeppelinContext;
 import org.apache.zeppelin.interpreter.InterpreterContext;
@@ -35,7 +36,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -92,6 +95,8 @@ public class SparkSqlInterpreter extends AbstractInterpreter {
 
     sc.setLocalProperty("spark.scheduler.pool", context.getLocalProperties().get("pool"));
     sc.setJobGroup(Utils.buildJobGroupId(context), Utils.buildJobDesc(context), false);
+    sc.setJobDescription(st);
+    setDWProperties(sc, context);
     String curSql = null;
     ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
     try {
@@ -141,6 +146,19 @@ public class SparkSqlInterpreter extends AbstractInterpreter {
     return new InterpreterResult(Code.SUCCESS);
   }
 
+  public void setDWProperties(SparkContext sc, InterpreterContext context) {
+    if (sparkInterpreter.getSparkSession() != null) {
+      if (context.getLocalProperties() != null) {
+        for (Map.Entry<String, String> entry : context.getLocalProperties().entrySet()) {
+          if (entry.getKey().startsWith("dw.")) {
+            ((SparkSession) sparkInterpreter.getSparkSession()).conf()
+                    .set(entry.getKey().substring(3), entry.getValue());
+          }
+        }
+      }
+    }
+  }
+
   @Override
   public void cancel(InterpreterContext context) throws InterpreterException {
     SparkContext sc = sparkInterpreter.getSparkContext();
@@ -183,6 +201,6 @@ public class SparkSqlInterpreter extends AbstractInterpreter {
   @Override
   public List<InterpreterCompletion> completion(String buf, int cursor,
       InterpreterContext interpreterContext) {
-    return null;
+    return new ArrayList<>();
   }
 }

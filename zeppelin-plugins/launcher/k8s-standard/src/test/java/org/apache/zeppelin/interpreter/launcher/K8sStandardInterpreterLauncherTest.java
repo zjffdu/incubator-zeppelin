@@ -59,7 +59,8 @@ public class K8sStandardInterpreterLauncherTest {
             "sh",
             "name",
             0,
-            "host");
+            "host",
+            "");
 
     // when
     InterpreterClient client = launcher.launch(context);
@@ -90,7 +91,8 @@ public class K8sStandardInterpreterLauncherTest {
             "spark", // interpreterSettingGroup
             "spark", // interpreterSettingName
             0,
-            "host");
+            "host",
+            "");
     // when
     InterpreterClient client = launcher.launch(context);
 
@@ -123,7 +125,8 @@ public class K8sStandardInterpreterLauncherTest {
             "spark", // interpreterSettingGroup
             "spark", // interpreterSettingName
             0,
-            "host");
+            "host",
+            "");
     // when
     InterpreterClient client = launcher.launch(context);
 

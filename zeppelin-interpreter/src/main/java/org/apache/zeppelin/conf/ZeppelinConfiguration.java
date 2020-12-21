@@ -59,7 +59,8 @@ public class ZeppelinConfiguration extends XMLConfiguration {
   public enum RUN_MODE {
     LOCAL,
     K8S,
-    DOCKER
+    DOCKER,
+    EMR
   }
 
   public ZeppelinConfiguration(URL url) throws ConfigurationException {

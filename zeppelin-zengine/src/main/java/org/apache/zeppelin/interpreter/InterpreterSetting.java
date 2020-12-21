@@ -764,6 +764,19 @@ public class InterpreterSetting {
   }
 
   public String getLauncherPlugin(Properties properties) {
+    ZeppelinConfiguration.RUN_MODE runMode = conf.getRunMode();
+    if (runMode == ZeppelinConfiguration.RUN_MODE.EMR) {
+      String launcher = properties.getProperty("zeppelin.interpreter.launcher");
+      LOGGER.debug("zeppelin.interpreter.launcher: {}", launcher);
+      if (group.equals("spark")) {
+        return "EMRSparkInterpreterLauncher";
+      } else if (group.equals("flink")) {
+        return "EMRFlinkInterpreterLauncher";
+      } else {
+        return "EMRStandardInterpreterLauncher";
+      }
+    }
+
     if (isRunningOnKubernetes()) {
       return "K8sStandardInterpreterLauncher";
     } else if (isRunningOnCluster()) {

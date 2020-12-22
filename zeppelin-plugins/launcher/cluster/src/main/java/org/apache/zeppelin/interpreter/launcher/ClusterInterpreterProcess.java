@@ -33,7 +33,8 @@ public class ClusterInterpreterProcess extends RemoteInterpreterManagedProcess {
       connectionPoolSize,
       interpreterSettingName,
       interpreterGroupId,
-      isUserImpersonated);
+      isUserImpersonated,
+            "");
   }
 
   @Override

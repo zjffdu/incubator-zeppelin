@@ -65,7 +65,7 @@ public class ClusterInterpreterLauncherTest extends ClusterMockTest {
     option.setUserImpersonate(true);
     InterpreterLaunchContext context = new InterpreterLaunchContext(properties, option, null,
         "user1", "intpGroupId", "groupId",
-        "groupName", "name", 0, "host");
+        "groupName", "name", 0, "host", "");
 
     InterpreterClient client = launcher.launch(context);
 
@@ -89,7 +89,7 @@ public class ClusterInterpreterLauncherTest extends ClusterMockTest {
     option.setUserImpersonate(true);
     InterpreterLaunchContext context = new InterpreterLaunchContext(properties, option, null,
         "user1", "intpGroupId2", "groupId",
-        "groupName", "name", 0, "host");
+        "groupName", "name", 0, "host", "");
     InterpreterClient client = launcher.launch(context);
 
     assertTrue(client instanceof ClusterInterpreterProcess);
@@ -116,7 +116,7 @@ public class ClusterInterpreterLauncherTest extends ClusterMockTest {
     option.setUserImpersonate(true);
     InterpreterLaunchContext context = new InterpreterLaunchContext(properties, option, null,
         "user1", "intpGroupId3", "groupId3",
-        "groupName", "name", 0, "host");
+        "groupName", "name", 0, "host", "");
     InterpreterClient client = launcher.launch(context);
 
     assertTrue(client instanceof DockerInterpreterProcess);
@@ -135,7 +135,7 @@ public class ClusterInterpreterLauncherTest extends ClusterMockTest {
     option.setUserImpersonate(true);
     InterpreterLaunchContext context = new InterpreterLaunchContext(properties, option, null,
         "user1", "intpGroupId4", "groupId4",
-        "groupName", "name", 0, "host");
+        "groupName", "name", 0, "host", "");
     InterpreterClient client = launcher.launch(context);
 
     assertTrue(client instanceof ClusterInterpreterProcess);

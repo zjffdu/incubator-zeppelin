@@ -55,7 +55,7 @@ public class DockerInterpreterProcessTest {
     InterpreterOption option = new InterpreterOption();
     InterpreterLaunchContext context = new InterpreterLaunchContext(properties, option, null,
         "user1", "intpGroupId", "groupId",
-        "groupName", "name", 0, "host");
+        "groupName", "name", 0, "host", "");
     InterpreterClient client = launcher.launch(context);
 
     assertTrue(client instanceof DockerInterpreterProcess);

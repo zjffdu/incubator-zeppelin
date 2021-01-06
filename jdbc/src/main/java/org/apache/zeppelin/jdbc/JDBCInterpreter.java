@@ -518,6 +518,7 @@ public class JDBCInterpreter extends KerberosInterpreter {
 
     String url = properties.getProperty(URL_KEY);
     url = appendPrincipal(url, properties);
+    url = appendQueue(url, context.getLocalProperties().get("queue"));
     url = appendProxyUserToURL(url, user, dbPrefix);
     String connectionUrl = appendDWSpecificProperties(url, context);
 
@@ -565,10 +566,12 @@ public class JDBCInterpreter extends KerberosInterpreter {
     if (url.startsWith("jdbc:hive2:")) {
       for (Map.Entry<String, String> entry : context.getLocalProperties().entrySet()) {
         if (entry.getKey().startsWith("dw.")) {
-          Integer lastIndexOfUrl = url.indexOf("?");
+          Integer lastIndexOfUrl = builder.indexOf("?");
           if (lastIndexOfUrl == -1) {
             builder.append("?");
-            lastIndexOfUrl = url.length() + 1;
+            lastIndexOfUrl = builder.length();
+          } else {
+            lastIndexOfUrl++;
           }
           builder.insert(lastIndexOfUrl, entry.getKey().substring(3) + "="
                   + entry.getValue() + ";");
@@ -582,6 +585,25 @@ public class JDBCInterpreter extends KerberosInterpreter {
     String principal = properties.getProperty("principal");
     if (!StringUtils.isBlank(principal)) {
       url = url + ";principal=" + principal;
+    }
+    return url;
+  }
+
+  private String appendQueue(String url, String queue) {
+    if (StringUtils.isNotBlank(queue)) {
+      StringBuilder urlBuilder = new StringBuilder(url);
+      Integer lastIndexOfUrl = urlBuilder.indexOf("?");
+      if (lastIndexOfUrl == -1) {
+        urlBuilder.append("?");
+        lastIndexOfUrl = urlBuilder.length();
+      } else {
+        lastIndexOfUrl++;
+      }
+      LOGGER.info("Using queue as: {}", queue);
+      urlBuilder.insert(lastIndexOfUrl,
+              "mapred.job.queue.name=" + queue + ";tez.queue.name=" + queue +
+                      ";spark.yarn.queue=" + queue + ";");
+      return urlBuilder.toString();
     }
     return url;
   }

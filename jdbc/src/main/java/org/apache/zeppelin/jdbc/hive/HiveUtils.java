@@ -24,7 +24,6 @@ import org.apache.zeppelin.jdbc.JDBCInterpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +71,8 @@ public class HiveUtils {
     final ProgressBar progressBar = progressBarTemp;
     final long timeoutThreshold = Long.parseLong(
             jdbcInterpreter.getProperty("zeppelin.jdbc.hive.timeout.threshold", "" + 60 * 1000));
-    final long queryInterval = Long.parseLong(jdbcInterpreter.getProperty("zeppelin.jdbc.hive.monitor.query_interval",
+    final long queryInterval = Long.parseLong(
+            jdbcInterpreter.getProperty("zeppelin.jdbc.hive.monitor.query_interval",
             DEFAULT_QUERY_PROGRESS_INTERVAL + ""));
     Thread thread = new Thread(() -> {
       boolean jobLaunched = false;

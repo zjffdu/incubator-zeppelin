@@ -122,7 +122,7 @@ public class Flink110Shims extends FlinkShims {
   }
 
   @Override
-  public Object createCatalogManager(Object config) {
+  public Object createCatalogManager(Object config, ClassLoader classLoader) {
     return new CatalogManager("default_catalog",
             new GenericInMemoryCatalog("default_catalog", "default_database"));
   }

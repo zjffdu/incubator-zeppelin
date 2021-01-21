@@ -99,7 +99,7 @@ public abstract class FlinkShims {
 
   public abstract Object createStreamExecutionEnvironmentFactory(Object streamExecutionEnvironment);
 
-  public abstract Object createCatalogManager(Object config);
+  public abstract Object createCatalogManager(Object config, ClassLoader classLoader);
 
   public abstract String getPyFlinkPythonPath(Properties properties) throws IOException;
 

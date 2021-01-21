@@ -384,7 +384,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
       val tblConfig = new TableConfig
       tblConfig.getConfiguration.addAll(configuration)
       // Step 1.1 Initialize the CatalogManager if required.
-      val catalogManager = flinkShims.createCatalogManager(tblConfig.getConfiguration).asInstanceOf[CatalogManager]
+      val catalogManager = flinkShims.createCatalogManager(tblConfig.getConfiguration, getFlinkScalaShellLoader).asInstanceOf[CatalogManager]
       // Step 1.2 Initialize the ModuleManager if required.
       val moduleManager = new ModuleManager();
       // Step 1.3 Initialize the FunctionCatalog if required.
@@ -579,7 +579,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
   def createPlannerAgain(): Unit = {
     val originalClassLoader = Thread.currentThread().getContextClassLoader
     try {
-      Thread.currentThread().setContextClassLoader(getFlinkClassLoader)
+      Thread.currentThread().setContextClassLoader(getFlinkScalaShellLoader)
       val stEnvSetting =
         EnvironmentSettings.newInstance().inStreamingMode().useBlinkPlanner().build()
       this.tblEnvFactory.createPlanner(stEnvSetting)

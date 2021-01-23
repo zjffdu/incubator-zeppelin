@@ -1,0 +1,908 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Zeppelin: Flink Shims                                              [jar]
+[INFO] Zeppelin: Flink1.10 Shims                                          [jar]
+[INFO] Zeppelin: Flink1.11 Shims                                          [jar]
+[INFO] Zeppelin: Flink1.12 Shims                                          [jar]
+[INFO] Zeppelin: Flink                                                    [jar]
+[WARNING] The POM for org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 is missing, no dependency information available
+[WARNING] Failed to retrieve plugin descriptor for org.eclipse.m2e:lifecycle-mapping:1.0.0: Plugin org.eclipse.m2e:lifecycle-mapping:1.0.0 or one of its dependencies could not be resolved: Failure to find org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 in https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced
+[INFO] 
+[INFO] ------------------< org.apache.zeppelin:flink-shims >-------------------
+[INFO] Building Zeppelin: Flink Shims 0.10.0-SNAPSHOT                     [1/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The POM for org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 is missing, no dependency information available
+[WARNING] Failed to retrieve plugin descriptor for org.eclipse.m2e:lifecycle-mapping:1.0.0: Plugin org.eclipse.m2e:lifecycle-mapping:1.0.0 or one of its dependencies could not be resolved: Failure to find org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 in https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.2:tree (default-cli) @ flink-shims ---
+[INFO] org.apache.zeppelin:flink-shims:jar:0.10.0-SNAPSHOT
+[INFO] +- org.jline:jline-terminal:jar:3.9.0:compile
+[INFO] +- org.jline:jline-reader:jar:3.9.0:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter-shaded:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- org.apache.zeppelin:zeppelin-common:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- io.atomix:atomix:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-cluster:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- io.netty:netty-transport:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  +- io.netty:netty-buffer:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  \- io.netty:netty-resolver:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-codec:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-handler:jar:4.1.27.Final:provided
+[INFO] |  |  |  \- io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.1.27.Final:provided
+[INFO] |  |  |     +- io.netty:netty-common:jar:4.1.27.Final:provided
+[INFO] |  |  |     \- io.netty:netty-transport-native-unix-common:jar:4.1.27.Final:provided
+[INFO] |  |  +- io.atomix:atomix-primitive:jar:3.0.0-rc4:provided
+[INFO] |  |  |  \- io.atomix:atomix-storage:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-utils:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- com.google.guava:guava:jar:22.0:provided
+[INFO] |  |  |  |  +- com.google.code.findbugs:jsr305:jar:1.3.9:provided
+[INFO] |  |  |  |  +- com.google.errorprone:error_prone_annotations:jar:2.0.18:provided
+[INFO] |  |  |  |  +- com.google.j2objc:j2objc-annotations:jar:1.1:provided
+[INFO] |  |  |  |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14:provided
+[INFO] |  |  |  +- org.apache.commons:commons-math3:jar:3.6.1:provided
+[INFO] |  |  |  +- com.esotericsoftware:kryo:jar:4.0.2:provided
+[INFO] |  |  |  |  +- com.esotericsoftware:reflectasm:jar:1.11.3:provided
+[INFO] |  |  |  |  |  \- org.ow2.asm:asm:jar:5.0.4:provided
+[INFO] |  |  |  |  +- com.esotericsoftware:minlog:jar:1.3.0:provided
+[INFO] |  |  |  |  \- org.objenesis:objenesis:jar:2.5.1:provided
+[INFO] |  |  |  +- com.typesafe:config:jar:1.3.2:provided
+[INFO] |  |  |  \- io.github.lukehutch:fast-classpath-scanner:jar:2.21:provided
+[INFO] |  |  \- org.hamcrest:hamcrest-all:jar:1.3:provided
+[INFO] |  +- io.atomix:atomix-raft:jar:3.0.0-rc4:provided
+[INFO] |  +- io.atomix:atomix-primary-backup:jar:3.0.0-rc4:provided
+[INFO] |  +- org.apache.commons:commons-lang3:jar:3.10:provided
+[INFO] |  +- org.apache.thrift:libthrift:jar:0.13.0:provided
+[INFO] |  |  +- org.apache.httpcomponents:httpclient:jar:4.5.1:provided
+[INFO] |  |  |  \- commons-codec:commons-codec:jar:1.14:provided
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.1:provided
+[INFO] |  +- com.google.code.gson:gson:jar:2.8.6:provided
+[INFO] |  +- commons-configuration:commons-configuration:jar:1.9:provided
+[INFO] |  |  \- commons-lang:commons-lang:jar:2.6:provided
+[INFO] |  +- org.apache.commons:commons-pool2:jar:2.3:provided
+[INFO] |  +- org.apache.maven:maven-plugin-api:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-artifact:jar:3.6.3:provided
+[INFO] |  |  +- org.codehaus.plexus:plexus-utils:jar:3.2.1:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-classworlds:jar:2.6.0:provided
+[INFO] |  +- org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:provided
+[INFO] |  |  +- javax.enterprise:cdi-api:jar:1.0:provided
+[INFO] |  |  |  \- javax.annotation:jsr250-api:jar:1.0:provided
+[INFO] |  |  +- org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:provided
+[INFO] |  +- org.apache.maven:maven-resolver-provider:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model-builder:jar:3.6.3:provided
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-interpolation:jar:1.25:provided
+[INFO] |  |  |  \- org.apache.maven:maven-builder-support:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-repository-metadata:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.4.1:provided
+[INFO] |  |  \- javax.inject:javax.inject:jar:1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-connector-basic:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-file:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-http:jar:1.4.1:provided
+[INFO] |  \- jline:jline:jar:2.14.3:provided
+[INFO] +- org.slf4j:slf4j-log4j12:jar:1.7.30:compile
+[INFO] |  \- log4j:log4j:jar:1.2.17:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.30:compile
+[INFO] \- org.apache.commons:commons-exec:jar:1.3:compile
+[INFO] 
+[INFO] ----------------< org.apache.zeppelin:flink1.10-shims >-----------------
+[INFO] Building Zeppelin: Flink1.10 Shims 0.10.0-SNAPSHOT                 [2/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The POM for org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 is missing, no dependency information available
+[WARNING] Failed to retrieve plugin descriptor for org.eclipse.m2e:lifecycle-mapping:1.0.0: Plugin org.eclipse.m2e:lifecycle-mapping:1.0.0 or one of its dependencies could not be resolved: Failure to find org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 in https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.2:tree (default-cli) @ flink1.10-shims ---
+[INFO] org.apache.zeppelin:flink1.10-shims:jar:0.10.0-SNAPSHOT
+[INFO] +- org.apache.zeppelin:flink-shims:jar:0.10.0-SNAPSHOT:compile
+[INFO] |  +- org.jline:jline-terminal:jar:3.9.0:compile
+[INFO] |  \- org.jline:jline-reader:jar:3.9.0:compile
+[INFO] +- org.apache.flink:flink-core:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-annotations:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-metrics-core:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-shaded-asm-7:jar:7.1-9.0:provided
+[INFO] |  +- org.apache.commons:commons-lang3:jar:3.10:provided
+[INFO] |  +- com.esotericsoftware.kryo:kryo:jar:2.24.0:provided
+[INFO] |  |  +- com.esotericsoftware.minlog:minlog:jar:1.2:provided
+[INFO] |  |  \- org.objenesis:objenesis:jar:2.1:provided
+[INFO] |  +- commons-collections:commons-collections:jar:3.2.2:provided
+[INFO] |  +- org.apache.commons:commons-compress:jar:1.18:provided
+[INFO] |  +- org.apache.flink:flink-shaded-guava:jar:18.0-9.0:provided
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:1.3.9:provided
+[INFO] |  \- org.apache.flink:force-shading:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-clients_2.11:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-optimizer_2.11:jar:1.10.2:provided
+[INFO] |  \- commons-cli:commons-cli:jar:1.4:provided
+[INFO] +- org.apache.flink:flink-runtime_2.11:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-queryable-state-client-java:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-hadoop-fs:jar:1.10.2:provided
+[INFO] |  +- commons-io:commons-io:jar:2.6:provided
+[INFO] |  +- org.apache.flink:flink-shaded-netty:jar:4.1.39.Final-9.0:provided
+[INFO] |  +- org.apache.flink:flink-shaded-jackson:jar:2.10.1-9.0:provided
+[INFO] |  +- org.javassist:javassist:jar:3.24.0-GA:provided
+[INFO] |  +- org.scala-lang:scala-library:jar:2.11.12:provided
+[INFO] |  +- com.typesafe.akka:akka-actor_2.11:jar:2.5.21:provided
+[INFO] |  |  +- com.typesafe:config:jar:1.3.3:provided
+[INFO] |  |  \- org.scala-lang.modules:scala-java8-compat_2.11:jar:0.7.0:provided
+[INFO] |  +- com.typesafe.akka:akka-stream_2.11:jar:2.5.21:provided
+[INFO] |  |  +- org.reactivestreams:reactive-streams:jar:1.0.2:provided
+[INFO] |  |  \- com.typesafe:ssl-config-core_2.11:jar:0.3.7:provided
+[INFO] |  +- com.typesafe.akka:akka-protobuf_2.11:jar:2.5.21:provided
+[INFO] |  +- com.typesafe.akka:akka-slf4j_2.11:jar:2.5.21:provided
+[INFO] |  +- org.clapper:grizzled-slf4j_2.11:jar:1.3.2:provided
+[INFO] |  +- com.github.scopt:scopt_2.11:jar:3.5.0:provided
+[INFO] |  +- org.xerial.snappy:snappy-java:jar:1.1.4:provided
+[INFO] |  +- com.twitter:chill_2.11:jar:0.7.6:provided
+[INFO] |  |  \- com.twitter:chill-java:jar:0.7.6:provided
+[INFO] |  \- org.lz4:lz4-java:jar:1.5.0:provided
+[INFO] +- org.apache.flink:flink-table-api-java:jar:1.10.2:provided
+[INFO] |  \- org.apache.flink:flink-table-common:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-table-api-scala_2.11:jar:1.10.2:provided
+[INFO] |  +- org.scala-lang:scala-reflect:jar:2.11.12:provided
+[INFO] |  \- org.scala-lang:scala-compiler:jar:2.11.12:provided
+[INFO] |     +- org.scala-lang.modules:scala-xml_2.11:jar:1.0.5:provided
+[INFO] |     \- org.scala-lang.modules:scala-parser-combinators_2.11:jar:1.0.4:provided
+[INFO] +- org.apache.flink:flink-table-api-scala-bridge_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-table-api-java-bridge_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-scala_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-streaming-java_2.11:jar:1.10.2:provided
+[INFO] |  \- org.apache.commons:commons-math3:jar:3.5:provided
+[INFO] +- org.apache.flink:flink-streaming-scala_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-java:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-table-planner-blink_2.11:jar:1.10.2:provided
+[INFO] |  \- org.apache.flink:flink-table-runtime-blink_2.11:jar:1.10.2:provided
+[INFO] |     +- org.codehaus.janino:janino:jar:3.0.9:provided
+[INFO] |     |  \- org.codehaus.janino:commons-compiler:jar:3.0.9:provided
+[INFO] |     \- org.apache.calcite.avatica:avatica-core:jar:1.15.0:provided
+[INFO] +- org.apache.flink:flink-table-planner_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-python_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-scala-shell_2.11:jar:1.10.2:provided
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter-shaded:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- org.apache.zeppelin:zeppelin-common:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- io.atomix:atomix:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-cluster:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- io.netty:netty-transport:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  +- io.netty:netty-buffer:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  \- io.netty:netty-resolver:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-codec:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-handler:jar:4.1.27.Final:provided
+[INFO] |  |  |  \- io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.1.27.Final:provided
+[INFO] |  |  |     +- io.netty:netty-common:jar:4.1.27.Final:provided
+[INFO] |  |  |     \- io.netty:netty-transport-native-unix-common:jar:4.1.27.Final:provided
+[INFO] |  |  +- io.atomix:atomix-primitive:jar:3.0.0-rc4:provided
+[INFO] |  |  |  \- io.atomix:atomix-storage:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-utils:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- com.google.guava:guava:jar:22.0:provided
+[INFO] |  |  |  |  +- com.google.errorprone:error_prone_annotations:jar:2.0.18:provided
+[INFO] |  |  |  |  +- com.google.j2objc:j2objc-annotations:jar:1.1:provided
+[INFO] |  |  |  |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14:provided
+[INFO] |  |  |  +- com.esotericsoftware:kryo:jar:4.0.2:provided
+[INFO] |  |  |  |  +- com.esotericsoftware:reflectasm:jar:1.11.3:provided
+[INFO] |  |  |  |  |  \- org.ow2.asm:asm:jar:5.0.4:provided
+[INFO] |  |  |  |  \- com.esotericsoftware:minlog:jar:1.3.0:provided
+[INFO] |  |  |  \- io.github.lukehutch:fast-classpath-scanner:jar:2.21:provided
+[INFO] |  |  \- org.hamcrest:hamcrest-all:jar:1.3:provided
+[INFO] |  +- io.atomix:atomix-raft:jar:3.0.0-rc4:provided
+[INFO] |  +- io.atomix:atomix-primary-backup:jar:3.0.0-rc4:provided
+[INFO] |  +- org.apache.thrift:libthrift:jar:0.13.0:provided
+[INFO] |  |  +- org.apache.httpcomponents:httpclient:jar:4.5.1:provided
+[INFO] |  |  |  \- commons-codec:commons-codec:jar:1.14:provided
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.1:provided
+[INFO] |  +- com.google.code.gson:gson:jar:2.8.6:provided
+[INFO] |  +- commons-configuration:commons-configuration:jar:1.9:provided
+[INFO] |  |  \- commons-lang:commons-lang:jar:2.6:provided
+[INFO] |  +- org.apache.commons:commons-pool2:jar:2.3:provided
+[INFO] |  +- org.apache.maven:maven-plugin-api:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-artifact:jar:3.6.3:provided
+[INFO] |  |  +- org.codehaus.plexus:plexus-utils:jar:3.2.1:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-classworlds:jar:2.6.0:provided
+[INFO] |  +- org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:provided
+[INFO] |  |  +- javax.enterprise:cdi-api:jar:1.0:provided
+[INFO] |  |  |  \- javax.annotation:jsr250-api:jar:1.0:provided
+[INFO] |  |  +- org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:provided
+[INFO] |  +- org.apache.maven:maven-resolver-provider:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model-builder:jar:3.6.3:provided
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-interpolation:jar:1.25:provided
+[INFO] |  |  |  \- org.apache.maven:maven-builder-support:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-repository-metadata:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.4.1:provided
+[INFO] |  |  \- javax.inject:javax.inject:jar:1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-connector-basic:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-file:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-http:jar:1.4.1:provided
+[INFO] |  \- jline:jline:jar:2.14.3:provided
+[INFO] +- org.slf4j:slf4j-log4j12:jar:1.7.30:compile
+[INFO] |  \- log4j:log4j:jar:1.2.17:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.30:compile
+[INFO] \- org.apache.commons:commons-exec:jar:1.3:compile
+[INFO] 
+[INFO] ----------------< org.apache.zeppelin:flink1.11-shims >-----------------
+[INFO] Building Zeppelin: Flink1.11 Shims 0.10.0-SNAPSHOT                 [3/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The POM for org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 is missing, no dependency information available
+[WARNING] Failed to retrieve plugin descriptor for org.eclipse.m2e:lifecycle-mapping:1.0.0: Plugin org.eclipse.m2e:lifecycle-mapping:1.0.0 or one of its dependencies could not be resolved: Failure to find org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 in https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.2:tree (default-cli) @ flink1.11-shims ---
+[INFO] org.apache.zeppelin:flink1.11-shims:jar:0.10.0-SNAPSHOT
+[INFO] +- org.apache.zeppelin:flink-shims:jar:0.10.0-SNAPSHOT:compile
+[INFO] |  +- org.jline:jline-terminal:jar:3.9.0:compile
+[INFO] |  \- org.jline:jline-reader:jar:3.9.0:compile
+[INFO] +- org.apache.flink:flink-core:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-annotations:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-metrics-core:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-shaded-asm-7:jar:7.1-11.0:provided
+[INFO] |  +- org.apache.commons:commons-lang3:jar:3.10:provided
+[INFO] |  +- com.esotericsoftware.kryo:kryo:jar:2.24.0:provided
+[INFO] |  |  +- com.esotericsoftware.minlog:minlog:jar:1.2:provided
+[INFO] |  |  \- org.objenesis:objenesis:jar:2.1:provided
+[INFO] |  +- commons-collections:commons-collections:jar:3.2.2:provided
+[INFO] |  +- org.apache.commons:commons-compress:jar:1.20:provided
+[INFO] |  +- org.apache.flink:flink-shaded-guava:jar:18.0-11.0:provided
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:1.3.9:provided
+[INFO] |  \- org.apache.flink:force-shading:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-clients_2.11:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-optimizer_2.11:jar:1.11.3:provided
+[INFO] |  \- commons-cli:commons-cli:jar:1.4:provided
+[INFO] +- org.apache.flink:flink-runtime_2.11:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-queryable-state-client-java:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-hadoop-fs:jar:1.11.3:provided
+[INFO] |  +- commons-io:commons-io:jar:2.6:provided
+[INFO] |  +- org.apache.flink:flink-shaded-netty:jar:4.1.39.Final-11.0:provided
+[INFO] |  +- org.apache.flink:flink-shaded-jackson:jar:2.10.1-11.0:provided
+[INFO] |  +- org.apache.flink:flink-shaded-zookeeper-3:jar:3.4.14-11.0:provided
+[INFO] |  +- org.javassist:javassist:jar:3.24.0-GA:provided
+[INFO] |  +- org.scala-lang:scala-library:jar:2.11.12:provided
+[INFO] |  +- com.typesafe.akka:akka-actor_2.11:jar:2.5.21:provided
+[INFO] |  |  +- com.typesafe:config:jar:1.3.3:provided
+[INFO] |  |  \- org.scala-lang.modules:scala-java8-compat_2.11:jar:0.7.0:provided
+[INFO] |  +- com.typesafe.akka:akka-stream_2.11:jar:2.5.21:provided
+[INFO] |  |  +- org.reactivestreams:reactive-streams:jar:1.0.2:provided
+[INFO] |  |  \- com.typesafe:ssl-config-core_2.11:jar:0.3.7:provided
+[INFO] |  +- com.typesafe.akka:akka-protobuf_2.11:jar:2.5.21:provided
+[INFO] |  +- com.typesafe.akka:akka-slf4j_2.11:jar:2.5.21:provided
+[INFO] |  +- org.clapper:grizzled-slf4j_2.11:jar:1.3.2:provided
+[INFO] |  +- com.github.scopt:scopt_2.11:jar:3.5.0:provided
+[INFO] |  +- org.xerial.snappy:snappy-java:jar:1.1.4:provided
+[INFO] |  +- com.twitter:chill_2.11:jar:0.7.6:provided
+[INFO] |  |  \- com.twitter:chill-java:jar:0.7.6:provided
+[INFO] |  \- org.lz4:lz4-java:jar:1.6.0:provided
+[INFO] +- org.apache.flink:flink-table-api-scala_2.11:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-table-common:jar:1.11.3:provided
+[INFO] |  +- org.apache.flink:flink-table-api-java:jar:1.11.3:provided
+[INFO] |  +- org.scala-lang:scala-reflect:jar:2.11.12:provided
+[INFO] |  \- org.scala-lang:scala-compiler:jar:2.11.12:provided
+[INFO] |     +- org.scala-lang.modules:scala-xml_2.11:jar:1.0.5:provided
+[INFO] |     \- org.scala-lang.modules:scala-parser-combinators_2.11:jar:1.0.4:provided
+[INFO] +- org.apache.flink:flink-table-api-scala-bridge_2.11:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-table-api-java-bridge_2.11:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-scala_2.11:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-streaming-java_2.11:jar:1.11.3:provided
+[INFO] |  \- org.apache.commons:commons-math3:jar:3.5:provided
+[INFO] +- org.apache.flink:flink-streaming-scala_2.11:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-java:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-table-planner-blink_2.11:jar:1.11.3:provided
+[INFO] |  \- org.apache.flink:flink-table-runtime-blink_2.11:jar:1.11.3:provided
+[INFO] |     +- org.codehaus.janino:janino:jar:3.0.9:provided
+[INFO] |     |  \- org.codehaus.janino:commons-compiler:jar:3.0.9:provided
+[INFO] |     \- org.apache.calcite.avatica:avatica-core:jar:1.16.0:provided
+[INFO] +- org.apache.flink:flink-table-planner_2.11:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-python_2.11:jar:1.11.3:provided
+[INFO] +- org.apache.flink:flink-scala-shell_2.11:jar:1.11.3:provided
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter-shaded:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- org.apache.zeppelin:zeppelin-common:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- io.atomix:atomix:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-cluster:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- io.netty:netty-transport:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  +- io.netty:netty-buffer:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  \- io.netty:netty-resolver:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-codec:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-handler:jar:4.1.27.Final:provided
+[INFO] |  |  |  \- io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.1.27.Final:provided
+[INFO] |  |  |     +- io.netty:netty-common:jar:4.1.27.Final:provided
+[INFO] |  |  |     \- io.netty:netty-transport-native-unix-common:jar:4.1.27.Final:provided
+[INFO] |  |  +- io.atomix:atomix-primitive:jar:3.0.0-rc4:provided
+[INFO] |  |  |  \- io.atomix:atomix-storage:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-utils:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- com.google.guava:guava:jar:22.0:provided
+[INFO] |  |  |  |  +- com.google.errorprone:error_prone_annotations:jar:2.0.18:provided
+[INFO] |  |  |  |  +- com.google.j2objc:j2objc-annotations:jar:1.1:provided
+[INFO] |  |  |  |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14:provided
+[INFO] |  |  |  +- com.esotericsoftware:kryo:jar:4.0.2:provided
+[INFO] |  |  |  |  +- com.esotericsoftware:reflectasm:jar:1.11.3:provided
+[INFO] |  |  |  |  |  \- org.ow2.asm:asm:jar:5.0.4:provided
+[INFO] |  |  |  |  \- com.esotericsoftware:minlog:jar:1.3.0:provided
+[INFO] |  |  |  \- io.github.lukehutch:fast-classpath-scanner:jar:2.21:provided
+[INFO] |  |  \- org.hamcrest:hamcrest-all:jar:1.3:provided
+[INFO] |  +- io.atomix:atomix-raft:jar:3.0.0-rc4:provided
+[INFO] |  +- io.atomix:atomix-primary-backup:jar:3.0.0-rc4:provided
+[INFO] |  +- org.apache.thrift:libthrift:jar:0.13.0:provided
+[INFO] |  |  +- org.apache.httpcomponents:httpclient:jar:4.5.1:provided
+[INFO] |  |  |  \- commons-codec:commons-codec:jar:1.14:provided
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.1:provided
+[INFO] |  +- com.google.code.gson:gson:jar:2.8.6:provided
+[INFO] |  +- commons-configuration:commons-configuration:jar:1.9:provided
+[INFO] |  |  \- commons-lang:commons-lang:jar:2.6:provided
+[INFO] |  +- org.apache.commons:commons-pool2:jar:2.3:provided
+[INFO] |  +- org.apache.maven:maven-plugin-api:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-artifact:jar:3.6.3:provided
+[INFO] |  |  +- org.codehaus.plexus:plexus-utils:jar:3.2.1:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-classworlds:jar:2.6.0:provided
+[INFO] |  +- org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:provided
+[INFO] |  |  +- javax.enterprise:cdi-api:jar:1.0:provided
+[INFO] |  |  |  \- javax.annotation:jsr250-api:jar:1.0:provided
+[INFO] |  |  +- org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:provided
+[INFO] |  +- org.apache.maven:maven-resolver-provider:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model-builder:jar:3.6.3:provided
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-interpolation:jar:1.25:provided
+[INFO] |  |  |  \- org.apache.maven:maven-builder-support:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-repository-metadata:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.4.1:provided
+[INFO] |  |  \- javax.inject:javax.inject:jar:1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-connector-basic:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-file:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-http:jar:1.4.1:provided
+[INFO] |  \- jline:jline:jar:2.14.3:provided
+[INFO] +- org.slf4j:slf4j-log4j12:jar:1.7.30:compile
+[INFO] |  \- log4j:log4j:jar:1.2.17:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.30:compile
+[INFO] \- org.apache.commons:commons-exec:jar:1.3:compile
+[INFO] 
+[INFO] ----------------< org.apache.zeppelin:flink1.12-shims >-----------------
+[INFO] Building Zeppelin: Flink1.12 Shims 0.10.0-SNAPSHOT                 [4/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] The POM for org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 is missing, no dependency information available
+[WARNING] Failed to retrieve plugin descriptor for org.eclipse.m2e:lifecycle-mapping:1.0.0: Plugin org.eclipse.m2e:lifecycle-mapping:1.0.0 or one of its dependencies could not be resolved: Failure to find org.eclipse.m2e:lifecycle-mapping:jar:1.0.0 in https://repo.maven.apache.org/maven2 was cached in the local repository, resolution will not be reattempted until the update interval of central has elapsed or updates are forced
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.2:tree (default-cli) @ flink1.12-shims ---
+[INFO] org.apache.zeppelin:flink1.12-shims:jar:0.10.0-SNAPSHOT
+[INFO] +- org.apache.zeppelin:flink-shims:jar:0.10.0-SNAPSHOT:compile
+[INFO] |  +- org.jline:jline-terminal:jar:3.9.0:compile
+[INFO] |  \- org.jline:jline-reader:jar:3.9.0:compile
+[INFO] +- org.apache.flink:flink-core:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-annotations:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-metrics-core:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-shaded-asm-7:jar:7.1-12.0:provided
+[INFO] |  +- org.apache.commons:commons-lang3:jar:3.10:provided
+[INFO] |  +- com.esotericsoftware.kryo:kryo:jar:2.24.0:provided
+[INFO] |  |  +- com.esotericsoftware.minlog:minlog:jar:1.2:provided
+[INFO] |  |  \- org.objenesis:objenesis:jar:2.1:provided
+[INFO] |  +- commons-collections:commons-collections:jar:3.2.2:provided
+[INFO] |  +- org.apache.commons:commons-compress:jar:1.20:provided
+[INFO] |  +- org.apache.flink:flink-shaded-guava:jar:18.0-12.0:provided
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:1.3.9:provided
+[INFO] |  \- org.apache.flink:force-shading:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-clients_2.11:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-optimizer_2.11:jar:1.12.0:provided
+[INFO] |  \- commons-cli:commons-cli:jar:1.4:provided
+[INFO] +- org.apache.flink:flink-runtime_2.11:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-queryable-state-client-java:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-hadoop-fs:jar:1.12.0:provided
+[INFO] |  +- commons-io:commons-io:jar:2.6:provided
+[INFO] |  +- org.apache.flink:flink-shaded-netty:jar:4.1.49.Final-12.0:provided
+[INFO] |  +- org.apache.flink:flink-shaded-jackson:jar:2.10.1-12.0:provided
+[INFO] |  +- org.apache.flink:flink-shaded-zookeeper-3:jar:3.4.14-12.0:provided
+[INFO] |  +- org.javassist:javassist:jar:3.24.0-GA:provided
+[INFO] |  +- org.scala-lang:scala-library:jar:2.11.12:provided
+[INFO] |  +- com.typesafe.akka:akka-actor_2.11:jar:2.5.21:provided
+[INFO] |  |  +- com.typesafe:config:jar:1.3.3:provided
+[INFO] |  |  \- org.scala-lang.modules:scala-java8-compat_2.11:jar:0.7.0:provided
+[INFO] |  +- com.typesafe.akka:akka-stream_2.11:jar:2.5.21:provided
+[INFO] |  |  +- org.reactivestreams:reactive-streams:jar:1.0.2:provided
+[INFO] |  |  \- com.typesafe:ssl-config-core_2.11:jar:0.3.7:provided
+[INFO] |  +- com.typesafe.akka:akka-protobuf_2.11:jar:2.5.21:provided
+[INFO] |  +- com.typesafe.akka:akka-slf4j_2.11:jar:2.5.21:provided
+[INFO] |  +- org.clapper:grizzled-slf4j_2.11:jar:1.3.2:provided
+[INFO] |  +- com.github.scopt:scopt_2.11:jar:3.5.0:provided
+[INFO] |  +- org.xerial.snappy:snappy-java:jar:1.1.4:provided
+[INFO] |  +- com.twitter:chill_2.11:jar:0.7.6:provided
+[INFO] |  |  \- com.twitter:chill-java:jar:0.7.6:provided
+[INFO] |  \- org.lz4:lz4-java:jar:1.6.0:provided
+[INFO] +- org.apache.flink:flink-table-api-scala_2.11:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-table-common:jar:1.12.0:provided
+[INFO] |  |  \- org.apache.flink:flink-connector-files:jar:1.12.0:provided
+[INFO] |  |     \- org.apache.flink:flink-connector-base:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-table-api-java:jar:1.12.0:provided
+[INFO] |  +- org.scala-lang:scala-reflect:jar:2.11.12:provided
+[INFO] |  \- org.scala-lang:scala-compiler:jar:2.11.12:provided
+[INFO] |     +- org.scala-lang.modules:scala-xml_2.11:jar:1.0.5:provided
+[INFO] |     \- org.scala-lang.modules:scala-parser-combinators_2.11:jar:1.0.4:provided
+[INFO] +- org.apache.flink:flink-table-api-scala-bridge_2.11:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-table-api-java-bridge_2.11:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-scala_2.11:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-streaming-java_2.11:jar:1.12.0:provided
+[INFO] |  +- org.apache.flink:flink-file-sink-common:jar:1.12.0:provided
+[INFO] |  \- org.apache.commons:commons-math3:jar:3.5:provided
+[INFO] +- org.apache.flink:flink-streaming-scala_2.11:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-java:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-table-planner-blink_2.11:jar:1.12.0:provided
+[INFO] |  \- org.apache.flink:flink-table-runtime-blink_2.11:jar:1.12.0:provided
+[INFO] |     +- org.codehaus.janino:janino:jar:3.0.11:provided
+[INFO] |     |  \- org.codehaus.janino:commons-compiler:jar:3.0.11:provided
+[INFO] |     \- org.apache.calcite.avatica:avatica-core:jar:1.17.0:provided
+[INFO] +- org.apache.flink:flink-table-planner_2.11:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-python_2.11:jar:1.12.0:provided
+[INFO] +- org.apache.flink:flink-scala-shell_2.11:jar:1.12.0:provided
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter-shaded:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- org.apache.zeppelin:zeppelin-common:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- io.atomix:atomix:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-cluster:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- io.netty:netty-transport:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  +- io.netty:netty-buffer:jar:4.1.27.Final:provided
+[INFO] |  |  |  |  \- io.netty:netty-resolver:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-codec:jar:4.1.27.Final:provided
+[INFO] |  |  |  +- io.netty:netty-handler:jar:4.1.27.Final:provided
+[INFO] |  |  |  \- io.netty:netty-transport-native-epoll:jar:linux-x86_64:4.1.27.Final:provided
+[INFO] |  |  |     +- io.netty:netty-common:jar:4.1.27.Final:provided
+[INFO] |  |  |     \- io.netty:netty-transport-native-unix-common:jar:4.1.27.Final:provided
+[INFO] |  |  +- io.atomix:atomix-primitive:jar:3.0.0-rc4:provided
+[INFO] |  |  |  \- io.atomix:atomix-storage:jar:3.0.0-rc4:provided
+[INFO] |  |  +- io.atomix:atomix-utils:jar:3.0.0-rc4:provided
+[INFO] |  |  |  +- com.google.guava:guava:jar:22.0:provided
+[INFO] |  |  |  |  +- com.google.errorprone:error_prone_annotations:jar:2.0.18:provided
+[INFO] |  |  |  |  +- com.google.j2objc:j2objc-annotations:jar:1.1:provided
+[INFO] |  |  |  |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14:provided
+[INFO] |  |  |  +- com.esotericsoftware:kryo:jar:4.0.2:provided
+[INFO] |  |  |  |  +- com.esotericsoftware:reflectasm:jar:1.11.3:provided
+[INFO] |  |  |  |  |  \- org.ow2.asm:asm:jar:5.0.4:provided
+[INFO] |  |  |  |  \- com.esotericsoftware:minlog:jar:1.3.0:provided
+[INFO] |  |  |  \- io.github.lukehutch:fast-classpath-scanner:jar:2.21:provided
+[INFO] |  |  \- org.hamcrest:hamcrest-all:jar:1.3:provided
+[INFO] |  +- io.atomix:atomix-raft:jar:3.0.0-rc4:provided
+[INFO] |  +- io.atomix:atomix-primary-backup:jar:3.0.0-rc4:provided
+[INFO] |  +- org.apache.thrift:libthrift:jar:0.13.0:provided
+[INFO] |  |  +- org.apache.httpcomponents:httpclient:jar:4.5.1:provided
+[INFO] |  |  |  \- commons-codec:commons-codec:jar:1.14:provided
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.1:provided
+[INFO] |  +- com.google.code.gson:gson:jar:2.8.6:provided
+[INFO] |  +- commons-configuration:commons-configuration:jar:1.9:provided
+[INFO] |  |  \- commons-lang:commons-lang:jar:2.6:provided
+[INFO] |  +- org.apache.commons:commons-pool2:jar:2.3:provided
+[INFO] |  +- org.apache.maven:maven-plugin-api:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-artifact:jar:3.6.3:provided
+[INFO] |  |  +- org.codehaus.plexus:plexus-utils:jar:3.2.1:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-classworlds:jar:2.6.0:provided
+[INFO] |  +- org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:provided
+[INFO] |  |  +- javax.enterprise:cdi-api:jar:1.0:provided
+[INFO] |  |  |  \- javax.annotation:jsr250-api:jar:1.0:provided
+[INFO] |  |  +- org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:provided
+[INFO] |  +- org.apache.maven:maven-resolver-provider:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model-builder:jar:3.6.3:provided
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-interpolation:jar:1.25:provided
+[INFO] |  |  |  \- org.apache.maven:maven-builder-support:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-repository-metadata:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.4.1:provided
+[INFO] |  |  \- javax.inject:javax.inject:jar:1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-connector-basic:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-file:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-http:jar:1.4.1:provided
+[INFO] |  \- jline:jline:jar:2.14.3:provided
+[INFO] +- org.slf4j:slf4j-log4j12:jar:1.7.30:compile
+[INFO] |  \- log4j:log4j:jar:1.2.17:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.30:compile
+[INFO] \- org.apache.commons:commons-exec:jar:1.3:compile
+[INFO] 
+[INFO] -----------------< org.apache.zeppelin:zeppelin-flink >-----------------
+[INFO] Building Zeppelin: Flink 0.10.0-SNAPSHOT                           [5/5]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.2:tree (default-cli) @ zeppelin-flink ---
+[INFO] org.apache.zeppelin:zeppelin-flink:jar:0.10.0-SNAPSHOT
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.30:compile
+[INFO] +- org.apache.zeppelin:flink-shims:jar:0.10.0-SNAPSHOT:compile
+[INFO] |  +- org.jline:jline-terminal:jar:3.9.0:compile
+[INFO] |  \- org.jline:jline-reader:jar:3.9.0:compile
+[INFO] +- org.apache.zeppelin:flink1.10-shims:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.apache.zeppelin:flink1.11-shims:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.apache.zeppelin:flink1.12-shims:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.apache.zeppelin:zeppelin-shell:jar:0.10.0-SNAPSHOT:compile
+[INFO] |  +- org.apache.commons:commons-lang3:jar:3.10:compile
+[INFO] |  +- org.eclipse.jetty:jetty-server:jar:9.4.31.v20200723:compile
+[INFO] |  |  +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] |  |  +- org.eclipse.jetty:jetty-http:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  \- org.eclipse.jetty:jetty-util:jar:9.4.31.v20200723:compile
+[INFO] |  |  \- org.eclipse.jetty:jetty-io:jar:9.4.31.v20200723:compile
+[INFO] |  +- org.eclipse.jetty.websocket:javax-websocket-server-impl:jar:9.4.31.v20200723:compile
+[INFO] |  |  +- org.eclipse.jetty:jetty-annotations:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  +- org.eclipse.jetty:jetty-plus:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  |  \- org.eclipse.jetty:jetty-jndi:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  +- org.eclipse.jetty:jetty-webapp:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  |  \- org.eclipse.jetty:jetty-xml:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  +- javax.annotation:javax.annotation-api:jar:1.3:compile
+[INFO] |  |  |  +- org.ow2.asm:asm:jar:7.3.1:compile
+[INFO] |  |  |  \- org.ow2.asm:asm-commons:jar:7.3.1:compile
+[INFO] |  |  |     +- org.ow2.asm:asm-tree:jar:7.3.1:compile
+[INFO] |  |  |     \- org.ow2.asm:asm-analysis:jar:7.3.1:compile
+[INFO] |  |  +- org.eclipse.jetty.websocket:javax-websocket-client-impl:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  +- org.eclipse.jetty.websocket:websocket-client:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  |  \- org.eclipse.jetty:jetty-client:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  \- javax.websocket:javax.websocket-client-api:jar:1.0:compile
+[INFO] |  |  +- org.eclipse.jetty.websocket:websocket-server:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  +- org.eclipse.jetty.websocket:websocket-common:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  |  \- org.eclipse.jetty.websocket:websocket-api:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  +- org.eclipse.jetty.websocket:websocket-servlet:jar:9.4.31.v20200723:compile
+[INFO] |  |  |  \- org.eclipse.jetty:jetty-servlet:jar:9.4.31.v20200723:compile
+[INFO] |  |  |     \- org.eclipse.jetty:jetty-security:jar:9.4.31.v20200723:compile
+[INFO] |  |  \- javax.websocket:javax.websocket-api:jar:1.0:compile
+[INFO] |  +- org.jetbrains.pty4j:pty4j:jar:0.9.3:compile
+[INFO] |  |  +- org.jetbrains.pty4j:purejavacomm:jar:0.0.11.1:runtime
+[INFO] |  |  +- org.jetbrains:annotations:jar:16.0.2:runtime
+[INFO] |  |  +- net.java.dev.jna:jna:jar:4.5.0:runtime
+[INFO] |  |  \- net.java.dev.jna:jna-platform:jar:4.5.0:runtime
+[INFO] |  +- com.hubspot.jinjava:jinjava:jar:2.4.0:compile
+[INFO] |  |  +- org.jsoup:jsoup:jar:1.8.1:compile
+[INFO] |  |  \- com.google.code.findbugs:annotations:jar:3.0.0:compile
+[INFO] |  +- com.google.guava:guava:jar:24.1.1-jre:compile
+[INFO] |  |  +- org.checkerframework:checker-compat-qual:jar:2.0.0:compile
+[INFO] |  |  +- com.google.errorprone:error_prone_annotations:jar:2.1.3:compile
+[INFO] |  |  +- com.google.j2objc:j2objc-annotations:jar:1.1:compile
+[INFO] |  |  \- org.codehaus.mojo:animal-sniffer-annotations:jar:1.14:compile
+[INFO] |  \- commons-io:commons-io:jar:2.6:compile
+[INFO] +- org.apache.zeppelin:zeppelin-python:jar:0.10.0-SNAPSHOT:compile
+[INFO] |  +- org.apache.zeppelin:zeppelin-jupyter-interpreter-shaded:jar:0.10.0-SNAPSHOT:compile
+[INFO] |  +- net.sf.py4j:py4j:jar:0.10.7:compile
+[INFO] |  \- commons-codec:commons-codec:jar:1.14:compile
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- org.apache.zeppelin:zeppelin-common:jar:0.10.0-SNAPSHOT:provided
+[INFO] |  +- org.apache.thrift:libthrift:jar:0.13.0:provided
+[INFO] |  |  \- org.apache.httpcomponents:httpcore:jar:4.4.1:compile
+[INFO] |  +- commons-configuration:commons-configuration:jar:1.9:provided
+[INFO] |  +- org.apache.commons:commons-pool2:jar:2.3:provided
+[INFO] |  +- org.apache.maven:maven-plugin-api:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-artifact:jar:3.6.3:provided
+[INFO] |  |  +- org.codehaus.plexus:plexus-utils:jar:3.2.1:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-classworlds:jar:2.6.0:provided
+[INFO] |  +- org.eclipse.sisu:org.eclipse.sisu.plexus:jar:0.3.4:provided
+[INFO] |  |  +- javax.enterprise:cdi-api:jar:1.0:provided
+[INFO] |  |  |  \- javax.annotation:jsr250-api:jar:1.0:provided
+[INFO] |  |  +- org.eclipse.sisu:org.eclipse.sisu.inject:jar:0.3.4:provided
+[INFO] |  |  \- org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:provided
+[INFO] |  +- org.apache.maven:maven-resolver-provider:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-model-builder:jar:3.6.3:provided
+[INFO] |  |  |  +- org.codehaus.plexus:plexus-interpolation:jar:1.25:provided
+[INFO] |  |  |  \- org.apache.maven:maven-builder-support:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven:maven-repository-metadata:jar:3.6.3:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-api:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-spi:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-util:jar:1.4.1:provided
+[INFO] |  |  +- org.apache.maven.resolver:maven-resolver-impl:jar:1.4.1:provided
+[INFO] |  |  \- javax.inject:javax.inject:jar:1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-connector-basic:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-file:jar:1.4.1:provided
+[INFO] |  +- org.apache.maven.resolver:maven-resolver-transport-http:jar:1.4.1:provided
+[INFO] |  \- jline:jline:jar:2.14.3:provided
+[INFO] +- org.apache.zeppelin:zeppelin-python:jar:tests:0.10.0-SNAPSHOT:test
+[INFO] +- org.apache.flink:flink-python_2.11:jar:1.10.2:provided
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:1.3.9:compile
+[INFO] |  \- org.apache.flink:force-shading:jar:1.10.2:compile
+[INFO] +- org.apache.flink:flink-core:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-annotations:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-metrics-core:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-shaded-asm-7:jar:7.1-9.0:provided
+[INFO] |  +- com.esotericsoftware.kryo:kryo:jar:2.24.0:provided
+[INFO] |  |  \- com.esotericsoftware.minlog:minlog:jar:1.2:provided
+[INFO] |  +- commons-collections:commons-collections:jar:3.2.2:provided
+[INFO] |  +- org.apache.commons:commons-compress:jar:1.18:provided
+[INFO] |  \- org.apache.flink:flink-shaded-guava:jar:18.0-9.0:provided
+[INFO] +- org.apache.flink:flink-clients_2.11:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-optimizer_2.11:jar:1.10.2:provided
+[INFO] |  \- commons-cli:commons-cli:jar:1.4:provided
+[INFO] +- org.apache.flink:flink-runtime_2.11:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-queryable-state-client-java:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-hadoop-fs:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-shaded-netty:jar:4.1.39.Final-9.0:provided
+[INFO] |  +- org.apache.flink:flink-shaded-jackson:jar:2.10.1-9.0:provided
+[INFO] |  +- org.javassist:javassist:jar:3.24.0-GA:compile
+[INFO] |  +- com.typesafe.akka:akka-actor_2.11:jar:2.5.21:provided
+[INFO] |  |  +- com.typesafe:config:jar:1.3.3:provided
+[INFO] |  |  \- org.scala-lang.modules:scala-java8-compat_2.11:jar:0.7.0:provided
+[INFO] |  +- com.typesafe.akka:akka-stream_2.11:jar:2.5.21:provided
+[INFO] |  |  +- org.reactivestreams:reactive-streams:jar:1.0.2:provided
+[INFO] |  |  \- com.typesafe:ssl-config-core_2.11:jar:0.3.7:provided
+[INFO] |  +- com.typesafe.akka:akka-protobuf_2.11:jar:2.5.21:provided
+[INFO] |  +- com.typesafe.akka:akka-slf4j_2.11:jar:2.5.21:provided
+[INFO] |  +- org.clapper:grizzled-slf4j_2.11:jar:1.3.2:provided
+[INFO] |  +- com.github.scopt:scopt_2.11:jar:3.5.0:compile
+[INFO] |  +- org.xerial.snappy:snappy-java:jar:1.1.4:provided
+[INFO] |  +- com.twitter:chill_2.11:jar:0.7.6:provided
+[INFO] |  |  \- com.twitter:chill-java:jar:0.7.6:provided
+[INFO] |  \- org.lz4:lz4-java:jar:1.5.0:provided
+[INFO] +- org.apache.flink:flink-yarn_2.11:jar:1.10.2:provided
+[INFO] |  \- org.apache.flink:flink-shaded-hadoop-2:jar:2.4.1-9.0:provided
+[INFO] |     +- com.thoughtworks.paranamer:paranamer:jar:2.7:provided
+[INFO] |     +- org.tukaani:xz:jar:1.5:provided
+[INFO] |     +- com.jamesmurty.utils:java-xmlbuilder:jar:0.4:provided
+[INFO] |     +- commons-digester:commons-digester:jar:1.8.1:provided
+[INFO] |     +- commons-beanutils:commons-beanutils:jar:1.9.3:provided
+[INFO] |     +- javax.xml.stream:stax-api:jar:1.0-2:provided
+[INFO] |     \- javax.activation:activation:jar:1.1:provided
+[INFO] +- org.apache.flink:flink-table-api-scala_2.11:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-table-common:jar:1.10.2:provided
+[INFO] |  \- org.apache.flink:flink-table-api-java:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-table-api-scala-bridge_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-scala_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-scala-shell_2.11:jar:1.10.2:compile
+[INFO] +- org.apache.flink:flink-streaming-java_2.11:jar:1.10.2:provided
+[INFO] |  \- org.apache.commons:commons-math3:jar:3.5:provided
+[INFO] +- org.apache.flink:flink-streaming-scala_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-java:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-connector-hive_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.flink:flink-connector-hive_2.11:jar:tests:1.10.2:test
+[INFO] +- org.apache.flink:flink-hadoop-compatibility_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.ivy:ivy:jar:2.4.0:compile
+[INFO] +- oro:oro:jar:2.0.8:compile
+[INFO] +- com.google.code.gson:gson:jar:2.8.6:compile
+[INFO] +- org.scala-lang:scala-library:jar:2.11.12:compile
+[INFO] +- org.scala-lang:scala-compiler:jar:2.11.12:compile
+[INFO] |  +- org.scala-lang.modules:scala-xml_2.11:jar:1.0.5:compile
+[INFO] |  \- org.scala-lang.modules:scala-parser-combinators_2.11:jar:1.0.4:compile
+[INFO] +- org.scala-lang:scala-reflect:jar:2.11.12:compile
+[INFO] +- com.mashape.unirest:unirest-java:jar:1.4.9:compile
+[INFO] |  +- org.apache.httpcomponents:httpclient:jar:4.5.1:compile
+[INFO] |  +- org.apache.httpcomponents:httpasyncclient:jar:4.0.2:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore-nio:jar:4.3.2:compile
+[INFO] |  +- org.apache.httpcomponents:httpmime:jar:4.5.2:compile
+[INFO] |  \- org.json:json:jar:20160212:compile
+[INFO] +- org.apache.flink:flink-table-planner-blink_2.11:jar:1.10.2:provided
+[INFO] |  +- org.apache.flink:flink-table-api-java-bridge_2.11:jar:1.10.2:provided
+[INFO] |  \- org.apache.flink:flink-table-runtime-blink_2.11:jar:1.10.2:provided
+[INFO] |     +- org.codehaus.janino:janino:jar:3.0.9:provided
+[INFO] |     |  \- org.codehaus.janino:commons-compiler:jar:3.0.9:provided
+[INFO] |     \- org.apache.calcite.avatica:avatica-core:jar:1.15.0:provided
+[INFO] +- org.apache.flink:flink-table-planner_2.11:jar:1.10.2:provided
+[INFO] +- org.apache.hadoop:hadoop-common:jar:2.6.5:provided
+[INFO] |  +- org.apache.hadoop:hadoop-annotations:jar:2.6.5:provided
+[INFO] |  +- xmlenc:xmlenc:jar:0.52:provided
+[INFO] |  +- commons-httpclient:commons-httpclient:jar:3.1:provided
+[INFO] |  +- commons-net:commons-net:jar:3.1:provided
+[INFO] |  +- javax.servlet:servlet-api:jar:2.5:provided
+[INFO] |  +- org.mortbay.jetty:jetty:jar:6.1.26:provided
+[INFO] |  +- org.mortbay.jetty:jetty-util:jar:6.1.26:provided
+[INFO] |  +- com.sun.jersey:jersey-core:jar:1.9:provided
+[INFO] |  +- com.sun.jersey:jersey-json:jar:1.9:provided
+[INFO] |  |  +- org.codehaus.jettison:jettison:jar:1.4.0:provided
+[INFO] |  |  \- com.sun.xml.bind:jaxb-impl:jar:2.2.3-1:provided
+[INFO] |  +- com.sun.jersey:jersey-server:jar:1.9:provided
+[INFO] |  |  \- asm:asm:jar:3.1:provided
+[INFO] |  +- tomcat:jasper-compiler:jar:5.5.23:provided
+[INFO] |  +- tomcat:jasper-runtime:jar:5.5.23:provided
+[INFO] |  +- javax.servlet.jsp:jsp-api:jar:2.1:provided
+[INFO] |  +- commons-el:commons-el:jar:1.0:provided
+[INFO] |  +- commons-logging:commons-logging:jar:1.1.3:provided
+[INFO] |  +- log4j:log4j:jar:1.2.17:compile
+[INFO] |  +- net.java.dev.jets3t:jets3t:jar:0.9.0:provided
+[INFO] |  +- commons-lang:commons-lang:jar:2.6:provided
+[INFO] |  +- org.codehaus.jackson:jackson-core-asl:jar:1.9.13:provided
+[INFO] |  +- org.codehaus.jackson:jackson-mapper-asl:jar:1.9.13:provided
+[INFO] |  +- org.apache.avro:avro:jar:1.7.4:provided
+[INFO] |  +- com.google.protobuf:protobuf-java:jar:2.5.0:provided
+[INFO] |  +- org.apache.hadoop:hadoop-auth:jar:2.6.5:provided
+[INFO] |  |  +- org.apache.directory.server:apacheds-kerberos-codec:jar:2.0.0-M15:provided
+[INFO] |  |  |  +- org.apache.directory.server:apacheds-i18n:jar:2.0.0-M15:provided
+[INFO] |  |  |  +- org.apache.directory.api:api-asn1-api:jar:1.0.0-M20:provided
+[INFO] |  |  |  \- org.apache.directory.api:api-util:jar:1.0.0-M20:provided
+[INFO] |  |  \- org.apache.curator:curator-framework:jar:2.6.0:provided
+[INFO] |  +- com.jcraft:jsch:jar:0.1.42:provided
+[INFO] |  +- org.apache.curator:curator-client:jar:2.6.0:provided
+[INFO] |  +- org.apache.curator:curator-recipes:jar:2.6.0:provided
+[INFO] |  +- org.htrace:htrace-core:jar:3.0.4:provided
+[INFO] |  \- org.apache.zookeeper:zookeeper:jar:3.4.6:provided
+[INFO] +- org.apache.hadoop:hadoop-hdfs:jar:2.6.5:provided
+[INFO] |  +- commons-daemon:commons-daemon:jar:1.0.13:provided
+[INFO] |  +- io.netty:netty:jar:3.6.2.Final:provided
+[INFO] |  \- xerces:xercesImpl:jar:2.9.1:provided
+[INFO] |     \- xml-apis:xml-apis:jar:1.3.04:provided
+[INFO] +- org.apache.hadoop:hadoop-yarn-common:jar:2.6.5:provided
+[INFO] |  +- org.apache.hadoop:hadoop-yarn-api:jar:2.7.7:provided
+[INFO] |  +- javax.xml.bind:jaxb-api:jar:2.2.2:provided
+[INFO] |  +- com.sun.jersey:jersey-client:jar:1.9:provided
+[INFO] |  +- org.codehaus.jackson:jackson-jaxrs:jar:1.9.13:provided
+[INFO] |  +- org.codehaus.jackson:jackson-xc:jar:1.9.13:provided
+[INFO] |  +- com.google.inject.extensions:guice-servlet:jar:3.0:provided
+[INFO] |  +- com.google.inject:guice:jar:3.0:provided
+[INFO] |  |  \- aopalliance:aopalliance:jar:1.0:provided
+[INFO] |  \- com.sun.jersey.contribs:jersey-guice:jar:1.9:provided
+[INFO] +- org.apache.hadoop:hadoop-yarn-client:jar:2.6.5:provided
+[INFO] +- org.apache.hadoop:hadoop-mapreduce-client-core:jar:2.6.5:provided
+[INFO] +- org.mockito:mockito-core:jar:1.10.19:test
+[INFO] |  +- org.hamcrest:hamcrest-core:jar:1.1:test
+[INFO] |  \- org.objenesis:objenesis:jar:2.1:provided
+[INFO] +- org.powermock:powermock-api-mockito:jar:1.6.4:test
+[INFO] |  \- org.powermock:powermock-api-support:jar:1.6.4:test
+[INFO] |     +- org.powermock:powermock-core:jar:1.6.4:test
+[INFO] |     \- org.powermock:powermock-reflect:jar:1.6.4:test
+[INFO] +- org.powermock:powermock-module-junit4:jar:1.6.4:test
+[INFO] |  \- org.powermock:powermock-module-junit4-common:jar:1.6.4:test
+[INFO] +- org.apache.hive:hive-metastore:jar:2.3.4:provided
+[INFO] |  +- org.apache.hive:hive-serde:jar:2.3.4:provided
+[INFO] |  |  +- org.apache.hive:hive-service-rpc:jar:2.3.4:provided
+[INFO] |  |  +- net.sf.opencsv:opencsv:jar:2.3:provided
+[INFO] |  |  \- org.apache.parquet:parquet-hadoop-bundle:jar:1.8.1:provided
+[INFO] |  +- org.apache.hive:hive-shims:jar:2.3.4:provided
+[INFO] |  |  +- org.apache.hive.shims:hive-shims-common:jar:2.3.4:provided
+[INFO] |  |  +- org.apache.hive.shims:hive-shims-0.23:jar:2.3.4:provided
+[INFO] |  |  |  \- org.apache.hadoop:hadoop-yarn-server-resourcemanager:jar:2.7.2:provided
+[INFO] |  |  |     +- org.apache.hadoop:hadoop-yarn-server-applicationhistoryservice:jar:2.7.2:provided
+[INFO] |  |  |     +- org.fusesource.leveldbjni:leveldbjni-all:jar:1.8:provided
+[INFO] |  |  |     \- org.apache.zookeeper:zookeeper:test-jar:tests:3.4.6:provided
+[INFO] |  |  \- org.apache.hive.shims:hive-shims-scheduler:jar:2.3.4:provided
+[INFO] |  +- javolution:javolution:jar:5.5.1:provided
+[INFO] |  +- org.apache.hbase:hbase-client:jar:1.1.1:provided
+[INFO] |  |  +- org.apache.hbase:hbase-annotations:jar:1.1.1:provided
+[INFO] |  |  +- org.apache.hbase:hbase-common:jar:1.1.1:provided
+[INFO] |  |  +- org.apache.hbase:hbase-protocol:jar:1.1.1:provided
+[INFO] |  |  +- org.apache.htrace:htrace-core:jar:3.1.0-incubating:provided
+[INFO] |  |  +- org.jruby.jcodings:jcodings:jar:1.0.8:provided
+[INFO] |  |  +- org.jruby.joni:joni:jar:2.1.2:provided
+[INFO] |  |  \- com.github.stephenc.findbugs:findbugs-annotations:jar:1.3.9-1:provided
+[INFO] |  +- com.jolbox:bonecp:jar:0.8.0.RELEASE:provided
+[INFO] |  +- com.zaxxer:HikariCP:jar:2.5.1:provided
+[INFO] |  +- org.apache.derby:derby:jar:10.10.2.0:provided
+[INFO] |  +- org.datanucleus:datanucleus-api-jdo:jar:4.2.4:provided
+[INFO] |  +- org.datanucleus:datanucleus-core:jar:4.1.17:provided
+[INFO] |  +- org.datanucleus:datanucleus-rdbms:jar:4.1.19:provided
+[INFO] |  +- commons-pool:commons-pool:jar:1.5.4:provided
+[INFO] |  +- commons-dbcp:commons-dbcp:jar:1.4:provided
+[INFO] |  +- javax.jdo:jdo-api:jar:3.0.1:provided
+[INFO] |  |  \- javax.transaction:jta:jar:1.1:provided
+[INFO] |  +- org.datanucleus:javax.jdo:jar:3.2.0-m3:provided
+[INFO] |  |  \- javax.transaction:transaction-api:jar:1.1:provided
+[INFO] |  +- org.antlr:antlr-runtime:jar:3.5.2:provided
+[INFO] |  +- org.apache.thrift:libfb303:jar:0.9.3:provided
+[INFO] |  +- co.cask.tephra:tephra-api:jar:0.6.0:provided
+[INFO] |  +- co.cask.tephra:tephra-core:jar:0.6.0:provided
+[INFO] |  |  +- com.google.inject.extensions:guice-assistedinject:jar:3.0:provided
+[INFO] |  |  +- it.unimi.dsi:fastutil:jar:6.5.6:provided
+[INFO] |  |  +- org.apache.twill:twill-common:jar:0.6.0-incubating:provided
+[INFO] |  |  +- org.apache.twill:twill-core:jar:0.6.0-incubating:provided
+[INFO] |  |  |  \- org.apache.twill:twill-api:jar:0.6.0-incubating:provided
+[INFO] |  |  +- org.apache.twill:twill-discovery-api:jar:0.6.0-incubating:provided
+[INFO] |  |  +- org.apache.twill:twill-discovery-core:jar:0.6.0-incubating:provided
+[INFO] |  |  +- org.apache.twill:twill-zookeeper:jar:0.6.0-incubating:provided
+[INFO] |  |  \- io.dropwizard.metrics:metrics-core:jar:3.1.0:provided
+[INFO] |  \- co.cask.tephra:tephra-hbase-compat-1.0:jar:0.6.0:provided
+[INFO] +- org.apache.hive:hive-exec:jar:2.3.4:provided
+[INFO] |  +- org.apache.hive:hive-vector-code-gen:jar:2.3.4:provided
+[INFO] |  |  \- org.apache.velocity:velocity:jar:1.5:provided
+[INFO] |  +- org.apache.hive:hive-llap-tez:jar:2.3.4:provided
+[INFO] |  |  \- org.apache.hive:hive-llap-client:jar:2.3.4:provided
+[INFO] |  |     \- org.apache.hive:hive-llap-common:jar:2.3.4:provided
+[INFO] |  +- org.antlr:ST4:jar:4.0.4:provided
+[INFO] |  +- org.apache.ant:ant:jar:1.9.1:provided
+[INFO] |  |  \- org.apache.ant:ant-launcher:jar:1.9.1:provided
+[INFO] |  +- org.codehaus.groovy:groovy-all:jar:2.4.4:provided
+[INFO] |  \- stax:stax-api:jar:1.0.1:provided
+[INFO] +- org.apache.hive.hcatalog:hive-webhcat-java-client:jar:2.3.4:test
+[INFO] |  +- org.apache.hive.hcatalog:hive-hcatalog-core:jar:2.3.4:test
+[INFO] |  \- org.apache.hive.hcatalog:hive-hcatalog-server-extensions:jar:2.3.4:test
+[INFO] +- org.apache.hive:hive-contrib:jar:2.3.4:test
+[INFO] +- org.apache.hive.hcatalog:hive-hcatalog-core:test-jar:tests:2.3.4:test
+[INFO] |  +- org.apache.hive:hive-cli:jar:2.3.4:test
+[INFO] |  +- org.apache.hive:hive-common:jar:2.3.4:provided
+[INFO] |  |  +- org.apache.hive:hive-storage-api:jar:2.4.0:provided
+[INFO] |  |  +- org.apache.orc:orc-core:jar:1.3.3:provided
+[INFO] |  |  |  \- io.airlift:aircompressor:jar:0.3:provided
+[INFO] |  |  +- org.eclipse.jetty.aggregate:jetty-all:jar:7.6.0.v20120127:provided
+[INFO] |  |  |  +- org.apache.geronimo.specs:geronimo-jta_1.1_spec:jar:1.1.1:provided
+[INFO] |  |  |  +- javax.mail:mail:jar:1.4.1:provided
+[INFO] |  |  |  +- org.apache.geronimo.specs:geronimo-jaspic_1.0_spec:jar:1.0:provided
+[INFO] |  |  |  +- org.apache.geronimo.specs:geronimo-annotation_1.0_spec:jar:1.1.1:provided
+[INFO] |  |  |  \- asm:asm-commons:jar:3.1:provided
+[INFO] |  |  |     \- asm:asm-tree:jar:3.1:provided
+[INFO] |  |  +- org.eclipse.jetty.orbit:javax.servlet:jar:3.0.0.v201112011016:provided
+[INFO] |  |  +- joda-time:joda-time:jar:2.9.9:provided
+[INFO] |  |  +- org.apache.logging.log4j:log4j-1.2-api:jar:2.6.2:provided
+[INFO] |  |  |  +- org.apache.logging.log4j:log4j-api:jar:2.6.2:provided
+[INFO] |  |  |  \- org.apache.logging.log4j:log4j-core:jar:2.6.2:provided
+[INFO] |  |  +- org.apache.logging.log4j:log4j-web:jar:2.6.2:provided
+[INFO] |  |  +- org.apache.logging.log4j:log4j-slf4j-impl:jar:2.6.2:provided
+[INFO] |  |  +- com.tdunning:json:jar:1.8:provided
+[INFO] |  |  +- io.dropwizard.metrics:metrics-jvm:jar:3.1.0:provided
+[INFO] |  |  +- io.dropwizard.metrics:metrics-json:jar:3.1.0:provided
+[INFO] |  |  +- com.fasterxml.jackson.core:jackson-databind:jar:2.6.5:provided
+[INFO] |  |  |  +- com.fasterxml.jackson.core:jackson-annotations:jar:2.6.0:provided
+[INFO] |  |  |  \- com.fasterxml.jackson.core:jackson-core:jar:2.6.5:provided
+[INFO] |  |  \- com.github.joshelser:dropwizard-metrics-hadoop-metrics2-reporter:jar:0.1.2:provided
+[INFO] |  \- org.apache.hadoop:hadoop-archives:jar:2.7.2:test
+[INFO] +- net.jodah:concurrentunit:jar:0.4.4:test
+[INFO] +- com.klarna:hiverunner:jar:4.0.0:test
+[INFO] |  +- org.apache.hive:hive-jdbc:jar:2.3.3:test
+[INFO] |  +- org.apache.hive:hive-service:jar:2.3.3:test
+[INFO] |  |  +- org.apache.hive:hive-llap-server:jar:2.3.3:test
+[INFO] |  |  |  +- org.apache.slider:slider-core:jar:0.90.2-incubating:test
+[INFO] |  |  |  |  +- com.beust:jcommander:jar:1.30:test
+[INFO] |  |  |  |  +- org.apache.hadoop:hadoop-client:jar:2.7.7:provided
+[INFO] |  |  |  |  |  +- org.apache.hadoop:hadoop-mapreduce-client-app:jar:2.7.7:provided
+[INFO] |  |  |  |  |  |  \- org.apache.hadoop:hadoop-mapreduce-client-shuffle:jar:2.7.7:provided
+[INFO] |  |  |  |  |  \- org.apache.hadoop:hadoop-mapreduce-client-jobclient:jar:2.7.7:provided
+[INFO] |  |  |  |  \- org.apache.hadoop:hadoop-yarn-registry:jar:2.7.1:test
+[INFO] |  |  |  +- org.apache.hive:hive-llap-common:test-jar:tests:2.3.3:test
+[INFO] |  |  |  +- org.apache.hbase:hbase-hadoop2-compat:jar:1.1.1:test
+[INFO] |  |  |  |  +- org.apache.commons:commons-math:jar:2.2:test
+[INFO] |  |  |  |  \- com.yammer.metrics:metrics-core:jar:2.2.0:test
+[INFO] |  |  |  +- org.apache.hbase:hbase-server:jar:1.1.1:test
+[INFO] |  |  |  |  +- org.apache.hbase:hbase-procedure:jar:1.1.1:test
+[INFO] |  |  |  |  |  \- org.apache.hbase:hbase-common:jar:tests:1.1.1:test
+[INFO] |  |  |  |  +- org.apache.hbase:hbase-prefix-tree:jar:1.1.1:test
+[INFO] |  |  |  |  +- org.mortbay.jetty:jetty-sslengine:jar:6.1.26:test
+[INFO] |  |  |  |  +- org.mortbay.jetty:jsp-2.1:jar:6.1.14:test
+[INFO] |  |  |  |  +- org.mortbay.jetty:jsp-api-2.1:jar:6.1.14:test
+[INFO] |  |  |  |  +- org.mortbay.jetty:servlet-api-2.5:jar:6.1.14:test
+[INFO] |  |  |  |  +- io.netty:netty-all:jar:4.0.23.Final:test
+[INFO] |  |  |  |  \- com.lmax:disruptor:jar:3.3.0:test
+[INFO] |  |  |  \- org.apache.hbase:hbase-hadoop-compat:jar:1.1.1:test
+[INFO] |  |  +- net.sf.jpam:jpam:jar:1.1:test
+[INFO] |  |  \- org.jamon:jamon-runtime:jar:2.3.1:test
+[INFO] |  +- org.apache.tez:tez-dag:jar:0.9.1:test
+[INFO] |  |  +- org.apache.tez:hadoop-shim:jar:0.9.1:test
+[INFO] |  |  +- org.apache.tez:tez-api:jar:0.9.1:test
+[INFO] |  |  +- org.apache.tez:tez-runtime-internals:jar:0.9.1:test
+[INFO] |  |  +- org.apache.tez:tez-runtime-library:jar:0.9.1:test
+[INFO] |  |  |  +- org.roaringbitmap:RoaringBitmap:jar:0.4.9:test
+[INFO] |  |  |  \- com.ning:async-http-client:jar:1.8.16:test
+[INFO] |  |  +- org.apache.hadoop:hadoop-yarn-server-web-proxy:jar:2.7.0:provided
+[INFO] |  |  |  \- org.apache.hadoop:hadoop-yarn-server-common:jar:2.7.0:provided
+[INFO] |  |  +- org.apache.commons:commons-collections4:jar:4.1:test
+[INFO] |  |  \- jdk.tools:jdk.tools:jar:1.8:system
+[INFO] |  +- org.apache.tez:tez-common:jar:0.9.1:test
+[INFO] |  +- org.apache.tez:tez-mapreduce:jar:0.9.1:test
+[INFO] |  |  \- org.apache.hadoop:hadoop-mapreduce-client-common:jar:2.7.0:provided
+[INFO] |  \- org.reflections:reflections:jar:0.9.8:test
+[INFO] |     +- javassist:javassist:jar:3.12.1.GA:test
+[INFO] |     \- dom4j:dom4j:jar:1.6.1:test
+[INFO] +- org.scalatest:scalatest_2.11:jar:3.0.8:test
+[INFO] |  \- org.scalactic:scalactic_2.11:jar:3.0.8:test
+[INFO] +- junit:junit:jar:4.12:test
+[INFO] +- org.apache.zeppelin:zeppelin-interpreter-shaded:jar:0.10.0-SNAPSHOT:compile
+[INFO] +- org.slf4j:slf4j-log4j12:jar:1.7.30:compile
+[INFO] +- org.slf4j:jcl-over-slf4j:jar:1.7.30:compile
+[INFO] \- org.apache.commons:commons-exec:jar:1.3:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Zeppelin: Flink Shims 0.10.0-SNAPSHOT:
+[INFO] 
+[INFO] Zeppelin: Flink Shims .............................. SUCCESS [  1.144 s]
+[INFO] Zeppelin: Flink1.10 Shims .......................... SUCCESS [  0.261 s]
+[INFO] Zeppelin: Flink1.11 Shims .......................... SUCCESS [  0.186 s]
+[INFO] Zeppelin: Flink1.12 Shims .......................... SUCCESS [  0.207 s]
+[INFO] Zeppelin: Flink .................................... SUCCESS [  1.458 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.277 s
+[INFO] Finished at: 2021-01-17T09:56:32+08:00
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "flink-1.11" could not be activated because it does not exist.

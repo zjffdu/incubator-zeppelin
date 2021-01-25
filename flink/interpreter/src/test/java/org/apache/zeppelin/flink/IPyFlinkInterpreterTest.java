@@ -113,31 +113,37 @@ public class IPyFlinkInterpreterTest extends IPythonInterpreterTest {
 
   @Test
   public void testBatchIPyFlink() throws InterpreterException, IOException {
+    LOGGER.info("Running testBatchIPyFlink");
     testBatchPyFlink(interpreter, flinkScalaInterpreter);
   }
 
   @Test
   public void testStreamIPyFlink() throws InterpreterException, IOException {
+    LOGGER.info("Running testStreamIPyFlink");
     testStreamPyFlink(interpreter, flinkScalaInterpreter);
   }
 
   @Test
   public void testSingleStreamTableApi() throws InterpreterException, IOException {
+    LOGGER.info("Running testSingleStreamTableApi");
     testSingleStreamTableApi(interpreter, flinkScalaInterpreter);
   }
 
   @Test
   public void testUpdateStreamTableApi() throws InterpreterException, IOException {
+    LOGGER.info("Running testUpdateStreamTableApi");
     testUpdateStreamTableApi(interpreter, flinkScalaInterpreter);
   }
 
   @Test
   public void testAppendStreamTableApi() throws InterpreterException, IOException {
+    LOGGER.info("Running testAppendStreamTableApi");
     testAppendStreamTableApi(interpreter, flinkScalaInterpreter);
   }
 
   @Test
   public void testCancelStreamSql() throws InterpreterException, IOException, TimeoutException, InterruptedException {
+    LOGGER.info("Running testCancelStreamSql");
     testCancelStreamSql(interpreter, flinkScalaInterpreter);
   }
 

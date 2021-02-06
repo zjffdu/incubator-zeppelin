@@ -107,6 +107,8 @@ public class JDBCInterpreter extends KerberosInterpreter {
   static final String DEFAULT_KEY = "default";
   static final String DRIVER_KEY = "driver";
   static final String URL_KEY = "url";
+  static final String URLS_KEY = "urls";
+  static final String URL_INDEX = "url_index";
   static final String USER_KEY = "user";
   static final String PASSWORD_KEY = "password";
   static final String PRECODE_KEY = "precode";
@@ -228,7 +230,8 @@ public class JDBCInterpreter extends KerberosInterpreter {
     for (String key : basePropertiesMap.keySet()) {
       if (!COMMON_KEY.equals(key)) {
         Properties properties = basePropertiesMap.get(key);
-        if (!properties.containsKey(DRIVER_KEY) || !properties.containsKey(URL_KEY)) {
+        if (!properties.containsKey(DRIVER_KEY) ||
+                (!properties.containsKey(URL_KEY) && !properties.containsKey(URLS_KEY))) {
           LOGGER.error("{} will be ignored. {}.{} and {}.{} is mandatory.",
               key, DRIVER_KEY, key, key, URL_KEY);
           removeKeySet.add(key);
@@ -489,10 +492,11 @@ public class JDBCInterpreter extends KerberosInterpreter {
   }
 
   private Connection getConnectionFromPool(String url, String user, String dbPrefix,
-      Properties properties) throws SQLException, ClassNotFoundException {
+      boolean updateConnectionPool, Properties properties)
+          throws SQLException, ClassNotFoundException {
     String jdbcDriver = getJDBCDriverName(user, dbPrefix);
 
-    if (!getJDBCConfiguration(user).isConnectionInDBDriverPool(dbPrefix)) {
+    if (!getJDBCConfiguration(user).isConnectionInDBDriverPool(dbPrefix) || updateConnectionPool) {
       createConnectionPool(url, user, dbPrefix, properties);
     }
     return DriverManager.getConnection(jdbcDriver);
@@ -501,27 +505,65 @@ public class JDBCInterpreter extends KerberosInterpreter {
   public Connection getConnection(String dbPrefix, InterpreterContext context)
       throws ClassNotFoundException, SQLException, InterpreterException, IOException {
     final String user =  context.getAuthenticationInfo().getUser();
-    Connection connection = null;
     if (dbPrefix == null || basePropertiesMap.get(dbPrefix) == null) {
       return null;
     }
 
     JDBCUserConfigurations jdbcUserConfigurations = getJDBCConfiguration(user);
     setUserProperty(dbPrefix, context);
+    final Properties dbProperties = jdbcUserConfigurations.getPropertyMap(dbPrefix);
 
-    final Properties properties = jdbcUserConfigurations.getPropertyMap(dbPrefix);
-    String url = properties.getProperty(URL_KEY);
+    if (!dbProperties.containsKey("urls")) {
+      String url = dbProperties.getProperty(URL_KEY);
+      return getConnectionFromURL(dbPrefix, url, false, dbProperties, context);
+    } else {
+      String[] urls = dbProperties.get("urls").toString().split(",");
+      int urlIndex = Integer.parseInt(basePropertiesMap.get(dbPrefix).getProperty(URL_INDEX, "0"));
+      for (int i = 0; i < urls.length; i++) {
+        String url = urls[(i + urlIndex) % 3];
+        try {
+          LOGGER.info("Try jdbc url: {} for dbPrefix: {}", url, dbPrefix);
+          // set url and its index for next use. so that we don't need to iterate from
+          // the first url every time.
+          dbProperties.setProperty(URL_KEY, url);
+          basePropertiesMap.get(dbPrefix).setProperty(URL_INDEX, i + "");
+          Connection connection =
+                  getConnectionFromURL(dbPrefix, url, i != 0, dbProperties, context);
+          return connection;
+        } catch (Exception e) {
+          if (e.getMessage().contains("java.net.ConnectException: Connection refused")) {
+            LOGGER.warn(e.getMessage());
+          } else {
+            throw e;
+          }
+        }
+      }
+
+      throw new IOException("Fail to get connection");
+    }
+  }
+
+  private Connection getConnectionFromURL(String dbPrefix,
+                                          String url,
+                                          boolean updateConnectionPool,
+                                          Properties dbProperties,
+                                          InterpreterContext context)
+          throws SQLException, ClassNotFoundException, InterpreterException {
+
+    final String user =  context.getAuthenticationInfo().getUser();
+    Connection connection = null;
     String connectionUrl = appendProxyUserToURL(url, user, dbPrefix);
 
     String authType = getProperty("zeppelin.jdbc.auth.type", "SIMPLE")
             .trim().toUpperCase();
     switch (authType) {
       case "SIMPLE":
-        connection = getConnectionFromPool(connectionUrl, user, dbPrefix, properties);
+        connection = getConnectionFromPool(connectionUrl, user, dbPrefix,
+                updateConnectionPool, dbProperties);
         break;
       case "KERBEROS":
         LOGGER.debug("Calling createSecureConfiguration(); this will do " +
-            "loginUserFromKeytab() if required");
+                "loginUserFromKeytab() if required");
         JDBCSecurityImpl.createSecureConfiguration(getProperties(),
                 UserGroupInformation.AuthenticationMethod.KERBEROS);
         LOGGER.debug("createSecureConfiguration() returned");
@@ -529,7 +571,8 @@ public class JDBCInterpreter extends KerberosInterpreter {
                 getProperty("zeppelin.jdbc.auth.kerberos.proxy.enable", "true"));
         if (basePropertiesMap.get(dbPrefix).containsKey("proxy.user.property")
                 || !isProxyEnabled) {
-          connection = getConnectionFromPool(connectionUrl, user, dbPrefix, properties);
+          connection = getConnectionFromPool(connectionUrl, user, dbPrefix,
+                  updateConnectionPool, dbProperties);
         } else {
           UserGroupInformation ugi = null;
           try {
@@ -543,7 +586,8 @@ public class JDBCInterpreter extends KerberosInterpreter {
           final String poolKey = dbPrefix;
           try {
             connection = ugi.doAs((PrivilegedExceptionAction<Connection>) () ->
-                    getConnectionFromPool(connectionUrl, user, poolKey, properties));
+                    getConnectionFromPool(connectionUrl, user, poolKey,
+                            updateConnectionPool, dbProperties));
           } catch (Exception e) {
             LOGGER.error("Error in doAs", e);
             throw new InterpreterException("Error in doAs", e);
@@ -697,8 +741,9 @@ public class JDBCInterpreter extends KerberosInterpreter {
    * @return
    * @throws InterpreterException
    */
-  private InterpreterResult executeSql(String dbPrefix, String sql,
-      InterpreterContext context) throws InterpreterException {
+  private InterpreterResult executeSql(String dbPrefix,
+                                       String sql,
+                                       InterpreterContext context) throws InterpreterException {
     Connection connection = null;
     Statement statement;
     ResultSet resultSet = null;

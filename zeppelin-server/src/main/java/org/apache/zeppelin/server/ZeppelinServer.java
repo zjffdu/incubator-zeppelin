@@ -541,6 +541,9 @@ public class ZeppelinServer extends ResourceConfig {
   }
 
   private static void setupRestApiContextHandler(WebAppContext webapp, ZeppelinConfiguration conf) {
+//    if (conf.getBoolean(ConfVars.ZEPPELIN_SERVER_READ_ONLY)) {
+//      return;
+//    }
     final ServletHolder servletHolder =
         new ServletHolder(new org.glassfish.jersey.servlet.ServletContainer());
 

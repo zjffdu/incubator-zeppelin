@@ -192,23 +192,24 @@ function WebsocketMessageService($rootScope, websocketEvents) {
     },
 
     runParagraph: function(paragraphId, paragraphTitle, paragraphData, paragraphConfig, paragraphParams) {
+      return;
       // short circuit update paragraph status for immediate visual feedback without waiting for server response
-      $rootScope.$broadcast('updateStatus', {
-        id: paragraphId,
-        status: 'PENDING',
-      });
-
-      // send message to server
-      websocketEvents.sendNewEvent({
-        op: 'RUN_PARAGRAPH',
-        data: {
-          id: paragraphId,
-          title: paragraphTitle,
-          paragraph: paragraphData,
-          config: paragraphConfig,
-          params: paragraphParams,
-        },
-      });
+      // $rootScope.$broadcast('updateStatus', {
+      //   id: paragraphId,
+      //   status: 'PENDING',
+      // });
+      //
+      // // send message to server
+      // websocketEvents.sendNewEvent({
+      //   op: 'RUN_PARAGRAPH',
+      //   data: {
+      //     id: paragraphId,
+      //     title: paragraphTitle,
+      //     paragraph: paragraphData,
+      //     config: paragraphConfig,
+      //     params: paragraphParams,
+      //   },
+      // });
     },
 
     runAllParagraphs: function(noteId, paragraphs) {

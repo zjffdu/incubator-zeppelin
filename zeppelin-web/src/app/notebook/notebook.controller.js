@@ -251,11 +251,39 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
 
   // Export notebook
   let limit = 0;
-
+  let readOnlyMode = false;
   websocketMsgSrv.listConfigurations();
   $scope.$on('configurationsInfo', function(scope, event) {
     limit = event.configurations['zeppelin.websocket.max.text.message.size'];
+    readOnlyMode = event.configurations['zeppelin.server.readOnly'] === 'true';
+    console.log('limit:' + limit);
+    console.log('readOnlyMode:' + readOnlyMode);
   });
+
+  $scope.runAllParagraphs = function(noteId) {
+    if (readOnlyMode) {
+      return;
+    }
+    BootstrapDialog.confirm({
+      closable: true,
+      title: '',
+      message: 'Run all paragraphs?',
+      callback: function(result) {
+        if (result) {
+          const paragraphs = $scope.note.paragraphs.map((p) => {
+            return {
+              id: p.id,
+              title: p.title,
+              paragraph: p.text,
+              config: p.config,
+              params: p.settings.params,
+            };
+          });
+          websocketMsgSrv.runAllParagraphs(noteId, paragraphs);
+        }
+      },
+    });
+  };
 
   $scope.exportNote = function() {
     let jsonContent = JSON.stringify($scope.note, null, 2);
@@ -389,28 +417,6 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
         dismissOnTimeout: false,
       });
     }
-  };
-
-  $scope.runAllParagraphs = function(noteId) {
-    BootstrapDialog.confirm({
-      closable: true,
-      title: '',
-      message: 'Run all paragraphs?',
-      callback: function(result) {
-        if (result) {
-          const paragraphs = $scope.note.paragraphs.map((p) => {
-            return {
-              id: p.id,
-              title: p.title,
-              paragraph: p.text,
-              config: p.config,
-              params: p.settings.params,
-            };
-          });
-          websocketMsgSrv.runAllParagraphs(noteId, paragraphs);
-        }
-      },
-    });
   };
 
   $scope.saveNote = function() {
@@ -547,6 +553,7 @@ function NotebookCtrl($scope, $route, $routeParams, $location, $rootScope,
   const initializeLookAndFeel = function() {
     if (!$scope.note.config.looknfeel) {
       $scope.note.config.looknfeel = 'default';
+      $scope.viewOnly = $scope.readOnlyMode;
     } else {
       $scope.viewOnly = $scope.note.config.looknfeel === 'report' ? true : false;
     }

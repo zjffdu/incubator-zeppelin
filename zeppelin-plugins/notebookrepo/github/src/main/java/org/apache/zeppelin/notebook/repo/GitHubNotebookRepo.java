@@ -18,6 +18,7 @@
 package org.apache.zeppelin.notebook.repo;
 
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
+import org.apache.zeppelin.notebook.NoteInfo;
 import org.apache.zeppelin.user.AuthenticationInfo;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
  * GitHub integration to store notebooks in a GitHub repository.
@@ -61,7 +63,13 @@ public class GitHubNotebookRepo extends GitNotebookRepo {
 
     configureRemoteStream();
     pullFromRemoteStream();
-    pushToRemoteSteam();
+    //pushToRemoteSteam();
+  }
+
+  @Override
+  public Map<String, NoteInfo> list(AuthenticationInfo subject) throws IOException {
+    pullFromRemoteStream();
+    return super.list(subject);
   }
 
   @Override
@@ -94,7 +102,7 @@ public class GitHubNotebookRepo extends GitNotebookRepo {
     LOG.debug("Updating remote stream");
 
     pullFromRemoteStream();
-    pushToRemoteSteam();
+    //pushToRemoteSteam();
   }
 
   private void pullFromRemoteStream() {

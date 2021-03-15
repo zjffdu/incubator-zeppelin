@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.zeppelin.common.JsonSerializable;
+import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.display.AngularObject;
 import org.apache.zeppelin.display.AngularObjectRegistry;
 import org.apache.zeppelin.display.GUI;
@@ -405,6 +406,9 @@ public class Paragraph extends JobWithProgressPoller<InterpreterResult> implemen
   @Override
   protected InterpreterResult jobRun() throws Throwable {
     try {
+      if (ZeppelinConfiguration.create().isReadOnly()) {
+        throw new Exception("Unable to run paragraph because Zeppelin is in readonly mode.");
+      }
       if (localProperties.getOrDefault("isRecover", "false").equals("false")) {
         this.runtimeInfos.clear();
       }

@@ -252,6 +252,9 @@ public class NotebookServer extends WebSocketServlet
   public void onMessage(NotebookSocket conn, String msg) {
     try {
       Message messagereceived = deserializeMessage(msg);
+      if (messagereceived.op.isIgnoreInReadOnlyMode()) {
+        return;
+      }
       if (messagereceived.op != OP.PING) {
         LOG.debug("RECEIVE: " + messagereceived.op +
             ", RECEIVE PRINCIPAL: " + messagereceived.principal +

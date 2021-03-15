@@ -280,6 +280,10 @@ public class ZeppelinConfiguration {
     return getString(ConfVars.ZEPPELIN_HOME);
   }
 
+  public boolean isReadOnly() {
+    return getBoolean(ConfVars.ZEPPELIN_SERVER_READ_ONLY);
+  }
+
   public boolean useSsl() {
     return getBoolean(ConfVars.ZEPPELIN_SSL);
   }
@@ -1007,6 +1011,8 @@ public class ZeppelinConfiguration {
     ZEPPELIN_CREDENTIALS_ENCRYPT_KEY("zeppelin.credentials.encryptKey", null),
     ZEPPELIN_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE("zeppelin.websocket.max.text.message.size", "10240000"),
     ZEPPELIN_WEBSOCKET_PARAGRAPH_STATUS_PROGRESS("zeppelin.websocket.paragraph_status_progress.enable", true),
+    ZEPPELIN_SERVER_READ_ONLY("zeppelin.server.readOnly", false),
+    ZEPPELIN_SERVER_NOTEBOOK_REFRESH_INTERVAL("zeppelin.server.notebook.refresh.interval", 60),
     ZEPPELIN_SERVER_DEFAULT_DIR_ALLOWED("zeppelin.server.default.dir.allowed", false),
     ZEPPELIN_SERVER_XFRAME_OPTIONS("zeppelin.server.xframe.options", "SAMEORIGIN"),
     ZEPPELIN_SERVER_JETTY_NAME("zeppelin.server.jetty.name", " "),

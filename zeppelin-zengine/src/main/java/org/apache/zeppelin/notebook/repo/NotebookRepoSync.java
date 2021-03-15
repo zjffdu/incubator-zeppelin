@@ -211,6 +211,8 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
    */
   @Override
   public void save(Note note, AuthenticationInfo subject) throws IOException {
+    checkReadOnlyMode();
+
     getRepo(0).save(note, subject);
     if (getRepoCount() > 1) {
       try {
@@ -224,12 +226,14 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
 
   /* save note to specific repo (for tests) */
   void save(int repoIndex, Note note, AuthenticationInfo subject) throws IOException {
+    checkReadOnlyMode();
     getRepo(repoIndex).save(note, subject);
   }
 
   @Override
   public void move(String noteId, String notePath, String newNotePath,
                    AuthenticationInfo subject) throws IOException {
+    checkReadOnlyMode();
     getRepo(0).move(noteId, notePath, newNotePath, subject);
     if (getRepoCount() > 1) {
       try {
@@ -244,6 +248,7 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
   @Override
   public void move(String folderPath, String newFolderPath,
                    AuthenticationInfo subject) throws IOException {
+    checkReadOnlyMode();
     for (NotebookRepo repo : repos) {
       repo.move(folderPath, newFolderPath, subject);
     }
@@ -251,6 +256,7 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
 
   @Override
   public void remove(String noteId, String notePath, AuthenticationInfo subject) throws IOException {
+    checkReadOnlyMode();
     for (NotebookRepo repo : repos) {
       repo.remove(noteId, notePath, subject);
     }
@@ -259,12 +265,14 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
 
   @Override
   public void remove(String folderPath, AuthenticationInfo subject) throws IOException {
+    checkReadOnlyMode();
     for (NotebookRepo repo : repos) {
       repo.remove(folderPath, subject);
     }
   }
 
   void remove(int repoIndex, String noteId, String noteName, AuthenticationInfo subject) throws IOException {
+    checkReadOnlyMode();
     getRepo(repoIndex).remove(noteId, noteName, subject);
   }
 
@@ -560,6 +568,7 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
   @Override
   public void updateSettings(Map<String, String> settings, AuthenticationInfo subject) {
     try {
+      checkReadOnlyMode();
       getRepo(0).updateSettings(settings, subject);
     } catch (IOException e) {
       LOGGER.error("Cannot update notebook repo settings", e);
@@ -569,6 +578,7 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
   @Override
   public Note setNoteRevision(String noteId, String notePath, String revId, AuthenticationInfo subject)
       throws IOException {
+    checkReadOnlyMode();
     int repoCount = getRepoCount();
     int repoBound = Math.min(repoCount, getMaxRepoNum());
     Note currentNote = null;
@@ -591,4 +601,9 @@ public class NotebookRepoSync implements NotebookRepoWithVersionControl {
     return revisionNote;
   }
 
+  private void checkReadOnlyMode() throws IOException {
+    if (ZeppelinConfiguration.create().isReadOnly()) {
+      throw new IOException("Unable to writable operation because Zeppelin is in readonly mode");
+    }
+  }
 }

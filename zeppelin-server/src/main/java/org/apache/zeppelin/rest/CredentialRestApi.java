@@ -32,6 +32,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.zeppelin.conf.ZeppelinConfiguration;
+import org.apache.zeppelin.rest.exception.ForbiddenException;
 import org.apache.zeppelin.server.JsonResponse;
 import org.apache.zeppelin.service.AuthenticationService;
 import org.apache.zeppelin.user.Credentials;
@@ -64,6 +67,7 @@ public class CredentialRestApi {
    */
   @PUT
   public Response putCredentials(String message) {
+    NotebookRestApi.checkIfReadOnly("putCredentials");
     Map<String, String> messageMap =
         gson.fromJson(message, new TypeToken<Map<String, String>>() {}.getType());
     String entity = messageMap.get("entity");
@@ -116,6 +120,7 @@ public class CredentialRestApi {
    */
   @DELETE
   public Response removeCredentials() {
+    NotebookRestApi.checkIfReadOnly("removeCredentials");
     String user = authenticationService.getPrincipal();
     LOGGER.info("removeCredentials for user {} ", user);
     UserCredentials uc;
@@ -140,6 +145,7 @@ public class CredentialRestApi {
   @DELETE
   @Path("{entity}")
   public Response removeCredentialEntity(@PathParam("entity") String entity) {
+    NotebookRestApi.checkIfReadOnly("removeCredentials");
     String user = authenticationService.getPrincipal();
     LOGGER.info("removeCredentialEntity for user {} entity {}", user, entity);
     try {

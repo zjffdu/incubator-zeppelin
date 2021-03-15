@@ -243,6 +243,8 @@ public class NotebookRestApi extends AbstractRestApi {
   public Response putNotePermissions(@PathParam("noteId") String noteId, String req)
       throws IOException {
 
+    checkIfReadOnly("putNotePermissions");
+
     String principal = authenticationService.getPrincipal();
     Set<String> roles = authenticationService.getAssociatedRoles();
     HashSet<String> userAndRoles = new HashSet<>();
@@ -369,6 +371,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @Path("import")
   @ZeppelinApi
   public Response importNote(@QueryParam("notePath") String notePath, String noteJson) throws IOException {
+    checkIfReadOnly("importNote");
     Note note = notebookService.importNote(notePath, noteJson, getServiceContext(),
             new RestServiceCallback());
     return new JsonResponse<>(Status.OK, "", note.getId()).build();
@@ -384,6 +387,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @POST
   @ZeppelinApi
   public Response createNote(String message) throws IOException {
+    checkIfReadOnly("createNote");
     String user = authenticationService.getPrincipal();
     LOGGER.info("Creating new note by JSON {}", message);
     NewNoteRequest request = NewNoteRequest.fromJson(message);
@@ -418,6 +422,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @Path("{noteId}")
   @ZeppelinApi
   public Response deleteNote(@PathParam("noteId") String noteId) throws IOException {
+    checkIfReadOnly("deleteNote");
     LOGGER.info("Delete note {} ", noteId);
     notebookService.removeNote(noteId,
             getServiceContext(),
@@ -445,6 +450,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response cloneNote(@PathParam("noteId") String noteId, String message)
       throws IOException, IllegalArgumentException {
+    checkIfReadOnly("cloneNote");
 
     LOGGER.info("Clone note by JSON {}", message);
     checkIfUserCanWrite(noteId, "Insufficient privileges you cannot clone this note");
@@ -477,8 +483,8 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response renameNote(@PathParam("noteId") String noteId,
                              String message) throws IOException {
-
     LOGGER.info("Rename note by JSON {}", message);
+    checkIfReadOnly("renameNote");
     RenameNoteRequest request = GSON.fromJson(message, RenameNoteRequest.class);
     String newName = request.getName();
     if (newName.isEmpty()) {
@@ -508,6 +514,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response insertParagraph(@PathParam("noteId") String noteId, String message)
       throws IOException {
+    checkIfReadOnly("insertParagraph");
 
     String user = authenticationService.getPrincipal();
     LOGGER.info("Insert paragraph {} {}", noteId, message);
@@ -563,7 +570,7 @@ public class NotebookRestApi extends AbstractRestApi {
   public Response updateParagraph(@PathParam("noteId") String noteId,
                                   @PathParam("paragraphId") String paragraphId,
                                   String message) throws IOException {
-
+    checkIfReadOnly("updateParagraph");
     String user = authenticationService.getPrincipal();
     LOGGER.info("{} will update paragraph {} {}", user, noteId, paragraphId);
     Note note = notebook.getNote(noteId);
@@ -600,7 +607,7 @@ public class NotebookRestApi extends AbstractRestApi {
   public Response updateParagraphConfig(@PathParam("noteId") String noteId,
                                         @PathParam("paragraphId") String paragraphId,
                                         String message) throws IOException {
-
+    checkIfReadOnly("updateParagraphConfig");
     String user = authenticationService.getPrincipal();
     LOGGER.info("{} will update paragraph config {} {}", user, noteId, paragraphId);
 
@@ -631,7 +638,7 @@ public class NotebookRestApi extends AbstractRestApi {
                                 @PathParam("paragraphId") String paragraphId,
                                 @PathParam("newIndex") String newIndex)
       throws IOException {
-
+    checkIfReadOnly("moveParagraph");
     LOGGER.info("Move paragraph {} {} {}", noteId, paragraphId, newIndex);
     notebookService.moveParagraph(noteId, paragraphId, Integer.parseInt(newIndex),
             getServiceContext(),
@@ -656,7 +663,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response deleteParagraph(@PathParam("noteId") String noteId,
                                   @PathParam("paragraphId") String paragraphId) throws IOException {
-
+    checkIfReadOnly("deleteParagraph");
     LOGGER.info("Delete paragraph {} {}", noteId, paragraphId);
     notebookService.removeParagraph(noteId, paragraphId, getServiceContext(),
             new RestServiceCallback<Paragraph>() {
@@ -691,6 +698,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response clearAllParagraphOutput(@PathParam("noteId") String noteId)
       throws IOException {
+    checkIfReadOnly("clearAllParagraphOutput");
     LOGGER.info("Clear all paragraph output of note {}", noteId);
     notebookService.clearAllParagraphOutput(noteId, getServiceContext(),
             new RestServiceCallback<>());
@@ -716,7 +724,7 @@ public class NotebookRestApi extends AbstractRestApi {
                               @QueryParam("isolated") Boolean isolated,
                               String message)
       throws Exception, IllegalArgumentException {
-
+    checkIfReadOnly("runNoteJobs");
     if (blocking == null) {
       blocking = false;
     }
@@ -756,6 +764,7 @@ public class NotebookRestApi extends AbstractRestApi {
   public Response stopNoteJobs(@PathParam("noteId") String noteId)
       throws IOException, IllegalArgumentException {
 
+    checkIfReadOnly("stopNoteJobs");
     LOGGER.info("Stop note jobs {} ", noteId);
     Note note = notebook.getNote(noteId);
     checkIfNoteIsNotNull(note, noteId);
@@ -836,6 +845,7 @@ public class NotebookRestApi extends AbstractRestApi {
                                String message)
       throws IOException, IllegalArgumentException {
 
+    checkIfReadOnly("runParagraph");
     LOGGER.info("Run paragraph job asynchronously {} {} {}", noteId, paragraphId, message);
 
     Note note = notebook.getNote(noteId);
@@ -874,6 +884,7 @@ public class NotebookRestApi extends AbstractRestApi {
                                             @QueryParam("sessionId") String sessionId,
                                             String message)
       throws IOException, IllegalArgumentException {
+    checkIfReadOnly("runParagraphSynchronously");
     LOGGER.info("Run paragraph synchronously {} {} {}", noteId, paragraphId, message);
 
     Note note = notebook.getNote(noteId);
@@ -915,6 +926,7 @@ public class NotebookRestApi extends AbstractRestApi {
   public Response cancelParagraph(@PathParam("noteId") String noteId,
                                   @PathParam("paragraphId") String paragraphId)
       throws IOException, IllegalArgumentException {
+    checkIfReadOnly("cancelParagraph");
     LOGGER.info("stop paragraph job {} ", noteId);
     notebookService.cancelParagraph(noteId, paragraphId, getServiceContext(),
             new RestServiceCallback<Paragraph>());
@@ -934,7 +946,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response registerCronJob(@PathParam("noteId") String noteId, String message)
       throws IOException, IllegalArgumentException {
-
+    checkIfReadOnly("registerCronJob");
     LOGGER.info("Register cron job note={} request cron msg={}", noteId, message);
 
     CronRequest request = CronRequest.fromJson(message);
@@ -970,7 +982,7 @@ public class NotebookRestApi extends AbstractRestApi {
   @ZeppelinApi
   public Response removeCronJob(@PathParam("noteId") String noteId)
       throws IOException, IllegalArgumentException {
-
+    checkIfReadOnly("removeCronJob");
     LOGGER.info("Remove cron job note {}", noteId);
 
     Note note = notebook.getNote(noteId);
@@ -1128,5 +1140,15 @@ public class NotebookRestApi extends AbstractRestApi {
     }
 
     p.setConfig(origConfig);
+  }
+
+  /**
+   * Check if the current user can access (at least he have to be reader) the given note.
+   */
+  public static void checkIfReadOnly(String operation) {
+    if (ZeppelinConfiguration.create().isReadOnly()) {
+      throw new ForbiddenException("Unable to do " + operation +
+              ", cause: Zeppelin server is in read only mode.");
+    }
   }
 }

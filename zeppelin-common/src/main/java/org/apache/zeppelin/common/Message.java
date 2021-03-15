@@ -34,174 +34,187 @@ import java.util.Set;
 public class Message implements JsonSerializable {
   /**
    * Representation of event type.
+   * c: client
+   * s: server
    */
   public enum OP {
-    GET_HOME_NOTE,    // [c-s] load note for home screen
+    GET_HOME_NOTE(false),       // [c-s] load note for home screen
 
-    GET_NOTE,         // [c-s] client load note
-                      // @param id note id
+    GET_NOTE(false),            // [c-s] client load note
+                                // @param id note id
 
-    RELOAD_NOTE,      // [c-s] client load note
-                      // @param id note id
+    RELOAD_NOTE(false),         // [c-s] client load note
+                                // @param id note id
 
-    NOTE,             // [s-c] note info
-                      // @param note serialized Note object
+    NOTE(false),                // [s-c] note info
+                                // @param note serialized Note object
 
-    PARAGRAPH,        // [s-c] paragraph info
-                      // @param paragraph serialized paragraph object
+    PARAGRAPH(false),           // [s-c] paragraph info
+                                // @param paragraph serialized paragraph object
 
-    PROGRESS,         // [s-c] progress update
-                      // @param id paragraph id
-                      // @param progress percentage progress
+    PROGRESS(true),             // [s-c] progress update
+                                // @param id paragraph id
+                                // @param progress percentage progress
 
-    NEW_NOTE,         // [c-s] create new notebook
-    DEL_NOTE,         // [c-s] delete notebook
-                      // @param id note id
-    REMOVE_FOLDER,
-    MOVE_NOTE_TO_TRASH,
-    MOVE_FOLDER_TO_TRASH,
-    RESTORE_FOLDER,
-    RESTORE_NOTE,
-    RESTORE_ALL,
-    EMPTY_TRASH,
-    CLONE_NOTE,       // [c-s] clone new notebook
-                      // @param id id of note to clone
-                      // @param name name for the cloned note
-    IMPORT_NOTE,      // [c-s] import notebook
-                      // @param object notebook
+    NEW_NOTE(true),             // [c-s] create new notebook
+    DEL_NOTE(true),             // [c-s] delete notebook
+                                // @param id note id
 
-    CONVERT_NOTE_NBFORMAT,     // [c-s] converting note to nbformat
-    CONVERTED_NOTE_NBFORMAT,     // [s-c] converting note to nbformat
+    REMOVE_FOLDER(true),
+    MOVE_NOTE_TO_TRASH(true),
+    MOVE_FOLDER_TO_TRASH(true),
+    RESTORE_FOLDER(true),
+    RESTORE_NOTE(true),
+    RESTORE_ALL(true),
+    EMPTY_TRASH(true),
+    CLONE_NOTE(true),      // [c-s] clone new notebook
+                            // @param id id of note to clone
+                            // @param name name for the cloned note
+    IMPORT_NOTE(true),     // [c-s] import notebook
+                            // @param object notebook
 
-    NOTE_UPDATE,
+    CONVERT_NOTE_NBFORMAT(false),     // [c-s] converting note to nbformat
+    CONVERTED_NOTE_NBFORMAT(false),     // [s-c] converting note to nbformat
 
-    NOTE_RENAME,
+    NOTE_UPDATE(true),
 
-    UPDATE_PERSONALIZED_MODE, // [c-s] update personalized mode (boolean)
-                              // @param note id and boolean personalized mode value
+    NOTE_RENAME(true),
 
-    FOLDER_RENAME,
+    UPDATE_PERSONALIZED_MODE(true),  // [c-s] update personalized mode (boolean)
+                                     // @param note id and boolean personalized mode value
 
-    RUN_PARAGRAPH,    // [c-s] run paragraph
-                      // @param id paragraph id
-                      // @param paragraph paragraph content.ie. script
-                      // @param config paragraph config
-                      // @param params paragraph params
+    FOLDER_RENAME(true),
 
-    COMMIT_PARAGRAPH, // [c-s] commit paragraph
-                      // @param id paragraph id
-                      // @param title paragraph title
-                      // @param paragraph paragraph content.ie. script
-                      // @param config paragraph config
-                      // @param params paragraph params
+    RUN_PARAGRAPH(true),   // [c-s] run paragraph
+                            // @param id paragraph id
+                            // @param paragraph paragraph content.ie. script
+                            // @param config paragraph config
+                            // @param params paragraph params
 
-    CANCEL_PARAGRAPH, // [c-s] cancel paragraph run
-                      // @param id paragraph id
+    COMMIT_PARAGRAPH(true),// [c-s] commit paragraph
+                            // @param id paragraph id
+                            // @param title paragraph title
+                            // @param paragraph paragraph content.ie. script
+                            // @param config paragraph config
+                            // @param params paragraph params
 
-    MOVE_PARAGRAPH,   // [c-s] move paragraph order
-                      // @param id paragraph id
-                      // @param index index the paragraph want to go
+    CANCEL_PARAGRAPH(true),// [c-s] cancel paragraph run
+                            // @param id paragraph id
 
-    INSERT_PARAGRAPH, // [c-s] create new paragraph below current paragraph
-                      // @param target index
+    MOVE_PARAGRAPH(true),  // [c-s] move paragraph order
+                            // @param id paragraph id
+                            // @param index index the paragraph want to go
 
-    COPY_PARAGRAPH,   // [c-s] create new para below current para as a copy of current para
-                      // @param target index
-                      // @param title paragraph title
-                      // @param paragraph paragraph content.ie. script
-                      // @param config paragraph config
-                      // @param params paragraph params
+    INSERT_PARAGRAPH(true),// [c-s] create new paragraph below current paragraph
+                            // @param target index
 
-    EDITOR_SETTING,   // [c-s] ask paragraph editor setting
-                      // @param paragraph text keyword written in paragraph
-                      // ex) spark.spark or spark
+    COPY_PARAGRAPH(true),  // [c-s] create new para below current para as a copy of current para
+                            // @param target index
+                            // @param title paragraph title
+                            // @param paragraph paragraph content.ie. script
+                            // @param config paragraph config
+                            // @param params paragraph params
 
-    COMPLETION,       // [c-s] ask completion candidates
-                      // @param id
-                      // @param buf current code
-                      // @param cursor cursor position in code
+    EDITOR_SETTING(false),   // [c-s] ask paragraph editor setting
+                            // @param paragraph text keyword written in paragraph
+                            // ex) spark.spark or spark
 
-    COMPLETION_LIST,  // [s-c] send back completion candidates list
-                      // @param id
-                      // @param completions list of string
+    COMPLETION(true),      // [c-s] ask completion candidates
+                            // @param id
+                            // @param buf current code
+                            // @param cursor cursor position in code
 
-    LIST_NOTES,                   // [c-s] ask list of note
-    RELOAD_NOTES_FROM_REPO,       // [c-s] reload notes from repo
+    COMPLETION_LIST(true), // [s-c] send back completion candidates list
+                            // @param id
+                            // @param completions list of string
 
-    NOTES_INFO,                   // [s-c] list of note infos
+    LIST_NOTES(false),      // [c-s] ask list of note
+    RELOAD_NOTES_FROM_REPO(false), // [c-s] reload notes from repo
+
+    NOTES_INFO(false),                   // [s-c] list of note infos
                                   // @param notes serialized List<NoteInfo> object
 
-    PARAGRAPH_REMOVE,
-    PARAGRAPH_CLEAR_OUTPUT,       // [c-s] clear output of paragraph
-    PARAGRAPH_CLEAR_ALL_OUTPUT,   // [c-s] clear output of all paragraphs
-    PARAGRAPH_APPEND_OUTPUT,      // [s-c] append output
-    PARAGRAPH_UPDATE_OUTPUT,      // [s-c] update (replace) output
-    PING,
-    AUTH_INFO,
+    PARAGRAPH_REMOVE(true),
+    PARAGRAPH_CLEAR_OUTPUT(true),       // [c-s] clear output of paragraph
+    PARAGRAPH_CLEAR_ALL_OUTPUT(true),   // [c-s] clear output of all paragraphs
+    PARAGRAPH_APPEND_OUTPUT(true),      // [s-c] append output
+    PARAGRAPH_UPDATE_OUTPUT(true),      // [s-c] update (replace) output
+    PING(false),
+    AUTH_INFO(true),
 
-    ANGULAR_OBJECT_UPDATE,        // [s-c] add/update angular object
-    ANGULAR_OBJECT_REMOVE,        // [s-c] add angular object del
+    ANGULAR_OBJECT_UPDATE(true),        // [s-c] add/update angular object
+    ANGULAR_OBJECT_REMOVE(true),        // [s-c] add angular object del
 
-    ANGULAR_OBJECT_UPDATED,       // [c-s] angular object value updated,
+    ANGULAR_OBJECT_UPDATED(true),       // [c-s] angular object value updated,
 
-    ANGULAR_OBJECT_CLIENT_BIND,   // [c-s] angular object updated from AngularJS z object
+    ANGULAR_OBJECT_CLIENT_BIND(true),   // [c-s] angular object updated from AngularJS z object
 
-    ANGULAR_OBJECT_CLIENT_UNBIND, // [c-s] angular object unbind from AngularJS z object
+    ANGULAR_OBJECT_CLIENT_UNBIND(true), // [c-s] angular object unbind from AngularJS z object
 
-    LIST_CONFIGURATIONS,          // [c-s] ask all key/value pairs of configurations
-    CONFIGURATIONS_INFO,          // [s-c] all key/value pairs of configurations
+    LIST_CONFIGURATIONS(false),          // [c-s] ask all key/value pairs of configurations
+    CONFIGURATIONS_INFO(false),          // [s-c] all key/value pairs of configurations
                                   // @param settings serialized Map<String, String> object
 
-    CHECKPOINT_NOTE,              // [c-s] checkpoint note to storage repository
+    CHECKPOINT_NOTE(true),              // [c-s] checkpoint note to storage repository
                                   // @param noteId
                                   // @param checkpointName
 
-    LIST_REVISION_HISTORY,        // [c-s] list revision history of the notebook
+    LIST_REVISION_HISTORY(false),        // [c-s] list revision history of the notebook
                                   // @param noteId
-    NOTE_REVISION,                // [c-s] get certain revision of note
-                                  // @param noteId
-                                  // @param revisionId
-    SET_NOTE_REVISION,            // [c-s] set current notebook head to this revision
+    NOTE_REVISION(false),                // [c-s] get certain revision of note
                                   // @param noteId
                                   // @param revisionId
-    NOTE_REVISION_FOR_COMPARE,    // [c-s] get certain revision of note for compare
+    SET_NOTE_REVISION(true),            // [c-s] set current notebook head to this revision
+                                  // @param noteId
+                                  // @param revisionId
+    NOTE_REVISION_FOR_COMPARE(false),    // [c-s] get certain revision of note for compare
                                   // @param noteId
                                   // @param revisionId
                                   // @param position
-    APP_APPEND_OUTPUT,            // [s-c] append output
-    APP_UPDATE_OUTPUT,            // [s-c] update (replace) output
-    APP_LOAD,                     // [s-c] on app load
-    APP_STATUS_CHANGE,            // [s-c] on app status change
+    APP_APPEND_OUTPUT(true),            // [s-c] append output
+    APP_UPDATE_OUTPUT(true),            // [s-c] update (replace) output
+    APP_LOAD(true),                     // [s-c] on app load
+    APP_STATUS_CHANGE(true),            // [s-c] on app status change
 
-    LIST_NOTE_JOBS,               // [c-s] get note job management information
-    LIST_UPDATE_NOTE_JOBS,        // [c-s] get job management information for until unixtime
-    UNSUBSCRIBE_UPDATE_NOTE_JOBS, // [c-s] unsubscribe job information for job management
+    LIST_NOTE_JOBS(true),               // [c-s] get note job management information
+    LIST_UPDATE_NOTE_JOBS(true),        // [c-s] get job management information for until unixtime
+    UNSUBSCRIBE_UPDATE_NOTE_JOBS(true), // [c-s] unsubscribe job information for job management
     // @param unixTime
-    GET_INTERPRETER_BINDINGS,    // [c-s] get interpreter bindings
-    SAVE_INTERPRETER_BINDINGS,    // [c-s] save interpreter bindings
-    INTERPRETER_BINDINGS,         // [s-c] interpreter bindings
+    GET_INTERPRETER_BINDINGS(true),    // [c-s] get interpreter bindings
+    SAVE_INTERPRETER_BINDINGS(true),    // [c-s] save interpreter bindings
+    INTERPRETER_BINDINGS(true),         // [s-c] interpreter bindings
 
-    GET_INTERPRETER_SETTINGS,     // [c-s] get interpreter settings
-    INTERPRETER_SETTINGS,         // [s-c] interpreter settings
-    ERROR_INFO,                   // [s-c] error information to be sent
-    SESSION_LOGOUT,               // [s-c] error information to be sent
-    WATCHER,                      // [s-c] Change websocket to watcher mode.
-    PARAGRAPH_ADDED,              // [s-c] paragraph is added
-    PARAGRAPH_REMOVED,            // [s-c] paragraph deleted
-    PARAGRAPH_MOVED,              // [s-c] paragraph moved
-    NOTE_UPDATED,                 // [s-c] paragraph updated(name, config)
-    RUN_ALL_PARAGRAPHS,           // [c-s] run all paragraphs
-    PARAGRAPH_EXECUTED_BY_SPELL,  // [c-s] paragraph was executed by spell
-    RUN_PARAGRAPH_USING_SPELL,    // [s-c] run paragraph using spell
-    PARAS_INFO,                   // [s-c] paragraph runtime infos
-    SAVE_NOTE_FORMS,              // save note forms
-    REMOVE_NOTE_FORMS,            // remove note forms
-    INTERPRETER_INSTALL_STARTED,  // [s-c] start to download an interpreter
-    INTERPRETER_INSTALL_RESULT,   // [s-c] Status of an interpreter installation
-    COLLABORATIVE_MODE_STATUS,    // [s-c] collaborative mode status
-    PATCH_PARAGRAPH,              // [c-s][s-c] patch editor text
-    NOTE_RUNNING_STATUS,        // [s-c] sequential run status will be change
-    NOTICE                        // [s-c] Notice
+    GET_INTERPRETER_SETTINGS(false),     // [c-s] get interpreter settings
+    INTERPRETER_SETTINGS(false),         // [s-c] interpreter settings
+    ERROR_INFO(true),                   // [s-c] error information to be sent
+    SESSION_LOGOUT(true),               // [s-c] error information to be sent
+    WATCHER(true),                      // [s-c] Change websocket to watcher mode.
+    PARAGRAPH_ADDED(true),              // [s-c] paragraph is added
+    PARAGRAPH_REMOVED(true),            // [s-c] paragraph deleted
+    PARAGRAPH_MOVED(true),              // [s-c] paragraph moved
+    NOTE_UPDATED(true),                 // [s-c] paragraph updated(name, config)
+    RUN_ALL_PARAGRAPHS(true),           // [c-s] run all paragraphs
+    PARAGRAPH_EXECUTED_BY_SPELL(true),  // [c-s] paragraph was executed by spell
+    RUN_PARAGRAPH_USING_SPELL(true),    // [s-c] run paragraph using spell
+    PARAS_INFO(true),                   // [s-c] paragraph runtime infos
+    SAVE_NOTE_FORMS(true),              // save note forms
+    REMOVE_NOTE_FORMS(true),            // remove note forms
+    INTERPRETER_INSTALL_STARTED(true),  // [s-c] start to download an interpreter
+    INTERPRETER_INSTALL_RESULT(true),   // [s-c] Status of an interpreter installation
+    COLLABORATIVE_MODE_STATUS(true),    // [s-c] collaborative mode status
+    PATCH_PARAGRAPH(true),              // [c-s][s-c] patch editor text
+    NOTE_RUNNING_STATUS(true),        // [s-c] sequential run status will be change
+    NOTICE(true);                        // [s-c] Notice
+
+    private boolean ignoreInReadOnlyMode;
+
+    OP(boolean ignoreInReadOnlyMode) {
+      this.ignoreInReadOnlyMode = ignoreInReadOnlyMode;
+    }
+
+    public boolean isIgnoreInReadOnlyMode() {
+      return ignoreInReadOnlyMode;
+    }
   }
 
   // these messages will be ignored during the sequential run of the note

@@ -131,6 +131,7 @@ public class InterpreterRestApi {
   @ZeppelinApi
   public Response newSettings(String message) {
     try {
+      NotebookRestApi.checkIfReadOnly("newSettings");
       NewInterpreterSettingRequest request =
           NewInterpreterSettingRequest.fromJson(message);
       if (request == null) {
@@ -153,6 +154,7 @@ public class InterpreterRestApi {
   @Path("setting/{settingId}")
   @ZeppelinApi
   public Response updateSetting(String message, @PathParam("settingId") String settingId) {
+    NotebookRestApi.checkIfReadOnly("updateSetting");
     LOGGER.info("Update interpreterSetting {}", settingId);
 
     try {
@@ -184,6 +186,7 @@ public class InterpreterRestApi {
   @Path("setting/{settingId}")
   @ZeppelinApi
   public Response removeSetting(@PathParam("settingId") String settingId) throws IOException {
+    NotebookRestApi.checkIfReadOnly("removeSetting");
     LOGGER.info("Remove interpreterSetting {}", settingId);
     interpreterSettingManager.remove(settingId);
     return new JsonResponse<>(Status.OK).build();
@@ -196,6 +199,7 @@ public class InterpreterRestApi {
   @Path("setting/restart/{settingId}")
   @ZeppelinApi
   public Response restartSetting(String message, @PathParam("settingId") String settingId) {
+    NotebookRestApi.checkIfReadOnly("restartSetting");
     LOGGER.info("Restart interpreterSetting {}, msg={}", settingId, message);
 
     InterpreterSetting setting = interpreterSettingManager.get(settingId);
@@ -281,6 +285,7 @@ public class InterpreterRestApi {
   @Path("repository/{repoId}")
   @ZeppelinApi
   public Response removeRepository(@PathParam("repoId") String repoId) {
+    NotebookRestApi.checkIfReadOnly("removeRepository");
     LOGGER.info("Remove repository {}", repoId);
     try {
       interpreterSettingManager.removeRepository(repoId);
@@ -306,6 +311,7 @@ public class InterpreterRestApi {
   @Path("install")
   @ZeppelinApi
   public Response installInterpreter(@NotNull String message) {
+    NotebookRestApi.checkIfReadOnly("installInterpreter");
     LOGGER.info("Install interpreter: {}", message);
     InterpreterInstallationRequest request = InterpreterInstallationRequest.fromJson(message);
 

@@ -90,6 +90,7 @@ public class SessionRestApi {
    */
   @POST
   public Response createSession(@QueryParam("interpreter") String interpreter) throws Exception {
+    NotebookRestApi.checkIfReadOnly("createSession");
     LOGGER.info("Create new session for interpreter: {}", interpreter);
     SessionInfo sessionInfo = sessionManagerService.createSession(interpreter);
     return new JsonResponse<>(Response.Status.OK, sessionInfo).build();
@@ -104,6 +105,7 @@ public class SessionRestApi {
   @DELETE
   @Path("{sessionId}")
   public Response stopSession(@PathParam("sessionId") String sessionId) {
+    NotebookRestApi.checkIfReadOnly("stopSession");
     LOGGER.info("Stop session: {}", sessionId);
     try {
       sessionManagerService.stopSession(sessionId);

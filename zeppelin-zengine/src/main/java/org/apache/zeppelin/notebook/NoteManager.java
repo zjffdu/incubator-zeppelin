@@ -34,6 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,6 +72,18 @@ public class NoteManager {
     this.root = new Folder("/", notebookRepo);
     this.trash = this.root.getOrCreateFolder(TRASH_FOLDER);
     init();
+
+    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    int refreshInterval = ZeppelinConfiguration.create()
+            .getInt(ZeppelinConfiguration.ConfVars.ZEPPELIN_SERVER_NOTEBOOK_REFRESH_INTERVAL);
+    executorService.scheduleAtFixedRate(() -> {
+      try {
+        LOGGER.info("Refreshing notebooks");
+        init();
+      } catch (IOException e) {
+        LOGGER.error("Fail to refresh notebooks", e);
+      }
+    }, refreshInterval, refreshInterval, TimeUnit.SECONDS);
   }
 
   // build the tree structure of notes

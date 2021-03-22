@@ -416,7 +416,6 @@ public class JDBCInterpreter extends KerberosInterpreter {
     if (existAccountInBaseProperty(dbPrefix)) {
       return;
     }
-    jdbcUserConfigurations.cleanUserProperty(dbPrefix);
 
     UsernamePassword usernamePassword = getUsernamePassword(context,
             getEntityName(context.getReplName(), dbPrefix));

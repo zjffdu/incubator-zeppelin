@@ -146,8 +146,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
     // load udf jar
     this.userUdfJars.foreach(jar => loadUDFJar(jar))
 
-    if (mode == ExecutionMode.YARN_APPLICATION) {
-      // have to call senv.execute method before running any user code, otherwise yarn application mode
+    if (ExecutionMode.isApplicationMode(mode)) {
+      // have to call senv.execute method before running any user code, otherwise application mode
       // will cause ClassNotFound issue. Needs to do more investigation. TODO(zjffdu)
       val initCode =
         """
@@ -182,16 +182,27 @@ class FlinkScalaInterpreter(val properties: Properties) {
       properties.getProperty("flink.execution.mode", "LOCAL")
         .replace("-", "_")
         .toUpperCase)
-    if (mode == ExecutionMode.YARN_APPLICATION) {
+
+    if (ExecutionMode.isYarnAppicationMode(mode)) {
       if (flinkVersion.isFlink110) {
-        throw new Exception("yarn-application mode is only supported after Flink 1.11")
+        throw new Exception("application mode is only supported after Flink 1.11")
       }
       // use current yarn container working directory as FLINK_HOME, FLINK_CONF_DIR and HIVE_CONF_DIR
       val workingDirectory = new File(".").getAbsolutePath
       flinkHome = workingDirectory
       flinkConfDir = workingDirectory
       hiveConfDir = workingDirectory
+    } else if (ExecutionMode.isK8sApplicationMode(mode)) {
+      if (flinkVersion.isFlink110) {
+        throw new Exception("application mode is only supported after Flink 1.11")
+      }
+      // use current k8s working directory as FLINK_HOME
+      val workingDirectory = new File(".").getAbsolutePath
+      flinkHome = workingDirectory
+      flinkConfDir = workingDirectory + "/conf"
+      hiveConfDir = workingDirectory + "/conf"
     }
+
     LOGGER.info("FLINK_HOME: " + flinkHome)
     LOGGER.info("FLINK_CONF_DIR: " + flinkConfDir)
     LOGGER.info("HADOOP_CONF_DIR: " + hadoopConfDir)
@@ -312,9 +323,12 @@ class FlinkScalaInterpreter(val properties: Properties) {
           // remote mode
           if (mode == ExecutionMode.YARN_APPLICATION) {
             val yarnAppId = System.getenv("_APP_ID");
-            LOGGER.info("Use FlinkCluster in yarn application mode, appId: {}", yarnAppId)
+            LOGGER.info("Use FlinkCluster in yarn-application mode, appId: {}", yarnAppId)
             this.jmWebUrl = "http://localhost:" + HadoopUtils.getFlinkRestPort(yarnAppId)
             this.displayedJMWebUrl = HadoopUtils.getYarnAppTrackingUrl(yarnAppId)
+          } else if (mode == ExecutionMode.KUBERNETES_APPLICATION) {
+            LOGGER.info("Use FlinkCluster in kubernetes-application mode")
+            this.jmWebUrl = "http://localhost:8081"
           } else {
             LOGGER.info("Use FlinkCluster in remote mode")
             this.jmWebUrl = "http://" + config.host.get + ":" + config.port.get

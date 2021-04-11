@@ -70,17 +70,17 @@ class FlinkILoop(
     scalaBenv: ExecutionEnvironment,
     scalaSenv: StreamExecutionEnvironment
     ) = {
-    if (mode == ExecutionMode.YARN_APPLICATION) {
-      // For yarn application mode, ExecutionEnvironment & StreamExecutionEnvironment has already been created
+    if (ExecutionMode.isApplicationMode(mode)) {
+      // For application mode, ExecutionEnvironment & StreamExecutionEnvironment has already been created
       // by flink itself, we here just try get them via reflection and reconstruct them.
-      val scalaBenv = new ExecutionEnvironment(new YarnApplicationExecutionEnvironment(
+      val scalaBenv = new ExecutionEnvironment(new ApplicationModeExecutionEnvironment(
         getExecutionEnvironmentField(jenv, "executorServiceLoader").asInstanceOf[PipelineExecutorServiceLoader],
         getExecutionEnvironmentField(jenv, "configuration").asInstanceOf[Configuration],
         getExecutionEnvironmentField(jenv, "userClassloader").asInstanceOf[ClassLoader],
         this,
         flinkScalaInterpreter
       ))
-      val scalaSenv = new StreamExecutionEnvironment(new YarnApplicationStreamEnvironment(
+      val scalaSenv = new StreamExecutionEnvironment(new ApplicationModeStreamEnvironment(
         getStreamExecutionEnvironmentField(jsenv, "executorServiceLoader").asInstanceOf[PipelineExecutorServiceLoader],
         getStreamExecutionEnvironmentField(jsenv, "configuration").asInstanceOf[Configuration],
         getStreamExecutionEnvironmentField(jsenv, "userClassloader").asInstanceOf[ClassLoader],

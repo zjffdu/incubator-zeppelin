@@ -77,7 +77,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.ByteBuffer;
@@ -142,6 +141,7 @@ public class RemoteInterpreterServer extends Thread
   private ScheduledExecutorService resultCleanService = Executors.newSingleThreadScheduledExecutor();
 
   private boolean isTest;
+  private boolean isFlinkK8sApplicationMode = false;
 
   private ZeppelinConfiguration zConf;
   // cluster manager client
@@ -321,7 +321,10 @@ public class RemoteInterpreterServer extends Thread
      * should be part of the next release and solve the problem.
      * We may have other threads that are not terminated successfully.
      */
-    System.exit(0);
+    if (!remoteInterpreterServer.isFlinkK8sApplicationMode) {
+      LOGGER.info("Force shutting down");
+      System.exit(0);
+    }
   }
 
   // Submit interpreter process metadata information to cluster metadata
@@ -385,6 +388,12 @@ public class RemoteInterpreterServer extends Thread
       interpreter.setUserName(userName);
 
       interpreterGroup.addInterpreterToSession(new LazyOpenInterpreter(interpreter), sessionId);
+      if (className.endsWith(".FlinkInterpreter")) {
+        this.isFlinkK8sApplicationMode = "kubernetes-application".equals(properties.get("flink.execution.mode"));
+        if (this.isFlinkK8sApplicationMode) {
+          LOGGER.info("Run flink interpreter in k8s application mode");
+        }
+      }
     } catch (Exception e) {
       LOGGER.error(e.getMessage(), e);
       throw new InterpreterRPCException("Fail to create interpreter, cause: " + e.toString());
@@ -701,8 +710,10 @@ public class RemoteInterpreterServer extends Thread
       }
 
       if (server.isServing()) {
-        LOGGER.info("Force shutting down");
-        System.exit(1);
+        if (!isFlinkK8sApplicationMode) {
+          LOGGER.info("Force shutting down");
+          System.exit(1);
+        }
       }
 
       LOGGER.info("Shutting down");

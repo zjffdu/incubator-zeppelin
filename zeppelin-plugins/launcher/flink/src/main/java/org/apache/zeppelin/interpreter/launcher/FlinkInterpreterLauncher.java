@@ -18,6 +18,7 @@
 package org.apache.zeppelin.interpreter.launcher;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.zeppelin.conf.ZeppelinConfiguration;
 import org.apache.zeppelin.interpreter.recovery.RecoveryStorage;
@@ -29,12 +30,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FlinkInterpreterLauncher.class);
-
+  private static final Set<String> FLINK_EXECUTION_MODES = Sets.newHashSet(
+          "local", "remote", "yarn", "yarn-application", "kubernetes-application");
 
   public FlinkInterpreterLauncher(ZeppelinConfiguration zConf, RecoveryStorage recoveryStorage) {
     super(zConf, recoveryStorage);
@@ -45,25 +48,44 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
           throws IOException {
     Map<String, String> envs = super.buildEnvFromProperties(context);
 
-    String flinkHome = updateEnvsForFlinkHome(envs, context);
-
+    String flinkHome = getFlinkHome(context);
     if (!envs.containsKey("FLINK_CONF_DIR")) {
       envs.put("FLINK_CONF_DIR", flinkHome + "/conf");
     }
     envs.put("FLINK_LIB_DIR", flinkHome + "/lib");
     envs.put("FLINK_PLUGINS_DIR", flinkHome + "/plugins");
 
-    // yarn application mode specific logic
-    if ("yarn-application".equalsIgnoreCase(
-            context.getProperties().getProperty("flink.execution.mode"))) {
-      updateEnvsForYarnApplicationMode(envs, context);
+    String mode = context.getProperties().getProperty("flink.execution.mode");
+    String a = FLINK_EXECUTION_MODES.stream().collect(Collectors.joining(", "));
+    if (!FLINK_EXECUTION_MODES.contains(mode)) {
+      throw new IOException("Not valid flink.execution.mode: " +
+              mode + ", valid modes ares: " +
+              FLINK_EXECUTION_MODES.stream().collect(Collectors.joining(", ")));
+    }
+    if (isApplicationMode(mode)) {
+      updateEnvsForApplicationMode(mode, envs, context);
     }
 
     return envs;
   }
 
-  private String updateEnvsForFlinkHome(Map<String, String> envs,
-                                      InterpreterLaunchContext context) throws IOException {
+  private void verifyExecutionMode(String mode) {
+
+  }
+
+  private boolean isApplicationMode(String mode) {
+    return "yarn-application".equals(mode) || "kubernetes-application".equals(mode);
+  }
+
+  private boolean isYarnApplicationMode(String mode) {
+    return "yarn-application".equals(mode);
+  }
+
+  private boolean isK8sApplicationMode(String mode) {
+    return "kubernetes-application".equals(mode);
+  }
+
+  private String getFlinkHome(InterpreterLaunchContext context) throws IOException {
     String flinkHome = context.getProperties().getProperty("FLINK_HOME");
     if (StringUtils.isBlank(flinkHome)) {
       flinkHome = System.getenv("FLINK_HOME");
@@ -82,27 +104,39 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     return flinkHome;
   }
 
-  private void updateEnvsForYarnApplicationMode(Map<String, String> envs,
-                                                InterpreterLaunchContext context) {
-    envs.put("ZEPPELIN_FLINK_YARN_APPLICATION", "true");
+  private void updateEnvsForApplicationMode(String mode,
+                                            Map<String, String> envs,
+                                            InterpreterLaunchContext context) throws IOException {
+    envs.put("ZEPPELIN_FLINK_APPLICATION_MODE", mode);
 
-    StringBuilder flinkYarnApplicationConfBuilder = new StringBuilder();
-    // set yarn.ship-files
-    List<String> yarnShipFiles = getYarnShipFiles(context);
-    if (!yarnShipFiles.isEmpty()) {
-      flinkYarnApplicationConfBuilder.append(
-              " -D yarn.ship-files=" + yarnShipFiles.stream().collect(Collectors.joining(",")));
+    if (isK8sApplicationMode(mode)) {
+      String flinkAppJar = context.getProperties().getProperty("flink.app.jar");
+      if (StringUtils.isBlank(flinkAppJar)) {
+        throw new IOException("flink.app.jar is not specified for kubernetes-application mode");
+      }
+      envs.put("FLINK_APP_JAR", flinkAppJar);
+      LOGGER.info("FLINK_APP_JAR: " + flinkAppJar);
     }
 
-    // set yarn.application.name
-    String yarnAppName = context.getProperties().getProperty("flink.yarn.appName");
-    if (StringUtils.isNotBlank(yarnAppName)) {
-      // flink run command can not contains whitespace, so replace it with _
-      flinkYarnApplicationConfBuilder.append(
-              " -D yarn.application.name=" + yarnAppName.replaceAll(" ", "_") + "");
+    StringBuilder applicationModeConfBuilder = new StringBuilder();
+    if (isYarnApplicationMode(mode)) {
+      // set yarn.ship-files
+      List<String> yarnShipFiles = getYarnShipFiles(context);
+      if (!yarnShipFiles.isEmpty()) {
+        applicationModeConfBuilder.append(
+                " -D yarn.ship-files=" + yarnShipFiles.stream().collect(Collectors.joining(",")));
+      }
+
+      // set yarn.application.name
+      String yarnAppName = context.getProperties().getProperty("flink.yarn.appName");
+      if (StringUtils.isNotBlank(yarnAppName)) {
+        // flink run command can not contains whitespace, so replace it with _
+        applicationModeConfBuilder.append(
+                " -D yarn.application.name=" + yarnAppName.replaceAll(" ", "_") + "");
+      }
     }
 
-    // add other yarn and python configuration.
+    // add other configuration for both k8s and yarn
     for (Map.Entry<Object, Object> entry : context.getProperties().entrySet()) {
       String key = entry.getKey().toString();
       String value = entry.getValue().toString();
@@ -112,11 +146,11 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
           LOGGER.warn("flink configuration key {} is skipped because it contains white space",
                   key);
         } else {
-          flinkYarnApplicationConfBuilder.append(" -D " + key + "=" + value);
+          applicationModeConfBuilder.append(" -D " + key + "=" + value);
         }
       }
     }
-    envs.put("ZEPPELIN_FLINK_YARN_APPLICATION_CONF", flinkYarnApplicationConfBuilder.toString());
+    envs.put("ZEPPELIN_FLINK_APPLICATION_MODE_CONF", applicationModeConfBuilder.toString());
   }
 
   private List<String> getYarnShipFiles(InterpreterLaunchContext context) {

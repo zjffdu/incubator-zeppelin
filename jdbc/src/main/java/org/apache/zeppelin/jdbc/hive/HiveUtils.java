@@ -44,6 +44,8 @@ public class HiveUtils {
 
   private static final Pattern JOBURL_PATTERN =
           Pattern.compile(".*Tracking URL = (\\S*).*", Pattern.DOTALL);
+  private static final Pattern YARN_APP_ID_PATTERN =
+          Pattern.compile(".*(application_.*).*", Pattern.DOTALL);
 
   /**
    * Display hive job execution info, and progress info for hive >= 2.3
@@ -90,10 +92,20 @@ public class HiveUtils {
           if (!StringUtils.isBlank(logsOutput) && progressBar != null && displayLogProperty) {
             progressBar.operationLogShowedToUser();
           }
-          Optional<String> jobURL = extractMRJobURL(logsOutput);
-          if (jobURL.isPresent()) {
+          Optional<String> jobURLOption = extractMRJobURL(logsOutput);
+          if (jobURLOption.isPresent()) {
+            String jobUrl = jobURLOption.get();
+            String yarnKnoxURL = jdbcInterpreter.getProperties().getProperty("yarn.knox.url");
+            if (StringUtils.isNotBlank(yarnKnoxURL)) {
+              Optional<String> yarnAppId = extractYarnAppId(jobUrl);
+              if (yarnAppId.isPresent()) {
+                jobUrl = yarnKnoxURL + "/cluster/app/" + yarnAppId.get();
+              } else {
+                LOGGER.warn("Unable to extract yarn App Id from jobURL: {}", jobUrl);
+              }
+            }
             Map<String, String> infos = new HashMap<>();
-            infos.put("jobUrl", jobURL.get());
+            infos.put("jobUrl", jobUrl);
             infos.put("label", "HIVE JOB");
             infos.put("tooltip", "View in YARN WEB UI");
             infos.put("noteId", context.getNoteId());
@@ -163,6 +175,14 @@ public class HiveUtils {
     if (matcher.matches()) {
       String jobURL = matcher.group(1);
       return Optional.of(jobURL);
+    }
+    return Optional.empty();
+  }
+
+  static Optional<String> extractYarnAppId(String jobURL) {
+    int pos = jobURL.indexOf("application_");
+    if (pos != -1) {
+      return Optional.of(jobURL.substring(pos));
     }
     return Optional.empty();
   }

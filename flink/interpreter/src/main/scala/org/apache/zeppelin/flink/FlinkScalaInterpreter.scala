@@ -146,7 +146,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     // load udf jar
     this.userUdfJars.foreach(jar => loadUDFJar(jar))
 
-    if (mode == ExecutionMode.YARN_APPLICATION) {
+    if (mode == ExecutionMode.YARN_APPLICATION || mode == ExecutionMode.K8S_APPLICATION) {
       // have to call senv.execute method before running any user code, otherwise yarn application mode
       // will cause ClassNotFound issue. Needs to do more investigation. TODO(zjffdu)
       val initCode =

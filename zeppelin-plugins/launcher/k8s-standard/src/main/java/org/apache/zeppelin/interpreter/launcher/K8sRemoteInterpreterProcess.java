@@ -68,6 +68,10 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
   private final boolean portForward;
   private LocalPortForward localPortForward;
 
+  private int podPort = K8S_INTERPRETER_SERVICE_PORT;
+  private String errorMessage;
+  private String host;
+
   private final boolean timeoutDuringPending;
 
   private AtomicBoolean started = new AtomicBoolean(false);
@@ -98,16 +102,16 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
           boolean timeoutDuringPending
   ) {
     super(intpEventServerPort,
-          intpEventServerHost,
-          String.format("%d:%d", K8S_INTERPRETER_SERVICE_PORT, K8S_INTERPRETER_SERVICE_PORT),
-          "${ZEPPELIN_HOME}/interpreter/" + interpreterGroupName,
-          "/tmp/local-repo",
-          envs,
-          connectTimeout,
-          connectionPoolSize,
-          interpreterSettingName,
-          interpreterGroupId,
-          isUserImpersonatedForSpark);
+            intpEventServerHost,
+            String.format("%d:%d", K8S_INTERPRETER_SERVICE_PORT, K8S_INTERPRETER_SERVICE_PORT),
+            "${ZEPPELIN_HOME}/interpreter/" + interpreterGroupName,
+            "/tmp/local-repo",
+            envs,
+            connectTimeout,
+            connectionPoolSize,
+            interpreterSettingName,
+            interpreterGroupId,
+            isUserImpersonatedForSpark);
     this.client = client;
     this.namespace = namespace;
     this.specTemplates = specTemplates;
@@ -117,7 +121,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
     this.portForward = portForward;
     this.sparkImage = sparkImage;
     this.podName = interpreterGroupName.toLowerCase() + "-"
-        + RandomStringUtils.randomAlphabetic(6).toLowerCase();
+            + RandomStringUtils.randomAlphabetic(6).toLowerCase();
     this.timeoutDuringPending = timeoutDuringPending;
   }
 
@@ -148,7 +152,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
     if (!timeoutDuringPending) {
       // WATCH
       PodPhaseWatcher podWatcher = new PodPhaseWatcher(
-          phase -> StringUtils.equalsAnyIgnoreCase(phase, "Succeeded", "Failed", "Running"));
+              phase -> StringUtils.equalsAnyIgnoreCase(phase, "Succeeded", "Failed", "Running"));
       try (Watch watch = client.pods().inNamespace(namespace).withName(podName).watch(podWatcher)) {
         podWatcher.getCountDownLatch().await();
       } catch (InterruptedException e) {
@@ -190,7 +194,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
     PodPhaseWatcher podWatcher = new PodPhaseWatcher(phase -> StringUtils.equalsAny(phase, "Succeeded", "Failed"));
     try (Watch watch = client.pods().inNamespace(namespace).withName(podName).watch(podWatcher)) {
       if (!podWatcher.getCountDownLatch().await(RemoteInterpreterServer.DEFAULT_SHUTDOWN_TIMEOUT + 500,
-          TimeUnit.MILLISECONDS)) {
+              TimeUnit.MILLISECONDS)) {
         LOGGER.warn("Pod {} doesn't terminate in time", podName);
       }
     } catch (InterruptedException e) {
@@ -205,6 +209,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
     } catch (IOException e) {
       LOGGER.info("Error on removing interpreter pod", e);
     }
+
     if (portForward && localPortForward != null) {
       LOGGER.info("Stopping Port Forwarding");
       try {
@@ -212,6 +217,19 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
       } catch (IOException e) {
         LOGGER.info("Error on closing portforwarder", e);
       }
+    }
+    // Shutdown connection
+    shutdown();
+  }
+
+  @Override
+  public String getHost() {
+    if (portForward) {
+      return "localhost";
+    } else if (host != null) {
+      return host;
+    } else {
+      return getInterpreterPodDnsName();
     }
   }
 
@@ -300,7 +318,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
       k8sProperties.put("zeppelin.k8s.spark.container.image", sparkImage);
       if (isSparkOnKubernetes(properties)) {
         k8sEnv.put("SPARK_SUBMIT_OPTIONS",
-            getEnv().getOrDefault("SPARK_SUBMIT_OPTIONS", "") + buildSparkSubmitOptions(userName));
+                getEnv().getOrDefault("SPARK_SUBMIT_OPTIONS", "") + buildSparkSubmitOptions(userName));
       }
       k8sEnv.put("SPARK_HOME", getEnv().getOrDefault("SPARK_HOME", "/spark"));
 
@@ -310,18 +328,18 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
         webUrl = "//{{PORT}}-{{SERVICE_NAME}}.{{SERVICE_DOMAIN}}";
       }
       properties.put("zeppelin.spark.uiWebUrl",
-          sparkUiWebUrlFromTemplate(
-              webUrl,
-              webUiPort,
-              getPodName(),
-              k8sEnv.get(ENV_SERVICE_DOMAIN)
-          ));
+              sparkUiWebUrlFromTemplate(
+                      webUrl,
+                      webUiPort,
+                      getPodName(),
+                      k8sEnv.get(ENV_SERVICE_DOMAIN)
+              ));
       // Resources of Interpreter Pod
       if (properties.containsKey(SPARK_DRIVER_MEMORY)) {
         String memory;
         if (properties.containsKey(SPARK_DRIVER_MEMORY_OVERHEAD)) {
           memory = K8sUtils.calculateSparkMemory(properties.getProperty(SPARK_DRIVER_MEMORY),
-                                                 properties.getProperty(SPARK_DRIVER_MEMORY_OVERHEAD));
+                  properties.getProperty(SPARK_DRIVER_MEMORY_OVERHEAD));
         } else {
           memory = K8sUtils.calculateMemoryWithDefaultOverhead(properties.getProperty(SPARK_DRIVER_MEMORY));
         }
@@ -342,9 +360,9 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
   @VisibleForTesting
   String sparkUiWebUrlFromTemplate(String templateString, int port, String serviceName, String serviceDomain) {
     ImmutableMap<String, Object> binding = ImmutableMap.of(
-        "PORT", port,
-        "SERVICE_NAME", serviceName,
-        ENV_SERVICE_DOMAIN, serviceDomain
+            "PORT", port,
+            "SERVICE_NAME", serviceName,
+            ENV_SERVICE_DOMAIN, serviceDomain
     );
 
     ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -371,7 +389,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
   String buildSparkSubmitOptions(String userName) {
     StringBuilder options = new StringBuilder();
 
-    options.append(" --master k8s://https://kubernetes.default.svc");
+    options.append(" --master " + properties.getProperty("spark.master", "k8s://https://kubernetes.default.svc"));
     options.append(" --deploy-mode client");
     if (properties.containsKey(SPARK_DRIVER_MEMORY)) {
       options.append(" --driver-memory " + properties.get(SPARK_DRIVER_MEMORY));
@@ -380,7 +398,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
       options.append(" --proxy-user " + userName);
     }
     options.append(" --conf spark.kubernetes.namespace=" + getNamespace());
-    options.append(" --conf spark.executor.instances=1");
+    //options.append(" --conf spark.executor.instances=1");
     options.append(" --conf spark.kubernetes.driver.pod.name=" + getPodName());
     options.append(" --conf spark.kubernetes.container.image=" + sparkImage);
     options.append(" --conf spark.driver.bindAddress=0.0.0.0");
@@ -393,8 +411,8 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
 
   private String getInterpreterPodDnsName() {
     return String.format("%s.%s.svc",
-        getPodName(), // service name and pod name is the same
-        getNamespace());
+            getPodName(), // service name and pod name is the same
+            getNamespace());
   }
 
   /**
@@ -435,7 +453,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
       try {
         int localforwardedPodPort = RemoteInterpreterUtils.findRandomAvailablePortOnAllLocalInterfaces();
         localPortForward = client.pods().inNamespace(namespace).withName(podName)
-            .portForward(K8S_INTERPRETER_SERVICE_PORT, localforwardedPodPort);
+                .portForward(K8S_INTERPRETER_SERVICE_PORT, localforwardedPodPort);
         super.processStarted(localforwardedPodPort, "localhost");
       } catch (IOException e) {
         LOGGER.error("Unable to create a PortForward", e);
@@ -448,6 +466,7 @@ public class K8sRemoteInterpreterProcess extends RemoteInterpreterManagedProcess
       started.set(true);
       started.notifyAll();
     }
+    this.host = host;
   }
 
   @Override

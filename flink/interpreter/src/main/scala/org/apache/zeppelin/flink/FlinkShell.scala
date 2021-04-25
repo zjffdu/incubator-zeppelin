@@ -38,7 +38,7 @@ import scala.collection.mutable.ArrayBuffer
 object FlinkShell {
 
   object ExecutionMode extends Enumeration {
-    val UNDEFINED, LOCAL, REMOTE, YARN, YARN_APPLICATION = Value
+    val UNDEFINED, LOCAL, REMOTE, YARN, YARN_APPLICATION, K8S_APPLICATION = Value
   }
 
   /** Configuration object */
@@ -83,9 +83,10 @@ object FlinkShell {
       case ExecutionMode.REMOTE => createRemoteConfig(config, flinkConfig)
       case ExecutionMode.YARN => createYarnClusterIfNeededAndGetConfig(config, flinkConfig, flinkShims)
       case ExecutionMode.YARN_APPLICATION => (flinkConfig, None)
+      case ExecutionMode.K8S_APPLICATION => (flinkConfig, None)
       case ExecutionMode.UNDEFINED => // Wrong input
         throw new IllegalArgumentException("please specify execution mode:\n" +
-          "[local | remote <host> <port> | yarn | yarn_application ]")
+          "[local | remote <host> <port> | yarn | yarn_application | k8s_application]")
     }
   }
 

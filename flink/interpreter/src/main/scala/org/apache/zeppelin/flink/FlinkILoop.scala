@@ -70,7 +70,7 @@ class FlinkILoop(
     scalaBenv: ExecutionEnvironment,
     scalaSenv: StreamExecutionEnvironment
     ) = {
-    if (mode == ExecutionMode.YARN_APPLICATION) {
+    if (mode == ExecutionMode.YARN_APPLICATION || mode == ExecutionMode.K8S_APPLICATION) {
       // For yarn application mode, ExecutionEnvironment & StreamExecutionEnvironment has already been created
       // by flink itself, we here just try get them via reflection and reconstruct them.
       val scalaBenv = new ExecutionEnvironment(new YarnApplicationExecutionEnvironment(

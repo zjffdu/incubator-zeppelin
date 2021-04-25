@@ -59,6 +59,12 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
       updateEnvsForYarnApplicationMode(envs, context);
     }
 
+    // yarn application mode specific logic
+    if ("k8s_application".equalsIgnoreCase(
+            context.getProperties().getProperty("flink.execution.mode"))) {
+      updateEnvsForYarnApplicationMode(envs, context);
+    }
+
     return envs;
   }
 
@@ -117,6 +123,26 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
       }
     }
     envs.put("ZEPPELIN_FLINK_YARN_APPLICATION_CONF", flinkYarnApplicationConfBuilder.toString());
+  }
+
+  private void updateEnvsForK8sApplicationMode(Map<String, String> envs,
+                                                InterpreterLaunchContext context) {
+    envs.put("ZEPPELIN_FLINK_K8S_APPLICATION", "true");
+
+    StringBuilder flinkK8sApplicationConfBuilder = new StringBuilder();
+
+    // add other yarn and python configuration.
+    for (Map.Entry<Object, Object> entry : context.getProperties().entrySet()) {
+      String key = entry.getKey().toString();
+      String value = entry.getValue().toString();
+      if (CharMatcher.whitespace().matchesAnyOf(value)) {
+        LOGGER.warn("flink configuration key {} is skipped because it contains white space",
+                key);
+      } else {
+        flinkK8sApplicationConfBuilder.append(" -D " + key + "=" + value);
+      }
+    }
+    envs.put("ZEPPELIN_FLINK_K8S_APPLICATION_CONF", flinkK8sApplicationConfBuilder.toString());
   }
 
   private List<String> getYarnShipFiles(InterpreterLaunchContext context) {

@@ -131,7 +131,6 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
 
     StringBuilder flinkK8sApplicationConfBuilder = new StringBuilder();
 
-    // add other yarn and python configuration.
     for (Map.Entry<Object, Object> entry : context.getProperties().entrySet()) {
       String key = entry.getKey().toString();
       String value = entry.getValue().toString();

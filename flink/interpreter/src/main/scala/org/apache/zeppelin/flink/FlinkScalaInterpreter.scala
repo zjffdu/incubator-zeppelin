@@ -313,6 +313,9 @@ class FlinkScalaInterpreter(val properties: Properties) {
             LOGGER.info("Use FlinkCluster in yarn application mode, appId: {}", yarnAppId)
             this.jmWebUrl = "http://localhost:" + HadoopUtils.getFlinkRestPort(yarnAppId)
             this.displayedJMWebUrl = HadoopUtils.getYarnAppTrackingUrl(yarnAppId)
+          } else if (mode == ExecutionMode.K8S_APPLICATION) {
+            LOGGER.info("Use FlinkCluster in k8s application mode")
+            this.jmWebUrl = "http://localhost:8081"
           } else {
             LOGGER.info("Use FlinkCluster in remote mode")
             this.jmWebUrl = "http://" + config.host.get + ":" + config.port.get

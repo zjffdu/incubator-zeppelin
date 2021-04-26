@@ -62,7 +62,7 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     // yarn application mode specific logic
     if ("k8s_application".equalsIgnoreCase(
             context.getProperties().getProperty("flink.execution.mode"))) {
-      updateEnvsForYarnApplicationMode(envs, context);
+      updateEnvsForK8sApplicationMode(envs, context);
     }
 
     return envs;

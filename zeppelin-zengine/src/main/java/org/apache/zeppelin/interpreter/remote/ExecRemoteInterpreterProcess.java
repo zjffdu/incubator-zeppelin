@@ -214,7 +214,7 @@ public class ExecRemoteInterpreterProcess extends RemoteInterpreterManagedProces
         synchronized (this) {
           notifyAll();
         }
-      } else if (isFlinkYarnApplicationMode() && exitValue == 0) {
+      } else if ((isFlinkYarnApplicationMode() || isFlinkK8SApplicationMode()) && exitValue == 0) {
         // Don't update transition state when flink launcher process exist
         // in yarn application mode.
         synchronized (this) {
@@ -240,6 +240,11 @@ public class ExecRemoteInterpreterProcess extends RemoteInterpreterManagedProces
     private boolean isFlinkYarnApplicationMode() {
       return Boolean.parseBoolean(
               getEnv().getOrDefault("ZEPPELIN_FLINK_YARN_APPLICATION", "false"));
+    }
+
+    private boolean isFlinkK8SApplicationMode() {
+      return Boolean.parseBoolean(
+              getEnv().getOrDefault("ZEPPELIN_FLINK_K8S_APPLICATION", "false"));
     }
 
     @Override

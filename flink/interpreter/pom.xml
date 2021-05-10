@@ -42,6 +42,7 @@
     <hive.version>2.3.4</hive.version>
     <hiverunner.version>4.0.0</hiverunner.version>
     <grpc.version>1.15.0</grpc.version>
+    <kubernetes.client.version>5.3.1</kubernetes.client.version>
 
     <scala.macros.version>2.0.1</scala.macros.version>
     <scala.binary.version>2.11</scala.binary.version>
@@ -93,6 +94,13 @@
       <groupId>org.apache.zeppelin</groupId>
       <artifactId>flink1.13-shims</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>kubernetes-client</artifactId>
+      <version>${kubernetes.client.version}</version>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>

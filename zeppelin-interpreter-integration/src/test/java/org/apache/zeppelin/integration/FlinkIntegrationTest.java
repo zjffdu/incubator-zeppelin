@@ -150,7 +150,7 @@ public abstract class FlinkIntegrationTest {
     flinkInterpreterSetting.setProperty("FLINK_HOME", flinkHome);
     flinkInterpreterSetting.setProperty("PATH", hadoopHome + "/bin:" + System.getenv("PATH"));
     flinkInterpreterSetting.setProperty("ZEPPELIN_CONF_DIR", zeppelin.getZeppelinConfDir().getAbsolutePath());
-    flinkInterpreterSetting.setProperty("flink.execution.mode", "YARN");
+    flinkInterpreterSetting.setProperty("flink.execution.mode", "yarn");
     testInterpreterBasics();
 
     // 1 yarn application launched

@@ -18,7 +18,7 @@
 
 package org.apache.zeppelin.flink
 
-import java.io.{BufferedReader, File}
+import java.io.File
 import java.net.{URL, URLClassLoader}
 import java.nio.file.Files
 import java.util.Properties
@@ -40,15 +40,14 @@ import org.apache.flink.runtime.util.EnvironmentInformation
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.table.api.config.ExecutionConfigOptions
 import org.apache.flink.table.api.{EnvironmentSettings, TableConfig, TableEnvironment}
-import org.apache.flink.table.catalog.CatalogManager
 import org.apache.flink.table.catalog.hive.HiveCatalog
 import org.apache.flink.table.functions.{AggregateFunction, ScalarFunction, TableAggregateFunction, TableFunction}
-import org.apache.flink.table.module.ModuleManager
 import org.apache.flink.table.module.hive.HiveModule
 import org.apache.flink.yarn.cli.FlinkYarnSessionCli
 import org.apache.zeppelin.dep.DependencyResolver
-import org.apache.zeppelin.flink.FlinkShell._
-import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion
+import org.apache.zeppelin.flink.internal.FlinkShell._
+import org.apache.zeppelin.flink.internal.FlinkILoop
+import org.apache.zeppelin.interpreter.Interpreter.FormType
 import org.apache.zeppelin.interpreter.util.InterpreterOutputStream
 import org.apache.zeppelin.interpreter.{InterpreterContext, InterpreterException, InterpreterHookRegistry, InterpreterResult}
 import org.slf4j.{Logger, LoggerFactory}
@@ -56,22 +55,23 @@ import org.slf4j.{Logger, LoggerFactory}
 import scala.collection.JavaConversions
 import scala.collection.JavaConverters._
 import scala.tools.nsc.Settings
-import scala.tools.nsc.interpreter.Completion.ScalaCompleter
-import scala.tools.nsc.interpreter.{JPrintWriter, SimpleReader}
+import scala.tools.nsc.interpreter.{Completion, IMain, IR, JPrintWriter, Results, SimpleReader}
 
 /**
  * It instantiate flink scala shell and create env, senv, btenv, stenv.
  *
  * @param properties
  */
-class FlinkScalaInterpreter(val properties: Properties) {
+abstract class FlinkScalaInterpreter(val properties: Properties,
+                                     val flinkScalaClassLoader: URLClassLoader)
+  extends AbstractFlinkScalaInterpreter() {
 
   private lazy val LOGGER: Logger = LoggerFactory.getLogger(getClass)
 
-  private var flinkILoop: FlinkILoop = _
+  protected var flinkILoop: FlinkILoop = _
   private var cluster: Option[ClusterClient[_]] = _
 
-  private var scalaCompleter: ScalaCompleter = _
+  protected var scalaCompletion: Completion = _
   private val interpreterOutput = new InterpreterOutputStream(LOGGER)
   private var configuration: Configuration = _
 
@@ -117,6 +117,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
 
   def open(): Unit = {
+    //System.setProperty("scala.repl.debug", "true")
     val config = initFlinkConfig()
     createFlinkILoop(config)
     createTableEnvs()
@@ -127,8 +128,8 @@ class FlinkScalaInterpreter(val properties: Properties) {
       Integer.parseInt(properties.getProperty("zeppelin.flink.maxResult", "1000")))
     val modifiers = new java.util.ArrayList[String]()
     modifiers.add("@transient")
-    this.bind("z", z.getClass().getCanonicalName(), z, modifiers);
-    this.jobManager = new JobManager(this.z, jmWebUrl, displayedJMWebUrl, properties)
+    this.bind("z", z.getClass().getCanonicalName(), z, List("@transient"))
+    this.jobManager = new JobManager(jmWebUrl, displayedJMWebUrl, properties)
 
     // register JobListener
     val jobListener = new FlinkJobListener()
@@ -164,7 +165,11 @@ class FlinkScalaInterpreter(val properties: Properties) {
       interpret(initCode, InterpreterContext.get())
       InterpreterContext.get().out.clear()
     }
+
+    this.configuration = getConfigurationOfStreamExecutionEnv()
   }
+
+  def createIMain(settings: Settings, out: JPrintWriter): IMain
 
   private def initFlinkConfig(): Config = {
 
@@ -227,7 +232,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
         .copy(queue = Some(queue))))
 
     this.userUdfJars = getUserUdfJars()
-    this.userJars = getUserJarsExceptUdfJars ++ this.userUdfJars
+    this.userJars = getUserJarsExceptUdfJars ++ this.userUdfJars ++ flinkScalaClassLoader.getURLs.map(_.getPath())
     LOGGER.info("UserJars: " + userJars.mkString(","))
     config = config.copy(externalJars = Some(userJars.toArray))
     LOGGER.info("Config: " + config)
@@ -355,6 +360,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     this.cluster = cluster
 
     val settings = new Settings()
+    settings.embeddedDefaults(flinkScalaClassLoader)
     settings.usejavacp.value = true
     settings.Yreplsync.value = true
     settings.classpath.value = userJars.mkString(File.pathSeparator)
@@ -367,7 +373,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     settings.processArguments(interpArguments, true)
 
     flinkILoop.settings = settings
-    flinkILoop.intp = new FlinkILoopInterpreter(settings, replOut)
+    flinkILoop.intp = createIMain(settings, replOut)
     flinkILoop.intp.beQuietDuring {
       // set execution environment
       flinkILoop.intp.bind("benv", flinkILoop.scalaBenv)
@@ -410,8 +416,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
       flinkILoop.intp.interpret("import org.apache.flink.table.functions.TableAggregateFunction")
     }
 
-    val in0 = getField(flinkILoop, "scala$tools$nsc$interpreter$ILoop$$in0")
-      .asInstanceOf[Option[BufferedReader]]
+    val in0 = None
     val reader = in0.fold(flinkILoop.chooseReader(settings))(r =>
       SimpleReader(r, replOut, interactive = true))
 
@@ -419,7 +424,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     flinkILoop.initializeSynchronous()
     flinkILoop.intp.setContextClassLoader()
     reader.postInit()
-    this.scalaCompleter = reader.completion.completer()
+    this.scalaCompletion = reader.completion
 
     this.benv = flinkILoop.scalaBenv
     this.senv = flinkILoop.scalaSenv
@@ -440,9 +445,6 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
       this.tblEnvFactory = new TableEnvFactory(this.flinkVersion, this.flinkShims,
         this.benv, this.senv, tableConfig)
-
-      val modifiers = new java.util.ArrayList[String]()
-      modifiers.add("@transient")
 
       // blink planner
       var btEnvSetting = EnvironmentSettings.newInstance().inBatchMode().useBlinkPlanner().build()
@@ -574,31 +576,16 @@ class FlinkScalaInterpreter(val properties: Properties) {
     method.invoke(null, batchFactory);
   }
 
-  // for use in java side
-  protected def bind(name: String,
-                     tpe: String,
-                     value: Object,
-                     modifier: java.util.List[String]): Unit = {
-    flinkILoop.beQuietDuring {
-      flinkILoop.bind(name, tpe, value, modifier.asScala.toList)
-    }
-  }
-
   protected def bind(name: String,
                      tpe: String,
                      value: Object,
                      modifier: List[String]): Unit = {
     flinkILoop.beQuietDuring {
-      flinkILoop.bind(name, tpe, value, modifier)
+      val result = flinkILoop.bind(name, tpe, value, modifier)
+      if (result != IR.Success) {
+        throw new Exception("Fail to bind variable: " + name)
+      }
     }
-  }
-
-  protected def completion(buf: String,
-                           cursor: Int,
-                           context: InterpreterContext): java.util.List[InterpreterCompletion] = {
-    val completions = scalaCompleter.complete(buf.substring(0, cursor), cursor).candidates
-      .map(e => new InterpreterCompletion(e, e, null))
-    JavaConversions.seqAsJavaList(completions)
   }
 
   protected def callMethod(obj: Object, name: String): Object = {
@@ -615,6 +602,12 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
   protected def getField(obj: Object, name: String): Object = {
     val field = obj.getClass.getField(name)
+    field.setAccessible(true)
+    field.get(obj)
+  }
+
+  protected def getDeclareField(obj: Object, name: String): Object = {
+    val field = obj.getClass.getDeclaredField(name)
     field.setAccessible(true)
     field.get(obj)
   }
@@ -881,7 +874,9 @@ class FlinkScalaInterpreter(val properties: Properties) {
 
   def getZeppelinContext = this.z
 
-  def getConfiguration = this.configuration
+  def getFlinkConfiguration = this.configuration
+
+  def getFormType() = FormType.NATIVE
 
   def getCluster = cluster
 
@@ -937,7 +932,7 @@ class FlinkScalaInterpreter(val properties: Properties) {
     yarnAddress + remaining
   }
 
-  def getUserJars:java.util.List[String] = JavaConversions.seqAsJavaList(userJars)
+  override def getUserJars:java.util.List[String] = JavaConversions.seqAsJavaList(userJars)
 
   private def getConfigurationOfStreamExecutionEnv(): Configuration = {
     val getConfigurationMethod = classOf[JStreamExecutionEnvironment].getDeclaredMethod("getConfiguration")

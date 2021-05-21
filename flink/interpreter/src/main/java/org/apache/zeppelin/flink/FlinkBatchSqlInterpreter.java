@@ -20,6 +20,7 @@ package org.apache.zeppelin.flink;
 import org.apache.flink.table.api.Table;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
+import org.apache.zeppelin.interpreter.ZeppelinContext;
 import org.apache.zeppelin.scheduler.Scheduler;
 import org.apache.zeppelin.scheduler.SchedulerFactory;
 
@@ -28,7 +29,7 @@ import java.util.Properties;
 
 public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
 
-  private FlinkZeppelinContext z;
+  private ZeppelinContext z;
 
   public FlinkBatchSqlInterpreter(Properties properties) {
     super(properties);
@@ -56,7 +57,6 @@ public class FlinkBatchSqlInterpreter extends FlinkSqlInterrpeter {
   @Override
   public void callInnerSelect(String sql, InterpreterContext context) throws IOException {
     Table table = this.tbenv.sqlQuery(sql);
-    z.setCurrentSql(sql);
     String result = z.showData(table);
     context.out.write(result);
   }

@@ -49,16 +49,13 @@ public class JobManager {
   private Map<String, JobClient> jobs = new HashMap<>();
   private ConcurrentHashMap<JobID, FlinkJobProgressPoller> jobProgressPollerMap =
           new ConcurrentHashMap<>();
-  private FlinkZeppelinContext z;
   private String flinkWebUrl;
   private String displayedFlinkWebUrl;
   private Properties properties;
 
-  public JobManager(FlinkZeppelinContext z,
-                    String flinkWebUrl,
+  public JobManager(String flinkWebUrl,
                     String displayedFlinkWebUrl,
                     Properties properties) {
-    this.z = z;
     this.flinkWebUrl = flinkWebUrl;
     this.displayedFlinkWebUrl = displayedFlinkWebUrl;
     this.properties = properties;

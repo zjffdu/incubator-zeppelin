@@ -75,7 +75,7 @@ public class FlinkBatchSqlInterpreterTest extends SqlInterpreterTest {
     result =
             flinkInterpreter.interpret("z.show(btenv.sqlQuery(\"select * from source_table\"))", context);
     resultMessages = context.out.toInterpreterResultMessage();
-    assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+    assertEquals(context.out.toString(), InterpreterResult.Code.SUCCESS, result.code());
     assertEquals(1, resultMessages.size());
     assertEquals(InterpreterResult.Type.TABLE, resultMessages.get(0).getType());
     assertEquals("id\tname\n1\ta\n2\tb\n", resultMessages.get(0).getData());

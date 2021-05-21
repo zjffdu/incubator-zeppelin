@@ -41,14 +41,14 @@ import static org.apache.flink.util.Preconditions.checkState;
  */
 public class YarnApplicationExecutionEnvironment extends ExecutionEnvironment {
 
-  private FlinkILoop flinkILoop;
-  private FlinkScalaInterpreter flinkScalaInterpreter;
+  private AbstractFlinkILoop flinkILoop;
+  private AbstractFlinkScalaInterpreter flinkScalaInterpreter;
 
   public YarnApplicationExecutionEnvironment(PipelineExecutorServiceLoader executorServiceLoader,
                                              Configuration configuration,
                                              ClassLoader userClassloader,
-                                             FlinkILoop flinkILoop,
-                                             FlinkScalaInterpreter flinkScalaInterpreter) {
+                                             AbstractFlinkILoop flinkILoop,
+                                             AbstractFlinkScalaInterpreter flinkScalaInterpreter) {
     super(executorServiceLoader,configuration,userClassloader);
     this.flinkILoop = flinkILoop;
     this.flinkScalaInterpreter = flinkScalaInterpreter;
@@ -78,7 +78,7 @@ public class YarnApplicationExecutionEnvironment extends ExecutionEnvironment {
   }
 
   private List<URL> getUpdatedJarFiles() throws MalformedURLException {
-    final URL jarUrl = flinkILoop.writeFilesToDisk().getAbsoluteFile().toURI().toURL();
+    final URL jarUrl = flinkILoop.getJar();
     final List<URL> allJarFiles = new ArrayList<>();
     allJarFiles.add(jarUrl);
     for (String jar : flinkScalaInterpreter.getUserJars()) {

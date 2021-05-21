@@ -24,16 +24,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.ConfigOption;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.core.execution.JobListener;
-import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.api.config.ExecutionConfigOptions;
 import org.apache.zeppelin.flink.sql.SqlCommandParser;
 import org.apache.zeppelin.flink.sql.SqlCommandParser.SqlCommand;
 import org.apache.zeppelin.interpreter.AbstractInterpreter;
-import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResult;
@@ -74,7 +73,7 @@ public abstract class FlinkSqlInterrpeter extends AbstractInterpreter {
 
   @Override
   public void open() throws InterpreterException {
-    sqlCommandParser = new SqlCommandParser(flinkInterpreter.getFlinkShims(), tbenv);
+    this.sqlCommandParser = new SqlCommandParser(flinkInterpreter.getFlinkShims(), tbenv);
     this.sqlSplitter = new SqlSplitter();
     JobListener jobListener = new JobListener() {
       @Override
@@ -107,7 +106,7 @@ public abstract class FlinkSqlInterrpeter extends AbstractInterpreter {
       Thread.currentThread().setContextClassLoader(flinkInterpreter.getFlinkScalaShellLoader());
       flinkInterpreter.createPlannerAgain();
       flinkInterpreter.setParallelismIfNecessary(context);
-      flinkInterpreter.setSavepointIfNecessary(context);
+      flinkInterpreter.setSavepointPathIfNecessary(context);
       return runSqlList(st, context);
     } finally {
       Thread.currentThread().setContextClassLoader(originClassLoader);
@@ -508,6 +507,7 @@ public abstract class FlinkSqlInterrpeter extends AbstractInterpreter {
       throw new IOException(key + " is not a valid table/sql config, please check link: " +
               "https://ci.apache.org/projects/flink/flink-docs-release-1.10/dev/table/config.html");
     }
+    LOGGER.info("Set table config: {}={}", key, value);
     this.tbenv.getConfig().getConfiguration().setString(key, value);
   }
 

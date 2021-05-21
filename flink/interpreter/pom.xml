@@ -31,7 +31,7 @@
   <artifactId>zeppelin-flink</artifactId>
   <packaging>jar</packaging>
   <version>0.10.0-SNAPSHOT</version>
-  <name>Zeppelin: Flink</name>
+  <name>Zeppelin: Flink Interpreter</name>
   <description>Zeppelin Flink Interpreter</description>
 
   <properties>
@@ -43,20 +43,9 @@
     <hiverunner.version>4.0.0</hiverunner.version>
     <grpc.version>1.15.0</grpc.version>
 
-    <scala.macros.version>2.0.1</scala.macros.version>
-    <scala.binary.version>2.11</scala.binary.version>
-    <scala.version>2.11.12</scala.version>
-
-    <flink.bin.download.url>https://archive.apache.org/dist/flink/flink-${flink.version}/flink-${flink.version}-bin-scala_${scala.binary.version}.tgz</flink.bin.download.url>
+    <flink.bin.download.url>https://archive.apache.org/dist/flink/flink-${flink.version}/flink-${flink.version}-bin-scala_${flink.scala.binary.version}.tgz</flink.bin.download.url>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>conjars repo</id>
-      <name>conjars repo</name>
-      <url>https://conjars.org/repo/</url>
-    </repository>
-  </repositories>
   
   <dependencies>
 
@@ -156,7 +145,7 @@
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-python_${scala.binary.version}</artifactId>
+      <artifactId>flink-python_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -170,21 +159,21 @@
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-clients_${scala.binary.version}</artifactId>
+      <artifactId>flink-clients_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-runtime_${scala.binary.version}</artifactId>
+      <artifactId>flink-runtime_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-yarn_${scala.binary.version}</artifactId>
+      <artifactId>flink-yarn_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
       <exclusions>
@@ -209,41 +198,41 @@
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-table-api-scala_${scala.binary.version}</artifactId>
+      <artifactId>flink-table-api-scala_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-table-api-scala-bridge_${scala.binary.version}</artifactId>
+      <artifactId>flink-table-api-scala-bridge_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-scala_${scala.binary.version}</artifactId>
+      <artifactId>flink-scala_${flink.scala.binary.version}</artifactId>
+      <version>${flink.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>org.apache.flink</groupId>-->
+<!--      <artifactId>flink-scala-shell_${flink.scala.binary.version}</artifactId>-->
+<!--      <version>${flink.version}</version>-->
+<!--    </dependency>-->
+
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-streaming-java_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-scala-shell_${scala.binary.version}</artifactId>
-      <version>${flink.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.flink</groupId>
-      <artifactId>flink-streaming-java_2.11</artifactId>
-      <version>${flink.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.flink</groupId>
-      <artifactId>flink-streaming-scala_2.11</artifactId>
+      <artifactId>flink-streaming-scala_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -257,14 +246,14 @@
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-connector-hive_2.11</artifactId>
+      <artifactId>flink-connector-hive_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-connector-hive_2.11</artifactId>
+      <artifactId>flink-connector-hive_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -273,7 +262,7 @@
     <!-- hadoop compatibility dependency -->
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-hadoop-compatibility_${scala.binary.version}</artifactId>
+      <artifactId>flink-hadoop-compatibility_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -300,19 +289,22 @@
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
+      <version>${flink.scala.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-compiler</artifactId>
-      <version>${scala.version}</version>
+      <version>${flink.scala.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-reflect</artifactId>
-      <version>${scala.version}</version>
+      <version>${flink.scala.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -323,7 +315,7 @@
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-connector-hive_${scala.binary.version}</artifactId>
+      <artifactId>flink-connector-hive_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
       <exclusions>
@@ -339,7 +331,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-connector-hive_${scala.binary.version}</artifactId>
+      <artifactId>flink-connector-hive_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -357,7 +349,7 @@
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-table-planner-blink_2.11</artifactId>
+      <artifactId>flink-table-planner-blink_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
       <exclusions>
@@ -370,7 +362,7 @@
 
     <dependency>
       <groupId>org.apache.flink</groupId>
-      <artifactId>flink-table-planner_2.11</artifactId>
+      <artifactId>flink-table-planner_${flink.scala.binary.version}</artifactId>
       <version>${flink.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -453,6 +445,10 @@
         <exclusion>
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -567,6 +563,13 @@
       </exclusions>
     </dependency>
 
+<!--    <dependency>-->
+<!--      <groupId>org.pentaho</groupId>-->
+<!--      <artifactId>pentaho-aggdesigner-algorithm</artifactId>-->
+<!--      <version>5.1.5-jhyde</version>-->
+<!--      <scope>provided</scope>-->
+<!--    </dependency>-->
+
     <dependency>
       <groupId>org.apache.hive</groupId>
       <artifactId>hive-contrib</artifactId>
@@ -604,6 +607,10 @@
           <artifactId>netty-all</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.pentaho</groupId>
           <artifactId>pentaho-aggdesigner-algorithm</artifactId>
         </exclusion>
@@ -636,7 +643,7 @@
 
     <dependency>
       <groupId>org.scalatest</groupId>
-      <artifactId>scalatest_2.11</artifactId>
+      <artifactId>scalatest_${flink.scala.binary.version}</artifactId>
       <version>3.0.8</version>
       <scope>test</scope>
     </dependency>
@@ -671,7 +678,7 @@
           </execution>
         </executions>
         <configuration>
-          <scalaVersion>${scala.version}</scalaVersion>
+          <scalaVersion>${flink.scala.version}</scalaVersion>
           <!--<recompileMode>incremental</recompileMode>-->
           <!--<useZincServer>true</useZincServer>-->
           <args>
@@ -731,6 +738,7 @@
 <!--          <argLine>-Xmx4096m -XX:MaxMetaspaceSize=512m -Dsun.zip.disableMemoryMapping=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=6006</argLine>-->
 
           <environmentVariables>
+            <ZEPPELIN_HOME>${basedir}/../../</ZEPPELIN_HOME>
             <FLINK_HOME>${project.build.directory}/flink-${flink.version}</FLINK_HOME>
             <FLINK_CONF_DIR>${project.build.directory}/test-classes</FLINK_CONF_DIR>
           </environmentVariables>

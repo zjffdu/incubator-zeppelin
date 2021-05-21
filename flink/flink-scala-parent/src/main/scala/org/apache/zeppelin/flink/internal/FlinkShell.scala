@@ -16,18 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.zeppelin.flink
+package org.apache.zeppelin.flink.internal
 
-import java.io._
+import java.io.BufferedReader
 
 import org.apache.flink.annotation.Internal
-import org.apache.flink.client.cli.{CliFrontend, CliFrontendParser, CustomCommandLine}
+import org.apache.flink.client.cli.{CliFrontend, CliFrontendParser}
 import org.apache.flink.client.deployment.DefaultClusterClientServiceLoader
 import org.apache.flink.client.deployment.executors.RemoteExecutor
 import org.apache.flink.client.program.{ClusterClient, MiniClusterClient}
 import org.apache.flink.configuration._
 import org.apache.flink.runtime.minicluster.{MiniCluster, MiniClusterConfiguration}
 import org.apache.flink.yarn.executors.YarnSessionClusterExecutor
+import org.apache.zeppelin.flink.FlinkShims
 
 import scala.collection.mutable.ArrayBuffer
 

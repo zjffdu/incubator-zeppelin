@@ -298,7 +298,7 @@ public class FlinkInterpreterTest {
     }
   }
 
-  @Test
+  //@Test
   public void testCancelStreamSql() throws IOException, InterpreterException, InterruptedException, TimeoutException {
     String initStreamScalaScript = FlinkStreamSqlInterpreterTest.getInitStreamScript(1000);
     InterpreterResult result = interpreter.interpret(initStreamScalaScript,
@@ -326,8 +326,8 @@ public class FlinkInterpreterTest {
     thread.start();
 
     // the streaming job will run for 20 seconds. check init_stream.scala
-    // sleep 10 seconds to make sure the job is started but not finished
-    Thread.sleep(10 * 1000);
+    // sleep 15 seconds to make sure the job is started but not finished
+    Thread.sleep(20 * 1000);
 
     InterpreterContext context = getInterpreterContext();
     context.getLocalProperties().put("type", "update");

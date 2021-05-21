@@ -22,10 +22,8 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.flink.api.scala.DataSet
-import org.apache.flink.streaming.api.scala._
 import org.apache.flink.table.api.internal.TableImpl
 import org.apache.flink.table.api.Table
-//import org.apache.flink.table.api.scala.BatchTableEnvironment
 import org.apache.flink.types.Row
 import org.apache.flink.util.StringUtils
 import org.apache.zeppelin.annotation.ZeppelinApi
@@ -46,7 +44,6 @@ class FlinkZeppelinContext(val flinkInterpreter: FlinkScalaInterpreter,
                            val maxResult2: Int) extends ZeppelinContext(hooks2, maxResult2) {
 
   private val SQL_INDEX = new AtomicInteger(0)
-  private var currentSql: String = _
 
   private val interpreterClassMap = Map(
     "flink" -> "org.apache.zeppelin.flink.FlinkInterpreter",
@@ -58,9 +55,6 @@ class FlinkZeppelinContext(val flinkInterpreter: FlinkScalaInterpreter,
 
   private val supportedClasses = Seq(classOf[DataSet[_]], classOf[Table])
 
-  def setCurrentSql(sql: String): Unit = {
-    this.currentSql = sql
-  }
 
   override def getSupportedClasses: _root_.java.util.List[Class[_]] =
     JavaConversions.seqAsJavaList(supportedClasses)
@@ -102,13 +96,10 @@ class FlinkZeppelinContext(val flinkInterpreter: FlinkScalaInterpreter,
   override def showData(obj: Any, maxResult: Int): String = {
     if (obj.isInstanceOf[DataSet[_]]) {
       val ds = obj.asInstanceOf[DataSet[_]]
-      val btenv = flinkInterpreter.getBatchTableEnvironment("flink")//.asInstanceOf[BatchTableEnvironment]
-
+      val btenv = flinkInterpreter.getBatchTableEnvironment("flink")
       val table =  flinkInterpreter.getFlinkShims.fromDataSet(btenv, ds).asInstanceOf[Table]
-        //btenv.fromDataSet(ds)
       val columnNames: Array[String] = table.getSchema.getFieldNames
       val dsRows: DataSet[Row] = flinkInterpreter.getFlinkShims.toDataSet(btenv, table).asInstanceOf[DataSet[Row]]
-        //        btenv.toDataSet[Row](table)
       showTable(columnNames, dsRows.first(maxResult + 1).collect())
     } else if (obj.isInstanceOf[Table]) {
       val rows = JavaConversions.asScalaBuffer(

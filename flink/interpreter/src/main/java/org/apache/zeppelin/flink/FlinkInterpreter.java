@@ -25,45 +25,100 @@ import org.apache.zeppelin.interpreter.Interpreter;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResult;
+import org.apache.zeppelin.interpreter.ZeppelinContext;
 import org.apache.zeppelin.interpreter.thrift.InterpreterCompletion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
- * Interpreter for flink scala. It delegates all the function to FlinkScalaInterpreter.
+ * Interpreter for flink scala. It delegates all the function to AbstractFlinkScalaInterpreter
+ * which is implemented by flink scala shell underneath.
  */
 public class FlinkInterpreter extends Interpreter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FlinkInterpreter.class);
 
-  private FlinkScalaInterpreter innerIntp;
-  private FlinkZeppelinContext z;
+  private Map<String, String> innerInterpreterClassMap = new HashMap<>();
+  private AbstractFlinkScalaInterpreter innerIntp;
+  private ZeppelinContext z;
 
   public FlinkInterpreter(Properties properties) {
     super(properties);
+    innerInterpreterClassMap.put("2.11", "org.apache.zeppelin.flink.FlinkScala211Interpreter");
+    innerInterpreterClassMap.put("2.12", "org.apache.zeppelin.flink.FlinkScala212Interpreter");
   }
 
-  private void checkScalaVersion() throws InterpreterException {
+  private String extractScalaVersion() throws InterpreterException {
     String scalaVersionString = scala.util.Properties.versionString();
     LOGGER.info("Using Scala: " + scalaVersionString);
     if (scalaVersionString.contains("version 2.11")) {
-      return;
+      return "2.11";
+    } else if (scalaVersionString.contains("version 2.12")) {
+      return "2.12";
     } else {
       throw new InterpreterException("Unsupported scala version: " + scalaVersionString +
-              ", Only scala 2.11 is supported");
+              ", Only scala 2.11/2.12 is supported");
     }
   }
 
   @Override
   public void open() throws InterpreterException {
-    checkScalaVersion();
-    
-    this.innerIntp = new FlinkScalaInterpreter(getProperties());
-    this.innerIntp.open();
-    this.z = this.innerIntp.getZeppelinContext();
+    try {
+      this.innerIntp = loadFlinkScalaInterpreter();
+      this.innerIntp.open();
+      this.z = this.innerIntp.getZeppelinContext();
+    } catch (Exception e) {
+      throw new InterpreterException("Fail to open FlinkInterpreter", e);
+    }
+  }
+
+  /**
+   * Load AbstractFlinkScalaInterpreter based on the runtime scala version.
+   * Load AbstractFlinkScalaInterpreter from the following location:
+   *
+   * FlinkScala211Interpreter   ZEPPELIN_HOME/interpreter/flink/scala-2.11
+   * FlinkScala212Interpreter   ZEPPELIN_HOME/interpreter/flink/scala-2.12
+   *
+   * @return AbstractSparkScalaInterpreter
+   * @throws Exception
+   */
+  private AbstractFlinkScalaInterpreter loadFlinkScalaInterpreter() throws Exception {
+    String scalaVersion = extractScalaVersion();
+    ClassLoader flinkScalaClassLoader = Thread.currentThread().getContextClassLoader();
+
+    String zeppelinHome = System.getenv("ZEPPELIN_HOME");
+    if (zeppelinHome != null) {
+      // ZEPPELIN_HOME is null in yarn-cluster mode, load it directly via current ClassLoader.
+      // otherwise, load from the specific folder ZEPPELIN_HOME/interpreter/flink/scala-<version>
+      LOGGER.info("ZEPPELIN_HOME: {}", zeppelinHome);
+      File scalaJarFolder = new File(zeppelinHome + "/interpreter/flink/scala-" + scalaVersion);
+      if (!scalaJarFolder.exists()) {
+        throw new Exception("Flink scala folder " + scalaJarFolder + " doesn't exist");
+      }
+      List<URL> urls = new ArrayList<>();
+      for (File file : scalaJarFolder.listFiles()) {
+        LOGGER.info("Add file {} to classpath of flink scala interpreter: {}",
+                file.getAbsolutePath(), scalaJarFolder);
+        urls.add(file.toURI().toURL());
+      }
+      flinkScalaClassLoader = new URLClassLoader(urls.toArray(new URL[0]),
+              Thread.currentThread().getContextClassLoader());
+    }
+
+    String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
+    Class clazz = flinkScalaClassLoader.loadClass(innerIntpClassName);
+    return (AbstractFlinkScalaInterpreter)
+            clazz.getConstructor(Properties.class, URLClassLoader.class)
+                    .newInstance(getProperties(), flinkScalaClassLoader);
   }
 
   @Override
@@ -88,7 +143,7 @@ public class FlinkInterpreter extends Interpreter {
       Thread.currentThread().setContextClassLoader(getFlinkScalaShellLoader());
       createPlannerAgain();
       setParallelismIfNecessary(context);
-      setSavepointIfNecessary(context);
+      setSavepointPathIfNecessary(context);
       return innerIntp.interpret(st, context);
     } finally {
       Thread.currentThread().setContextClassLoader(originClassLoader);
@@ -165,23 +220,19 @@ public class FlinkInterpreter extends Interpreter {
     return innerIntp.getFlinkScalaShellLoader();
   }
 
-  FlinkZeppelinContext getZeppelinContext() {
+  ZeppelinContext getZeppelinContext() {
     return this.z;
   }
 
   Configuration getFlinkConfiguration() {
-    return this.innerIntp.getConfiguration();
-  }
-
-  public FlinkScalaInterpreter getInnerIntp() {
-    return this.innerIntp;
+    return this.innerIntp.getFlinkConfiguration();
   }
 
   public FlinkShims getFlinkShims() {
     return this.innerIntp.getFlinkShims();
   }
 
-  public void setSavepointIfNecessary(InterpreterContext context) {
+  public void setSavepointPathIfNecessary(InterpreterContext context) {
     this.innerIntp.setSavepointPathIfNecessary(context);
   }
 

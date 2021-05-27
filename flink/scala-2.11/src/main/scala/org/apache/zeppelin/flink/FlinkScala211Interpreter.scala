@@ -44,6 +44,7 @@ class FlinkScala211Interpreter(override val properties: Properties,
 
   override def createSettings(): Settings = {
     val settings = new Settings()
+    // Don't call settings#embeddedDefaults for scala-2.11, otherwise it could cause weird error
     settings.usejavacp.value = true
     settings.Yreplsync.value = true
     settings.classpath.value = userJars.mkString(File.pathSeparator)

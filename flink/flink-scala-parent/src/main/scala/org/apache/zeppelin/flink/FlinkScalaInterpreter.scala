@@ -117,7 +117,7 @@ abstract class FlinkScalaInterpreter(val properties: Properties,
 
 
   def open(): Unit = {
-    //System.setProperty("scala.repl.debug", "true")
+
     val config = initFlinkConfig()
     createFlinkILoop(config)
     createTableEnvs()
@@ -165,8 +165,6 @@ abstract class FlinkScalaInterpreter(val properties: Properties,
       interpret(initCode, InterpreterContext.get())
       InterpreterContext.get().out.clear()
     }
-
-    this.configuration = getConfigurationOfStreamExecutionEnv()
   }
 
   def createIMain(settings: Settings, out: JPrintWriter): IMain

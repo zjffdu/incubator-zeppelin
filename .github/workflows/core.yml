@@ -174,7 +174,7 @@ jobs:
       - name: install environment
         run: |
           mvn install -DskipTests -DskipRat -am -pl flink/interpreter,flink/scala-2.11,flink/scala-2.12,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Pflink-scala-${{ matrix.scala }} -Pintegration -B
-          mvn clean package -pl zeppelin-plugins -amd -DskipTests -B -U
+          mvn clean package -pl zeppelin-plugins -amd -DskipTests -B
       - name: run tests
         run: mvn test -DskipRat -pl flink/interpreter,flink-cmd,zeppelin-interpreter-integration -Pflink-${{ matrix.flink }} -Pflink-scala-${{ matrix.scala }} -Pintegration -DfailIfNoTests=false -B -Dtest=org.apache.zeppelin.flink.*,FlinkIntegrationTest${{ matrix.flink }},ZeppelinFlinkClusterTest${{ matrix.flink }}
   run-spark-intergration-test:

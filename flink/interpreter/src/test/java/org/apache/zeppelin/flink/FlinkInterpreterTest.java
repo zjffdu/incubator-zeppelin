@@ -298,7 +298,7 @@ public class FlinkInterpreterTest {
     }
   }
 
-  //@Test
+  @Test
   public void testCancelStreamSql() throws IOException, InterpreterException, InterruptedException, TimeoutException {
     String initStreamScalaScript = FlinkStreamSqlInterpreterTest.getInitStreamScript(1000);
     InterpreterResult result = interpreter.interpret(initStreamScalaScript,

@@ -111,7 +111,7 @@ abstract class FlinkScalaInterpreter(val properties: Properties,
   private var defaultSqlParallelism = 1
 
   // flink.execution.jars + flink.execution.jars + flink.udf.jars
-  private var userJars: Seq[String] = _
+  protected var userJars: Seq[String] = _
   // flink.udf.jars
   private var userUdfJars: Seq[String] = _
 
@@ -170,6 +170,8 @@ abstract class FlinkScalaInterpreter(val properties: Properties,
   }
 
   def createIMain(settings: Settings, out: JPrintWriter): IMain
+
+  def createSettings(): Settings
 
   private def initFlinkConfig(): Config = {
 
@@ -359,11 +361,7 @@ abstract class FlinkScalaInterpreter(val properties: Properties,
     this.flinkILoop = iLoop
     this.cluster = cluster
 
-    val settings = new Settings()
-    settings.embeddedDefaults(flinkScalaClassLoader)
-    settings.usejavacp.value = true
-    settings.Yreplsync.value = true
-    settings.classpath.value = userJars.mkString(File.pathSeparator)
+    val settings = createSettings()
 
     val outputDir = Files.createTempDirectory("flink-repl");
     val interpArguments = List(

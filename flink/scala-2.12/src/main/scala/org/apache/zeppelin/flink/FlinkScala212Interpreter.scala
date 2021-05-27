@@ -18,6 +18,7 @@
 
 package org.apache.zeppelin.flink
 
+import java.io.File
 import java.net.URLClassLoader
 import java.util.Properties
 
@@ -41,4 +42,12 @@ class FlinkScala212Interpreter(override val properties: Properties,
 
   override def createIMain(settings: Settings, out: JPrintWriter): IMain = new IMain(settings, out)
 
+  override def createSettings(): Settings = {
+    val settings = new Settings()
+    settings.embeddedDefaults(flinkScalaClassLoader)
+    settings.usejavacp.value = true
+    settings.Yreplsync.value = true
+    settings.classpath.value = userJars.mkString(File.pathSeparator)
+    settings
+  }
 }

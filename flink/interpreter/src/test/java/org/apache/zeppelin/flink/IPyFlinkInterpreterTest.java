@@ -398,7 +398,7 @@ public class IPyFlinkInterpreterTest extends IPythonInterpreterTest {
     thread.start();
 
     // the streaming job will run for 20 seconds. check init_stream.scala
-    // sleep 15 seconds to make sure the job is started but not finished
+    // sleep 20 seconds to make sure the job is started but not finished
     Thread.sleep(20 * 1000);
 
     InterpreterContext context = createInterpreterContext();

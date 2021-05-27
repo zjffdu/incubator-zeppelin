@@ -596,18 +596,6 @@ abstract class FlinkScalaInterpreter(val properties: Properties,
     method.invoke(obj, parameters: _ *)
   }
 
-  protected def getField(obj: Object, name: String): Object = {
-    val field = obj.getClass.getField(name)
-    field.setAccessible(true)
-    field.get(obj)
-  }
-
-  protected def getDeclareField(obj: Object, name: String): Object = {
-    val field = obj.getClass.getDeclaredField(name)
-    field.setAccessible(true)
-    field.get(obj)
-  }
-
   /**
    * This is just a workaround to make table api work in multiple threads.
    */

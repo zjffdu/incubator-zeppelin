@@ -85,58 +85,19 @@ public class FlinkInterpreter extends Interpreter {
 
   /**
    * Load AbstractFlinkScalaInterpreter based on the runtime scala version.
-   * Load AbstractFlinkScalaInterpreter from the following location:
-   *
-   * FlinkScala211Interpreter   ZEPPELIN_HOME/interpreter/flink/scala-2.11
-   * FlinkScala212Interpreter   ZEPPELIN_HOME/interpreter/flink/scala-2.12
    *
    * @return AbstractSparkScalaInterpreter
    * @throws Exception
    */
   private AbstractFlinkScalaInterpreter loadFlinkScalaInterpreter() throws Exception {
     String scalaVersion = extractScalaVersion();
-    File scalaJarFolder = null;
-    if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {
-      scalaJarFolder = new File(".", "scala-" + scalaVersion);
-    } else {
-      String zeppelinHome = System.getenv("ZEPPELIN_HOME");
-      scalaJarFolder = new File(zeppelinHome, "/interpreter/flink/scala-" + scalaVersion);
-    }
-
-//    File newScalaJarFolder = new File(".", "scala-" + scalaVersion + "-2");
-//    FileUtils.moveDirectory(scalaJarFolder, newScalaJarFolder);
-//    if (!newScalaJarFolder.exists()) {
-//      throw new Exception("Flink scala folder: " + scalaJarFolder + " doesn't exist");
-//    }
-//    List<URL> urls = new ArrayList<>();
-//    for (File file : newScalaJarFolder.listFiles()) {
-//      LOGGER.info("Add file {} to classpath of flink scala interpreter: {}",
-//              file.getAbsolutePath(), scalaJarFolder);
-//      urls.add(file.toURI().toURL());
-//    }
-
-    ClassLoader flinkScalaClassLoader = null;
-//    if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {
-    flinkScalaClassLoader = AbstractFlinkScalaInterpreter.class.getClassLoader();
-    LOGGER.info("ClassLoadType**********: {}", flinkScalaClassLoader);
-//    }
+    ClassLoader flinkScalaClassLoader = AbstractFlinkScalaInterpreter.class.getClassLoader();
     String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
     Class clazz = flinkScalaClassLoader.loadClass(innerIntpClassName);
-    LOGGER.info("ClassLoadType2**********: {}", clazz.getClassLoader());
-    try {
-      return (AbstractFlinkScalaInterpreter)
-              clazz.getConstructor(Properties.class, URLClassLoader.class)
-                      .newInstance(getProperties(), flinkScalaClassLoader);
-    } catch (Throwable e) {
-      e.printStackTrace();
-      LOGGER.info("ClassLoader1: {}", AbstractFlinkScalaInterpreter.class.getClassLoader());
-      LOGGER.info("ClassLoader2: {}", clazz.getClassLoader());
-      Object obj = clazz.getConstructor(Properties.class, URLClassLoader.class)
-              .newInstance(getProperties(), flinkScalaClassLoader);
-      LOGGER.info("ClassLoader3: {}", flinkScalaClassLoader);
-      LOGGER.info("ClassLoader4: {}", obj.getClass().getClassLoader());
-      return null;
-    }
+
+    return (AbstractFlinkScalaInterpreter)
+            clazz.getConstructor(Properties.class, URLClassLoader.class)
+                    .newInstance(getProperties(), flinkScalaClassLoader);
   }
 
   @Override

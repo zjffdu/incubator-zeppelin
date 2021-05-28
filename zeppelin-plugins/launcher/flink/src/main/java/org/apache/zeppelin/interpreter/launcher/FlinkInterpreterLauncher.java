@@ -140,16 +140,17 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
       yarnShipFiles.add(context.getProperties().getProperty("yarn.ship-files"));
     }
 
-//    String zeppelinHome = System.getenv("ZEPPELIN_HOME");
-//    String[] scalaVersions = new String[] {"2.11"};
-//    for (String scalaVersion : scalaVersions) {
-//      File scalaLibFolder = new File(zeppelinHome, "interpreter/flink/scala-" + scalaVersion);
-//      if (!scalaLibFolder.exists()) {
-//        throw new IOException("Flink scala lib folder: " + scalaLibFolder.getAbsolutePath()
-//                + " doesn't exist");
-//      }
-//      yarnShipFiles.add(scalaLibFolder.getAbsolutePath());
-//    }
+    //    String zeppelinHome = System.getenv("ZEPPELIN_HOME");
+    //    String[] scalaVersions = new String[] {"2.11"};
+    //    for (String scalaVersion : scalaVersions) {
+    //      File scalaLibFolder = new File(zeppelinHome, "interpreter/flink/scala-" +
+    //      scalaVersion);
+    //      if (!scalaLibFolder.exists()) {
+    //        throw new IOException("Flink scala lib folder: " + scalaLibFolder.getAbsolutePath()
+    //                + " doesn't exist");
+    //      }
+    //      yarnShipFiles.add(scalaLibFolder.getAbsolutePath());
+    //    }
 
     return yarnShipFiles;
   }

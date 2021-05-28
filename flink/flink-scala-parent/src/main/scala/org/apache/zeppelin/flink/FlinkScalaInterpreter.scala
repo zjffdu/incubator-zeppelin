@@ -232,7 +232,7 @@ abstract class FlinkScalaInterpreter(val properties: Properties,
         .copy(queue = Some(queue))))
 
     this.userUdfJars = getUserUdfJars()
-    this.userJars = getUserJarsExceptUdfJars ++ this.userUdfJars ++ flinkScalaClassLoader.getURLs.map(_.getPath())
+    this.userJars = getUserJarsExceptUdfJars ++ this.userUdfJars
     LOGGER.info("UserJars: " + userJars.mkString(","))
     config = config.copy(externalJars = Some(userJars.toArray))
     LOGGER.info("Config: " + config)

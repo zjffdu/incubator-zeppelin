@@ -80,8 +80,11 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
       scalaVersion = "2.12";
     }
     final String flinkScalaVersion = scalaVersion;
-    File flinkInterpreterFolder = new File(ZeppelinConfiguration.create().getInterpreterDir(), "flink");
-    List<File> flinkScalaJars = Arrays.stream(flinkInterpreterFolder.listFiles(file -> file.getName().endsWith(".jar")))
+    File flinkInterpreterFolder =
+            new File(ZeppelinConfiguration.create().getInterpreterDir(), "flink");
+    List<File> flinkScalaJars =
+            Arrays.stream(flinkInterpreterFolder
+                    .listFiles(file -> file.getName().endsWith(".jar")))
             .filter(file -> file.getName().contains(flinkScalaVersion))
             .collect(Collectors.toList());
     if (flinkScalaJars.size() > 1) {

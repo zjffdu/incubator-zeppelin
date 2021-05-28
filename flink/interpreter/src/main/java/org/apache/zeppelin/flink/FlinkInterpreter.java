@@ -93,30 +93,26 @@ public class FlinkInterpreter extends Interpreter {
    */
   private AbstractFlinkScalaInterpreter loadFlinkScalaInterpreter() throws Exception {
     String scalaVersion = extractScalaVersion();
-    ClassLoader flinkScalaClassLoader = Thread.currentThread().getContextClassLoader();
-
-    String zeppelinHome = System.getenv("ZEPPELIN_HOME");
+    File scalaJarFolder = null;
     if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {
-      zeppelinHome = new File(".").getAbsolutePath();
-    }
-    if (zeppelinHome != null) {
-      // ZEPPELIN_HOME is null in yarn-cluster mode, load it directly via current ClassLoader.
-      // otherwise, load from the specific folder ZEPPELIN_HOME/interpreter/flink/scala-<version>
-      LOGGER.info("ZEPPELIN_HOME: {}", zeppelinHome);
-      File scalaJarFolder = new File(zeppelinHome + "/interpreter/flink/scala-" + scalaVersion);
-      if (!scalaJarFolder.exists()) {
-        throw new Exception("Flink scala folder " + scalaJarFolder + " doesn't exist");
-      }
-      List<URL> urls = new ArrayList<>();
-      for (File file : scalaJarFolder.listFiles()) {
-        LOGGER.info("Add file {} to classpath of flink scala interpreter: {}",
-                file.getAbsolutePath(), scalaJarFolder);
-        urls.add(file.toURI().toURL());
-      }
-      flinkScalaClassLoader = new URLClassLoader(urls.toArray(new URL[0]),
-              Thread.currentThread().getContextClassLoader());
+      scalaJarFolder = new File(".", "scala-" + scalaVersion);
+    } else {
+      String zeppelinHome = System.getenv("ZEPPELIN_HOME");
+      scalaJarFolder = new File(zeppelinHome, "/interpreter/flink/scala-" + scalaVersion);
     }
 
+    if (!scalaJarFolder.exists()) {
+      throw new Exception("Flink scala folder: " + scalaJarFolder + " doesn't exist");
+    }
+    List<URL> urls = new ArrayList<>();
+    for (File file : scalaJarFolder.listFiles()) {
+      LOGGER.info("Add file {} to classpath of flink scala interpreter: {}",
+              file.getAbsolutePath(), scalaJarFolder);
+      urls.add(file.toURI().toURL());
+    }
+
+    URLClassLoader flinkScalaClassLoader = new URLClassLoader(urls.toArray(new URL[0]),
+            Thread.currentThread().getContextClassLoader());
     String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
     Class clazz = flinkScalaClassLoader.loadClass(innerIntpClassName);
     return (AbstractFlinkScalaInterpreter)

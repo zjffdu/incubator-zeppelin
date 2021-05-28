@@ -17,6 +17,8 @@
 
 package org.apache.zeppelin.flink;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.flink.api.scala.ExecutionEnvironment;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment;
@@ -101,11 +103,13 @@ public class FlinkInterpreter extends Interpreter {
       scalaJarFolder = new File(zeppelinHome, "/interpreter/flink/scala-" + scalaVersion);
     }
 
-    if (!scalaJarFolder.exists()) {
+    File newScalaJarFolder = new File(".", "scala-" + scalaVersion + "-2");
+    FileUtils.moveDirectory(scalaJarFolder, newScalaJarFolder);
+    if (!newScalaJarFolder.exists()) {
       throw new Exception("Flink scala folder: " + scalaJarFolder + " doesn't exist");
     }
     List<URL> urls = new ArrayList<>();
-    for (File file : scalaJarFolder.listFiles()) {
+    for (File file : newScalaJarFolder.listFiles()) {
       LOGGER.info("Add file {} to classpath of flink scala interpreter: {}",
               file.getAbsolutePath(), scalaJarFolder);
       urls.add(file.toURI().toURL());
@@ -113,7 +117,8 @@ public class FlinkInterpreter extends Interpreter {
 
     URLClassLoader flinkScalaClassLoader = null;
 //    if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {
-    flinkScalaClassLoader = new URLClassLoader(urls.toArray(new URL[0]));
+    flinkScalaClassLoader = new URLClassLoader(urls.toArray(new URL[0]),
+            Thread.currentThread().getContextClassLoader());
 //    }
     String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
     Class clazz = flinkScalaClassLoader.loadClass(innerIntpClassName);

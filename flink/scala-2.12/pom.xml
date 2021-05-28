@@ -97,7 +97,7 @@
               <shadedPattern>org.apache.zeppelin.shaded.com.google</shadedPattern>
             </relocation>
           </relocations>
-          <outputFile>${project.basedir}/../../interpreter/${interpreter.name}/${project.artifactId}-${project.version}-2.12.jar</outputFile>
+          <outputFile>${project.basedir}/../../interpreter/${interpreter.name}/zeppelin-flink-${project.version}-2.12.jar</outputFile>
         </configuration>
         <executions>
           <execution>

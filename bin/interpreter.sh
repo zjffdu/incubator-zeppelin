@@ -248,7 +248,6 @@ elif [[ "${INTERPRETER_ID}" == "flink" ]]; then
 
   FLINK_PYTHON_JAR=$(find "${FLINK_HOME}/opt" -name 'flink-python_*.jar')
   ZEPPELIN_INTP_CLASSPATH+=":${FLINK_PYTHON_JAR}"
-  FLINK_APP_JAR="$(ls "${ZEPPELIN_HOME}"/interpreter/flink/zeppelin-flink-*.jar)"
 
   if [[ -n "${HADOOP_CONF_DIR}" ]] && [[ -d "${HADOOP_CONF_DIR}" ]]; then
     ZEPPELIN_INTP_CLASSPATH+=":${HADOOP_CONF_DIR}"

@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,7 +60,37 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
       updateEnvsForYarnApplicationMode(envs, context);
     }
 
+    selectFlinkAppJar(flinkHome, envs);
     return envs;
+  }
+
+  private void selectFlinkAppJar(String flinkHome, Map<String, String> envs) throws IOException {
+    File flinkLibFolder = new File(flinkHome, "lib");
+    List<File> flinkDistFiles =
+            Arrays.stream(flinkLibFolder.listFiles(file -> file.getName().contains("flink-dist_")))
+                    .collect(Collectors.toList());
+    if (flinkDistFiles.size() > 1) {
+      throw new IOException("More than 1 flink-dist files: " +
+              flinkDistFiles.stream()
+                      .map(file -> file.getAbsolutePath())
+                      .collect(Collectors.joining(",")));
+    }
+    String scalaVersion = "2.11";
+    if (flinkDistFiles.get(0).getName().contains("2.12")) {
+      scalaVersion = "2.12";
+    }
+    final String flinkScalaVersion = scalaVersion;
+    File flinkInterpreterFolder = new File(ZeppelinConfiguration.create().getInterpreterDir(), "flink");
+    List<File> flinkScalaJars = Arrays.stream(flinkInterpreterFolder.listFiles(file -> file.getName().endsWith(".jar")))
+            .filter(file -> file.getName().contains(flinkScalaVersion))
+            .collect(Collectors.toList());
+    if (flinkScalaJars.size() > 1) {
+      throw new IOException("More than 1 flink scala files: " +
+              flinkScalaJars.stream()
+                      .map(file -> file.getAbsolutePath())
+                      .collect(Collectors.joining(",")));
+    }
+    envs.put("FLINK_APP_JAR", flinkScalaJars.get(0).getAbsolutePath());
   }
 
   private String updateEnvsForFlinkHome(Map<String, String> envs,
@@ -139,18 +170,6 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     if (context.getProperties().containsKey("yarn.ship-files")) {
       yarnShipFiles.add(context.getProperties().getProperty("yarn.ship-files"));
     }
-
-    //    String zeppelinHome = System.getenv("ZEPPELIN_HOME");
-    //    String[] scalaVersions = new String[] {"2.11"};
-    //    for (String scalaVersion : scalaVersions) {
-    //      File scalaLibFolder = new File(zeppelinHome, "interpreter/flink/scala-" +
-    //      scalaVersion);
-    //      if (!scalaLibFolder.exists()) {
-    //        throw new IOException("Flink scala lib folder: " + scalaLibFolder.getAbsolutePath()
-    //                + " doesn't exist");
-    //      }
-    //      yarnShipFiles.add(scalaLibFolder.getAbsolutePath());
-    //    }
 
     return yarnShipFiles;
   }

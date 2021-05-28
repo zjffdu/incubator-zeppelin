@@ -96,6 +96,9 @@ public class FlinkInterpreter extends Interpreter {
     ClassLoader flinkScalaClassLoader = Thread.currentThread().getContextClassLoader();
 
     String zeppelinHome = System.getenv("ZEPPELIN_HOME");
+    if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {
+      zeppelinHome = new File(".").getAbsolutePath();
+    }
     if (zeppelinHome != null) {
       // ZEPPELIN_HOME is null in yarn-cluster mode, load it directly via current ClassLoader.
       // otherwise, load from the specific folder ZEPPELIN_HOME/interpreter/flink/scala-<version>

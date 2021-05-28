@@ -130,6 +130,7 @@ public class FlinkInterpreter extends Interpreter {
       e.printStackTrace();
       LOGGER.info("ClassLoader1: {}", AbstractFlinkScalaInterpreter.class.getClassLoader());
       LOGGER.info("ClassLoader2: {}", clazz.getClassLoader());
+      LOGGER.info("ClassLoader2: {}", flinkScalaClassLoader);
       return null;
     }
   }

@@ -125,7 +125,7 @@ public class FlinkInterpreter extends Interpreter {
     try {
       return (AbstractFlinkScalaInterpreter)
               clazz.getConstructor(Properties.class, URLClassLoader.class)
-                      .newInstance(getProperties(), flinkScalaClassLoader);
+                      .newInstance(getProperties(), AbstractFlinkScalaInterpreter.class.getClassLoader());
     } catch (Throwable e) {
       e.printStackTrace();
       LOGGER.info("ClassLoader1: {}", AbstractFlinkScalaInterpreter.class.getClassLoader());

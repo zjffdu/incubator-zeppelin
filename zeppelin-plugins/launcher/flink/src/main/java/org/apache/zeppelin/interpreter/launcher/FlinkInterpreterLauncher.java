@@ -93,7 +93,7 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     List<String> yarnShipFiles = getYarnShipFiles(context);
     if (!yarnShipFiles.isEmpty()) {
       flinkYarnApplicationConfBuilder.append(
-              " -D yarn.ship-files=" + yarnShipFiles.stream().collect(Collectors.joining(",")));
+              " -D yarn.ship-files=" + yarnShipFiles.stream().collect(Collectors.joining(";")));
     }
 
     // set yarn.application.name

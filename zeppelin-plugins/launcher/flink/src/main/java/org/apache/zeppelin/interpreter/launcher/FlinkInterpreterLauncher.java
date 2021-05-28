@@ -141,7 +141,7 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     }
 
     String zeppelinHome = System.getenv("ZEPPELIN_HOME");
-    String[] scalaVersions = new String[] {"2.11", "2.12"};
+    String[] scalaVersions = new String[] {"2.11"};
     for (String scalaVersion : scalaVersions) {
       File scalaLibFolder = new File(zeppelinHome, "interpreter/flink/scala-" + scalaVersion);
       if (!scalaLibFolder.exists()) {

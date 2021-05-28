@@ -802,58 +802,6 @@
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <configuration>
-          <filters>
-            <filter>
-              <artifact>*:*</artifact>
-              <excludes>
-                <exclude>org/datanucleus/**</exclude>
-                <exclude>META-INF/*.SF</exclude>
-                <exclude>META-INF/*.DSA</exclude>
-                <exclude>META-INF/*.RSA</exclude>
-              </excludes>
-            </filter>
-          </filters>
-
-          <artifactSet>
-            <excludes>
-              <exclude>org.scala-lang:scala-library</exclude>
-              <exclude>org.scala-lang:scala-compiler</exclude>
-              <exclude>org.scala-lang:scala-reflect</exclude>
-              <exclude>org.apache.flink:*</exclude>
-            </excludes>
-          </artifactSet>
-
-          <transformers>
-            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-              <resource>reference.conf</resource>
-            </transformer>
-          </transformers>
-          <relocations>
-            <relocation>
-              <pattern>io.netty</pattern>
-              <shadedPattern>org.apache.zeppelin.shaded.io.netty</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>com.google</pattern>
-              <shadedPattern>org.apache.zeppelin.shaded.com.google</shadedPattern>
-            </relocation>
-          </relocations>
-          <outputFile>${project.basedir}/../../interpreter/${interpreter.name}/${project.artifactId}-${project.version}.jar</outputFile>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>

@@ -46,8 +46,8 @@
             <groupId>org.apache.zeppelin</groupId>
             <artifactId>zeppelin-flink</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
+
 
         <dependency>
             <groupId>org.scala-lang</groupId>

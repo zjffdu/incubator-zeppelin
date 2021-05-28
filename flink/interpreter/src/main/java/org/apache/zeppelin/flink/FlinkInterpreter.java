@@ -115,10 +115,9 @@ public class FlinkInterpreter extends Interpreter {
       urls.add(file.toURI().toURL());
     }
 
-    URLClassLoader flinkScalaClassLoader = null;
+    ClassLoader flinkScalaClassLoader = null;
 //    if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {
-    flinkScalaClassLoader = new URLClassLoader(new URL[0],
-            Thread.currentThread().getContextClassLoader());
+    flinkScalaClassLoader = Thread.currentThread().getContextClassLoader();
 //    }
     String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
     Class clazz = flinkScalaClassLoader.loadClass(innerIntpClassName);

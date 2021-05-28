@@ -93,6 +93,7 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
                       .map(file -> file.getAbsolutePath())
                       .collect(Collectors.joining(",")));
     }
+    LOGGER.info("Choose FLINK_APP_JAR: {}", flinkScalaJars.get(0).getAbsolutePath());
     envs.put("FLINK_APP_JAR", flinkScalaJars.get(0).getAbsolutePath());
   }
 

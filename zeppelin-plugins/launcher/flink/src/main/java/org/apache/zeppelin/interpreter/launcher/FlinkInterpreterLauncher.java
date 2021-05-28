@@ -83,7 +83,9 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
   }
 
   private void updateEnvsForYarnApplicationMode(Map<String, String> envs,
-                                                InterpreterLaunchContext context) throws IOException {
+                                                InterpreterLaunchContext context)
+          throws IOException {
+
     envs.put("ZEPPELIN_FLINK_YARN_APPLICATION", "true");
 
     StringBuilder flinkYarnApplicationConfBuilder = new StringBuilder();
@@ -143,7 +145,8 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     for (String scalaVersion : scalaVersions) {
       File scalaLibFolder = new File(zeppelinHome, "interpreter/flink/scala-" + scalaVersion);
       if (!scalaLibFolder.exists()) {
-        throw new IOException("Flink scala lib folder: " + scalaLibFolder.getAbsolutePath() + " doesn't exist");
+        throw new IOException("Flink scala lib folder: " + scalaLibFolder.getAbsolutePath()
+                + " doesn't exist");
       }
       yarnShipFiles.add(scalaLibFolder.getAbsolutePath());
     }

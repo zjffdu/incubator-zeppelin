@@ -118,10 +118,11 @@ public class FlinkInterpreter extends Interpreter {
     ClassLoader flinkScalaClassLoader = null;
 //    if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {
     flinkScalaClassLoader = AbstractFlinkScalaInterpreter.class.getClassLoader();
-    LOGGER.info("ClassLoadType**********: {}", flinkScalaClassLoader.getClass().getName());
+    LOGGER.info("ClassLoadType**********: {}", flinkScalaClassLoader);
 //    }
     String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
     Class clazz = flinkScalaClassLoader.loadClass(innerIntpClassName);
+    LOGGER.info("ClassLoadType2**********: {}", clazz.getClassLoader());
     try {
       return (AbstractFlinkScalaInterpreter)
               clazz.getConstructor(Properties.class, URLClassLoader.class)

@@ -122,11 +122,16 @@ public class FlinkInterpreter extends Interpreter {
 //    }
     String innerIntpClassName = innerInterpreterClassMap.get(scalaVersion);
     Class clazz = flinkScalaClassLoader.loadClass(innerIntpClassName);
-    LOGGER.info("ClassLoader1: {}", AbstractFlinkScalaInterpreter.class.getClassLoader());
-    LOGGER.info("ClassLoader2: {}", clazz.getClassLoader());
-    return (AbstractFlinkScalaInterpreter)
-            clazz.getConstructor(Properties.class, URLClassLoader.class)
-                    .newInstance(getProperties(), flinkScalaClassLoader);
+    try {
+      return (AbstractFlinkScalaInterpreter)
+              clazz.getConstructor(Properties.class, URLClassLoader.class)
+                      .newInstance(getProperties(), flinkScalaClassLoader);
+    } catch (Throwable e) {
+      e.printStackTrace();
+      LOGGER.info("ClassLoader1: {}", AbstractFlinkScalaInterpreter.class.getClassLoader());
+      LOGGER.info("ClassLoader2: {}", clazz.getClassLoader());
+      return null;
+    }
   }
 
   @Override

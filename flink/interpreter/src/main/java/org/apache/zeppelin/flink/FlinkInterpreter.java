@@ -103,17 +103,17 @@ public class FlinkInterpreter extends Interpreter {
       scalaJarFolder = new File(zeppelinHome, "/interpreter/flink/scala-" + scalaVersion);
     }
 
-    File newScalaJarFolder = new File(".", "scala-" + scalaVersion + "-2");
-    FileUtils.moveDirectory(scalaJarFolder, newScalaJarFolder);
-    if (!newScalaJarFolder.exists()) {
-      throw new Exception("Flink scala folder: " + scalaJarFolder + " doesn't exist");
-    }
-    List<URL> urls = new ArrayList<>();
-    for (File file : newScalaJarFolder.listFiles()) {
-      LOGGER.info("Add file {} to classpath of flink scala interpreter: {}",
-              file.getAbsolutePath(), scalaJarFolder);
-      urls.add(file.toURI().toURL());
-    }
+//    File newScalaJarFolder = new File(".", "scala-" + scalaVersion + "-2");
+//    FileUtils.moveDirectory(scalaJarFolder, newScalaJarFolder);
+//    if (!newScalaJarFolder.exists()) {
+//      throw new Exception("Flink scala folder: " + scalaJarFolder + " doesn't exist");
+//    }
+//    List<URL> urls = new ArrayList<>();
+//    for (File file : newScalaJarFolder.listFiles()) {
+//      LOGGER.info("Add file {} to classpath of flink scala interpreter: {}",
+//              file.getAbsolutePath(), scalaJarFolder);
+//      urls.add(file.toURI().toURL());
+//    }
 
     ClassLoader flinkScalaClassLoader = null;
 //    if ("yarn-application".equalsIgnoreCase(properties.getProperty("flink.execution.mode"))) {

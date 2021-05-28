@@ -83,7 +83,7 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
   }
 
   private void updateEnvsForYarnApplicationMode(Map<String, String> envs,
-                                                InterpreterLaunchContext context) {
+                                                InterpreterLaunchContext context) throws IOException {
     envs.put("ZEPPELIN_FLINK_YARN_APPLICATION", "true");
 
     StringBuilder flinkYarnApplicationConfBuilder = new StringBuilder();
@@ -119,7 +119,7 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     envs.put("ZEPPELIN_FLINK_YARN_APPLICATION_CONF", flinkYarnApplicationConfBuilder.toString());
   }
 
-  private List<String> getYarnShipFiles(InterpreterLaunchContext context) {
+  private List<String> getYarnShipFiles(InterpreterLaunchContext context) throws IOException {
     // Extract yarn.ship-files, add hive-site.xml automatically if hive is enabled
     // and HIVE_CONF_DIR is specified
     List<String> yarnShipFiles = new ArrayList<>();
@@ -136,6 +136,16 @@ public class FlinkInterpreterLauncher extends StandardInterpreterLauncher {
     }
     if (context.getProperties().containsKey("yarn.ship-files")) {
       yarnShipFiles.add(context.getProperties().getProperty("yarn.ship-files"));
+    }
+
+    String zeppelinHome = System.getenv("ZEPPELIN_HOME");
+    String[] scalaVersions = new String[] {"2.11", "2.12"};
+    for (String scalaVersion : scalaVersions) {
+      File scalaLibFolder = new File(zeppelinHome, "interpreter/flink/scala-" + scalaVersion);
+      if (!scalaLibFolder.exists()) {
+        throw new IOException("Flink scala lib folder: " + scalaLibFolder.getAbsolutePath() + " doesn't exist");
+      }
+      yarnShipFiles.add(scalaLibFolder.getAbsolutePath());
     }
 
     return yarnShipFiles;

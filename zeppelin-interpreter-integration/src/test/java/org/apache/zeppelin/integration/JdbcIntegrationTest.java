@@ -63,7 +63,7 @@ public class JdbcIntegrationTest {
   public void testMySql() throws InterpreterException, InterruptedException {
     InterpreterSetting interpreterSetting = interpreterSettingManager.getInterpreterSettingByName("jdbc");
     interpreterSetting.setProperty("default.driver", "com.mysql.jdbc.Driver");
-    interpreterSetting.setProperty("default.url", "jdbc:mysql://localhost:3306/");
+    interpreterSetting.setProperty("default.url", "jdbc:mysql://127.0.0.1:3306/");
     interpreterSetting.setProperty("default.user", "root");
     interpreterSetting.setProperty("default.password", "root");
 

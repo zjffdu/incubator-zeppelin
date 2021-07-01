@@ -284,6 +284,7 @@ public class ZeppelinServer extends ResourceConfig {
       } catch (IOException e) {
         LOG.error("Exception in ZeppelinServer while main ", e);
       }
+      LOG.info("Exit ZeppelinServer");
       System.exit(0);
     }
 

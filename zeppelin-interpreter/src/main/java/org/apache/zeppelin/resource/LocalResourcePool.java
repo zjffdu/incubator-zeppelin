@@ -57,6 +57,15 @@ public class LocalResourcePool implements ResourcePool {
   }
 
   @Override
+  public Resource get(String name, boolean remote) {
+    if (remote) {
+      throw new UnsupportedOperationException("Get resource from remote is not supported");
+    } else {
+      return get(name);
+    }
+  }
+
+  @Override
   public Resource get(String noteId, String paragraphId, String name) {
     ResourceId resourceId = new ResourceId(resourcePoolId, noteId, paragraphId, name);
     return resources.get(resourceId);

@@ -44,6 +44,7 @@ public class DistributedResourcePool extends LocalResourcePool {
    * @param remote false only return from local resource
    * @return null if resource not found.
    */
+  @Override
   public Resource get(String name, boolean remote) {
     // try local first
     Resource resource = super.get(name);

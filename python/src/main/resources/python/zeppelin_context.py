@@ -58,6 +58,9 @@ class PyZeppelinContext(object):
     def get(self, key):
         return self.__getitem__(key)
 
+    def getLocal(self, key):
+        return self.z.getLocal(key)
+
     def getAsDataFrame(self, key):
         value = self.get(key)
         try:

@@ -35,6 +35,13 @@ public interface ResourcePool {
 
   /**
    * Get resource from name
+   * @param name Resource name
+   * @return null if resource not found
+   */
+  Resource get(String name, boolean remote);
+
+  /**
+   * Get resource from name
    * @param noteId
    * @param paragraphId
    * @param name Resource name

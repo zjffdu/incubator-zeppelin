@@ -632,11 +632,16 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
       Paragraph p5 = note.addNewParagraph(anonymous);
       p5.setText("%python print(z.get('var_1'))");
 
+      // resources in local interpreter process
+      Paragraph p6 = note.addNewParagraph(anonymous);
+      p6.setText("%python print(z.getLocal('var_1'))");
+
       note.run(p1.getId(), true);
       note.run(p2.getId(), true);
       note.run(p3.getId(), true);
       note.run(p4.getId(), true);
       note.run(p5.getId(), true);
+      note.run(p6.getId(), true);
 
       assertEquals(Status.FINISHED, p1.getStatus());
       assertEquals(Status.FINISHED, p2.getStatus());
@@ -648,6 +653,8 @@ public abstract class ZeppelinSparkClusterTest extends AbstractTestRestApi {
               p4.getReturn().message().get(0).getData().contains("hello world"));
       assertEquals(Status.FINISHED, p5.getStatus());
       assertEquals("hello world\n", p5.getReturn().message().get(0).getData());
+      assertEquals(Status.ERROR, p6.getStatus());
+      assertEquals("None\n", p6.getReturn().message().get(0).getData());
     } finally {
       if (null != note) {
         TestUtils.getInstance(Notebook.class).removeNote(note, anonymous);

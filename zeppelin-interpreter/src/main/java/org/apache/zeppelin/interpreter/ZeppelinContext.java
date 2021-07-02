@@ -1047,6 +1047,23 @@ public abstract class ZeppelinContext {
   }
 
   /**
+   * Get object from local resource pool
+   *
+   * @param name
+   * @return null if resource not found
+   */
+  @ZeppelinApi
+  public Object getLocal(String name) {
+    ResourcePool resourcePool = interpreterContext.getResourcePool();
+    Resource resource = resourcePool.get(name, false);
+    if (resource != null) {
+      return resource.get();
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * Get object from resource pool
    * Search local process first and then the other processes
    *
